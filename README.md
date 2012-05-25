@@ -27,11 +27,15 @@ Program and preview selection as well as transition control are exposed via foll
  - **Media 1** `/atem/program/10`
  - **Media 2** `/atem/program/12`
 
+For preview selection `/atem/preview/$i` can be used.
+
  - **T-bar** `/atem/transition/bar`
  - **Cut** `/atem/transition/cut`
  - **auto** `/atem/transition/auto`
  - **fade-to-black** `/atem/transition/ftb`
-
+ 
+All OSC-addresses expect float-values between 0.0 and 1.0.
+ 
 ----------
 
 I am using this software with TouchOSC on the iPad. An TouchOSC-interface for the iPad can be found in the repository as well.
