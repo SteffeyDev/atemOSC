@@ -4,7 +4,7 @@ atemOSC
 This is a Mac OS X application, providing an interface to control an ATEM video switcher via OSC. 
 The code is based on the *SwitcherPanel*-Democode (Version 3.1) provided by Blackmagic.
 
-(https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
+![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
 
 
 VVOSC is used as OSC-framework.
@@ -36,4 +36,4 @@ Program and preview selection as well as transition control are exposed via foll
 
 I am using this software with TouchOSC on the iPad. An TouchOSC-interface for the iPad can be found in the repository as well.
 
-(https://github.com/danielbuechele/atemOSC/raw/master/ipad-interface.png)
+![TouchOSC interface](https://github.com/danielbuechele/atemOSC/raw/master/ipad-interface.png)
