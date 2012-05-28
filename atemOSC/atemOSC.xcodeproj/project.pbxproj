@@ -13,10 +13,10 @@
 		335AB1C115703EF4003EA2D2 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; };
 		335AB1C315703EFA003EA2D2 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; };
 		335AB1C415703EFA003EA2D2 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; };
+		335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
-		97C373021488610E0019D5E9 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 97C373011488610E0019D5E9 /* BMDSwitcherAPIDispatch.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,11 +45,11 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		335AB1BB15703EF4003EA2D2 /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVOSC.framework; sourceTree = "<group>"; };
 		335AB1BD15703EF4003EA2D2 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVBasics.framework; sourceTree = "<group>"; };
+		335B268B1573A16300F72574 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDSwitcherAPI.h; sourceTree = "<group>"; };
+		335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BMDSwitcherAPIDispatch.cpp; sourceTree = "<group>"; };
 		33C7E513156FDAE5008129CF /* SDKSettings.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = SDKSettings.plist; sourceTree = "<group>"; };
-		8D1107310486CEB800E47090 /* atemOSC-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; path = "atemOSC-Info.plist"; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* atemOSC-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "atemOSC-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* atemOSC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atemOSC.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		97C373001488610E0019D5E9 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMDSwitcherAPI.h; path = ../../include/BMDSwitcherAPI.h; sourceTree = SOURCE_ROOT; };
-		97C373011488610E0019D5E9 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BMDSwitcherAPIDispatch.cpp; path = ../../include/BMDSwitcherAPIDispatch.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,8 +119,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				97C373001488610E0019D5E9 /* BMDSwitcherAPI.h */,
-				97C373011488610E0019D5E9 /* BMDSwitcherAPIDispatch.cpp */,
+				335B268B1573A16300F72574 /* BMDSwitcherAPI.h */,
+				335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -222,7 +222,7 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm in Sources */,
-				97C373021488610E0019D5E9 /* BMDSwitcherAPIDispatch.cpp in Sources */,
+				335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

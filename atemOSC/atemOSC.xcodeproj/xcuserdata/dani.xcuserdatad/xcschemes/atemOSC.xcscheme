@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8D1107260486CEB800E47090"
-               BuildableName = "SwitcherPanel.app"
+               BuildableName = "atemOSC.app"
                BlueprintName = "AtemOSC"
                ReferencedContainer = "container:atemOSC.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "SwitcherPanel.app"
+            BuildableName = "atemOSC.app"
             BlueprintName = "AtemOSC"
             ReferencedContainer = "container:atemOSC.xcodeproj">
          </BuildableReference>
@@ -51,7 +51,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "SwitcherPanel.app"
+            BuildableName = "atemOSC.app"
             BlueprintName = "AtemOSC"
             ReferencedContainer = "container:atemOSC.xcodeproj">
          </BuildableReference>
@@ -69,7 +69,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8D1107260486CEB800E47090"
-            BuildableName = "SwitcherPanel.app"
+            BuildableName = "atemOSC.app"
             BlueprintName = "AtemOSC"
             ReferencedContainer = "container:atemOSC.xcodeproj">
          </BuildableReference>
