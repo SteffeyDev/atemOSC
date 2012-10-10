@@ -29,14 +29,14 @@
 #import <list>
 
 #import <Cocoa/Cocoa.h>
-#import <VVOSC/VVOSC.h>
-
+#import "VVOSC/VVOSC.h"
+#import "AMSerialPort.h"
 
 class MixEffectBlockMonitor;
 class SwitcherMonitor;
 class InputMonitor;
 
-@interface SwitcherPanelAppDelegate : NSObject <NSApplicationDelegate, OSCDelegateProtocol>
+@interface SwitcherPanelAppDelegate : NSObject <NSApplicationDelegate, OSCDelegateProtocol, NSTextFieldDelegate>
 {
 	NSWindow *window;
 	
@@ -59,8 +59,22 @@ class InputMonitor;
     IBOutlet NSTextField*       incoming;
     IBOutlet NSTextField*       outgoing;
     IBOutlet NSTextField*       oscdevice;
-
-
+    
+    IBOutlet NSLevelIndicator *redLight;
+    IBOutlet NSLevelIndicator *greenLight;
+    
+    IBOutlet NSLevelIndicator *tallyRedLight;
+    IBOutlet NSLevelIndicator *tallyGreenLight;
+    
+    IBOutlet NSPopUpButton *tallyA;
+    IBOutlet NSPopUpButton *tallyB;
+    IBOutlet NSPopUpButton *tallyC;
+    IBOutlet NSPopUpButton *tallyD;
+    
+    
+    AMSerialPort *port;
+    IBOutlet NSPopUpButton	*serialSelectMenu;
+    IBOutlet NSButton		*connectButton;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -79,5 +93,13 @@ class InputMonitor;
 - (void)updateTransitionFramesTextField;
 - (void)updateFTBFramesTextField;
 - (void)mixEffectBlockBoxSetEnabled:(bool)enabled;
+
+
+// Serial Port Methods
+- (AMSerialPort *)port;
+- (void)setPort:(AMSerialPort *)newPort;
+- (void)listDevices;
+
+- (IBAction)initPort:(id)sender;
 
 @end
