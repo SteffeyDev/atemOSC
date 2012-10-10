@@ -9,11 +9,17 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm */; };
+		333E3045161395CF0002287B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333E3044161395CF0002287B /* IOKit.framework */; };
 		335AB1BF15703EF4003EA2D2 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; };
 		335AB1C115703EF4003EA2D2 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; };
 		335AB1C315703EFA003EA2D2 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; };
 		335AB1C415703EFA003EA2D2 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; };
 		335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */; };
+		33F328ED1573A29900D4722A /* AMSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E31573A29900D4722A /* AMSerialPort.m */; };
+		33F328EE1573A29900D4722A /* AMSerialPortAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E51573A29900D4722A /* AMSerialPortAdditions.m */; };
+		33F328EF1573A29900D4722A /* AMSerialPortList.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E71573A29900D4722A /* AMSerialPortList.m */; };
+		33F328F01573A29900D4722A /* AMSerialPortList_Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */; };
+		33F328F11573A29900D4722A /* AMStandardEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328EB1573A29900D4722A /* AMStandardEnumerator.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -43,11 +49,24 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		333E3044161395CF0002287B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		335AB1BB15703EF4003EA2D2 /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVOSC.framework; sourceTree = "<group>"; };
 		335AB1BD15703EF4003EA2D2 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVBasics.framework; sourceTree = "<group>"; };
 		335B268B1573A16300F72574 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDSwitcherAPI.h; sourceTree = "<group>"; };
 		335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BMDSwitcherAPIDispatch.cpp; sourceTree = "<group>"; };
-		33C7E513156FDAE5008129CF /* SDKSettings.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = SDKSettings.plist; sourceTree = "<group>"; };
+		33F328E01573A29900D4722A /* AMSDKCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSDKCompatibility.h; sourceTree = "<group>"; };
+		33F328E11573A29900D4722A /* AMSerialErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialErrors.h; sourceTree = "<group>"; };
+		33F328E21573A29900D4722A /* AMSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPort.h; sourceTree = "<group>"; };
+		33F328E31573A29900D4722A /* AMSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPort.m; sourceTree = "<group>"; };
+		33F328E41573A29900D4722A /* AMSerialPortAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortAdditions.h; sourceTree = "<group>"; };
+		33F328E51573A29900D4722A /* AMSerialPortAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortAdditions.m; sourceTree = "<group>"; };
+		33F328E61573A29900D4722A /* AMSerialPortList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList.h; sourceTree = "<group>"; };
+		33F328E71573A29900D4722A /* AMSerialPortList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList.m; sourceTree = "<group>"; };
+		33F328E81573A29900D4722A /* AMSerialPortList_Deprecated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList_Deprecated.h; sourceTree = "<group>"; };
+		33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList_Deprecated.m; sourceTree = "<group>"; };
+		33F328EA1573A29900D4722A /* AMStandardEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMStandardEnumerator.h; sourceTree = "<group>"; };
+		33F328EB1573A29900D4722A /* AMStandardEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMStandardEnumerator.m; sourceTree = "<group>"; };
+		33F328EC1573A29900D4722A /* ArduinoSerial_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArduinoSerial_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* atemOSC-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "atemOSC-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* atemOSC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atemOSC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -57,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				333E3045161395CF0002287B /* IOKit.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				335AB1BF15703EF4003EA2D2 /* VVOSC.framework in Frameworks */,
 				335AB1C115703EF4003EA2D2 /* VVBasics.framework in Frameworks */,
@@ -78,6 +98,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				333E3044161395CF0002287B /* IOKit.framework */,
 				335AB1BB15703EF4003EA2D2 /* VVOSC.framework */,
 				335AB1BD15703EF4003EA2D2 /* VVBasics.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
@@ -106,7 +127,6 @@
 		29B97314FDCFA39411CA2CEA /* SwitcherPanel */ = {
 			isa = PBXGroup;
 			children = (
-				33C7E512156FDAE5008129CF /* macosx.sdk */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -119,6 +139,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				33F328DF1573A29900D4722A /* arduino */,
 				335B268B1573A16300F72574 /* BMDSwitcherAPI.h */,
 				335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -145,13 +166,24 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		33C7E512156FDAE5008129CF /* macosx.sdk */ = {
+		33F328DF1573A29900D4722A /* arduino */ = {
 			isa = PBXGroup;
 			children = (
-				33C7E513156FDAE5008129CF /* SDKSettings.plist */,
+				33F328E01573A29900D4722A /* AMSDKCompatibility.h */,
+				33F328E11573A29900D4722A /* AMSerialErrors.h */,
+				33F328E21573A29900D4722A /* AMSerialPort.h */,
+				33F328E31573A29900D4722A /* AMSerialPort.m */,
+				33F328E41573A29900D4722A /* AMSerialPortAdditions.h */,
+				33F328E51573A29900D4722A /* AMSerialPortAdditions.m */,
+				33F328E61573A29900D4722A /* AMSerialPortList.h */,
+				33F328E71573A29900D4722A /* AMSerialPortList.m */,
+				33F328E81573A29900D4722A /* AMSerialPortList_Deprecated.h */,
+				33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */,
+				33F328EA1573A29900D4722A /* AMStandardEnumerator.h */,
+				33F328EB1573A29900D4722A /* AMStandardEnumerator.m */,
+				33F328EC1573A29900D4722A /* ArduinoSerial_Prefix.pch */,
 			);
-			name = macosx.sdk;
-			path = "../../../../../../Volumes/User/Downloads/brennon-vvocs-frameworks-5791867/VVOSC/macosx.sdk";
+			path = arduino;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -182,7 +214,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "atemOSC" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -223,6 +255,11 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm in Sources */,
 				335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */,
+				33F328ED1573A29900D4722A /* AMSerialPort.m in Sources */,
+				33F328EE1573A29900D4722A /* AMSerialPortAdditions.m in Sources */,
+				33F328EF1573A29900D4722A /* AMSerialPortList.m in Sources */,
+				33F328F01573A29900D4722A /* AMSerialPortList_Deprecated.m in Sources */,
+				33F328F11573A29900D4722A /* AMStandardEnumerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,10 +289,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SYSTEM_APPS_DIR)/Blackmagic ATEM Switchers/Developer SDK/Mac/Samples/SwitcherPanel\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -266,7 +305,9 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = atemOSC;
+				SDKROOT = "";
 			};
 			name = Debug;
 		};
@@ -274,10 +315,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SYSTEM_APPS_DIR)/Blackmagic ATEM Switchers/Developer SDK/Mac/Samples/SwitcherPanel\"",
+					"\"$(SRCROOT)\"",
 				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -286,7 +329,9 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = atemOSC;
+				SDKROOT = "";
 			};
 			name = Release;
 		};
@@ -300,7 +345,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -312,7 +357,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};

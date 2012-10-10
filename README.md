@@ -1,13 +1,15 @@
-atemOSC
-=======
+atemOSC v2.0
+============
 
 This is a Mac OS X application, providing an interface to control an ATEM video switcher via OSC. 
-The code is based on the *SwitcherPanel*-Democode (Version 3.1) provided by Blackmagic.
+The code is based on the *SwitcherPanel*-Democode (Version 3.1) provided by Blackmagic. 	Additionally the control of a tally-light interface via Arduino is provided.
 
 ![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
 
+- [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
+- [AMSerialPort](https://github.com/smokyonion/AMSerialPort) is used for Arduino-connection
 
-VVOSC is used as OSC-framework.
+The current version is built for Mac OS 10.8 SDK. A compiled and runnable version of the atemOSC is included. Caution: The software lacks of many usability features (like input validation).
 
 ----------
 

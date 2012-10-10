@@ -28,7 +28,8 @@
 #import "SwitcherPanelAppDelegate.h"
 #include <libkern/OSAtomic.h>
 #include <string>
-
+#import "AMSerialPortList.h"
+#import "AMSerialPortAdditions.h"
 
 static inline bool	operator== (const REFIID& iid1, const REFIID& iid2)
 { 
@@ -280,6 +281,7 @@ private:
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     mAddressTextField.stringValue = [prefs stringForKey:@"atem"];
+    
     outgoing.intValue = [prefs integerForKey:@"outgoing"];
     incoming.intValue = [prefs integerForKey:@"incoming"];
     oscdevice.stringValue = [prefs objectForKey:@"oscdevice"];
@@ -290,6 +292,21 @@ private:
     
     [self portChanged:self];
     
+    
+    /// set up notifications
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddPorts:) name:AMSerialPortListDidAddPortsNotification object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemovePorts:) name:AMSerialPortListDidRemovePortsNotification object:nil];
+	
+	/// initialize port list to arm notifications
+	[AMSerialPortList sharedPortList];
+	[self listDevices];
+
+    
+}
+
+
+- (void)controlTextDidEndEditing:(NSNotification *)aNotification {
+    [self portChanged:self];
 }
 
 - (void) receivedOSCMessage:(OSCMessage *)m	{
@@ -327,13 +344,15 @@ private:
 
 - (void) activateChannel:(int)channel isProgram:(BOOL)program {
     NSString *strip;
-    
+
     if (program) {
         strip = @"program";
+        [self send:self Channel:channel];
     } else {
         strip = @"preview";
     }
-        
+    
+    
     for (int i = 0;i<=12;i++) {
         OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/%@/%d",strip,i]];
         if (channel==i) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
@@ -359,11 +378,18 @@ private:
     [manager removeInput:inPort];
     [manager removeOutput:outPort];
     
-    outPort = [manager createNewOutputToAddress:[oscdevice stringValue] atPort:[outgoing intValue] withLabel:@"test app"];
-    inPort = [manager createNewInputForPort:[incoming intValue] withLabel:@"test app"];
+        
+    outPort = [manager createNewOutputToAddress:[oscdevice stringValue] atPort:[outgoing intValue] withLabel:@"atemOSC"];
+    inPort = [manager createNewInputForPort:[incoming intValue] withLabel:@"atemOSC"];
     
     [manager setDelegate:self];
 
+}
+
+- (IBAction)tallyChanged:(id)sender {
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    [prefs setObject:[NSString stringWithFormat:@"%d",[[sender selectedItem] tag]] forKey:[NSString stringWithFormat:@"tally%ld",[sender tag]] ];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
@@ -449,6 +475,8 @@ private:
     [outPort sendThisMessage:newMsg];
 	
 	[mConnectButton setEnabled:NO];			// disable Connect button while connected
+    [greenLight setHidden:NO];
+    [redLight setHidden:YES];
 	
 	NSString* productName;
 	if (FAILED(mSwitcher->GetString(bmdSwitcherPropertyIdProductName, (CFStringRef*)&productName)))
@@ -519,7 +547,10 @@ finish:
     
     [mConnectButton setEnabled:YES];			// enable connect button so user can re-connect
 	[mSwitcherNameLabel setStringValue:@""];
+    [greenLight setHidden:YES];
+    [redLight setHidden:NO];
 	
+    
 	[self mixEffectBlockBoxSetEnabled:NO];
 	
 	// cleanup resources created when switcher was connected
@@ -567,15 +598,38 @@ finish:
 		NSString* name;
 		BMDSwitcherInputId id;
 
+        
+        
 		input->GetInputId(&id);
 		input->GetString(bmdSwitcherInputPropertyIdLongName, (CFStringRef*)&name);
 		
-
+        [tallyA addItemWithTitle:name];
+		[[tallyA lastItem] setTag:id];
+        
+        [tallyB addItemWithTitle:name];
+		[[tallyB lastItem] setTag:id];
+        
+        [tallyC addItemWithTitle:name];
+		[[tallyC lastItem] setTag:id];
+        
+        [tallyD addItemWithTitle:name];
+		[[tallyD lastItem] setTag:id];
+        
 		
 		input->Release();
 		[name release];
 	}
 	inputIterator->Release();
+    
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    [tallyA selectItemAtIndex:[[prefs objectForKey:@"tally0"] intValue]];
+    [tallyB selectItemAtIndex:[[prefs objectForKey:@"tally1"] intValue]];
+    [tallyC selectItemAtIndex:[[prefs objectForKey:@"tally2"] intValue]];
+    [tallyD selectItemAtIndex:[[prefs objectForKey:@"tally3"] intValue]];
+    
+    
+    
 	
 	[self updateProgramButtonSelection];
 	[self updatePreviewButtonSelection];
@@ -657,5 +711,152 @@ finish:
 
 
 }
+
+
+
+
+
+
+
+# pragma mark Serial Port Stuff
+
+- (IBAction)initPort:(id)sender {
+    
+    
+    NSString *deviceName = [serialSelectMenu titleOfSelectedItem];
+
+    if (![deviceName isEqualToString:[port bsdPath]]) {
+        
+        
+        [port close];
+        
+        [self setPort:[[[AMSerialPort alloc] init:deviceName withName:deviceName type:(NSString*)CFSTR(kIOSerialBSDModemType)] autorelease]];
+        [port setDelegate:self];
+        
+        if ([port open]) {
+
+            NSLog(@"successfully connected");
+            
+            [connectButton setEnabled:NO];
+            [serialSelectMenu setEnabled:NO];
+            [tallyGreenLight setHidden:NO];
+            [tallyRedLight setHidden:YES];
+            
+            [port setSpeed:B9600]; 
+            
+            
+            // listen for data in a separate thread
+            [port readDataInBackground];
+            
+            
+        } else { // an error occured while creating port
+            
+            NSLog(@"error connecting");
+            //[serialScreenMessage setStringValue:@"Error Trying to Connect..."];
+            [self setPort:nil];
+            
+        }
+    }
+}
+
+
+
+
+- (void)serialPortReadData:(NSDictionary *)dataDictionary
+{
+    
+    AMSerialPort *sendPort = [dataDictionary objectForKey:@"serialPort"];
+    NSData *data = [dataDictionary objectForKey:@"data"];
+    
+    if ([data length] > 0) {
+        
+        NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+        NSLog(@"Serial Port Data Received: %@",receivedText);
+        
+        
+        //Typically, I arrange my serial messages coming from the Arduino in chunks, with the
+        //data being separated by a comma or semicolon. If you're doing something similar, a 
+        //variant of the following command is invaluable. 
+        
+        //NSArray *dataArray = [receivedText componentsSeparatedByString:@","];
+        
+        
+        // continue listening
+        [sendPort readDataInBackground];
+        
+    } else { 
+        // port closed
+        NSLog(@"Port was closed on a readData operation...not good!");
+        [connectButton setEnabled:YES];
+        [serialSelectMenu setEnabled:YES];
+        [tallyGreenLight setHidden:YES];
+        [tallyRedLight setHidden:NO];
+    }
+    
+}
+
+- (void)listDevices
+{
+     //get an port enumerator
+    NSEnumerator *enumerator = [AMSerialPortList portEnumerator];
+    AMSerialPort *aPort;
+    [serialSelectMenu removeAllItems];
+    
+    while (aPort = [enumerator nextObject]) {
+        [serialSelectMenu addItemWithTitle:[aPort bsdPath]];
+    }
+}
+
+- (IBAction)send:(id)sender Channel:(int)channel {
+
+
+    if([port isOpen]) {
+        if (channel>0 && channel<7) {
+            
+            if (channel == [[tallyA selectedItem] tag]) {NSLog(@"A");[port writeString:@"A" usingEncoding:NSUTF8StringEncoding error:NULL];}
+            else if (channel == [[tallyB selectedItem] tag]) {NSLog(@"B");[port writeString:@"B" usingEncoding:NSUTF8StringEncoding error:NULL];}
+            else if (channel == [[tallyC selectedItem] tag]) {NSLog(@"C");[port writeString:@"C" usingEncoding:NSUTF8StringEncoding error:NULL];}
+            else if (channel == [[tallyD selectedItem] tag]) {NSLog(@"D");[port writeString:@"D" usingEncoding:NSUTF8StringEncoding error:NULL];}
+            else {[port writeString:@"0" usingEncoding:NSUTF8StringEncoding error:NULL];};
+
+        } else {
+            [port writeString:@"0" usingEncoding:NSUTF8StringEncoding error:NULL];
+        }
+    }
+}
+
+- (AMSerialPort *)port
+{
+    return port;
+}
+
+- (void)setPort:(AMSerialPort *)newPort
+{
+    id old = nil;
+    
+    if (newPort != port) {
+        old = port;
+        port = [newPort retain];
+        [old release];
+    }
+}
+
+
+# pragma mark Notifications
+
+- (void)didAddPorts:(NSNotification *)theNotification
+{
+    NSLog(@"A port was added");
+    [self listDevices];
+}
+
+- (void)didRemovePorts:(NSNotification *)theNotification
+{
+    NSLog(@"A port was removed");
+    [self listDevices];
+}
+
+
+
 
 @end
