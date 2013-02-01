@@ -1,5 +1,5 @@
 /* -LICENSE-START-
-** Copyright (c) 2011 Blackmagic Design
+** Copyright (c) 2012 Blackmagic Design
 **
 ** Permission is hereby granted, free of charge, to any person or organization
 ** obtaining a copy of the software and accompanying documentation covered by
@@ -28,6 +28,15 @@
 #ifndef BMD_BMDSWITCHERAPI_H
 #define BMD_BMDSWITCHERAPI_H
 
+
+#ifndef BMD_CONST
+    #if defined(_MSC_VER)
+        #define BMD_CONST __declspec(selectany) static const
+    #else
+        #define BMD_CONST static const
+    #endif
+#endif
+
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFPlugInCOM.h>
 #include <stdint.h>
@@ -35,33 +44,101 @@
 // Type Declarations
 
 typedef int64_t BMDSwitcherInputId;
+typedef struct { uint8_t data[16]; } BMDSwitcherHash;
+typedef int64_t BMDSwitcherAudioInputId;
 
 // Interface ID Declarations
 
-#define IID_IBMDSwitcherMixEffectBlockCallback           /* 96010829-2029-4DA3-A34B-70368605ABAA */ (REFIID){0x96,0x01,0x08,0x29,0x20,0x29,0x4D,0xA3,0xA3,0x4B,0x70,0x36,0x86,0x05,0xAB,0xAA}
-#define IID_IBMDSwitcherMixEffectBlock                   /* 11974D55-45E0-49D8-AE06-EEF4D5F81DF6 */ (REFIID){0x11,0x97,0x4D,0x55,0x45,0xE0,0x49,0xD8,0xAE,0x06,0xEE,0xF4,0xD5,0xF8,0x1D,0xF6}
-#define IID_IBMDSwitcherInputCallback                    /* 8E583D89-0BAF-4447-AB8C-6A12CD8724CB */ (REFIID){0x8E,0x58,0x3D,0x89,0x0B,0xAF,0x44,0x47,0xAB,0x8C,0x6A,0x12,0xCD,0x87,0x24,0xCB}
-#define IID_IBMDSwitcherInput                            /* 66F3D466-8C8C-4DB4-B313-8DD2EC665DBB */ (REFIID){0x66,0xF3,0xD4,0x66,0x8C,0x8C,0x4D,0xB4,0xB3,0x13,0x8D,0xD2,0xEC,0x66,0x5D,0xBB}
-#define IID_IBMDSwitcherInputIterator                    /* 92AB7A73-C6F6-47FC-92A7-C8EEADC9EAAC */ (REFIID){0x92,0xAB,0x7A,0x73,0xC6,0xF6,0x47,0xFC,0x92,0xA7,0xC8,0xEE,0xAD,0xC9,0xEA,0xAC}
-#define IID_IBMDSwitcherMixEffectBlockIterator           /* 930BDE3B-4A78-43D0-8FD3-6E82ABA0E117 */ (REFIID){0x93,0x0B,0xDE,0x3B,0x4A,0x78,0x43,0xD0,0x8F,0xD3,0x6E,0x82,0xAB,0xA0,0xE1,0x17}
-#define IID_IBMDSwitcherCallback                         /* 6C6E4441-9421-4729-9951-988659E3A44A */ (REFIID){0x6C,0x6E,0x44,0x41,0x94,0x21,0x47,0x29,0x99,0x51,0x98,0x86,0x59,0xE3,0xA4,0x4A}
-#define IID_IBMDSwitcher                                 /* 1E8701D0-258F-43ED-9EDC-434FD16E922D */ (REFIID){0x1E,0x87,0x01,0xD0,0x25,0x8F,0x43,0xED,0x9E,0xDC,0x43,0x4F,0xD1,0x6E,0x92,0x2D}
-#define IID_IBMDSwitcherDiscovery                        /* A676047A-D3A4-44B1-B8B5-31D7289D266A */ (REFIID){0xA6,0x76,0x04,0x7A,0xD3,0xA4,0x44,0xB1,0xB8,0xB5,0x31,0xD7,0x28,0x9D,0x26,0x6A}
+BMD_CONST REFIID IID_IBMDSwitcherAudioMonitorOutputCallback       = /* CB5EFB16-0474-4FAA-B071-17FA0DADD19F */ {0xCB,0x5E,0xFB,0x16,0x04,0x74,0x4F,0xAA,0xB0,0x71,0x17,0xFA,0x0D,0xAD,0xD1,0x9F};
+BMD_CONST REFIID IID_IBMDSwitcherAudioMonitorOutput               = /* 21E041C3-6C69-4A95-A6CC-AE7A57257407 */ {0x21,0xE0,0x41,0xC3,0x6C,0x69,0x4A,0x95,0xA6,0xCC,0xAE,0x7A,0x57,0x25,0x74,0x07};
+BMD_CONST REFIID IID_IBMDSwitcherAudioInputCallback               = /* 26E05D77-EFB9-4253-86D8-2F1E82E462F6 */ {0x26,0xE0,0x5D,0x77,0xEF,0xB9,0x42,0x53,0x86,0xD8,0x2F,0x1E,0x82,0xE4,0x62,0xF6};
+BMD_CONST REFIID IID_IBMDSwitcherAudioInput                       = /* 87B99021-FA29-4720-9526-4512CA553858 */ {0x87,0xB9,0x90,0x21,0xFA,0x29,0x47,0x20,0x95,0x26,0x45,0x12,0xCA,0x55,0x38,0x58};
+BMD_CONST REFIID IID_IBMDSwitcherAudioMixerCallback               = /* A203DA24-9910-450C-AA6A-9AA05C5C856E */ {0xA2,0x03,0xDA,0x24,0x99,0x10,0x45,0x0C,0xAA,0x6A,0x9A,0xA0,0x5C,0x5C,0x85,0x6E};
+BMD_CONST REFIID IID_IBMDSwitcherAudioMixer                       = /* 58739C15-063E-4FC1-B59B-CC3D9A012D99 */ {0x58,0x73,0x9C,0x15,0x06,0x3E,0x4F,0xC1,0xB5,0x9B,0xCC,0x3D,0x9A,0x01,0x2D,0x99};
+BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParametersCallback        = /* AB31E347-5177-4595-8E52-650BF9B08B7F */ {0xAB,0x31,0xE3,0x47,0x51,0x77,0x45,0x95,0x8E,0x52,0x65,0x0B,0xF9,0xB0,0x8B,0x7F};
+BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParameters                = /* EE88B575-6044-4372-B1D6-9733AF342DCA */ {0xEE,0x88,0xB5,0x75,0x60,0x44,0x43,0x72,0xB1,0xD6,0x97,0x33,0xAF,0x34,0x2D,0xCA};
+BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParametersCallback      = /* FE3F97EC-5F2D-4E47-AA7A-38962F9CB3CE */ {0xFE,0x3F,0x97,0xEC,0x5F,0x2D,0x4E,0x47,0xAA,0x7A,0x38,0x96,0x2F,0x9C,0xB3,0xCE};
+BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParameters              = /* 07658026-6AE3-4694-B814-2AB7EBBE7D1C */ {0x07,0x65,0x80,0x26,0x6A,0xE3,0x46,0x94,0xB8,0x14,0x2A,0xB7,0xEB,0xBE,0x7D,0x1C};
+BMD_CONST REFIID IID_IBMDSwitcherKeyPatternParametersCallback     = /* FBF24499-06EB-4C54-BE92-21C403C1093C */ {0xFB,0xF2,0x44,0x99,0x06,0xEB,0x4C,0x54,0xBE,0x92,0x21,0xC4,0x03,0xC1,0x09,0x3C};
+BMD_CONST REFIID IID_IBMDSwitcherKeyPatternParameters             = /* 267EDB96-5921-4BA5-88BA-C83123E153D2 */ {0x26,0x7E,0xDB,0x96,0x59,0x21,0x4B,0xA5,0x88,0xBA,0xC8,0x31,0x23,0xE1,0x53,0xD2};
+BMD_CONST REFIID IID_IBMDSwitcherKeyFlyParametersCallback         = /* A9D6543D-0447-4048-B5AD-806622B9BF1A */ {0xA9,0xD6,0x54,0x3D,0x04,0x47,0x40,0x48,0xB5,0xAD,0x80,0x66,0x22,0xB9,0xBF,0x1A};
+BMD_CONST REFIID IID_IBMDSwitcherKeyFlyParameters                 = /* C522E970-DDB1-4027-B492-F52C1DFA5D09 */ {0xC5,0x22,0xE9,0x70,0xDD,0xB1,0x40,0x27,0xB4,0x92,0xF5,0x2C,0x1D,0xFA,0x5D,0x09};
+BMD_CONST REFIID IID_IBMDSwitcherKeyDVEParametersCallback         = /* E437655F-32BB-4652-BA77-4083B435566A */ {0xE4,0x37,0x65,0x5F,0x32,0xBB,0x46,0x52,0xBA,0x77,0x40,0x83,0xB4,0x35,0x56,0x6A};
+BMD_CONST REFIID IID_IBMDSwitcherKeyDVEParameters                 = /* 92AA5433-70FB-423D-9435-646D171C9D82 */ {0x92,0xAA,0x54,0x33,0x70,0xFB,0x42,0x3D,0x94,0x35,0x64,0x6D,0x17,0x1C,0x9D,0x82};
+BMD_CONST REFIID IID_IBMDSwitcherKeyCallback                      = /* 1972E4DF-1D5F-4C4E-A79B-E5A6E8CE1511 */ {0x19,0x72,0xE4,0xDF,0x1D,0x5F,0x4C,0x4E,0xA7,0x9B,0xE5,0xA6,0xE8,0xCE,0x15,0x11};
+BMD_CONST REFIID IID_IBMDSwitcherKey                              = /* 918E234D-67C1-452F-80A0-DB39FE6BCB21 */ {0x91,0x8E,0x23,0x4D,0x67,0xC1,0x45,0x2F,0x80,0xA0,0xDB,0x39,0xFE,0x6B,0xCB,0x21};
+BMD_CONST REFIID IID_IBMDSwitcherMediaPlayerCallback              = /* 3A82C121-18FA-469E-AE9A-73255356CA5B */ {0x3A,0x82,0xC1,0x21,0x18,0xFA,0x46,0x9E,0xAE,0x9A,0x73,0x25,0x53,0x56,0xCA,0x5B};
+BMD_CONST REFIID IID_IBMDSwitcherMediaPlayer                      = /* B5240E1F-CE0A-4C38-9FAB-D7FAC227205A */ {0xB5,0x24,0x0E,0x1F,0xCE,0x0A,0x4C,0x38,0x9F,0xAB,0xD7,0xFA,0xC2,0x27,0x20,0x5A};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionMixParametersCallback  = /* FE9730BB-F60B-46DF-B182-2992FFC884DE */ {0xFE,0x97,0x30,0xBB,0xF6,0x0B,0x46,0xDF,0xB1,0x82,0x29,0x92,0xFF,0xC8,0x84,0xDE};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionMixParameters          = /* 4C5D18C9-0955-4525-9947-527EA0679140 */ {0x4C,0x5D,0x18,0xC9,0x09,0x55,0x45,0x25,0x99,0x47,0x52,0x7E,0xA0,0x67,0x91,0x40};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionDipParametersCallback  = /* 410BE711-DB1A-48D1-93E7-382A0B1781B5 */ {0x41,0x0B,0xE7,0x11,0xDB,0x1A,0x48,0xD1,0x93,0xE7,0x38,0x2A,0x0B,0x17,0x81,0xB5};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionDipParameters          = /* DACC2FF3-6B54-4459-AAA6-2B1EA2D6887A */ {0xDA,0xCC,0x2F,0xF3,0x6B,0x54,0x44,0x59,0xAA,0xA6,0x2B,0x1E,0xA2,0xD6,0x88,0x7A};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionWipeParametersCallback = /* 0FC4E095-DF7A-4128-933A-AAE4B7FD6119 */ {0x0F,0xC4,0xE0,0x95,0xDF,0x7A,0x41,0x28,0x93,0x3A,0xAA,0xE4,0xB7,0xFD,0x61,0x19};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionWipeParameters         = /* FAC84D37-11A2-4152-8E5E-D9EB0DC48619 */ {0xFA,0xC8,0x4D,0x37,0x11,0xA2,0x41,0x52,0x8E,0x5E,0xD9,0xEB,0x0D,0xC4,0x86,0x19};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionDVEParametersCallback  = /* 6535115F-B64C-4512-BF5A-12969253E2F9 */ {0x65,0x35,0x11,0x5F,0xB6,0x4C,0x45,0x12,0xBF,0x5A,0x12,0x96,0x92,0x53,0xE2,0xF9};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionDVEParameters          = /* 31CA3097-D178-4398-B041-059C1312F129 */ {0x31,0xCA,0x30,0x97,0xD1,0x78,0x43,0x98,0xB0,0x41,0x05,0x9C,0x13,0x12,0xF1,0x29};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionStingerParametersCallback = /* 9A8B3FB6-DD56-4DFF-AEB3-2C8A26585389 */ {0x9A,0x8B,0x3F,0xB6,0xDD,0x56,0x4D,0xFF,0xAE,0xB3,0x2C,0x8A,0x26,0x58,0x53,0x89};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionStingerParameters      = /* 0F449A50-4083-49E8-BBF5-C3D95BFA1908 */ {0x0F,0x44,0x9A,0x50,0x40,0x83,0x49,0xE8,0xBB,0xF5,0xC3,0xD9,0x5B,0xFA,0x19,0x08};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionParametersCallback     = /* DED1876A-38E3-418E-8044-F3C126C626E7 */ {0xDE,0xD1,0x87,0x6A,0x38,0xE3,0x41,0x8E,0x80,0x44,0xF3,0xC1,0x26,0xC6,0x26,0xE7};
+BMD_CONST REFIID IID_IBMDSwitcherTransitionParameters             = /* 83755CE5-748B-4E49-A856-AC95B8CCD215 */ {0x83,0x75,0x5C,0xE5,0x74,0x8B,0x4E,0x49,0xA8,0x56,0xAC,0x95,0xB8,0xCC,0xD2,0x15};
+BMD_CONST REFIID IID_IBMDSwitcherMixEffectBlockCallback           = /* 96010829-2029-4DA3-A34B-70368605ABAA */ {0x96,0x01,0x08,0x29,0x20,0x29,0x4D,0xA3,0xA3,0x4B,0x70,0x36,0x86,0x05,0xAB,0xAA};
+BMD_CONST REFIID IID_IBMDSwitcherMixEffectBlock                   = /* 11974D55-45E0-49D8-AE06-EEF4D5F81DF6 */ {0x11,0x97,0x4D,0x55,0x45,0xE0,0x49,0xD8,0xAE,0x06,0xEE,0xF4,0xD5,0xF8,0x1D,0xF6};
+BMD_CONST REFIID IID_IBMDSwitcherInputCallback                    = /* 8E583D89-0BAF-4447-AB8C-6A12CD8724CB */ {0x8E,0x58,0x3D,0x89,0x0B,0xAF,0x44,0x47,0xAB,0x8C,0x6A,0x12,0xCD,0x87,0x24,0xCB};
+BMD_CONST REFIID IID_IBMDSwitcherInput                            = /* 66F3D466-8C8C-4DB4-B313-8DD2EC665DBB */ {0x66,0xF3,0xD4,0x66,0x8C,0x8C,0x4D,0xB4,0xB3,0x13,0x8D,0xD2,0xEC,0x66,0x5D,0xBB};
+BMD_CONST REFIID IID_IBMDSwitcherInputColorCallback               = /* BAE02C95-9394-439C-BE18-CEF0C0784EC3 */ {0xBA,0xE0,0x2C,0x95,0x93,0x94,0x43,0x9C,0xBE,0x18,0xCE,0xF0,0xC0,0x78,0x4E,0xC3};
+BMD_CONST REFIID IID_IBMDSwitcherInputColor                       = /* A0AF18D9-CBE6-49F3-B548-A44E856054D1 */ {0xA0,0xAF,0x18,0xD9,0xCB,0xE6,0x49,0xF3,0xB5,0x48,0xA4,0x4E,0x85,0x60,0x54,0xD1};
+BMD_CONST REFIID IID_IBMDSwitcherInputAuxCallback                 = /* 5AD1FF91-143F-49E9-9964-1B9FAF9A712A */ {0x5A,0xD1,0xFF,0x91,0x14,0x3F,0x49,0xE9,0x99,0x64,0x1B,0x9F,0xAF,0x9A,0x71,0x2A};
+BMD_CONST REFIID IID_IBMDSwitcherInputAux                         = /* 52C745A8-89B1-449A-A149-C43F5108DAE7 */ {0x52,0xC7,0x45,0xA8,0x89,0xB1,0x44,0x9A,0xA1,0x49,0xC4,0x3F,0x51,0x08,0xDA,0xE7};
+BMD_CONST REFIID IID_IBMDSwitcherSuperSourceBoxCallback           = /* 7F667AF6-9B4E-4CDE-9F2F-2DF4505BF877 */ {0x7F,0x66,0x7A,0xF6,0x9B,0x4E,0x4C,0xDE,0x9F,0x2F,0x2D,0xF4,0x50,0x5B,0xF8,0x77};
+BMD_CONST REFIID IID_IBMDSwitcherSuperSourceBox                   = /* 137028E5-87B2-407E-846F-283B18C82CE9 */ {0x13,0x70,0x28,0xE5,0x87,0xB2,0x40,0x7E,0x84,0x6F,0x28,0x3B,0x18,0xC8,0x2C,0xE9};
+BMD_CONST REFIID IID_IBMDSwitcherInputSuperSourceCallback         = /* 6B02A84C-0085-4593-973A-5E458079BD16 */ {0x6B,0x02,0xA8,0x4C,0x00,0x85,0x45,0x93,0x97,0x3A,0x5E,0x45,0x80,0x79,0xBD,0x16};
+BMD_CONST REFIID IID_IBMDSwitcherInputSuperSource                 = /* 327DBE95-F003-409E-8FEB-D9C624C439BC */ {0x32,0x7D,0xBE,0x95,0xF0,0x03,0x40,0x9E,0x8F,0xEB,0xD9,0xC6,0x24,0xC4,0x39,0xBC};
+BMD_CONST REFIID IID_IBMDSwitcherMultiViewCallback                = /* 345CE414-0BF1-46F9-97AC-FB1A47499005 */ {0x34,0x5C,0xE4,0x14,0x0B,0xF1,0x46,0xF9,0x97,0xAC,0xFB,0x1A,0x47,0x49,0x90,0x05};
+BMD_CONST REFIID IID_IBMDSwitcherMultiView                        = /* 231AA55F-EC1D-4FFF-ACE7-3806BA7894BB */ {0x23,0x1A,0xA5,0x5F,0xEC,0x1D,0x4F,0xFF,0xAC,0xE7,0x38,0x06,0xBA,0x78,0x94,0xBB};
+BMD_CONST REFIID IID_IBMDSwitcherDownstreamKeyCallback            = /* 0C7D4DE3-E7D1-4062-86B4-9F82F7BB346D */ {0x0C,0x7D,0x4D,0xE3,0xE7,0xD1,0x40,0x62,0x86,0xB4,0x9F,0x82,0xF7,0xBB,0x34,0x6D};
+BMD_CONST REFIID IID_IBMDSwitcherDownstreamKey                    = /* 6D10D51E-71FA-4031-BC13-95BE3653D0E6 */ {0x6D,0x10,0xD5,0x1E,0x71,0xFA,0x40,0x31,0xBC,0x13,0x95,0xBE,0x36,0x53,0xD0,0xE6};
+BMD_CONST REFIID IID_IBMDSwitcherInputIterator                    = /* 92AB7A73-C6F6-47FC-92A7-C8EEADC9EAAC */ {0x92,0xAB,0x7A,0x73,0xC6,0xF6,0x47,0xFC,0x92,0xA7,0xC8,0xEE,0xAD,0xC9,0xEA,0xAC};
+BMD_CONST REFIID IID_IBMDSwitcherSuperSourceBoxIterator           = /* 96153CDA-C894-42EA-BA90-C387018CC334 */ {0x96,0x15,0x3C,0xDA,0xC8,0x94,0x42,0xEA,0xBA,0x90,0xC3,0x87,0x01,0x8C,0xC3,0x34};
+BMD_CONST REFIID IID_IBMDSwitcherMixEffectBlockIterator           = /* 930BDE3B-4A78-43D0-8FD3-6E82ABA0E117 */ {0x93,0x0B,0xDE,0x3B,0x4A,0x78,0x43,0xD0,0x8F,0xD3,0x6E,0x82,0xAB,0xA0,0xE1,0x17};
+BMD_CONST REFIID IID_IBMDSwitcherDownstreamKeyIterator            = /* FD063042-B7FD-4819-BD1E-809DC380DFE9 */ {0xFD,0x06,0x30,0x42,0xB7,0xFD,0x48,0x19,0xBD,0x1E,0x80,0x9D,0xC3,0x80,0xDF,0xE9};
+BMD_CONST REFIID IID_IBMDSwitcherKeyIterator                      = /* EFD545AE-2879-412B-84B7-17A04E4707ED */ {0xEF,0xD5,0x45,0xAE,0x28,0x79,0x41,0x2B,0x84,0xB7,0x17,0xA0,0x4E,0x47,0x07,0xED};
+BMD_CONST REFIID IID_IBMDSwitcherMediaPlayerIterator              = /* E910816F-59CB-4224-A77F-06DE3D232275 */ {0xE9,0x10,0x81,0x6F,0x59,0xCB,0x42,0x24,0xA7,0x7F,0x06,0xDE,0x3D,0x23,0x22,0x75};
+BMD_CONST REFIID IID_IBMDSwitcherMultiViewIterator                = /* 51FED981-C2AD-45A2-8618-61429CEED48D */ {0x51,0xFE,0xD9,0x81,0xC2,0xAD,0x45,0xA2,0x86,0x18,0x61,0x42,0x9C,0xEE,0xD4,0x8D};
+BMD_CONST REFIID IID_IBMDSwitcherAudioMonitorOutputIterator       = /* C76BAC6A-DFEE-4F2F-B161-226B481D556A */ {0xC7,0x6B,0xAC,0x6A,0xDF,0xEE,0x4F,0x2F,0xB1,0x61,0x22,0x6B,0x48,0x1D,0x55,0x6A};
+BMD_CONST REFIID IID_IBMDSwitcherAudioInputIterator               = /* 0194C65A-3EDA-4853-A6D3-D59CD12B3C0A */ {0x01,0x94,0xC6,0x5A,0x3E,0xDA,0x48,0x53,0xA6,0xD3,0xD5,0x9C,0xD1,0x2B,0x3C,0x0A};
+BMD_CONST REFIID IID_IBMDSwitcherCallback                         = /* 6C6E4441-9421-4729-9951-988659E3A44A */ {0x6C,0x6E,0x44,0x41,0x94,0x21,0x47,0x29,0x99,0x51,0x98,0x86,0x59,0xE3,0xA4,0x4A};
+BMD_CONST REFIID IID_IBMDSwitcher                                 = /* 1E8701D0-258F-43ED-9EDC-434FD16E922D */ {0x1E,0x87,0x01,0xD0,0x25,0x8F,0x43,0xED,0x9E,0xDC,0x43,0x4F,0xD1,0x6E,0x92,0x2D};
+BMD_CONST REFIID IID_IBMDSwitcherDiscovery                        = /* A676047A-D3A4-44B1-B8B5-31D7289D266A */ {0xA6,0x76,0x04,0x7A,0xD3,0xA4,0x44,0xB1,0xB8,0xB5,0x31,0xD7,0x28,0x9D,0x26,0x6A};
+BMD_CONST REFIID IID_IBMDSwitcherFrame                            = /* 35A1F6A6-D317-4F89-A565-0F0BD414CF77 */ {0x35,0xA1,0xF6,0xA6,0xD3,0x17,0x4F,0x89,0xA5,0x65,0x0F,0x0B,0xD4,0x14,0xCF,0x77};
+BMD_CONST REFIID IID_IBMDSwitcherAudio                            = /* E89BD25E-FD04-4FBE-A124-CCAF5ADBE5B2 */ {0xE8,0x9B,0xD2,0x5E,0xFD,0x04,0x4F,0xBE,0xA1,0x24,0xCC,0xAF,0x5A,0xDB,0xE5,0xB2};
+BMD_CONST REFIID IID_IBMDSwitcherLockCallback                     = /* 56663D7A-85A8-4DA0-9B13-2A52D3C7740C */ {0x56,0x66,0x3D,0x7A,0x85,0xA8,0x4D,0xA0,0x9B,0x13,0x2A,0x52,0xD3,0xC7,0x74,0x0C};
+BMD_CONST REFIID IID_IBMDSwitcherStillsCallback                   = /* 7AF82DC6-9A43-4CD2-9712-585E6BA159BA */ {0x7A,0xF8,0x2D,0xC6,0x9A,0x43,0x4C,0xD2,0x97,0x12,0x58,0x5E,0x6B,0xA1,0x59,0xBA};
+BMD_CONST REFIID IID_IBMDSwitcherStills                           = /* AA26D656-2400-407B-8D3C-796B506F99DB */ {0xAA,0x26,0xD6,0x56,0x24,0x00,0x40,0x7B,0x8D,0x3C,0x79,0x6B,0x50,0x6F,0x99,0xDB};
+BMD_CONST REFIID IID_IBMDSwitcherClipCallback                     = /* 407117B4-B6A8-46D2-9911-43254171B1B7 */ {0x40,0x71,0x17,0xB4,0xB6,0xA8,0x46,0xD2,0x99,0x11,0x43,0x25,0x41,0x71,0xB1,0xB7};
+BMD_CONST REFIID IID_IBMDSwitcherClip                             = /* 3CC10CA1-3E13-4C69-9FFC-A37A62B05869 */ {0x3C,0xC1,0x0C,0xA1,0x3E,0x13,0x4C,0x69,0x9F,0xFC,0xA3,0x7A,0x62,0xB0,0x58,0x69};
+BMD_CONST REFIID IID_IBMDSwitcherMediaPoolCallback                = /* B8617A16-1B17-4FD6-93BF-664FA71F2A50 */ {0xB8,0x61,0x7A,0x16,0x1B,0x17,0x4F,0xD6,0x93,0xBF,0x66,0x4F,0xA7,0x1F,0x2A,0x50};
+BMD_CONST REFIID IID_IBMDSwitcherMediaPool                        = /* D9B2A1E7-023E-42EC-96C9-5FFE28CE8399 */ {0xD9,0xB2,0xA1,0xE7,0x02,0x3E,0x42,0xEC,0x96,0xC9,0x5F,0xFE,0x28,0xCE,0x83,0x99};
 
 /* Enum BMDSwitcherPropertyId - IBMDSwitcher Property ID */
 
 typedef uint32_t BMDSwitcherPropertyId;
 enum _BMDSwitcherPropertyId {
-    bmdSwitcherPropertyIdProductName                             = 'pdnm'	// String type, Get only
+    bmdSwitcherPropertyIdProductName                             = 'pdnm',	// String type, Get only
+    bmdSwitcherPropertyIdVideoMode                               = 'vdmd',	// Int type (BMDSwitcherVideoMode), Get/Set
+    bmdSwitcherPropertyIdDownConvertMode                         = 'dcmd'	// Int type (BMDSwitcherDownConverterMode), Get/Set
 };
 
 /* Enum BMDSwitcherInputPropertyId - IBMDSwitcherInput Property ID */
 
 typedef uint32_t BMDSwitcherInputPropertyId;
 enum _BMDSwitcherInputPropertyId {
+    bmdSwitcherInputPropertyIdIsProgramTallied                   = 'ipgt',	// Flag type, Get only
+    bmdSwitcherInputPropertyIdIsPreviewTallied                   = 'iprt',	// Flag type, Get only
+    bmdSwitcherInputPropertyIdAvailableExternalPortTypes         = 'aept',	// Int type (BMDSwitcherExternalPortType), Get only
+    bmdSwitcherInputPropertyIdCurrentExternalPortType            = 'cept',	// Int type (BMDSwitcherExternalPortType), Get/Set
     bmdSwitcherInputPropertyIdPortType                           = 'prtp',	// Int type (BMDSwitcherPortType), Get only
     bmdSwitcherInputPropertyIdInputAvailability                  = 'avlb',	// Int type (BMDSwitcherInputAvailability), Get only
-    bmdSwitcherInputPropertyIdShortName                          = 'shnm',	// String type, Get only
+    bmdSwitcherInputPropertyIdShortName                          = 'shnm',	// String type, Get/Set
     bmdSwitcherInputPropertyIdLongName                           = 'lgnm'	// String type, Get only
 };
 
@@ -80,12 +157,178 @@ enum _BMDSwitcherPortType {
     bmdSwitcherPortTypeAuxOutput                                 = 'auxo'
 };
 
+/* Enum BMDSwitcherExternalPortType - IBMDSwitcherInput External Port Types */
+
+typedef uint32_t BMDSwitcherExternalPortType;
+enum _BMDSwitcherExternalPortType {
+    bmdSwitcherExternalPortTypeSDI                               = 0x00000001,
+    bmdSwitcherExternalPortTypeHDMI                              = 0x00000002,
+    bmdSwitcherExternalPortTypeComponent                         = 0x00000004,
+    bmdSwitcherExternalPortTypeComposite                         = 0x00000008,
+    bmdSwitcherExternalPortTypeSVideo                            = 0x00000010,
+    bmdSwitcherExternalPortTypeInternal                          = 0x00000020
+};
+
 /* Enum BMDSwitcherInputAvailability - IBMDSwitcherInput availablity bits */
 
 typedef uint32_t BMDSwitcherInputAvailability;
 enum _BMDSwitcherInputAvailability {
     bmdSwitcherInputAvailabilityMixEffectBlock0                  = 0x00000001,
-    bmdSwitcherInputAvailabilityMixEffectBlock1                  = 0x00000002
+    bmdSwitcherInputAvailabilityMixEffectBlock1                  = 0x00000002,
+    bmdSwitcherInputAvailabilityAuxOutputs                       = 0x00000004,
+    bmdSwitcherInputAvailabilityMultiView                        = 0x00000008,
+    bmdSwitcherInputAvailabilitySuperSourceArt                   = 0x00000010,
+    bmdSwitcherInputAvailabilitySuperSourceBox                   = 0x00000020
+};
+
+/* Enum BMDSwitcherInputColorEventType - Used in IBMDSwitcherInputColorCallback */
+
+typedef uint32_t BMDSwitcherInputColorEventType;
+enum _BMDSwitcherInputColorEventType {
+    bmdSwitcherInputColorEventTypeHueChanged                     = 'HueC',
+    bmdSwitcherInputColorEventTypeSaturationChanged              = 'SatC',
+    bmdSwitcherInputColorEventTypeLumaChanged                    = 'LumC'
+};
+
+/* Enum BMDSwitcherInputAuxEventType - Used in IBMDSwitcherInputAuxCallback */
+
+typedef uint32_t BMDSwitcherInputAuxEventType;
+enum _BMDSwitcherInputAuxEventType {
+    bmdSwitcherInputAuxEventTypeInputSourceChanged               = 'ipsC'
+};
+
+/* Enum BMDSwitcherSuperSourceBoxEventType - Used in IBMDSwitcherSuperSourceBoxCallback */
+
+typedef uint32_t BMDSwitcherSuperSourceBoxEventType;
+enum _BMDSwitcherSuperSourceBoxEventType {
+    bmdSwitcherSuperSourceBoxEventTypeEnabledChanged             = 'enbC',
+    bmdSwitcherSuperSourceBoxEventTypeInputSourceChanged         = 'ipsC',
+    bmdSwitcherSuperSourceBoxEventTypePositionXChanged           = 'psxC',
+    bmdSwitcherSuperSourceBoxEventTypePositionYChanged           = 'psyC',
+    bmdSwitcherSuperSourceBoxEventTypeSizeChanged                = 'sizC',
+    bmdSwitcherSuperSourceBoxEventTypeCroppedChanged             = 'crpC',
+    bmdSwitcherSuperSourceBoxEventTypeCropTopChanged             = 'cptC',
+    bmdSwitcherSuperSourceBoxEventTypeCropBottomChanged          = 'cpbC',
+    bmdSwitcherSuperSourceBoxEventTypeCropLeftChanged            = 'cplC',
+    bmdSwitcherSuperSourceBoxEventTypeCropRightChanged           = 'cprC'
+};
+
+/* Enum BMDSwitcherInputSuperSourceEventType - Used in IBMDSwitcherInputSuperSourceCallback */
+
+typedef uint32_t BMDSwitcherInputSuperSourceEventType;
+enum _BMDSwitcherInputSuperSourceEventType {
+    bmdSwitcherInputSuperSourceEventTypeInputFillChanged         = 'ipfC',
+    bmdSwitcherInputSuperSourceEventTypeInputCutChanged          = 'ipcC',
+    bmdSwitcherInputSuperSourceEventTypeArtOptionChanged         = 'atoC',
+    bmdSwitcherInputSuperSourceEventTypePreMultipliedChanged     = 'shpC',
+    bmdSwitcherInputSuperSourceEventTypeClipChanged              = 'clpC',
+    bmdSwitcherInputSuperSourceEventTypeGainChanged              = 'ganC',
+    bmdSwitcherInputSuperSourceEventTypeInverseChanged           = 'invC',
+    bmdSwitcherInputSuperSourceEventTypeBorderEnabledChanged     = 'enbC',
+    bmdSwitcherInputSuperSourceEventTypeBorderBevelChanged       = 'bvlC',
+    bmdSwitcherInputSuperSourceEventTypeBorderWidthOutChanged    = 'wdoC',
+    bmdSwitcherInputSuperSourceEventTypeBorderWidthInChanged     = 'wdiC',
+    bmdSwitcherInputSuperSourceEventTypeBorderSoftnessOutChanged = 'sfoC',
+    bmdSwitcherInputSuperSourceEventTypeBorderSoftnessInChanged  = 'sfiC',
+    bmdSwitcherInputSuperSourceEventTypeBorderBevelSoftnessChanged = 'bvsC',
+    bmdSwitcherInputSuperSourceEventTypeBorderBevelPositionChanged = 'bvpC',
+    bmdSwitcherInputSuperSourceEventTypeBorderHueChanged         = 'hueC',
+    bmdSwitcherInputSuperSourceEventTypeBorderSaturationChanged  = 'satC',
+    bmdSwitcherInputSuperSourceEventTypeBorderLumaChanged        = 'lumC',
+    bmdSwitcherInputSuperSourceEventTypeBorderLightSourceDirectionChanged = 'lsdC',
+    bmdSwitcherInputSuperSourceEventTypeBorderLightSourceAltitudeChanged = 'lsaC'
+};
+
+/* Enum BMDSwitcherBorderBevelOption - Border Bevel Option for DVE Key and SuperSource Box */
+
+typedef uint32_t BMDSwitcherBorderBevelOption;
+enum _BMDSwitcherBorderBevelOption {
+    bmdSwitcherBorderBevelOptionNone                             = 'none',
+    bmdSwitcherBorderBevelOptionInOut                            = 'inot',
+    bmdSwitcherBorderBevelOptionIn                               = 'inin',
+    bmdSwitcherBorderBevelOptionOut                              = 'otot'
+};
+
+/* Enum BMDSwitcherTransitionMixParametersEventType - Used in IBMDSwitcherTransitionMixParametersCallback */
+
+typedef uint32_t BMDSwitcherTransitionMixParametersEventType;
+enum _BMDSwitcherTransitionMixParametersEventType {
+    bmdSwitcherTransitionMixParametersEventTypeRateChanged       = 'rteC'
+};
+
+/* Enum BMDSwitcherTransitionDipParametersEventType - Used in IBMDSwitcherTransitionDipParametersCallback */
+
+typedef uint32_t BMDSwitcherTransitionDipParametersEventType;
+enum _BMDSwitcherTransitionDipParametersEventType {
+    bmdSwitcherTransitionDipParametersEventTypeRateChanged       = 'rteC',
+    bmdSwitcherTransitionDipParametersEventTypeInputDipChanged   = 'ipdC'
+};
+
+/* Enum BMDSwitcherTransitionWipeParametersEventType - Used in IBMDSwitcherTransitionWipeParametersCallback */
+
+typedef uint32_t BMDSwitcherTransitionWipeParametersEventType;
+enum _BMDSwitcherTransitionWipeParametersEventType {
+    bmdSwitcherTransitionWipeParametersEventTypeRateChanged      = 'rteC',
+    bmdSwitcherTransitionWipeParametersEventTypePatternChanged   = 'patC',
+    bmdSwitcherTransitionWipeParametersEventTypeBorderSizeChanged = 'bdsC',
+    bmdSwitcherTransitionWipeParametersEventTypeInputBorderChanged = 'ipbC',
+    bmdSwitcherTransitionWipeParametersEventTypeSymmetryChanged  = 'symC',
+    bmdSwitcherTransitionWipeParametersEventTypeSoftnessChanged  = 'sftC',
+    bmdSwitcherTransitionWipeParametersEventTypeHorizontalOffsetChanged = 'hofC',
+    bmdSwitcherTransitionWipeParametersEventTypeVerticalOffsetChanged = 'vofC',
+    bmdSwitcherTransitionWipeParametersEventTypeReverseChanged   = 'revC',
+    bmdSwitcherTransitionWipeParametersEventTypeFlipFlopChanged  = 'ffpC'
+};
+
+/* Enum BMDSwitcherTransitionDVEParametersEventType - Used in IBMDSwitcherTransitionDVEParametersCallback */
+
+typedef uint32_t BMDSwitcherTransitionDVEParametersEventType;
+enum _BMDSwitcherTransitionDVEParametersEventType {
+    bmdSwitcherTransitionDVEParametersEventTypeRateChanged       = 'rteC',
+    bmdSwitcherTransitionDVEParametersEventTypeLogoRateChanged   = 'lrtC',
+    bmdSwitcherTransitionDVEParametersEventTypeReverseChanged    = 'revC',
+    bmdSwitcherTransitionDVEParametersEventTypeFlipFlopChanged   = 'ffpC',
+    bmdSwitcherTransitionDVEParametersEventTypeStyleChanged      = 'styC',
+    bmdSwitcherTransitionDVEParametersEventTypeInputFillChanged  = 'ipfC',
+    bmdSwitcherTransitionDVEParametersEventTypeInputCutChanged   = 'ipcC',
+    bmdSwitcherTransitionDVEParametersEventTypeEnableKeyChanged  = 'enkC',
+    bmdSwitcherTransitionDVEParametersEventTypePreMultipliedChanged = 'pmuC',
+    bmdSwitcherTransitionDVEParametersEventTypeClipChanged       = 'clpC',
+    bmdSwitcherTransitionDVEParametersEventTypeGainChanged       = 'gneC',
+    bmdSwitcherTransitionDVEParametersEventTypeInverseChanged    = 'invC'
+};
+
+/* Enum BMDSwitcherTransitionStingerParametersEventType - Used in IBMDSwitcherTransitionStingerParametersCallback */
+
+typedef uint32_t BMDSwitcherTransitionStingerParametersEventType;
+enum _BMDSwitcherTransitionStingerParametersEventType {
+    bmdSwitcherTransitionStingerParametersEventTypeSourceChanged = 'srcC',
+    bmdSwitcherTransitionStingerParametersEventTypePreMultipliedChanged = 'pmuC',
+    bmdSwitcherTransitionStingerParametersEventTypeClipChanged   = 'clpC',
+    bmdSwitcherTransitionStingerParametersEventTypeGainChanged   = 'gneC',
+    bmdSwitcherTransitionStingerParametersEventTypeInverseChanged = 'invC',
+    bmdSwitcherTransitionStingerParametersEventTypePrerollChanged = 'prlC',
+    bmdSwitcherTransitionStingerParametersEventTypeClipDurationChanged = 'cdrC',
+    bmdSwitcherTransitionStingerParametersEventTypeTriggerPointChanged = 'tgpC',
+    bmdSwitcherTransitionStingerParametersEventTypeMixRateChanged = 'mxrC'
+};
+
+/* Enum BMDSwitcherTransitionParametersEventType - Used in IBMDSwitcherTransitionParametersCallback */
+
+typedef uint32_t BMDSwitcherTransitionParametersEventType;
+enum _BMDSwitcherTransitionParametersEventType {
+    bmdSwitcherTransitionParametersEventTypeTransitionStyleChanged = 'styC',
+    bmdSwitcherTransitionParametersEventTypeNextTransitionStyleChanged = 'nstC',
+    bmdSwitcherTransitionParametersEventTypeTransitionSelectionChanged = 'sltC',
+    bmdSwitcherTransitionParametersEventTypeNextTransitionSelectionChanged = 'nslC'
+};
+
+/* Enum BMDSwitcherSuperSourceArtOption - SuperSource Art Option */
+
+typedef uint32_t BMDSwitcherSuperSourceArtOption;
+enum _BMDSwitcherSuperSourceArtOption {
+    bmdSwitcherSuperSourceArtOptionBackground                    = 'bkgd',
+    bmdSwitcherSuperSourceArtOptionForeground                    = 'frgd'
 };
 
 /* Enum BMDSwitcherMixEffectBlockPropertyId - IBMDSwitcherMixEffectBlock Property ID */
@@ -101,7 +344,357 @@ enum _BMDSwitcherMixEffectBlockPropertyId {
     bmdSwitcherMixEffectBlockPropertyIdInFadeToBlack             = 'iifb',	// Flag type, Get only
     bmdSwitcherMixEffectBlockPropertyIdPreviewLive               = 'pvlv',	// Flag type, Get only
     bmdSwitcherMixEffectBlockPropertyIdPreviewTransition         = 'pvts',	// Flag type, Get/Set
+    bmdSwitcherMixEffectBlockPropertyIdInputAvailabilityMask     = 'iavm',	// Int type (BMDSwitcherInputAvailability), Get only
     bmdSwitcherMixEffectBlockPropertyIdFadeToBlackRate           = 'ftbr'	// Int type, Get/Set
+};
+
+/* Enum BMDSwitcherAudioMonitorOutputEventType - Used in IBMDSwitcherAudioMonitorOutputCallback */
+
+typedef uint32_t BMDSwitcherAudioMonitorOutputEventType;
+enum _BMDSwitcherAudioMonitorOutputEventType {
+    bmdSwitcherAudioMonitorOutputEventTypeMonitorEnableChanged   = 'mneC',
+    bmdSwitcherAudioMonitorOutputEventTypeGainChanged            = 'mgnC',
+    bmdSwitcherAudioMonitorOutputEventTypeMuteChanged            = 'mteC',
+    bmdSwitcherAudioMonitorOutputEventTypeSoloChanged            = 'solC',
+    bmdSwitcherAudioMonitorOutputEventTypeSoloInputChanged       = 'sliC',
+    bmdSwitcherAudioMonitorOutputEventTypeDimChanged             = 'dimC',
+    bmdSwitcherAudioMonitorOutputEventTypeDimLevelChanged        = 'dmlC'
+};
+
+/* Enum BMDSwitcherAudioInputEventType - Used in IBMDSwitcherAudioInputCallback */
+
+typedef uint32_t BMDSwitcherAudioInputEventType;
+enum _BMDSwitcherAudioInputEventType {
+    bmdSwitcherAudioInputEventTypeMixOptionChanged               = 'mxoC',
+    bmdSwitcherAudioInputEventTypeGainChanged                    = 'ignC',
+    bmdSwitcherAudioInputEventTypeBalanceChanged                 = 'balC',
+    bmdSwitcherAudioInputEventTypeIsMixedInChanged               = 'imiC'
+};
+
+/* Enum BMDSwitcherAudioMixerEventType - Used in IBMDSwitcherAudioMixerCallback */
+
+typedef uint32_t BMDSwitcherAudioMixerEventType;
+enum _BMDSwitcherAudioMixerEventType {
+    bmdSwitcherAudioMixerEventTypeProgramOutGainChanged          = 'pgnC',
+    bmdSwitcherAudioMixerEventTypeProgramOutBalanceChanged       = 'balC'
+};
+
+/* Enum BMDSwitcherAudioInputType - Audio Input Type */
+
+typedef uint32_t BMDSwitcherAudioInputType;
+enum _BMDSwitcherAudioInputType {
+    bmdSwitcherAudioInputTypeEmbeddedWithVideo                   = 'ewvd',
+    bmdSwitcherAudioInputTypeMediaPlayer                         = 'mdpy',
+    bmdSwitcherAudioInputTypeAudioIn                             = 'adin'
+};
+
+/* Enum BMDSwitcherAudioMixOption - Audio Mix Option */
+
+typedef uint32_t BMDSwitcherAudioMixOption;
+enum _BMDSwitcherAudioMixOption {
+    bmdSwitcherAudioMixOptionOff                                 = 'offf',
+    bmdSwitcherAudioMixOptionOn                                  = 'onon',
+    bmdSwitcherAudioMixOptionAudioFollowVideo                    = 'afvv'
+};
+
+/* Enum BMDSwitcherTransitionStyle - Transition styles used in IBMDSwitcherTransitionParameters */
+
+typedef uint32_t BMDSwitcherTransitionStyle;
+enum _BMDSwitcherTransitionStyle {
+    bmdSwitcherTransitionStyleMix                                = 'mixx',
+    bmdSwitcherTransitionStyleDip                                = 'dipp',
+    bmdSwitcherTransitionStyleWipe                               = 'wipe',
+    bmdSwitcherTransitionStyleDVE                                = 'dvee',
+    bmdSwitcherTransitionStyleStinger                            = 'stng'
+};
+
+/* Enum BMDSwitcherTransitionSelection - Used in IBMDSwitcherTransitionParameters */
+
+typedef uint32_t BMDSwitcherTransitionSelection;
+enum _BMDSwitcherTransitionSelection {
+    bmdSwitcherTransitionSelectionBackground                     = 0x00000001,
+    bmdSwitcherTransitionSelectionKey1                           = 0x00000002,
+    bmdSwitcherTransitionSelectionKey2                           = 0x00000004,
+    bmdSwitcherTransitionSelectionKey3                           = 0x00000008,
+    bmdSwitcherTransitionSelectionKey4                           = 0x00000010
+};
+
+/* Enum BMDSwitcherKeyLumaParametersEventType - Used in IBMDSwitcherKeyLumaParametersCallback */
+
+typedef uint32_t BMDSwitcherKeyLumaParametersEventType;
+enum _BMDSwitcherKeyLumaParametersEventType {
+    bmdSwitcherKeyLumaParametersEventTypePreMultipliedChanged    = 'pmlC',
+    bmdSwitcherKeyLumaParametersEventTypeClipChanged             = 'clpC',
+    bmdSwitcherKeyLumaParametersEventTypeGainChanged             = 'gneC',
+    bmdSwitcherKeyLumaParametersEventTypeInverseChanged          = 'invC'
+};
+
+/* Enum BMDSwitcherKeyChromaParametersEventType - Used in IBMDSwitcherKeyChromaParametersCallback */
+
+typedef uint32_t BMDSwitcherKeyChromaParametersEventType;
+enum _BMDSwitcherKeyChromaParametersEventType {
+    bmdSwitcherKeyChromaParametersEventTypeHueChanged            = 'hueC',
+    bmdSwitcherKeyChromaParametersEventTypeGainChanged           = 'gneC',
+    bmdSwitcherKeyChromaParametersEventTypeYSuppressChanged      = 'yspC',
+    bmdSwitcherKeyChromaParametersEventTypeLiftChanged           = 'lftC',
+    bmdSwitcherKeyChromaParametersEventTypeNarrowChanged         = 'nrwC'
+};
+
+/* Enum BMDSwitcherKeyPatternParametersEventType - Used in IBMDSwitcherKeyPatternParametersCallback */
+
+typedef uint32_t BMDSwitcherKeyPatternParametersEventType;
+enum _BMDSwitcherKeyPatternParametersEventType {
+    bmdSwitcherKeyPatternParametersEventTypePatternChanged       = 'patC',
+    bmdSwitcherKeyPatternParametersEventTypeSizeChanged          = 'szeC',
+    bmdSwitcherKeyPatternParametersEventTypeSymmetryChanged      = 'symC',
+    bmdSwitcherKeyPatternParametersEventTypeSoftnessChanged      = 'sftC',
+    bmdSwitcherKeyPatternParametersEventTypeHorizontalOffsetChanged = 'hzoC',
+    bmdSwitcherKeyPatternParametersEventTypeVerticalOffsetChanged = 'vtoC',
+    bmdSwitcherKeyPatternParametersEventTypeInverseChanged       = 'invC'
+};
+
+/* Enum BMDSwitcherKeyFlyParametersEventType - Used in IBMDSwitcherKeyFlyParametersCallback */
+
+typedef uint32_t BMDSwitcherKeyFlyParametersEventType;
+enum _BMDSwitcherKeyFlyParametersEventType {
+    bmdSwitcherKeyFlyParametersEventTypeFlyChanged               = 'flyC',
+    bmdSwitcherKeyFlyParametersEventTypeCanFlyChanged            = 'cflC',
+    bmdSwitcherKeyFlyParametersEventTypeRateChanged              = 'rteC',
+    bmdSwitcherKeyFlyParametersEventTypeSizeXChanged             = 'szxC',
+    bmdSwitcherKeyFlyParametersEventTypeSizeYChanged             = 'szyC',
+    bmdSwitcherKeyFlyParametersEventTypePositionXChanged         = 'psxC',
+    bmdSwitcherKeyFlyParametersEventTypePositionYChanged         = 'psyC',
+    bmdSwitcherKeyFlyParametersEventTypeRotationChanged          = 'rotC',
+    bmdSwitcherKeyFlyParametersEventTypeIsKeyFrameStoredChanged  = 'kfsC',
+    bmdSwitcherKeyFlyParametersEventTypeIsAtKeyFramesChanged     = 'akfC',
+    bmdSwitcherKeyFlyParametersEventTypeIsRunningChanged         = 'rngC'
+};
+
+/* Enum BMDSwitcherKeyDVEParametersEventType - Used in IBMDSwitcherKeyDVEParametersCallback */
+
+typedef uint32_t BMDSwitcherKeyDVEParametersEventType;
+enum _BMDSwitcherKeyDVEParametersEventType {
+    bmdSwitcherKeyDVEParametersEventTypeShadowChanged            = 'shdC',
+    bmdSwitcherKeyDVEParametersEventTypeLightSourceDirectionChanged = 'ltdC',
+    bmdSwitcherKeyDVEParametersEventTypeLightSourceAltitudeChanged = 'ltaC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderEnabledChanged     = 'benC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderBevelChanged       = 'bbvC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderWidthInChanged     = 'bwiC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderWidthOutChanged    = 'bwoC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderSoftnessInChanged  = 'bsiC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderSoftnessOutChanged = 'bsoC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderBevelSoftnessChanged = 'bbsC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderBevelPositionChanged = 'bbpC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderOpacityChanged     = 'bopC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderHueChanged         = 'bhuC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderSaturationChanged  = 'bstC',
+    bmdSwitcherKeyDVEParametersEventTypeBorderLumaChanged        = 'blmC',
+    bmdSwitcherKeyDVEParametersEventTypeMaskedChanged            = 'mskC',
+    bmdSwitcherKeyDVEParametersEventTypeMaskTopChanged           = 'mtpC',
+    bmdSwitcherKeyDVEParametersEventTypeMaskBottomChanged        = 'mbtC',
+    bmdSwitcherKeyDVEParametersEventTypeMaskLeftChanged          = 'mlfC',
+    bmdSwitcherKeyDVEParametersEventTypeMaskRightChanged         = 'mrtC'
+};
+
+/* Enum BMDSwitcherKeyEventType - Used in IBMDSwitcherKeyCallback */
+
+typedef uint32_t BMDSwitcherKeyEventType;
+enum _BMDSwitcherKeyEventType {
+    bmdSwitcherKeyEventTypeTypeChanged                           = 'typC',
+    bmdSwitcherKeyEventTypeInputCutChanged                       = 'ipcC',
+    bmdSwitcherKeyEventTypeInputFillChanged                      = 'ipfC',
+    bmdSwitcherKeyEventTypeOnAirChanged                          = 'onaC',
+    bmdSwitcherKeyEventTypeCanBeDVEKeyChanged                    = 'cbdC',
+    bmdSwitcherKeyEventTypeMaskedChanged                         = 'mkeC',
+    bmdSwitcherKeyEventTypeMaskTopChanged                        = 'mktC',
+    bmdSwitcherKeyEventTypeMaskBottomChanged                     = 'mkbC',
+    bmdSwitcherKeyEventTypeMaskLeftChanged                       = 'mklC',
+    bmdSwitcherKeyEventTypeMaskRightChanged                      = 'mkrC'
+};
+
+/* Enum BMDSwitcherKeyType - (Upstream) Key types */
+
+typedef uint32_t BMDSwitcherKeyType;
+enum _BMDSwitcherKeyType {
+    bmdSwitcherKeyTypeLuma                                       = 'luma',
+    bmdSwitcherKeyTypeChroma                                     = 'chrm',
+    bmdSwitcherKeyTypePattern                                    = 'ptrn',
+    bmdSwitcherKeyTypeDVE                                        = 'dvee'
+};
+
+/* Enum BMDSwitcherPatternStyle - Pattern style for Wipe Transition, or Pattern Keys */
+
+typedef uint32_t BMDSwitcherPatternStyle;
+enum _BMDSwitcherPatternStyle {
+    bmdSwitcherPatternStyleLeftToRightBar                        = 'ltrb',
+    bmdSwitcherPatternStyleTopToBottomBar                        = 'ttbb',
+    bmdSwitcherPatternStyleHorizontalBarnDoor                    = 'hbnd',
+    bmdSwitcherPatternStyleVerticalBarnDoor                      = 'vbnd',
+    bmdSwitcherPatternStyleCornersInFourBox                      = 'cifb',
+    bmdSwitcherPatternStyleRectangleIris                         = 'reci',
+    bmdSwitcherPatternStyleDiamondIris                           = 'diai',
+    bmdSwitcherPatternStyleCircleIris                            = 'ciri',
+    bmdSwitcherPatternStyleTopLeftBox                            = 'tlbx',
+    bmdSwitcherPatternStyleTopRightBox                           = 'trbx',
+    bmdSwitcherPatternStyleBottomRightBox                        = 'brbx',
+    bmdSwitcherPatternStyleBottomLeftBox                         = 'blbx',
+    bmdSwitcherPatternStyleTopCentreBox                          = 'tcbx',
+    bmdSwitcherPatternStyleRightCentreBox                        = 'rcbx',
+    bmdSwitcherPatternStyleBottomCentreBox                       = 'bcbx',
+    bmdSwitcherPatternStyleLeftCentreBox                         = 'lcbx',
+    bmdSwitcherPatternStyleTopLeftDiagonal                       = 'tldg',
+    bmdSwitcherPatternStyleTopRightDiagonal                      = 'trdg'
+};
+
+/* Enum BMDSwitcherVideoMode - Video mode of Switcher */
+
+typedef uint32_t BMDSwitcherVideoMode;
+enum _BMDSwitcherVideoMode {
+    bmdSwitcherVideoMode525i5994NTSC                             = 'ntsc',
+    bmdSwitcherVideoMode625i50PAL                                = 'pall',
+    bmdSwitcherVideoMode525i5994Anamorphic                       = 'ntsA',
+    bmdSwitcherVideoMode625i50Anamorphic                         = 'palA',
+    bmdSwitcherVideoMode720p50                                   = '72p0',
+    bmdSwitcherVideoMode720p5994                                 = '72p9',
+    bmdSwitcherVideoMode1080i50                                  = '10i0',
+    bmdSwitcherVideoMode1080i5994                                = '10i9'
+};
+
+/* Enum BMDSwitcherDownConverterMode - Down convert mode used when converting 16:9 -> 4:3 */
+
+typedef uint32_t BMDSwitcherDownConverterMode;
+enum _BMDSwitcherDownConverterMode {
+    bmdSwitcherDownConverterModeCentreCut                        = 'dccc',
+    bmdSwitcherDownConverterModeLetterbox                        = 'dclb',
+    bmdSwitcherDownConverterModeAnamorphic                       = 'dcam'
+};
+
+/* Enum BMDSwitcherPixelFormat - Pixel Format used in IBMDSwitcherFrame */
+
+typedef uint32_t BMDSwitcherPixelFormat;
+enum _BMDSwitcherPixelFormat {
+    bmdSwitcherPixelFormat8BitARGB                               = 'argb',
+    bmdSwitcherPixelFormat8BitXRGB                               = 'xrgb',
+    bmdSwitcherPixelFormat8BitYUV                                = '2vuy',
+    bmdSwitcherPixelFormat10BitYUVA                              = 'yuva'
+};
+
+/* Enum BMDSwitcherFlyKeyFrame - Used in IBMDSwitcherKeyFlyParameters */
+
+typedef uint32_t BMDSwitcherFlyKeyFrame;
+enum _BMDSwitcherFlyKeyFrame {
+    bmdSwitcherFlyKeyFrameFull                                   = 0x00000001,
+    bmdSwitcherFlyKeyFrameInfinityCentreOfKey                    = 0x00000002,
+    bmdSwitcherFlyKeyFrameInfinityTopLeft                        = 0x00000004,
+    bmdSwitcherFlyKeyFrameInfinityTop                            = 0x00000008,
+    bmdSwitcherFlyKeyFrameInfinityTopRight                       = 0x00000010,
+    bmdSwitcherFlyKeyFrameInfinityLeft                           = 0x00000020,
+    bmdSwitcherFlyKeyFrameInfinityCentre                         = 0x00000040,
+    bmdSwitcherFlyKeyFrameInfinityRight                          = 0x00000080,
+    bmdSwitcherFlyKeyFrameInfinityBottomLeft                     = 0x00000100,
+    bmdSwitcherFlyKeyFrameInfinityBottom                         = 0x00000200,
+    bmdSwitcherFlyKeyFrameInfinityBottomRight                    = 0x00000400,
+    bmdSwitcherFlyKeyFrameA                                      = 0x00000800,
+    bmdSwitcherFlyKeyFrameB                                      = 0x00001000
+};
+
+/* Enum BMDSwitcherDVETransitionStyle - Transition style for DVE Transition */
+
+typedef uint32_t BMDSwitcherDVETransitionStyle;
+enum _BMDSwitcherDVETransitionStyle {
+    bmdSwitcherDVETransitionStyleSwooshTopLeft                   = 'swtl',
+    bmdSwitcherDVETransitionStyleSwooshTop                       = 'swtc',
+    bmdSwitcherDVETransitionStyleSwooshTopRight                  = 'swtr',
+    bmdSwitcherDVETransitionStyleSwooshLeft                      = 'swlc',
+    bmdSwitcherDVETransitionStyleSwooshRight                     = 'swrc',
+    bmdSwitcherDVETransitionStyleSwooshBottomLeft                = 'swbl',
+    bmdSwitcherDVETransitionStyleSwooshBottom                    = 'swbc',
+    bmdSwitcherDVETransitionStyleSwooshBottomRight               = 'swbr',
+    bmdSwitcherDVETransitionStyleSpinCWTopLeft                   = 'sptl',
+    bmdSwitcherDVETransitionStyleSpinCWTopRight                  = 'sptr',
+    bmdSwitcherDVETransitionStyleSpinCWBottomLeft                = 'spbl',
+    bmdSwitcherDVETransitionStyleSpinCWBottomRight               = 'spbr',
+    bmdSwitcherDVETransitionStyleSpinCCWTopLeft                  = 'sctl',
+    bmdSwitcherDVETransitionStyleSpinCCWTopRight                 = 'sctr',
+    bmdSwitcherDVETransitionStyleSpinCCWBottomLeft               = 'scbl',
+    bmdSwitcherDVETransitionStyleSpinCCWBottomRight              = 'scbr',
+    bmdSwitcherDVETransitionStyleSqueezeTopLeft                  = 'sqtl',
+    bmdSwitcherDVETransitionStyleSqueezeTop                      = 'sqtc',
+    bmdSwitcherDVETransitionStyleSqueezeTopRight                 = 'sqtr',
+    bmdSwitcherDVETransitionStyleSqueezeLeft                     = 'sqlc',
+    bmdSwitcherDVETransitionStyleSqueezeRight                    = 'sqrc',
+    bmdSwitcherDVETransitionStyleSqueezeBottomLeft               = 'sqbl',
+    bmdSwitcherDVETransitionStyleSqueezeBottom                   = 'sqbc',
+    bmdSwitcherDVETransitionStyleSqueezeBottomRight              = 'sqbr',
+    bmdSwitcherDVETransitionStylePushTopLeft                     = 'sutl',
+    bmdSwitcherDVETransitionStylePushTop                         = 'sutc',
+    bmdSwitcherDVETransitionStylePushTopRight                    = 'sutr',
+    bmdSwitcherDVETransitionStylePushLeft                        = 'sulc',
+    bmdSwitcherDVETransitionStylePushRight                       = 'surc',
+    bmdSwitcherDVETransitionStylePushBottomLeft                  = 'subl',
+    bmdSwitcherDVETransitionStylePushBottom                      = 'subc',
+    bmdSwitcherDVETransitionStylePushBottomRight                 = 'subr',
+    bmdSwitcherDVETransitionStyleGraphicCWSpin                   = 'sgcw',
+    bmdSwitcherDVETransitionStyleGraphicCCWSpin                  = 'sgcc',
+    bmdSwitcherDVETransitionStyleGraphicLogoWipe                 = 'sglw'
+};
+
+/* Enum BMDSwitcherStingerTransitionSource - Transition source used in Stinger Transitions */
+
+typedef uint32_t BMDSwitcherStingerTransitionSource;
+enum _BMDSwitcherStingerTransitionSource {
+    bmdSwitcherStingerTransitionSourceMediaPlayer1               = 'smp1',
+    bmdSwitcherStingerTransitionSourceMediaPlayer2               = 'smp2',
+    bmdSwitcherStingerTransitionSourceNone                       = 'snon'
+};
+
+/* Enum BMDSwitcherMediaPlayerSourceType - Source for a Media Player */
+
+typedef uint32_t BMDSwitcherMediaPlayerSourceType;
+enum _BMDSwitcherMediaPlayerSourceType {
+    bmdSwitcherMediaPlayerSourceTypeStill                        = 'smps',
+    bmdSwitcherMediaPlayerSourceTypeClip                         = 'smpc'
+};
+
+/* Enum BMDSwitcherMultiViewLayout - Layout for MultiView */
+
+typedef uint32_t BMDSwitcherMultiViewLayout;
+enum _BMDSwitcherMultiViewLayout {
+    bmdSwitcherMultiViewLayoutProgramTop                         = 'mvpt',
+    bmdSwitcherMultiViewLayoutProgramBottom                      = 'mvpb',
+    bmdSwitcherMultiViewLayoutProgramLeft                        = 'mvpl',
+    bmdSwitcherMultiViewLayoutProgramRight                       = 'mvpr'
+};
+
+/* Enum BMDSwitcherMultiViewEventType - Used in IBMDSwitcherMultiViewCallback */
+
+typedef uint32_t BMDSwitcherMultiViewEventType;
+enum _BMDSwitcherMultiViewEventType {
+    bmdSwitcherMultiViewEventTypeLayoutChanged                   = 'lotC',
+    bmdSwitcherMultiViewEventTypeWindowChanged                   = 'wdwC'
+};
+
+/* Enum BMDSwitcherDownstreamKeyEventType - Used in IBMDSwitcherDownstreamKeyCallback */
+
+typedef uint32_t BMDSwitcherDownstreamKeyEventType;
+enum _BMDSwitcherDownstreamKeyEventType {
+    bmdSwitcherDownstreamKeyEventTypeInputCutChanged             = 'ipcC',
+    bmdSwitcherDownstreamKeyEventTypeInputFillChanged            = 'ipfC',
+    bmdSwitcherDownstreamKeyEventTypeTieChanged                  = 'tieC',
+    bmdSwitcherDownstreamKeyEventTypeRateChanged                 = 'rteC',
+    bmdSwitcherDownstreamKeyEventTypeOnAirChanged                = 'onaC',
+    bmdSwitcherDownstreamKeyEventTypeIsTransitioningChanged      = 'itsC',
+    bmdSwitcherDownstreamKeyEventTypeIsAutoTransitioningChanged  = 'iatC',
+    bmdSwitcherDownstreamKeyEventTypeFramesRemainingChanged      = 'frmC',
+    bmdSwitcherDownstreamKeyEventTypePreMultipliedChanged        = 'pmlC',
+    bmdSwitcherDownstreamKeyEventTypeClipChanged                 = 'clpC',
+    bmdSwitcherDownstreamKeyEventTypeGainChanged                 = 'gneC',
+    bmdSwitcherDownstreamKeyEventTypeInverseChanged              = 'invC',
+    bmdSwitcherDownstreamKeyEventTypeMaskedChanged               = 'mskC',
+    bmdSwitcherDownstreamKeyEventTypeMaskTopChanged              = 'mktC',
+    bmdSwitcherDownstreamKeyEventTypeMaskBottomChanged           = 'mkbC',
+    bmdSwitcherDownstreamKeyEventTypeMaskLeftChanged             = 'mklC',
+    bmdSwitcherDownstreamKeyEventTypeMaskRightChanged            = 'mkrC'
 };
 
 /* Enum BMDSwitcherConnectToFailure - used in ConnectTo */
@@ -109,22 +702,709 @@ enum _BMDSwitcherMixEffectBlockPropertyId {
 typedef uint32_t BMDSwitcherConnectToFailure;
 enum _BMDSwitcherConnectToFailure {
     bmdSwitcherConnectToFailureNoResponse                        = 'cfnr',
-    bmdSwitcherConnectToFailureIncompatibleFirmware              = 'cfif'
+    bmdSwitcherConnectToFailureIncompatibleFirmware              = 'cfif',
+    bmdSwitcherConnectToFailureCorruptData                       = 'cfcd',
+    bmdSwitcherConnectToFailureStateSync                         = 'cfss',
+    bmdSwitcherConnectToFailureStateSyncTimedOut                 = 'cfst'
+};
+
+/* Enum BMDSwitcherMediaPoolEventType - Used in IBMDSwitcherClipCallback, IBMDSwitcherStillsCallback */
+
+typedef uint32_t BMDSwitcherMediaPoolEventType;
+enum _BMDSwitcherMediaPoolEventType {
+    bmdSwitcherMediaPoolEventTypeValidChanged                    = 'vlid',
+    bmdSwitcherMediaPoolEventTypeNameChanged                     = 'name',
+    bmdSwitcherMediaPoolEventTypeHashChanged                     = 'hash',
+    bmdSwitcherMediaPoolEventTypeAudioValidChanged               = 'avld',
+    bmdSwitcherMediaPoolEventTypeLockBusy                        = 'lbsy',
+    bmdSwitcherMediaPoolEventTypeLockIdle                        = 'lidl',
+    bmdSwitcherMediaPoolEventTypeTransferCompleted               = 'cmpt',
+    bmdSwitcherMediaPoolEventTypeTransferCancelled               = 'cncl',
+    bmdSwitcherMediaPoolEventTypeTransferFailed                  = 'fail'
 };
 
 #if defined(__cplusplus)
 
 // Forward Declarations
 
+class IBMDSwitcherAudioMonitorOutputCallback;
+class IBMDSwitcherAudioMonitorOutput;
+class IBMDSwitcherAudioInputCallback;
+class IBMDSwitcherAudioInput;
+class IBMDSwitcherAudioMixerCallback;
+class IBMDSwitcherAudioMixer;
+class IBMDSwitcherKeyLumaParametersCallback;
+class IBMDSwitcherKeyLumaParameters;
+class IBMDSwitcherKeyChromaParametersCallback;
+class IBMDSwitcherKeyChromaParameters;
+class IBMDSwitcherKeyPatternParametersCallback;
+class IBMDSwitcherKeyPatternParameters;
+class IBMDSwitcherKeyFlyParametersCallback;
+class IBMDSwitcherKeyFlyParameters;
+class IBMDSwitcherKeyDVEParametersCallback;
+class IBMDSwitcherKeyDVEParameters;
+class IBMDSwitcherKeyCallback;
+class IBMDSwitcherKey;
+class IBMDSwitcherMediaPlayerCallback;
+class IBMDSwitcherMediaPlayer;
+class IBMDSwitcherTransitionMixParametersCallback;
+class IBMDSwitcherTransitionMixParameters;
+class IBMDSwitcherTransitionDipParametersCallback;
+class IBMDSwitcherTransitionDipParameters;
+class IBMDSwitcherTransitionWipeParametersCallback;
+class IBMDSwitcherTransitionWipeParameters;
+class IBMDSwitcherTransitionDVEParametersCallback;
+class IBMDSwitcherTransitionDVEParameters;
+class IBMDSwitcherTransitionStingerParametersCallback;
+class IBMDSwitcherTransitionStingerParameters;
+class IBMDSwitcherTransitionParametersCallback;
+class IBMDSwitcherTransitionParameters;
 class IBMDSwitcherMixEffectBlockCallback;
 class IBMDSwitcherMixEffectBlock;
 class IBMDSwitcherInputCallback;
 class IBMDSwitcherInput;
+class IBMDSwitcherInputColorCallback;
+class IBMDSwitcherInputColor;
+class IBMDSwitcherInputAuxCallback;
+class IBMDSwitcherInputAux;
+class IBMDSwitcherSuperSourceBoxCallback;
+class IBMDSwitcherSuperSourceBox;
+class IBMDSwitcherInputSuperSourceCallback;
+class IBMDSwitcherInputSuperSource;
+class IBMDSwitcherMultiViewCallback;
+class IBMDSwitcherMultiView;
+class IBMDSwitcherDownstreamKeyCallback;
+class IBMDSwitcherDownstreamKey;
 class IBMDSwitcherInputIterator;
+class IBMDSwitcherSuperSourceBoxIterator;
 class IBMDSwitcherMixEffectBlockIterator;
+class IBMDSwitcherDownstreamKeyIterator;
+class IBMDSwitcherKeyIterator;
+class IBMDSwitcherMediaPlayerIterator;
+class IBMDSwitcherMultiViewIterator;
+class IBMDSwitcherAudioMonitorOutputIterator;
+class IBMDSwitcherAudioInputIterator;
 class IBMDSwitcherCallback;
 class IBMDSwitcher;
 class IBMDSwitcherDiscovery;
+class IBMDSwitcherFrame;
+class IBMDSwitcherAudio;
+class IBMDSwitcherLockCallback;
+class IBMDSwitcherStillsCallback;
+class IBMDSwitcherStills;
+class IBMDSwitcherClipCallback;
+class IBMDSwitcherClip;
+class IBMDSwitcherMediaPoolCallback;
+class IBMDSwitcherMediaPool;
+
+/* Interface IBMDSwitcherAudioMonitorOutputCallback - Audio Monitor Output Object Callback */
+
+class IBMDSwitcherAudioMonitorOutputCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherAudioMonitorOutputEventType eventType) = 0;
+    virtual HRESULT LevelNotification (/* in */ double left, /* in */ double right, /* in */ double peakLeft, /* in */ double peakRight) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioMonitorOutputCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioMonitorOutput - Audio Monitor Output Object */
+
+class IBMDSwitcherAudioMonitorOutput : public IUnknown
+{
+public:
+    virtual HRESULT GetMonitorEnable (/* out */ bool* enable) = 0;
+    virtual HRESULT SetMonitorEnable (/* in */ bool enable) = 0; // When set to false, this output mirrors the output of Program Out and Monitor Functionality is disabled
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetMute (/* out */ bool* mute) = 0;
+    virtual HRESULT SetMute (/* in */ bool mute) = 0;
+    virtual HRESULT GetSolo (/* out */ bool* solo) = 0;
+    virtual HRESULT SetSolo (/* in */ bool solo) = 0;
+    virtual HRESULT GetSoloInput (/* out */ BMDSwitcherAudioInputId* audioInput) = 0;
+    virtual HRESULT SetSoloInput (/* in */ BMDSwitcherAudioInputId audioInput) = 0;
+    virtual HRESULT GetDim (/* out */ bool* dim) = 0;
+    virtual HRESULT SetDim (/* in */ bool dim) = 0;
+    virtual HRESULT GetDimLevel (/* out */ double* gain) = 0;
+    virtual HRESULT SetDimLevel (/* in */ double gain) = 0;
+    virtual HRESULT ResetLevelNotificationPeaks (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherAudioMonitorOutputCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherAudioMonitorOutputCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioMonitorOutput () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioInputCallback - Audio Input Object Callback */
+
+class IBMDSwitcherAudioInputCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherAudioInputEventType eventType) = 0;
+    virtual HRESULT LevelNotification (/* in */ double left, /* in */ double right, /* in */ double peakLeft, /* in */ double peakRight) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioInputCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioInput - Audio Input Object */
+
+class IBMDSwitcherAudioInput : public IUnknown
+{
+public:
+    virtual HRESULT GetType (/* out */ BMDSwitcherAudioInputType* type) = 0;
+    virtual HRESULT GetMixOption (/* out */ BMDSwitcherAudioMixOption* mixOption) = 0;
+    virtual HRESULT SetMixOption (/* in */ BMDSwitcherAudioMixOption mixOption) = 0;
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetBalance (/* out */ double* balance) = 0;
+    virtual HRESULT SetBalance (/* in */ double balance) = 0;
+    virtual HRESULT IsMixedIn (/* out */ bool* mixedIn) = 0;
+    virtual HRESULT GetAudioInputId (/* out */ BMDSwitcherAudioInputId* audioInputId) = 0;
+    virtual HRESULT ResetLevelNotificationPeaks (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherAudioInputCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherAudioInputCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioInput () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioMixerCallback - Audio Mixer Object Callback */
+
+class IBMDSwitcherAudioMixerCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherAudioMixerEventType eventType) = 0;
+    virtual HRESULT ProgramOutLevelNotification (/* in */ double left, /* in */ double right, /* in */ double peakLeft, /* in */ double peakRight) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioMixerCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioMixer - Audio Mixer Object */
+
+class IBMDSwitcherAudioMixer : public IUnknown
+{
+public:
+    virtual HRESULT GetProgramOutGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetProgramOutGain (/* in */ double gain) = 0;
+    virtual HRESULT GetProgramOutBalance (/* out */ double* balance) = 0;
+    virtual HRESULT SetProgramOutBalance (/* in */ double balance) = 0;
+    virtual HRESULT SetAllLevelNotificationsEnable (/* in */ bool enable) = 0;
+    virtual HRESULT ResetProgramOutLevelNotificationPeaks (void) = 0;
+    virtual HRESULT ResetAllLevelNotificationPeaks (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherAudioMixerCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherAudioMixerCallback* callback) = 0;
+    virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioMixer () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyLumaParametersCallback - Luma Key Parameters Callback */
+
+class IBMDSwitcherKeyLumaParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherKeyLumaParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyLumaParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyLumaParameters - Luma Key Parameters */
+
+class IBMDSwitcherKeyLumaParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetPreMultiplied (/* out */ bool* preMultiplied) = 0;
+    virtual HRESULT SetPreMultiplied (/* in */ bool preMultiplied) = 0;
+    virtual HRESULT GetClip (/* out */ double* clip) = 0;
+    virtual HRESULT SetClip (/* in */ double clip) = 0;
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetInverse (/* out */ bool* inverse) = 0;
+    virtual HRESULT SetInverse (/* in */ bool inverse) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherKeyLumaParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyLumaParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyLumaParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyChromaParametersCallback - Chroma Key Parameters Callback */
+
+class IBMDSwitcherKeyChromaParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherKeyChromaParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyChromaParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyChromaParameters - Chroma Key Parameters */
+
+class IBMDSwitcherKeyChromaParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetHue (/* out */ double* hue) = 0; // [0, 360)
+    virtual HRESULT SetHue (/* in */ double hue) = 0; // [0, 360)
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetYSuppress (/* out */ double* ySuppress) = 0;
+    virtual HRESULT SetYSuppress (/* in */ double ySuppress) = 0;
+    virtual HRESULT GetLift (/* out */ double* lift) = 0;
+    virtual HRESULT SetLift (/* in */ double lift) = 0;
+    virtual HRESULT GetNarrow (/* out */ bool* narrow) = 0;
+    virtual HRESULT SetNarrow (/* in */ bool narrow) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherKeyChromaParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyChromaParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyChromaParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyPatternParametersCallback - Pattern Key Parameters Callback */
+
+class IBMDSwitcherKeyPatternParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherKeyPatternParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyPatternParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyPatternParameters - Pattern Key Parameters */
+
+class IBMDSwitcherKeyPatternParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetPattern (/* out */ BMDSwitcherPatternStyle* pattern) = 0;
+    virtual HRESULT SetPattern (/* in */ BMDSwitcherPatternStyle pattern) = 0;
+    virtual HRESULT GetSize (/* out */ double* size) = 0;
+    virtual HRESULT SetSize (/* in */ double size) = 0;
+    virtual HRESULT GetSymmetry (/* out */ double* symmetry) = 0;
+    virtual HRESULT SetSymmetry (/* in */ double symmetry) = 0;
+    virtual HRESULT GetSoftness (/* out */ double* softness) = 0;
+    virtual HRESULT SetSoftness (/* in */ double softness) = 0;
+    virtual HRESULT GetHorizontalOffset (/* out */ double* hOffset) = 0;
+    virtual HRESULT SetHorizontalOffset (/* in */ double hOffset) = 0;
+    virtual HRESULT GetVerticalOffset (/* out */ double* vOffset) = 0;
+    virtual HRESULT SetVerticalOffset (/* in */ double vOffset) = 0;
+    virtual HRESULT GetInverse (/* out */ bool* inverse) = 0;
+    virtual HRESULT SetInverse (/* in */ bool inverse) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherKeyPatternParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyPatternParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyPatternParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyFlyParametersCallback - Key Fly Parameters Callback */
+
+class IBMDSwitcherKeyFlyParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherKeyFlyParametersEventType eventType, /* in */ BMDSwitcherFlyKeyFrame keyFrame) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyFlyParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyFlyParameters - Key Fly Parameters */
+
+class IBMDSwitcherKeyFlyParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetFly (/* out */ bool* isFlyKey) = 0;
+    virtual HRESULT SetFly (/* in */ bool isFlyKey) = 0;
+    virtual HRESULT GetCanFly (/* out */ bool* canFly) = 0;
+    virtual HRESULT GetRate (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetRate (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetSizeX (/* out */ double* multiplierX) = 0;
+    virtual HRESULT SetSizeX (/* in */ double multiplierX) = 0;
+    virtual HRESULT GetSizeY (/* out */ double* multiplierY) = 0;
+    virtual HRESULT SetSizeY (/* in */ double multiplierY) = 0;
+    virtual HRESULT GetPositionX (/* out */ double* offsetX) = 0;
+    virtual HRESULT SetPositionX (/* in */ double offsetX) = 0;
+    virtual HRESULT GetPositionY (/* out */ double* offsetY) = 0;
+    virtual HRESULT SetPositionY (/* in */ double offsetY) = 0;
+    virtual HRESULT GetRotation (/* out */ double* degrees) = 0;
+    virtual HRESULT SetRotation (/* in */ double degrees) = 0;
+    virtual HRESULT ResetRotation (void) = 0;
+    virtual HRESULT ResetDVE (void) = 0; // Resets all DVE parameters, excluding mask
+    virtual HRESULT ResetDVEFull (void) = 0; // Resets all DVE parameters to full screen, excluding mask
+    virtual HRESULT IsKeyFrameStored (/* in */ BMDSwitcherFlyKeyFrame keyFrame, /* out */ bool* stored) = 0;
+    virtual HRESULT StoreAsKeyFrame (/* in */ BMDSwitcherFlyKeyFrame keyFrame) = 0; // Stores current state into the specified Key Frame, only Key Frame A and/or B can be specified.
+    virtual HRESULT RunToKeyFrame (/* in */ BMDSwitcherFlyKeyFrame destination) = 0; // Can only specify 1 Key Frame destination
+    virtual HRESULT IsAtKeyFrames (/* out */ BMDSwitcherFlyKeyFrame* keyFrames) = 0;
+    virtual HRESULT IsRunning (/* out */ bool* isRunning, /* out */ BMDSwitcherFlyKeyFrame* destination) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherKeyFlyParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyFlyParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyFlyParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyDVEParametersCallback - DVE Key Parameters Callback */
+
+class IBMDSwitcherKeyDVEParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherKeyDVEParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyDVEParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyDVEParameters - DVE Key Parameters */
+
+class IBMDSwitcherKeyDVEParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetShadow (/* out */ bool* shadowOn) = 0;
+    virtual HRESULT SetShadow (/* in */ bool shadowOn) = 0;
+    virtual HRESULT GetLightSourceDirection (/* out */ double* degrees) = 0;
+    virtual HRESULT SetLightSourceDirection (/* in */ double degrees) = 0;
+    virtual HRESULT GetLightSourceAltitude (/* out */ double* altitude) = 0;
+    virtual HRESULT SetLightSourceAltitude (/* in */ double altitude) = 0;
+    virtual HRESULT GetBorderEnabled (/* out */ bool* on) = 0;
+    virtual HRESULT SetBorderEnabled (/* in */ bool on) = 0;
+    virtual HRESULT GetBorderBevel (/* out */ BMDSwitcherBorderBevelOption* bevelOption) = 0;
+    virtual HRESULT SetBorderBevel (/* in */ BMDSwitcherBorderBevelOption bevelOption) = 0;
+    virtual HRESULT GetBorderWidthIn (/* out */ double* widthIn) = 0;
+    virtual HRESULT SetBorderWidthIn (/* in */ double widthIn) = 0;
+    virtual HRESULT GetBorderWidthOut (/* out */ double* widthOut) = 0;
+    virtual HRESULT SetBorderWidthOut (/* in */ double widthOut) = 0;
+    virtual HRESULT GetBorderSoftnessIn (/* out */ double* softIn) = 0;
+    virtual HRESULT SetBorderSoftnessIn (/* in */ double softIn) = 0;
+    virtual HRESULT GetBorderSoftnessOut (/* out */ double* softOut) = 0;
+    virtual HRESULT SetBorderSoftnessOut (/* in */ double softOut) = 0;
+    virtual HRESULT GetBorderBevelSoftness (/* out */ double* bevelSoft) = 0;
+    virtual HRESULT SetBorderBevelSoftness (/* in */ double bevelSoft) = 0;
+    virtual HRESULT GetBorderBevelPosition (/* out */ double* bevelPosition) = 0;
+    virtual HRESULT SetBorderBevelPosition (/* in */ double bevelPosition) = 0;
+    virtual HRESULT GetBorderOpacity (/* out */ double* opacity) = 0;
+    virtual HRESULT SetBorderOpacity (/* in */ double opacity) = 0;
+    virtual HRESULT GetBorderHue (/* out */ double* hue) = 0;
+    virtual HRESULT SetBorderHue (/* in */ double hue) = 0;
+    virtual HRESULT GetBorderSaturation (/* out */ double* sat) = 0;
+    virtual HRESULT SetBorderSaturation (/* in */ double sat) = 0;
+    virtual HRESULT GetBorderLuma (/* out */ double* luma) = 0;
+    virtual HRESULT SetBorderLuma (/* in */ double luma) = 0;
+    virtual HRESULT GetMasked (/* out */ bool* maskEnabled) = 0;
+    virtual HRESULT SetMasked (/* in */ bool maskEnabled) = 0;
+    virtual HRESULT GetMaskTop (/* out */ double* top) = 0;
+    virtual HRESULT SetMaskTop (/* in */ double top) = 0;
+    virtual HRESULT GetMaskBottom (/* out */ double* bottom) = 0;
+    virtual HRESULT SetMaskBottom (/* in */ double bottom) = 0;
+    virtual HRESULT GetMaskLeft (/* out */ double* left) = 0;
+    virtual HRESULT SetMaskLeft (/* in */ double left) = 0;
+    virtual HRESULT GetMaskRight (/* out */ double* right) = 0;
+    virtual HRESULT SetMaskRight (/* in */ double right) = 0;
+    virtual HRESULT ResetMask (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherKeyDVEParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyDVEParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyDVEParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyCallback - Key Object Callback */
+
+class IBMDSwitcherKeyCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherKeyEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKey - Key Object */
+
+class IBMDSwitcherKey : public IUnknown
+{
+public:
+    virtual HRESULT GetType (/* out */ BMDSwitcherKeyType* type) = 0;
+    virtual HRESULT SetType (/* in */ BMDSwitcherKeyType type) = 0;
+    virtual HRESULT GetInputCut (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputCut (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetInputFill (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputFill (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetOnAir (/* out */ bool* onAir) = 0;
+    virtual HRESULT SetOnAir (/* in */ bool onAir) = 0;
+    virtual HRESULT CanBeDVEKey (/* out */ bool* canDVE) = 0;
+    virtual HRESULT GetMasked (/* out */ bool* maskEnabled) = 0;
+    virtual HRESULT SetMasked (/* in */ bool maskEnabled) = 0;
+    virtual HRESULT GetMaskTop (/* out */ double* top) = 0;
+    virtual HRESULT SetMaskTop (/* in */ double top) = 0;
+    virtual HRESULT GetMaskBottom (/* out */ double* bottom) = 0;
+    virtual HRESULT SetMaskBottom (/* in */ double bottom) = 0;
+    virtual HRESULT GetMaskLeft (/* out */ double* left) = 0;
+    virtual HRESULT SetMaskLeft (/* in */ double left) = 0;
+    virtual HRESULT GetMaskRight (/* out */ double* right) = 0;
+    virtual HRESULT SetMaskRight (/* in */ double right) = 0;
+    virtual HRESULT ResetMask (void) = 0;
+    virtual HRESULT GetTransitionSelectionMask (/* out */ BMDSwitcherTransitionSelection* selectionMask) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherKeyCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKey () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMediaPlayerCallback - Media Player Callback */
+
+class IBMDSwitcherMediaPlayerCallback : public IUnknown
+{
+public:
+    virtual HRESULT SourceChanged (void) = 0;
+    virtual HRESULT PlayingChanged (void) = 0;
+    virtual HRESULT LoopChanged (void) = 0;
+    virtual HRESULT AtBeginningChanged (void) = 0;
+    virtual HRESULT ClipFrameChanged (void) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMediaPlayerCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMediaPlayer - Media Player */
+
+class IBMDSwitcherMediaPlayer : public IUnknown
+{
+public:
+    virtual HRESULT GetSource (/* out */ BMDSwitcherMediaPlayerSourceType* type, /* out */ uint32_t* index) = 0;
+    virtual HRESULT SetSource (/* in */ BMDSwitcherMediaPlayerSourceType type, /* in */ uint32_t index) = 0;
+    virtual HRESULT GetPlaying (/* out */ bool* playing) = 0;
+    virtual HRESULT SetPlaying (/* in */ bool playing) = 0;
+    virtual HRESULT GetLoop (/* out */ bool* loop) = 0;
+    virtual HRESULT SetLoop (/* in */ bool loop) = 0;
+    virtual HRESULT GetAtBeginning (/* out */ bool* atBegining) = 0;
+    virtual HRESULT SetAtBeginning (void) = 0;
+    virtual HRESULT GetClipFrame (/* out */ uint32_t* clipFrameIndex) = 0;
+    virtual HRESULT SetClipFrame (/* in */ uint32_t clipFrameIndex) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherMediaPlayerCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMediaPlayerCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMediaPlayer () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionMixParametersCallback - Transition Mix Parameters Callback */
+
+class IBMDSwitcherTransitionMixParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherTransitionMixParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionMixParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionMixParameters - Transition Mix Parameters */
+
+class IBMDSwitcherTransitionMixParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetRate (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetRate (/* in */ uint32_t frames) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherTransitionMixParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionMixParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionMixParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionDipParametersCallback - Transition Dip Parameters Callback */
+
+class IBMDSwitcherTransitionDipParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherTransitionDipParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionDipParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionDipParameters - Transition Dip Parameters */
+
+class IBMDSwitcherTransitionDipParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetRate (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetRate (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetInputDip (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputDip (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherTransitionDipParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionDipParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionDipParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionWipeParametersCallback - Transition Wipe Parameters Callback */
+
+class IBMDSwitcherTransitionWipeParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherTransitionWipeParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionWipeParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionWipeParameters - Transition Wipe Parameters */
+
+class IBMDSwitcherTransitionWipeParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetRate (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetRate (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetPattern (/* out */ BMDSwitcherPatternStyle* pattern) = 0;
+    virtual HRESULT SetPattern (/* in */ BMDSwitcherPatternStyle pattern) = 0;
+    virtual HRESULT GetBorderSize (/* out */ double* size) = 0;
+    virtual HRESULT SetBorderSize (/* in */ double size) = 0;
+    virtual HRESULT GetInputBorder (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputBorder (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetSymmetry (/* out */ double* symmetry) = 0;
+    virtual HRESULT SetSymmetry (/* in */ double symmetry) = 0;
+    virtual HRESULT GetSoftness (/* out */ double* soft) = 0;
+    virtual HRESULT SetSoftness (/* in */ double soft) = 0;
+    virtual HRESULT GetHorizontalOffset (/* out */ double* hOffset) = 0;
+    virtual HRESULT SetHorizontalOffset (/* in */ double hOffset) = 0;
+    virtual HRESULT GetVerticalOffset (/* out */ double* vOffset) = 0;
+    virtual HRESULT SetVerticalOffset (/* in */ double vOffset) = 0;
+    virtual HRESULT GetReverse (/* out */ bool* reverse) = 0;
+    virtual HRESULT SetReverse (/* in */ bool reverse) = 0;
+    virtual HRESULT GetFlipFlop (/* out */ bool* flipflop) = 0;
+    virtual HRESULT SetFlipFlop (/* in */ bool flipflop) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherTransitionWipeParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionWipeParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionWipeParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionDVEParametersCallback - Transition DVE Parameters Callback */
+
+class IBMDSwitcherTransitionDVEParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherTransitionDVEParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionDVEParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionDVEParameters - Transition DVE Parameters */
+
+class IBMDSwitcherTransitionDVEParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetRate (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetRate (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetLogoRate (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetLogoRate (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetReverse (/* out */ bool* reverse) = 0;
+    virtual HRESULT SetReverse (/* in */ bool reverse) = 0;
+    virtual HRESULT GetFlipFlop (/* out */ bool* flipflop) = 0;
+    virtual HRESULT SetFlipFlop (/* in */ bool flipflop) = 0;
+    virtual HRESULT GetStyle (/* out */ BMDSwitcherDVETransitionStyle* style) = 0;
+    virtual HRESULT SetStyle (/* in */ BMDSwitcherDVETransitionStyle style) = 0;
+    virtual HRESULT GetInputFill (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputFill (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetInputCut (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputCut (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetEnableKey (/* out */ bool* enableKey) = 0;
+    virtual HRESULT SetEnableKey (/* in */ bool enableKey) = 0;
+    virtual HRESULT GetPreMultiplied (/* out */ bool* preMultiplied) = 0;
+    virtual HRESULT SetPreMultiplied (/* in */ bool preMultiplied) = 0;
+    virtual HRESULT GetClip (/* out */ double* clip) = 0;
+    virtual HRESULT SetClip (/* in */ double clip) = 0;
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetInverse (/* out */ bool* inverse) = 0;
+    virtual HRESULT SetInverse (/* in */ bool inverse) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherTransitionDVEParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionDVEParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionDVEParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionStingerParametersCallback - Transition Stinger Parameters Callback */
+
+class IBMDSwitcherTransitionStingerParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherTransitionStingerParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionStingerParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionStingerParameters - Transition Stinger Parameters */
+
+class IBMDSwitcherTransitionStingerParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetSource (/* out */ BMDSwitcherStingerTransitionSource* src) = 0;
+    virtual HRESULT SetSource (/* in */ BMDSwitcherStingerTransitionSource src) = 0;
+    virtual HRESULT GetPreMultiplied (/* out */ bool* preMultiplied) = 0;
+    virtual HRESULT SetPreMultiplied (/* in */ bool preMultiplied) = 0;
+    virtual HRESULT GetClip (/* out */ double* clip) = 0;
+    virtual HRESULT SetClip (/* in */ double clip) = 0;
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetInverse (/* out */ bool* inverse) = 0;
+    virtual HRESULT SetInverse (/* in */ bool inverse) = 0;
+    virtual HRESULT GetPreroll (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetPreroll (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetClipDuration (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetClipDuration (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetTriggerPoint (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetTriggerPoint (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetMixRate (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetMixRate (/* in */ uint32_t frames) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherTransitionStingerParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionStingerParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionStingerParameters () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionParametersCallback - Transition Parameters Object Callback */
+
+class IBMDSwitcherTransitionParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherTransitionParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionParametersCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransitionParameters - Transition Parameters Object */
+
+class IBMDSwitcherTransitionParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetTransitionStyle (/* out */ BMDSwitcherTransitionStyle* style) = 0;
+    virtual HRESULT GetNextTransitionStyle (/* out */ BMDSwitcherTransitionStyle* style) = 0;
+    virtual HRESULT SetNextTransitionStyle (/* in */ BMDSwitcherTransitionStyle style) = 0;
+    virtual HRESULT GetTransitionSelection (/* out */ BMDSwitcherTransitionSelection* selection) = 0;
+    virtual HRESULT SetNextTransitionSelection (/* in */ BMDSwitcherTransitionSelection selection) = 0;
+    virtual HRESULT GetNextTransitionSelection (/* out */ BMDSwitcherTransitionSelection* selection) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherTransitionParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransitionParameters () {}; // call Release method to drop reference count
+};
 
 /* Interface IBMDSwitcherMixEffectBlockCallback - Mix Effect Block Notification Callback */
 
@@ -161,7 +1441,7 @@ protected:
     virtual ~IBMDSwitcherMixEffectBlock () {}; // call Release method to drop reference count
 };
 
-/* Interface IBMDSwitcherInputCallback - Base Switcher Input Object Callback */
+/* Interface IBMDSwitcherInputCallback - Switcher Input Object Callback */
 
 class IBMDSwitcherInputCallback : public IUnknown
 {
@@ -172,7 +1452,7 @@ protected:
     virtual ~IBMDSwitcherInputCallback () {}; // call Release method to drop reference count
 };
 
-/* Interface IBMDSwitcherInput - Base Switcher Input Object */
+/* Interface IBMDSwitcherInput - Switcher Input Object */
 
 class IBMDSwitcherInput : public IUnknown
 {
@@ -193,6 +1473,258 @@ protected:
     virtual ~IBMDSwitcherInput () {}; // call Release method to drop reference count
 };
 
+/* Interface IBMDSwitcherInputColorCallback - Color Input Object Callback */
+
+class IBMDSwitcherInputColorCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherInputColorEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherInputColorCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherInputColor - Color Input Object */
+
+class IBMDSwitcherInputColor : public IUnknown
+{
+public:
+    virtual HRESULT GetHue (/* out */ double* hue) = 0;
+    virtual HRESULT SetHue (/* in */ double hue) = 0;
+    virtual HRESULT GetSaturation (/* out */ double* sat) = 0;
+    virtual HRESULT SetSaturation (/* in */ double sat) = 0;
+    virtual HRESULT GetLuma (/* out */ double* luma) = 0;
+    virtual HRESULT SetLuma (/* in */ double luma) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherInputColorCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherInputColorCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherInputColor () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherInputAuxCallback - Aux Input Object Callback */
+
+class IBMDSwitcherInputAuxCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherInputAuxEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherInputAuxCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherInputAux - Aux Input Object */
+
+class IBMDSwitcherInputAux : public IUnknown
+{
+public:
+    virtual HRESULT GetInputSource (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputSource (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetInputAvailabilityMask (/* out */ BMDSwitcherInputAvailability* availabilityMask) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherInputAuxCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherInputAuxCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherInputAux () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherSuperSourceBoxCallback - SuperSource Box Object Callback */
+
+class IBMDSwitcherSuperSourceBoxCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherSuperSourceBoxEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherSuperSourceBoxCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherSuperSourceBox - SuperSource Box Object */
+
+class IBMDSwitcherSuperSourceBox : public IUnknown
+{
+public:
+    virtual HRESULT GetEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetInputSource (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputSource (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetPositionX (/* out */ double* positionX) = 0;
+    virtual HRESULT SetPositionX (/* in */ double positionX) = 0;
+    virtual HRESULT GetPositionY (/* out */ double* positionY) = 0;
+    virtual HRESULT SetPositionY (/* in */ double positionY) = 0;
+    virtual HRESULT GetSize (/* out */ double* size) = 0;
+    virtual HRESULT SetSize (/* in */ double size) = 0;
+    virtual HRESULT GetCropped (/* out */ bool* cropped) = 0;
+    virtual HRESULT SetCropped (/* in */ bool cropped) = 0;
+    virtual HRESULT GetCropTop (/* out */ double* top) = 0;
+    virtual HRESULT SetCropTop (/* in */ double top) = 0;
+    virtual HRESULT GetCropBottom (/* out */ double* bottom) = 0;
+    virtual HRESULT SetCropBottom (/* in */ double bottom) = 0;
+    virtual HRESULT GetCropLeft (/* out */ double* left) = 0;
+    virtual HRESULT SetCropLeft (/* in */ double left) = 0;
+    virtual HRESULT GetCropRight (/* out */ double* right) = 0;
+    virtual HRESULT SetCropRight (/* in */ double right) = 0;
+    virtual HRESULT ResetCrop (void) = 0;
+    virtual HRESULT GetInputAvailabilityMask (/* in */ BMDSwitcherInputAvailability* mask) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherSuperSourceBoxCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherSuperSourceBoxCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherSuperSourceBox () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherInputSuperSourceCallback - SuperSource Input Object Callback */
+
+class IBMDSwitcherInputSuperSourceCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherInputSuperSourceEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherInputSuperSourceCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherInputSuperSource - SuperSource Input Object */
+
+class IBMDSwitcherInputSuperSource : public IUnknown
+{
+public:
+    virtual HRESULT GetInputCut (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputCut (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetInputFill (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputFill (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetArtOption (/* out */ BMDSwitcherSuperSourceArtOption* artOption) = 0;
+    virtual HRESULT SetArtOption (/* in */ BMDSwitcherSuperSourceArtOption artOption) = 0;
+    virtual HRESULT GetPreMultiplied (/* out */ bool* preMultiplied) = 0;
+    virtual HRESULT SetPreMultiplied (/* in */ bool preMultiplied) = 0;
+    virtual HRESULT GetClip (/* out */ double* clip) = 0;
+    virtual HRESULT SetClip (/* in */ double clip) = 0;
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetInverse (/* in */ bool* inverse) = 0;
+    virtual HRESULT SetInverse (/* in */ bool inverse) = 0;
+    virtual HRESULT GetInputAvailabilityMask (/* in */ BMDSwitcherInputAvailability* mask) = 0;
+    virtual HRESULT GetBorderEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetBorderEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetBorderBevel (/* out */ BMDSwitcherBorderBevelOption* bevelOption) = 0;
+    virtual HRESULT SetBorderBevel (/* in */ BMDSwitcherBorderBevelOption bevelOption) = 0;
+    virtual HRESULT GetBorderWidthOut (/* out */ double* widthOut) = 0;
+    virtual HRESULT SetBorderWidthOut (/* in */ double widthOut) = 0;
+    virtual HRESULT GetBorderWidthIn (/* out */ double* widthIn) = 0;
+    virtual HRESULT SetBorderWidthIn (/* in */ double widthIn) = 0;
+    virtual HRESULT GetBorderSoftnessOut (/* out */ double* softnessOut) = 0;
+    virtual HRESULT SetBorderSoftnessOut (/* in */ double softnessOut) = 0;
+    virtual HRESULT GetBorderSoftnessIn (/* out */ double* softnessIn) = 0;
+    virtual HRESULT SetBorderSoftnessIn (/* in */ double softnessIn) = 0;
+    virtual HRESULT GetBorderBevelSoftness (/* out */ double* bevelSoftness) = 0;
+    virtual HRESULT SetBorderBevelSoftness (/* in */ double bevelSoftness) = 0;
+    virtual HRESULT GetBorderBevelPosition (/* out */ double* bevelPosition) = 0;
+    virtual HRESULT SetBorderBevelPosition (/* in */ double bevelPosition) = 0;
+    virtual HRESULT GetBorderHue (/* out */ double* hue) = 0;
+    virtual HRESULT SetBorderHue (/* in */ double hue) = 0;
+    virtual HRESULT GetBorderSaturation (/* out */ double* sat) = 0;
+    virtual HRESULT SetBorderSaturation (/* in */ double sat) = 0;
+    virtual HRESULT GetBorderLuma (/* out */ double* luma) = 0;
+    virtual HRESULT SetBorderLuma (/* in */ double luma) = 0;
+    virtual HRESULT GetBorderLightSourceDirection (/* out */ double* degrees) = 0;
+    virtual HRESULT SetBorderLightSourceDirection (/* in */ double degrees) = 0;
+    virtual HRESULT GetBorderLightSourceAltitude (/* out */ double* altitude) = 0;
+    virtual HRESULT SetBorderLightSourceAltitude (/* in */ double altitude) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherInputSuperSourceCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherInputSuperSourceCallback* callback) = 0;
+    virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+
+protected:
+    virtual ~IBMDSwitcherInputSuperSource () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMultiViewCallback - MultiView Object Callback */
+
+class IBMDSwitcherMultiViewCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherMultiViewEventType eventType, /* in */ int32_t window) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMultiViewCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMultiView - MultiView Object */
+
+class IBMDSwitcherMultiView : public IUnknown
+{
+public:
+    virtual HRESULT GetLayout (/* out */ BMDSwitcherMultiViewLayout* layout) = 0;
+    virtual HRESULT SetLayout (/* in */ BMDSwitcherMultiViewLayout layout) = 0;
+    virtual HRESULT GetWindowInput (/* in */ uint32_t window, /* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetWindowInput (/* in */ uint32_t window, /* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetWindowCount (/* out */ uint32_t* windowCount) = 0;
+    virtual HRESULT GetInputAvailabilityMask (/* out */ BMDSwitcherInputAvailability* availabilityMask) = 0;
+    virtual HRESULT CanRouteInputs (/* out */ bool* canRoute) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherMultiViewCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMultiViewCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMultiView () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherDownstreamKeyCallback - Downstream Key Object Callback */
+
+class IBMDSwitcherDownstreamKeyCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherDownstreamKeyEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherDownstreamKeyCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherDownstreamKey - Downstream Key Object */
+
+class IBMDSwitcherDownstreamKey : public IUnknown
+{
+public:
+    virtual HRESULT GetInputCut (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputCut (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetInputFill (/* out */ BMDSwitcherInputId* input) = 0;
+    virtual HRESULT SetInputFill (/* in */ BMDSwitcherInputId input) = 0;
+    virtual HRESULT GetTie (/* out */ bool* tie) = 0;
+    virtual HRESULT SetTie (/* in */ bool tie) = 0;
+    virtual HRESULT GetRate (/* out */ uint32_t* frames) = 0;
+    virtual HRESULT SetRate (/* in */ uint32_t frames) = 0;
+    virtual HRESULT GetOnAir (/* out */ bool* onAir) = 0;
+    virtual HRESULT SetOnAir (/* in */ bool onAir) = 0;
+    virtual HRESULT PerformAutoTransition (void) = 0;
+    virtual HRESULT IsTransitioning (/* out */ bool* isTransitioning) = 0;
+    virtual HRESULT IsAutoTransitioning (/* out */ bool* isAutoTransitioning) = 0;
+    virtual HRESULT GetFramesRemaining (/* out */ uint32_t* framesRemaining) = 0;
+    virtual HRESULT GetPreMultiplied (/* out */ bool* preMultiplied) = 0;
+    virtual HRESULT SetPreMultiplied (/* in */ bool preMultiplied) = 0;
+    virtual HRESULT GetClip (/* out */ double* clip) = 0;
+    virtual HRESULT SetClip (/* in */ double clip) = 0;
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetInverse (/* in */ bool* inverse) = 0;
+    virtual HRESULT SetInverse (/* in */ bool inverse) = 0;
+    virtual HRESULT GetMasked (/* out */ bool* maskEnabled) = 0;
+    virtual HRESULT SetMasked (/* in */ bool maskEnabled) = 0;
+    virtual HRESULT GetMaskTop (/* out */ double* top) = 0;
+    virtual HRESULT SetMaskTop (/* in */ double top) = 0;
+    virtual HRESULT GetMaskBottom (/* out */ double* bottom) = 0;
+    virtual HRESULT SetMaskBottom (/* in */ double bottom) = 0;
+    virtual HRESULT GetMaskLeft (/* out */ double* left) = 0;
+    virtual HRESULT SetMaskLeft (/* in */ double left) = 0;
+    virtual HRESULT GetMaskRight (/* out */ double* right) = 0;
+    virtual HRESULT SetMaskRight (/* in */ double right) = 0;
+    virtual HRESULT ResetMask (void) = 0;
+    virtual HRESULT GetInputAvailabilityMask (/* out */ BMDSwitcherInputAvailability* availabilityMask) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherDownstreamKeyCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherDownstreamKeyCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherDownstreamKey () {}; // call Release method to drop reference count
+};
+
 /* Interface IBMDSwitcherInputIterator - Input Iterator */
 
 class IBMDSwitcherInputIterator : public IUnknown
@@ -205,6 +1737,17 @@ protected:
     virtual ~IBMDSwitcherInputIterator () {}; // call Release method to drop reference count
 };
 
+/* Interface IBMDSwitcherSuperSourceBoxIterator - SuperSource Box Iterator */
+
+class IBMDSwitcherSuperSourceBoxIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherSuperSourceBox** box) = 0;
+
+protected:
+    virtual ~IBMDSwitcherSuperSourceBoxIterator () {}; // call Release method to drop reference count
+};
+
 /* Interface IBMDSwitcherMixEffectBlockIterator - Mix Effect Block Iterator */
 
 class IBMDSwitcherMixEffectBlockIterator : public IUnknown
@@ -214,6 +1757,73 @@ public:
 
 protected:
     virtual ~IBMDSwitcherMixEffectBlockIterator () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherDownstreamKeyIterator - Downstream Key Iterator */
+
+class IBMDSwitcherDownstreamKeyIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherDownstreamKey** downstreamKey) = 0;
+
+protected:
+    virtual ~IBMDSwitcherDownstreamKeyIterator () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyIterator - Key Iterator */
+
+class IBMDSwitcherKeyIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherKey** key) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyIterator () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMediaPlayerIterator - Media Player Iterator */
+
+class IBMDSwitcherMediaPlayerIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherMediaPlayer** mediaPlayer) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMediaPlayerIterator () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMultiViewIterator - MultiView Iterator */
+
+class IBMDSwitcherMultiViewIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherMultiView** multiView) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMultiViewIterator () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioMonitorOutputIterator - Audio Monitor Output Iterator */
+
+class IBMDSwitcherAudioMonitorOutputIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherAudioMonitorOutput** audioMonitorOutput) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioMonitorOutputIterator () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioInputIterator - Audio Input Iterator */
+
+class IBMDSwitcherAudioInputIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherAudioInput** audioInput) = 0;
+    virtual HRESULT GetById (/* in */ BMDSwitcherAudioInputId audioInputId, /* out */ IBMDSwitcherAudioInput** audioInput) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioInputIterator () {}; // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherCallback - Switcher Callback Delegate */
@@ -258,6 +1868,151 @@ public:
 
 protected:
     virtual ~IBMDSwitcherDiscovery () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFrame - Frame */
+
+class IBMDSwitcherFrame : public IUnknown
+{
+public:
+    virtual int32_t GetWidth (void) = 0;
+    virtual int32_t GetHeight (void) = 0;
+    virtual int32_t GetRowBytes (void) = 0;
+    virtual BMDSwitcherPixelFormat GetPixelFormat (void) = 0;
+    virtual HRESULT GetBytes (/* out */ void** buffer) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFrame () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudio - Audio */
+
+class IBMDSwitcherAudio : public IUnknown
+{
+public:
+    virtual int32_t GetSize (void) = 0;
+    virtual HRESULT GetBytes (/* out */ void** buffer) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudio () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherLockCallback - Lock Callback Delegate */
+
+class IBMDSwitcherLockCallback : public IUnknown
+{
+public:
+    virtual HRESULT Obtained (void) = 0;
+
+protected:
+    virtual ~IBMDSwitcherLockCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherStillsCallback - Stills Callback Delegate */
+
+class IBMDSwitcherStillsCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherMediaPoolEventType eventType, /* in */ IBMDSwitcherFrame* frame, /* in */ int32_t index) = 0;
+
+protected:
+    virtual ~IBMDSwitcherStillsCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherStills - Stills */
+
+class IBMDSwitcherStills : public IUnknown
+{
+public:
+    virtual HRESULT GetCount (/* out */ uint32_t* count) = 0;
+    virtual HRESULT IsValid (/* in */ uint32_t index, /* out */ bool* valid) = 0;
+    virtual HRESULT GetName (/* in */ uint32_t index, /* out */ CFStringRef* name) = 0;
+    virtual HRESULT GetHash (/* in */ uint32_t index, /* out */ BMDSwitcherHash* hash) = 0;
+    virtual HRESULT SetInvalid (/* in */ uint32_t index) = 0;
+    virtual HRESULT Lock (/* in */ IBMDSwitcherLockCallback* lockCallback) = 0;
+    virtual HRESULT Unlock (/* in */ IBMDSwitcherLockCallback* lockCallback) = 0;
+    virtual HRESULT Upload (/* in */ uint32_t index, /* in */ CFStringRef name, /* in */ IBMDSwitcherFrame* frame) = 0;
+    virtual HRESULT Download (/* in */ uint32_t index) = 0;
+    virtual HRESULT CancelTransfer (void) = 0;
+    virtual HRESULT GetProgress (/* out */ double* progress) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherStillsCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherStillsCallback* callback) = 0;
+};
+
+/* Interface IBMDSwitcherClipCallback - Clip Callback Delegate */
+
+class IBMDSwitcherClipCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherMediaPoolEventType eventType, /* in */ IBMDSwitcherFrame* frame, /* in */ int32_t frameIndex, /* in */ IBMDSwitcherAudio* audio, /* in */ int32_t clipIndex) = 0;
+
+protected:
+    virtual ~IBMDSwitcherClipCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherClip - Clip */
+
+class IBMDSwitcherClip : public IUnknown
+{
+public:
+    virtual HRESULT GetIndex (/* out */ uint32_t* index) = 0;
+    virtual HRESULT IsValid (/* out */ bool* valid) = 0;
+    virtual HRESULT GetName (/* out */ CFStringRef* name) = 0;
+    virtual HRESULT SetValid (/* in */ CFStringRef name, /* in */ uint32_t frameCount) = 0;
+    virtual HRESULT SetInvalid (void) = 0;
+    virtual HRESULT GetFrameCount (/* out */ uint32_t* frameCount) = 0;
+    virtual HRESULT GetMaxFrameCount (/* out */ uint32_t* maxFrameCount) = 0;
+    virtual HRESULT IsFrameValid (/* in */ uint32_t frameIndex, /* out */ bool* valid) = 0;
+    virtual HRESULT GetFrameHash (/* in */ uint32_t frameIndex, /* out */ BMDSwitcherHash* hash) = 0;
+    virtual HRESULT IsAudioValid (/* out */ bool* valid) = 0;
+    virtual HRESULT GetAudioName (/* out */ CFStringRef* name) = 0;
+    virtual HRESULT GetAudioHash (/* out */ BMDSwitcherHash* hash) = 0;
+    virtual HRESULT SetAudioInvalid (void) = 0;
+    virtual HRESULT Lock (/* in */ IBMDSwitcherLockCallback* lockCallback) = 0;
+    virtual HRESULT Unlock (/* in */ IBMDSwitcherLockCallback* lockCallback) = 0;
+    virtual HRESULT UploadFrame (/* in */ uint32_t frameIndex, /* in */ IBMDSwitcherFrame* frame) = 0;
+    virtual HRESULT DownloadFrame (/* in */ uint32_t frameIndex) = 0;
+    virtual HRESULT UploadAudio (/* in */ CFStringRef name, /* in */ IBMDSwitcherAudio* audio) = 0;
+    virtual HRESULT DownloadAudio (void) = 0;
+    virtual HRESULT CancelTransfer (void) = 0;
+    virtual HRESULT GetProgress (/* out */ double* progress) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherClipCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherClipCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherClip () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMediaPoolCallback - Media Pool Callback Delegate */
+
+class IBMDSwitcherMediaPoolCallback : public IUnknown
+{
+public:
+    virtual HRESULT ClipFrameMaxCountsChanged (void) = 0;
+    virtual HRESULT FrameTotalForClipsChanged (void) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMediaPoolCallback () {}; // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMediaPool - Frame Pool for Media Players */
+
+class IBMDSwitcherMediaPool : public IUnknown
+{
+public:
+    virtual HRESULT GetStills (/* out */ IBMDSwitcherStills** stills) = 0;
+    virtual HRESULT GetClip (/* in */ uint32_t clipIndex, /* out */ IBMDSwitcherClip** clip) = 0;
+    virtual HRESULT GetClipCount (/* out */ uint32_t* clipCount) = 0;
+    virtual HRESULT CreateFrame (/* in */ BMDSwitcherPixelFormat pixelFormat, /* in */ uint32_t width, /* in */ uint32_t height, /* out */ IBMDSwitcherFrame** frame) = 0;
+    virtual HRESULT CreateAudio (/* in */ uint32_t sizeBytes, /* out */ IBMDSwitcherAudio** audio) = 0;
+    virtual HRESULT GetFrameTotalForClips (/* out */ uint32_t* total) = 0;
+    virtual HRESULT GetClipMaxFrameCounts (/* in */ uint32_t clipCount, /* out */ uint32_t* clipMaxFrameCounts) = 0; // one array element per clip, each element holds the maximum frame count
+    virtual HRESULT SetClipMaxFrameCounts (/* in */ uint32_t clipCount, /* in */ const uint32_t* clipMaxFrameCounts) = 0; // one array element per clip, each element holds the maximum frame count
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherMediaPoolCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMediaPoolCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMediaPool () {}; // call Release method to drop reference count
 };
 
 /* Functions */

@@ -259,6 +259,7 @@ private:
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+
 	mSwitcherDiscovery = NULL;
 	mSwitcher = NULL;
 	mMixEffectBlock = NULL;
@@ -361,9 +362,27 @@ private:
 
     BMDSwitcherInputId InputId = channel;
     if (program) {
-        mMixEffectBlock->SetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, InputId);
+        @try {
+            mMixEffectBlock->SetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, InputId);
+        }
+        @catch (NSException *exception) {
+            NSAlert *alert = [[NSAlert alloc] init];
+            [alert setMessageText:exception.name];
+            [alert runModal];
+        }
+
+        
     } else {
-        mMixEffectBlock->SetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, InputId);
+        @try {
+            mMixEffectBlock->SetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, InputId);
+        }
+        @catch (NSException *exception) {
+            NSAlert *alert = [[NSAlert alloc] init];
+            [alert setMessageText:exception.name];
+            [alert runModal];
+        }
+
+        
     }
 }
 
@@ -389,7 +408,7 @@ private:
 - (IBAction)tallyChanged:(id)sender {
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    [prefs setObject:[NSString stringWithFormat:@"%d",[[sender selectedItem] tag]] forKey:[NSString stringWithFormat:@"tally%ld",[sender tag]] ];
+    [prefs setObject:[NSString stringWithFormat:@"%ld",(long)[[sender selectedItem] tag]] forKey:[NSString stringWithFormat:@"tally%ld",(long)[sender tag]] ];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
