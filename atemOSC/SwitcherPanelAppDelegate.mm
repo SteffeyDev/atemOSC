@@ -337,6 +337,32 @@ private:
                [[address objectAtIndex:2] isEqualToString:@"transition"] &&
                [[address objectAtIndex:3] isEqualToString:@"ftb"]) {
         mMixEffectBlock->PerformFadeToBlack();
+    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+               [[address objectAtIndex:2] isEqualToString:@"nextusk"]) {
+        switch ([[address objectAtIndex:3] intValue]) {
+            case 0:
+                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground); break;
+            case 1:
+                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey1); break;
+            case 2:
+                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey2); break;
+            case 3:
+                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey3); break;
+            case 4:
+                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey4); break;
+            default:
+                break;
+        }
+    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+               [[address objectAtIndex:2] isEqualToString:@"usk"]) {
+        int t = [[address objectAtIndex:3] intValue];
+        
+        if (t<keyers.size()) {
+            std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
+            std::advance(iter, t);
+            IBMDSwitcherKey * key = *iter;
+            key->SetOnAir(YES);
+        }
     }
 
         
@@ -364,6 +390,7 @@ private:
     if (program) {
         @try {
             mMixEffectBlock->SetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, InputId);
+            
         }
         @catch (NSException *exception) {
             NSAlert *alert = [[NSAlert alloc] init];
@@ -439,6 +466,71 @@ private:
 //
 // Actions
 //
+
+
+- (IBAction)helpButtonPressed:(id)sender {
+    
+    if ([sender tag] == 1) {
+        
+        if ([[tallyA itemArray] count]>0) {
+            //set helptext
+            [heltTextView setAlignment:NSLeftTextAlignment];
+            
+            NSMutableAttributedString * helpString = [[NSMutableAttributedString alloc] initWithString:@""];
+            int i = 0;
+            NSDictionary *infoAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Monaco" traits:NSUnboldFontMask|NSUnitalicFontMask weight:5 size:12]};
+            NSDictionary *addressAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:5 size:12]};
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"Transitions:\n" attributes:addressAttribute]];
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tT-Bar: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/bar\n" attributes:infoAttribute]];
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tCut: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/cut\n" attributes:infoAttribute]];
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tAuto-Cut: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/auto\n" attributes:infoAttribute]];
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tFade-to-black: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/ftb\n" attributes:infoAttribute]];
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nUpstream Keyers:\n" attributes:addressAttribute]];
+            for (int i = 0; i<keyers.size();i++) {
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tOn Air KEY %d: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/usk/%d\n",i+1] attributes:infoAttribute]];
+                i++;
+            }
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tBKGD: "] attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem//0\n"] attributes:infoAttribute]];
+            for (int i = 0; i<keyers.size();i++) {
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tKEY %d: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/nextusk/%d\n",i+1] attributes:infoAttribute]];
+                i++;
+            }
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSources:\n" attributes:addressAttribute]];
+            
+            for (NSMenuItem *a in [tallyA itemArray]) {
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ",[a title]] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%d\n",i] attributes:infoAttribute]];
+                i++;
+            }
+            
+            
+            
+            [helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
+            [[heltTextView textStorage] setAttributedString:helpString];
+        }
+        helpPanel.isVisible = YES;
+    } else if ([sender tag]==2) {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/danielbuechele/atemOSC/"]];
+    }
+    
+}
+
+
+
 - (IBAction)connectButtonPressed:(id)sender
 {
 	NSString* address = [mAddressTextField stringValue];
@@ -526,21 +618,43 @@ private:
 		inputIterator = NULL;
 	}
 		
+    
+
+
+    
+    
 	// Get the mix effect block iterator
 	result = mSwitcher->CreateIterator(IID_IBMDSwitcherMixEffectBlockIterator, (void**)&iterator);
 	if (FAILED(result))
 	{
 		NSLog(@"Could not create IBMDSwitcherMixEffectBlockIterator iterator");
-		goto finish;
+		return;
 	}
 	
 	// Use the first Mix Effect Block
 	if (S_OK != iterator->Next(&mMixEffectBlock))
 	{
 		NSLog(@"Could not get the first IBMDSwitcherMixEffectBlock");
-		goto finish;
+		return;
 	}
-	
+    
+    
+    IBMDSwitcherKeyIterator* keyIterator = NULL;
+    result = mMixEffectBlock->CreateIterator(IID_IBMDSwitcherKeyIterator, (void**)&keyIterator);
+    
+    IBMDSwitcherKey* key = NULL;
+    
+    
+    while (S_OK == keyIterator->Next(&key)) {
+        keyers.push_back(key);
+    }
+    keyIterator->Release();
+    keyIterator = NULL;
+    
+    switcherTransitionParameters = NULL;
+    mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
+    
+    
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
 	
 	[self mixEffectBlockBoxSetEnabled:YES];
@@ -616,7 +730,7 @@ finish:
 	{
 		NSString* name;
 		BMDSwitcherInputId id;
-
+        
         
         
 		input->GetInputId(&id);
@@ -649,7 +763,7 @@ finish:
     
     
     
-	
+    
 	[self updateProgramButtonSelection];
 	[self updatePreviewButtonSelection];
 }

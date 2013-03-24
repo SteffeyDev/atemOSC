@@ -48,8 +48,12 @@ class InputMonitor;
 	IBMDSwitcher*				mSwitcher;
 	IBMDSwitcherMixEffectBlock*	mMixEffectBlock;
 	MixEffectBlockMonitor*		mMixEffectBlockMonitor;
+    IBMDSwitcherTransitionParameters* switcherTransitionParameters;
+    IBMDSwitcherKeyFlyParameters*	mDVEControl;
 	SwitcherMonitor*			mSwitcherMonitor;
 	std::list<InputMonitor*>	mInputMonitors;
+    std::list<IBMDSwitcherKey*>	keyers;
+
 	bool						mMoveSliderDownwards;
 	bool						mCurrentTransitionReachedHalfway;
     
@@ -71,6 +75,10 @@ class InputMonitor;
     IBOutlet NSPopUpButton *tallyC;
     IBOutlet NSPopUpButton *tallyD;
     
+    IBOutlet NSButton *helpButton;
+    IBOutlet NSPanel *helpPanel;
+    IBOutlet NSTextView *heltTextView;
+    
     
     AMSerialPort *port;
     IBOutlet NSPopUpButton	*serialSelectMenu;
@@ -81,6 +89,7 @@ class InputMonitor;
 
 - (IBAction)connectButtonPressed:(id)sender;
 - (IBAction)portChanged:(id)sender;
+- (IBAction)helpButtonPressed:(id)sender;
 
 - (void)switcherConnected;
 - (void)switcherDisconnected;

@@ -1,6 +1,11 @@
-atemOSC v2.1
-============
+# atemOSC v2.2
 
+## Changelog
+ - added support for controlling Upstream Keyers
+ - supports all available input-sources, depending on your switcher
+ - added help-menu with all OSC-addresses available
+
+## Features
 This is a Mac OS X application, providing an interface to control an ATEM video switcher via OSC. 
 The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blackmagic. 	Additionally the control of a tally-light interface via Arduino is provided.
 
@@ -21,7 +26,8 @@ Program and preview selection as well as transition control are exposed via foll
  - **Cam 4** `/atem/program/4`
  - **Cam 5** `/atem/program/5`
  - **Cam 6** `/atem/program/6`
-
+ - and so on...
+  
  - **Black** `/atem/program/0`
  - **Bars** `/atem/program/7`
  - **Color 1** `/atem/program/8`
@@ -36,8 +42,13 @@ For preview selection `/atem/preview/$i` can be used.
  - **auto** `/atem/transition/auto`
  - **fade-to-black** `/atem/transition/ftb`
  
-All OSC-addresses expect float-values between 0.0 and 1.0.
+ - **Upstream Keyer 1** `/atem/usk/1` (up to `/atem/usk/4`, depends on your ATEM switcher)
+ - **Prepate Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
  
+ 
+All OSC-addresses expect float-values between 0.0 and 1.0.
+**A full overview of all OSC-addresses available for your switcher can be obtained from the help-menu inside the application.**
+
 ----------
 
 I am using this software with TouchOSC on the iPad. An TouchOSC-interface for the iPad can be found in the repository as well.
