@@ -1,6 +1,10 @@
-# atemOSC v2.2
+# atemOSC v2.2.1
 
-## Changelog
+
+## Changelog v2.2.1
+ - support for Mac OS 10.7 (updated binary)
+
+## Changelog v2.2
  - added support for controlling Upstream Keyers
  - supports all available input-sources, depending on your switcher
  - added help-menu with all OSC-addresses available
@@ -43,7 +47,7 @@ For preview selection `/atem/preview/$i` can be used.
  - **fade-to-black** `/atem/transition/ftb`
  
  - **Upstream Keyer 1** `/atem/usk/1` (up to `/atem/usk/4`, depends on your ATEM switcher)
- - **Prepate Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
+ - **Prepare Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
  
  
 All OSC-addresses expect float-values between 0.0 and 1.0.
