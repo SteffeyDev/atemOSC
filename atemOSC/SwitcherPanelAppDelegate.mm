@@ -357,11 +357,14 @@ private:
                [[address objectAtIndex:2] isEqualToString:@"usk"]) {
         int t = [[address objectAtIndex:3] intValue];
         
-        if (t<keyers.size()) {
+        if (t<=keyers.size()) {
+            
             std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
-            std::advance(iter, t);
+            std::advance(iter, t-1);
             IBMDSwitcherKey * key = *iter;
-            key->SetOnAir(YES);
+            bool onAir;
+            key->GetOnAir(&onAir);
+            key->SetOnAir(!onAir);
         }
     }
 
