@@ -1,5 +1,5 @@
 /* -LICENSE-START-
-** Copyright (c) 2012 Blackmagic Design
+** Copyright (c) 2013 Blackmagic Design
 **
 ** Permission is hereby granted, free of charge, to any person or organization
 ** obtaining a copy of the software and accompanying documentation covered by
@@ -37,7 +37,7 @@ static pthread_once_t						gBMDSwitcherOnceControl		= PTHREAD_ONCE_INIT;
 static CFBundleRef							gBundleRef					= NULL;
 static CreateDiscoveryFunc					gCreateDiscoveryFunc		= NULL;
 
-void	InitBMDSwitcherAPI (void)
+static void	InitBMDSwitcherAPI (void)
 {
 	CFURLRef		bundleURL;
 	
@@ -47,7 +47,7 @@ void	InitBMDSwitcherAPI (void)
 		gBundleRef = CFBundleCreate(kCFAllocatorDefault, bundleURL);
 		if (gBundleRef != NULL)
 		{
-			gCreateDiscoveryFunc = (CreateDiscoveryFunc)CFBundleGetFunctionPointerForName(gBundleRef, CFSTR("GetBMDSwitcherDiscoveryInstance_0000"));
+			gCreateDiscoveryFunc = (CreateDiscoveryFunc)CFBundleGetFunctionPointerForName(gBundleRef, CFSTR("GetBMDSwitcherDiscoveryInstance_0001"));
 		}
 		CFRelease(bundleURL);
 	}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>E3833049-019E-4867-BE57-14B0C9AC6DED</string>
+	<key>IDESourceControlProjectName</key>
+	<string>atemOSC</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>982A40DE-2617-4411-A7E9-839AC2D72ECE</key>
+		<string>https://github.com/danielbuechele/atemOSC.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>atemOSC/atemOSC.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>982A40DE-2617-4411-A7E9-839AC2D72ECE</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/danielbuechele/atemOSC.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>982A40DE-2617-4411-A7E9-839AC2D72ECE</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>982A40DE-2617-4411-A7E9-839AC2D72ECE</string>
+			<key>IDESourceControlWCCName</key>
+			<string>atemOSC</string>
+		</dict>
+	</array>
+</dict>
+</plist>

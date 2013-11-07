@@ -1,4 +1,11 @@
-# atemOSC v2.2.2
+# atemOSC v2.3.0
+
+## Changelog v2.3.0
+ - bugfixes
+ - using Blackmagic SDK 4.2
+ - enhancements for Mac OS 10.9
+
+**Important for Mavericks user:** When atemOSC enters background it possible is disabled by "App Nap". To prevent this, open the get info dialog of the application and activate "Prevent App Nap".
 
 ## Changelog v2.2.2
  - fixed numbering of upstream keyers
@@ -51,7 +58,8 @@ For preview selection `/atem/preview/$i` can be used.
  
  - **Toggle Upstream Keyer 1** `/atem/usk/1` (up to `/atem/usk/4`, depends on your ATEM switcher)
  - **Prepare Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
- 
+
+ - **Toggle Downstreamkeyer 1** `/atem/dsk/1` (up to `/atem/dsk/4`, depends on your ATEM switcher)
  
 All OSC-addresses expect float-values between 0.0 and 1.0.
 **A full overview of all OSC-addresses available for your switcher can be obtained from the help-menu inside the application.**

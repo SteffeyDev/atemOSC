@@ -53,6 +53,7 @@ class InputMonitor;
 	SwitcherMonitor*			mSwitcherMonitor;
 	std::list<InputMonitor*>	mInputMonitors;
     std::list<IBMDSwitcherKey*>	keyers;
+    std::list<IBMDSwitcherDownstreamKey*>	dsk;
 
 	bool						mMoveSliderDownwards;
 	bool						mCurrentTransitionReachedHalfway;

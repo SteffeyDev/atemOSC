@@ -32,7 +32,7 @@
 #import "AMSerialPortAdditions.h"
 
 static inline bool	operator== (const REFIID& iid1, const REFIID& iid2)
-{ 
+{
 	return CFEqual(&iid1, &iid2);
 }
 
@@ -41,10 +41,10 @@ class MixEffectBlockMonitor : public IBMDSwitcherMixEffectBlockCallback
 {
 public:
 	MixEffectBlockMonitor(SwitcherPanelAppDelegate* uiDelegate) : mUiDelegate(uiDelegate), mRefCount(1) { }
-
+    
 protected:
 	virtual ~MixEffectBlockMonitor() { }
-
+    
 public:
 	HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
 	{
@@ -68,12 +68,12 @@ public:
 		*ppv = NULL;
 		return E_NOINTERFACE;
 	}
-
+    
 	ULONG STDMETHODCALLTYPE AddRef(void)
 	{
 		return ::OSAtomicIncrement32(&mRefCount);
 	}
-
+    
 	ULONG STDMETHODCALLTYPE Release(void)
 	{
 		int newCount = ::OSAtomicDecrement32(&mRefCount);
@@ -109,7 +109,7 @@ public:
 		}
 		return S_OK;
 	}
-
+    
 private:
 	SwitcherPanelAppDelegate*		mUiDelegate;
 	int								mRefCount;
@@ -125,7 +125,7 @@ public:
 		mInput->AddRef();
 		mInput->AddCallback(this);
 	}
-
+    
 protected:
 	~InputMonitor()
 	{
@@ -157,12 +157,12 @@ public:
 		*ppv = NULL;
 		return E_NOINTERFACE;
 	}
-
+    
 	ULONG STDMETHODCALLTYPE AddRef(void)
 	{
 		return ::OSAtomicIncrement32(&mRefCount);
 	}
-
+    
 	ULONG STDMETHODCALLTYPE Release(void)
 	{
 		int newCount = ::OSAtomicDecrement32(&mRefCount);
@@ -170,7 +170,7 @@ public:
 			delete this;
 		return newCount;
 	}
-
+    
 	HRESULT PropertyChanged(BMDSwitcherInputPropertyId propertyId)
 	{
 		switch (propertyId)
@@ -196,7 +196,7 @@ class SwitcherMonitor : public IBMDSwitcherCallback
 {
 public:
 	SwitcherMonitor(SwitcherPanelAppDelegate* uiDelegate) :	mUiDelegate(uiDelegate), mRefCount(1) { }
-
+    
 protected:
 	virtual ~SwitcherMonitor() { }
 	
@@ -224,12 +224,12 @@ public:
 		*ppv = NULL;
 		return E_NOINTERFACE;
 	}
-
+    
 	ULONG STDMETHODCALLTYPE AddRef(void)
 	{
 		return ::OSAtomicIncrement32(&mRefCount);
 	}
-
+    
 	ULONG STDMETHODCALLTYPE Release(void)
 	{
 		int newCount = ::OSAtomicDecrement32(&mRefCount);
@@ -238,8 +238,8 @@ public:
 		return newCount;
 	}
 	
-	// Switcher Property changes ignored by this sample app
-	HRESULT STDMETHODCALLTYPE	PropertyChanged(BMDSwitcherPropertyId propId) { return S_OK; }
+	// Switcher events ignored by this sample app
+	HRESULT STDMETHODCALLTYPE	Notify(BMDSwitcherEventType eventType) { return S_OK; }
 	
 	HRESULT STDMETHODCALLTYPE	Disconnected(void)
 	{
@@ -359,12 +359,29 @@ private:
         
         if (t<=keyers.size()) {
             
-            std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
+            if ([[m value] floatValue] != 0.0) {
+                std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
+                std::advance(iter, t-1);
+                IBMDSwitcherKey * key = *iter;
+                bool onAir;
+                key->GetOnAir(&onAir);
+                key->SetOnAir(!onAir);
+                NSLog(@"dsk on %@",m);
+            }
+        }
+    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+               [[address objectAtIndex:2] isEqualToString:@"dsk"]) {
+        int t = [[address objectAtIndex:3] intValue];
+        
+        if (t<=dsk.size()) {
+            
+            std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
             std::advance(iter, t-1);
-            IBMDSwitcherKey * key = *iter;
-            bool onAir;
-            key->GetOnAir(&onAir);
-            key->SetOnAir(!onAir);
+            IBMDSwitcherDownstreamKey * key = *iter;
+            
+            bool isTransitioning;
+            key->IsAutoTransitioning(&isTransitioning);
+            if (!isTransitioning) key->PerformAutoTransition();
         }
     }
 
@@ -502,15 +519,22 @@ private:
             for (int i = 0; i<keyers.size();i++) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tOn Air KEY %d: ",i+1] attributes:addressAttribute]];
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/usk/%d\n",i+1] attributes:infoAttribute]];
-                i++;
             }
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tBKGD: "] attributes:addressAttribute]];
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem//0\n"] attributes:infoAttribute]];
             for (int i = 0; i<keyers.size();i++) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tKEY %d: ",i+1] attributes:addressAttribute]];
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/nextusk/%d\n",i+1] attributes:infoAttribute]];
-                i++;
             }
+            
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nDownstream Keyers:\n" attributes:addressAttribute]];
+            for (int i = 0; i<dsk.size();i++) {
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAuto-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/%d\n",i+1] attributes:infoAttribute]];
+            }
+
+            
             
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSources:\n" attributes:addressAttribute]];
             
@@ -536,14 +560,14 @@ private:
 
 - (IBAction)connectButtonPressed:(id)sender
 {
+
 	NSString* address = [mAddressTextField stringValue];
-    
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     [prefs setObject:address forKey:@"atem"];    
     [prefs synchronize];
-	
+
 	BMDSwitcherConnectToFailure			failReason;
-	
+
 	// Note that ConnectTo() can take several seconds to return, both for success or failure,
 	// depending upon hostname resolution and network response times, so it may be best to
 	// do this in a separate thread to prevent the main GUI thread blocking.
@@ -580,6 +604,9 @@ private:
 	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
 	IBMDSwitcherInputIterator* inputIterator = NULL;
     
+    if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
+        [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
+    }
     
     OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
     [newMsg addFloat:1.0];
@@ -593,7 +620,7 @@ private:
     [redLight setHidden:YES];
 	
 	NSString* productName;
-	if (FAILED(mSwitcher->GetString(bmdSwitcherPropertyIdProductName, (CFStringRef*)&productName)))
+	if (FAILED(mSwitcher->GetProductName((CFStringRef*)&productName)))
 	{
 		NSLog(@"Could not get switcher product name");
 		return;
@@ -642,17 +669,28 @@ private:
 	}
     
     
+    //Upstream Keyer
     IBMDSwitcherKeyIterator* keyIterator = NULL;
     result = mMixEffectBlock->CreateIterator(IID_IBMDSwitcherKeyIterator, (void**)&keyIterator);
-    
     IBMDSwitcherKey* key = NULL;
-    
-    
     while (S_OK == keyIterator->Next(&key)) {
         keyers.push_back(key);
     }
     keyIterator->Release();
     keyIterator = NULL;
+    
+    
+    //Downstream Keyer
+    IBMDSwitcherDownstreamKeyIterator* dskIterator = NULL;
+    result = mSwitcher->CreateIterator(IID_IBMDSwitcherDownstreamKeyIterator, (void**)&dskIterator);
+    IBMDSwitcherDownstreamKey* downstreamKey = NULL;
+    while (S_OK == dskIterator->Next(&downstreamKey)) {
+        dsk.push_back(downstreamKey);
+    }
+    dskIterator->Release();
+    dskIterator = NULL;
+    
+    
     
     switcherTransitionParameters = NULL;
     mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
