@@ -87,6 +87,7 @@ class InputMonitor;
 }
 
 @property (assign) IBOutlet NSWindow *window;
+@property (strong) id activity;
 
 - (IBAction)connectButtonPressed:(id)sender;
 - (IBAction)portChanged:(id)sender;
