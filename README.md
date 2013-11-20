@@ -1,11 +1,12 @@
-# atemOSC v2.3.0
+# atemOSC v2.3.1
+
+## Changelog v2.3.1
+- prevent AppNap on Mavericks (thanks to @thetzel)
 
 ## Changelog v2.3.0
  - bugfixes
  - using Blackmagic SDK 4.2
  - enhancements for Mac OS 10.9
-
-**Important for Mavericks user:** When atemOSC enters background it possible is disabled by "App Nap". To prevent this, open the get info dialog of the application and activate "Prevent App Nap".
 
 ## Changelog v2.2.2
  - fixed numbering of upstream keyers
