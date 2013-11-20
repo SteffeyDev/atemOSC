@@ -605,7 +605,7 @@ private:
 	IBMDSwitcherInputIterator* inputIterator = NULL;
     
     if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
-        [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
+        self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
     }
     
     OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
@@ -711,7 +711,12 @@ finish:
 
 - (void)switcherDisconnected
 {
-	
+	if (self.activity) {
+        [[NSProcessInfo processInfo] endActivity:self.activity];
+    }
+    
+    self.activity = nil;
+    
     OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
     [newMsg addFloat:0.0];
     [outPort sendThisMessage:newMsg];
