@@ -1,4 +1,7 @@
-# atemOSC v2.3.1
+# atemOSC v2.3.2
+
+## Changelog v2.3.2
+- update to Blackmagic SDK 5.1
 
 ## Changelog v2.3.1
 - prevent AppNap on Mavericks (thanks to @thetzel)
