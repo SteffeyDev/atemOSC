@@ -263,6 +263,7 @@ private:
 	mSwitcherDiscovery = NULL;
 	mSwitcher = NULL;
 	mMixEffectBlock = NULL;
+	mMediaPool = NULL;
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
@@ -382,6 +383,30 @@ private:
             bool isTransitioning;
             key->IsAutoTransitioning(&isTransitioning);
             if (!isTransitioning) key->PerformAutoTransition();
+        }
+    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+               [[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
+        int mplayer = [[address objectAtIndex:3] intValue];
+        int still = [[address objectAtIndex:4] intValue];
+        
+        HRESULT result;
+        // check we have the media pool
+        if (! mMediaPool)
+        {
+            NSLog(@"No media pool\n");
+            return;
+        }
+        if (mMediaPlayers.size() < mplayer)
+        {
+            NSLog(@"No media player %d", mplayer);
+            return;
+        }
+        // set media player source
+        result = mMediaPlayers[mplayer-1]->SetSource(bmdSwitcherMediaPlayerSourceTypeStill, still);
+        if (FAILED(result))
+        {
+            NSLog(@"Could not set media player %d source\n", mplayer);
+            return;
         }
     }
 
@@ -603,6 +628,8 @@ private:
 	HRESULT result;
 	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
 	IBMDSwitcherInputIterator* inputIterator = NULL;
+	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
+	REFIID mediaPoolIID = IID_IBMDSwitcherMediaPool;
     
     if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
         self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
@@ -690,6 +717,25 @@ private:
     dskIterator->Release();
     dskIterator = NULL;
     
+	// get all media players
+	while (true)
+	{
+		IBMDSwitcherMediaPlayer* mediaPlayer = NULL;
+		result = mediaPlayerIterator->Next(&mediaPlayer);
+        while (S_OK == mediaPlayerIterator->Next(&mediaPlayer)) {
+            mMediaPlayers.push_back(mediaPlayer);
+        }
+	}
+    mediaPlayerIterator->Release();
+    mediaPlayerIterator = NULL;
+    
+	// get media pool
+	result = mSwitcher->QueryInterface(mediaPoolIID, (void**)&mMediaPool);
+	if (FAILED(result))
+	{
+		NSLog(@"Could not get IBMDSwitcherMediaPool interface\n");
+		goto finish;
+	}
     
     
     switcherTransitionParameters = NULL;

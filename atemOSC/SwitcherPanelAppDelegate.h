@@ -27,6 +27,7 @@
 
 #import "BMDSwitcherAPI.h"
 #import <list>
+#include <vector>
 
 #import <Cocoa/Cocoa.h>
 #import "VVOSC/VVOSC.h"
@@ -51,6 +52,8 @@ class InputMonitor;
     IBMDSwitcherTransitionParameters* switcherTransitionParameters;
     IBMDSwitcherKeyFlyParameters*	mDVEControl;
 	SwitcherMonitor*			mSwitcherMonitor;
+	IBMDSwitcherMediaPool*		mMediaPool;
+	std::vector<IBMDSwitcherMediaPlayer*>	mMediaPlayers;
 	std::list<InputMonitor*>	mInputMonitors;
     std::list<IBMDSwitcherKey*>	keyers;
     std::list<IBMDSwitcherDownstreamKey*>	dsk;
