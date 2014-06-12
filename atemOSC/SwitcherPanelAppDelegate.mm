@@ -402,7 +402,12 @@ private:
             return;
         }
         // set media player source
-        result = mMediaPlayers[mplayer-1]->SetSource(bmdSwitcherMediaPlayerSourceTypeStill, still);
+        
+        NSLog(@"Mdia size %d", mMediaPlayers.size());
+        NSLog(@"Got media pool request %d", mplayer-1);
+        NSLog(@"Got still request %d", still-1);
+        
+        result = mMediaPlayers[mplayer-1]->SetSource(bmdSwitcherMediaPlayerSourceTypeStill, still-1);
         if (FAILED(result))
         {
             NSLog(@"Could not set media player %d source\n", mplayer);
@@ -717,15 +722,18 @@ private:
     dskIterator->Release();
     dskIterator = NULL;
     
+    result = mSwitcher->CreateIterator(IID_IBMDSwitcherMediaPlayerIterator, (void**)&mediaPlayerIterator);
+    if (FAILED(result))
+    {
+        NSLog(@"Could not create IBMDSwitcherMediaPlayerIterator iterator\n");
+        //goto return;
+    }
+    
 	// get all media players
-	while (true)
-	{
 		IBMDSwitcherMediaPlayer* mediaPlayer = NULL;
-		result = mediaPlayerIterator->Next(&mediaPlayer);
         while (S_OK == mediaPlayerIterator->Next(&mediaPlayer)) {
             mMediaPlayers.push_back(mediaPlayer);
         }
-	}
     mediaPlayerIterator->Release();
     mediaPlayerIterator = NULL;
     
