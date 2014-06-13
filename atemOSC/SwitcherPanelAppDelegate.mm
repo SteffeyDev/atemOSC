@@ -387,27 +387,39 @@ private:
     } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                [[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
         int mplayer = [[address objectAtIndex:3] intValue];
-        int still = [[address objectAtIndex:4] intValue];
-        
-        HRESULT result;
+        NSString *type = [[address objectAtIndex:4] stringValue];
+        int requestedValue = [[address objectAtIndex:5] intValue];
+        BMDSwitcherMediaPlayerSourceType sourceType;
+
         // check we have the media pool
         if (! mMediaPool)
         {
             NSLog(@"No media pool\n");
             return;
         }
+
         if (mMediaPlayers.size() < mplayer)
         {
             NSLog(@"No media player %d", mplayer);
             return;
         }
+
+        if ([type isEqualToString:@"clip"])
+        {
+            sourceType = bmdSwitcherMediaPlayerSourceTypeClip;
+        }
+        else if ([type isEqualToString:@"still"])
+        {
+            sourceType = bmdSwitcherMediaPlayerSourceTypeStill;
+        }
+        else
+        {
+            NSLog(@"You must specify the Media type 'clip' or 'still'");
+            return;
+        }
         // set media player source
-        
-        NSLog(@"Mdia size %d", mMediaPlayers.size());
-        NSLog(@"Got media pool request %d", mplayer-1);
-        NSLog(@"Got still request %d", still-1);
-        
-        result = mMediaPlayers[mplayer-1]->SetSource(bmdSwitcherMediaPlayerSourceTypeStill, still-1);
+        HRESULT result;
+        result = mMediaPlayers[mplayer-1]->SetSource(sourceType, requestedValue-1);
         if (FAILED(result))
         {
             NSLog(@"Could not set media player %d source\n", mplayer);
@@ -574,7 +586,47 @@ private:
                 i++;
             }
             
-            
+            if (mMediaPlayers.size() > 0)
+            {
+                uint32_t clipCount;
+                uint32_t stillCount;
+                HRESULT result;
+                result = mMediaPool->GetClipCount(&clipCount);
+                if (FAILED(result))
+                {
+                    // the default number of clips
+                    clipCount = 2;
+                }
+                result = mMediaPool->GetStills(&mStills);
+                if (FAILED(result))
+                {
+                    // ATEM TVS only supports 20 stills, the others are 32
+                    stillCount = 20;
+                }
+                else
+                {
+                    result = mStills->GetCount(&stillCount);
+                    if (FAILED(result))
+                    {
+                        // ATEM TVS only supports 20 stills, the others are 32
+                        stillCount = 20;
+                    }
+                }
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"Media Players:\n" attributes:addressAttribute]];
+                for (int i = 0; i < mMediaPlayers.size(); i++)
+                {
+                    for (int j = 0; j < clipCount; j++)
+                    {
+                        [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet MP %d to Clip %d: ",i+1,j+1] attributes:  addressAttribute]];
+                        [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/mplayer/%d/clip/%d\n",i+1,j+1] attributes:infoAttribute]];
+                    }
+                    for (int j = 0; j < stillCount; j++)
+                    {
+                        [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet MP %d to Still %d: ",i+1,j+1] attributes:  addressAttribute]];
+                        [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/mplayer/%d/still/%d\n",i+1,j+1] attributes:infoAttribute]];
+                    }
+                }
+            }
             
             [helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
             [[heltTextView textStorage] setAttributedString:helpString];
@@ -721,19 +773,20 @@ private:
     }
     dskIterator->Release();
     dskIterator = NULL;
-    
+
+
+    // Media Players
     result = mSwitcher->CreateIterator(IID_IBMDSwitcherMediaPlayerIterator, (void**)&mediaPlayerIterator);
     if (FAILED(result))
     {
         NSLog(@"Could not create IBMDSwitcherMediaPlayerIterator iterator\n");
-        //goto return;
+        return;
     }
     
-	// get all media players
-		IBMDSwitcherMediaPlayer* mediaPlayer = NULL;
-        while (S_OK == mediaPlayerIterator->Next(&mediaPlayer)) {
-            mMediaPlayers.push_back(mediaPlayer);
-        }
+	IBMDSwitcherMediaPlayer* mediaPlayer = NULL;
+    while (S_OK == mediaPlayerIterator->Next(&mediaPlayer)) {
+        mMediaPlayers.push_back(mediaPlayer);
+    }
     mediaPlayerIterator->Release();
     mediaPlayerIterator = NULL;
     
@@ -742,7 +795,7 @@ private:
 	if (FAILED(result))
 	{
 		NSLog(@"Could not get IBMDSwitcherMediaPool interface\n");
-		goto finish;
+		return;
 	}
     
     

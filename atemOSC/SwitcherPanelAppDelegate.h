@@ -53,6 +53,7 @@ class InputMonitor;
     IBMDSwitcherKeyFlyParameters*	mDVEControl;
 	SwitcherMonitor*			mSwitcherMonitor;
 	IBMDSwitcherMediaPool*		mMediaPool;
+    IBMDSwitcherStills*			mStills;
 	std::vector<IBMDSwitcherMediaPlayer*>	mMediaPlayers;
 	std::list<InputMonitor*>	mInputMonitors;
     std::list<IBMDSwitcherKey*>	keyers;
