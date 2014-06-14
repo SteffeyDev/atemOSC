@@ -387,7 +387,7 @@ private:
     } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                [[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
         int mplayer = [[address objectAtIndex:3] intValue];
-        NSString *type = [[address objectAtIndex:4] stringValue];
+        NSString *type = [address objectAtIndex:4];
         int requestedValue = [[address objectAtIndex:5] intValue];
         BMDSwitcherMediaPlayerSourceType sourceType;
 
@@ -612,7 +612,7 @@ private:
                         stillCount = 20;
                     }
                 }
-                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"Media Players:\n" attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nMedia Players:\n" attributes:addressAttribute]];
                 for (int i = 0; i < mMediaPlayers.size(); i++)
                 {
                     for (int j = 0; j < clipCount; j++)
@@ -668,6 +668,15 @@ private:
 				break;
 			case bmdSwitcherConnectToFailureIncompatibleFirmware:
 				reason = @"Switcher has incompatible firmware";
+				break;
+			case bmdSwitcherConnectToFailureCorruptData:
+				reason = @"Corrupt data was received during connection attempt";
+				break;
+			case bmdSwitcherConnectToFailureStateSync:
+				reason = @"State synchronisation failed during connection attempt";
+				break;
+			case bmdSwitcherConnectToFailureStateSyncTimedOut:
+				reason = @"State synchronisation timed out during connection attempt";
 				break;
 			default:
 				reason = @"Connection failed for unknown reason";
