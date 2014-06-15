@@ -263,6 +263,7 @@ private:
 	mSwitcherDiscovery = NULL;
 	mSwitcher = NULL;
 	mMixEffectBlock = NULL;
+	mMediaPool = NULL;
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
@@ -382,6 +383,47 @@ private:
             bool isTransitioning;
             key->IsAutoTransitioning(&isTransitioning);
             if (!isTransitioning) key->PerformAutoTransition();
+        }
+    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+               [[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
+        int mplayer = [[address objectAtIndex:3] intValue];
+        NSString *type = [address objectAtIndex:4];
+        int requestedValue = [[address objectAtIndex:5] intValue];
+        BMDSwitcherMediaPlayerSourceType sourceType;
+
+        // check we have the media pool
+        if (! mMediaPool)
+        {
+            NSLog(@"No media pool\n");
+            return;
+        }
+
+        if (mMediaPlayers.size() < mplayer)
+        {
+            NSLog(@"No media player %d", mplayer);
+            return;
+        }
+
+        if ([type isEqualToString:@"clip"])
+        {
+            sourceType = bmdSwitcherMediaPlayerSourceTypeClip;
+        }
+        else if ([type isEqualToString:@"still"])
+        {
+            sourceType = bmdSwitcherMediaPlayerSourceTypeStill;
+        }
+        else
+        {
+            NSLog(@"You must specify the Media type 'clip' or 'still'");
+            return;
+        }
+        // set media player source
+        HRESULT result;
+        result = mMediaPlayers[mplayer-1]->SetSource(sourceType, requestedValue-1);
+        if (FAILED(result))
+        {
+            NSLog(@"Could not set media player %d source\n", mplayer);
+            return;
         }
     }
 
@@ -540,11 +582,51 @@ private:
             
             for (NSMenuItem *a in [tallyA itemArray]) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ",[a title]] attributes:addressAttribute]];
-                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%d\n",i] attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%ld\n",(long)[a tag]] attributes:infoAttribute]];
                 i++;
             }
             
-            
+            if (mMediaPlayers.size() > 0)
+            {
+                uint32_t clipCount;
+                uint32_t stillCount;
+                HRESULT result;
+                result = mMediaPool->GetClipCount(&clipCount);
+                if (FAILED(result))
+                {
+                    // the default number of clips
+                    clipCount = 2;
+                }
+                result = mMediaPool->GetStills(&mStills);
+                if (FAILED(result))
+                {
+                    // ATEM TVS only supports 20 stills, the others are 32
+                    stillCount = 20;
+                }
+                else
+                {
+                    result = mStills->GetCount(&stillCount);
+                    if (FAILED(result))
+                    {
+                        // ATEM TVS only supports 20 stills, the others are 32
+                        stillCount = 20;
+                    }
+                }
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nMedia Players:\n" attributes:addressAttribute]];
+                for (int i = 0; i < mMediaPlayers.size(); i++)
+                {
+                    for (int j = 0; j < clipCount; j++)
+                    {
+                        [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet MP %d to Clip %d: ",i+1,j+1] attributes:  addressAttribute]];
+                        [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/mplayer/%d/clip/%d\n",i+1,j+1] attributes:infoAttribute]];
+                    }
+                    for (int j = 0; j < stillCount; j++)
+                    {
+                        [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet MP %d to Still %d: ",i+1,j+1] attributes:  addressAttribute]];
+                        [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/mplayer/%d/still/%d\n",i+1,j+1] attributes:infoAttribute]];
+                    }
+                }
+            }
             
             [helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
             [[heltTextView textStorage] setAttributedString:helpString];
@@ -587,6 +669,15 @@ private:
 			case bmdSwitcherConnectToFailureIncompatibleFirmware:
 				reason = @"Switcher has incompatible firmware";
 				break;
+			case bmdSwitcherConnectToFailureCorruptData:
+				reason = @"Corrupt data was received during connection attempt";
+				break;
+			case bmdSwitcherConnectToFailureStateSync:
+				reason = @"State synchronisation failed during connection attempt";
+				break;
+			case bmdSwitcherConnectToFailureStateSyncTimedOut:
+				reason = @"State synchronisation timed out during connection attempt";
+				break;
 			default:
 				reason = @"Connection failed for unknown reason";
 		}
@@ -603,6 +694,8 @@ private:
 	HRESULT result;
 	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
 	IBMDSwitcherInputIterator* inputIterator = NULL;
+	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
+	REFIID mediaPoolIID = IID_IBMDSwitcherMediaPool;
     
     if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
         self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
@@ -689,7 +782,30 @@ private:
     }
     dskIterator->Release();
     dskIterator = NULL;
+
+
+    // Media Players
+    result = mSwitcher->CreateIterator(IID_IBMDSwitcherMediaPlayerIterator, (void**)&mediaPlayerIterator);
+    if (FAILED(result))
+    {
+        NSLog(@"Could not create IBMDSwitcherMediaPlayerIterator iterator\n");
+        return;
+    }
     
+	IBMDSwitcherMediaPlayer* mediaPlayer = NULL;
+    while (S_OK == mediaPlayerIterator->Next(&mediaPlayer)) {
+        mMediaPlayers.push_back(mediaPlayer);
+    }
+    mediaPlayerIterator->Release();
+    mediaPlayerIterator = NULL;
+    
+	// get media pool
+	result = mSwitcher->QueryInterface(mediaPoolIID, (void**)&mMediaPool);
+	if (FAILED(result))
+	{
+		NSLog(@"Could not get IBMDSwitcherMediaPool interface\n");
+		return;
+	}
     
     
     switcherTransitionParameters = NULL;
