@@ -1,4 +1,8 @@
-# atemOSC v2.3.2
+# atemOSC v2.3.3
+
+## Changelog v2.3.3
+- added support for controlling Media Players
+- updated OSC-addresses help menu to display correct addresses for ATEM 2M/E and above switchers
 
 ## Changelog v2.3.2
 - update to Blackmagic SDK 5.1
@@ -36,7 +40,7 @@ The current version is built for Mac OS 10.7 SDK (as of version 2.2.1). A compil
 
 ----------
 
-Program and preview selection as well as transition control are exposed via following OSC addresses:
+Program and preview selection as well as transition control are exposed via following OSC addresses (addresses given below are for ATEM TVS model, *actual values depend on your ATEM switcher and are shown in the help menu*):
 
  - **Cam 1** `/atem/program/1`
  - **Cam 2** `/atem/program/2`
@@ -59,13 +63,21 @@ For preview selection `/atem/preview/$i` can be used.
  - **Cut** `/atem/transition/cut`
  - **auto** `/atem/transition/auto`
  - **fade-to-black** `/atem/transition/ftb`
- 
+
+Additional options.
+
  - **Toggle Upstream Keyer 1** `/atem/usk/1` (up to `/atem/usk/4`, depends on your ATEM switcher)
  - **Prepare Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
-
  - **Toggle Downstreamkeyer 1** `/atem/dsk/1` (up to `/atem/dsk/4`, depends on your ATEM switcher)
+ - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip/$x`
+   - e.g. `/atem/mplayer/1/clip/1` ()up to `/atem/mplayer/1/clip/2`, depends on your ATEM switcher
+   - e.g. `/atem/mplayer/2/clip/1` (up to `/atem/mplayer/2/clip/2`, depends on your ATEM switcher)
+ - **Set Media Player $i source to Still $x** `/atem/mplayer/$i/still/$x`
+   - e.g. `/atem/mplayer/1/still/1` (up to `/atem/mplayer/1/still/20`, depends on your ATEM switcher)
+   - e.g. `/atem/mplayer/2/still/1` (up to `/atem/mplayer/2/still/20`, depends on your ATEM switcher)
  
 All OSC-addresses expect float-values between 0.0 and 1.0.
+
 **A full overview of all OSC-addresses available for your switcher can be obtained from the help-menu inside the application.**
 
 ----------

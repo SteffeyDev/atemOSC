@@ -582,7 +582,7 @@ private:
             
             for (NSMenuItem *a in [tallyA itemArray]) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ",[a title]] attributes:addressAttribute]];
-                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%d\n",i] attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%ld\n",(long)[a tag]] attributes:infoAttribute]];
                 i++;
             }
             
