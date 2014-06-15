@@ -36,7 +36,7 @@ The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blac
 - [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
 - [AMSerialPort](https://github.com/smokyonion/AMSerialPort) is used for Arduino-connection
 
-The current version is built for Mac OS 10.7 SDK (as of version 2.2.1). A compiled and runnable version of the atemOSC is included. Caution: The software lacks of many usability features (like input validation).
+The current version is built for Mac OS 10.9 SDK (as of version 2.2.3). A compiled and runnable version of the atemOSC is included. Caution: The software lacks of many usability features (like input validation).
 
 Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).
 
