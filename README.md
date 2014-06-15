@@ -38,6 +38,8 @@ The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blac
 
 The current version is built for Mac OS 10.7 SDK (as of version 2.2.1). A compiled and runnable version of the atemOSC is included. Caution: The software lacks of many usability features (like input validation).
 
+Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).
+
 ----------
 
 Program and preview selection as well as transition control are exposed via following OSC addresses (addresses given below are for ATEM TVS model, *actual values depend on your ATEM switcher and are shown in the help menu*):

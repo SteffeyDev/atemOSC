@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1857BF46194D41240053631F /* atemOSC.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1857BF45194D41240053631F /* atemOSC.icns */; };
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm */; };
 		333E3045161395CF0002287B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333E3044161395CF0002287B /* IOKit.framework */; };
@@ -43,6 +44,7 @@
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		1857BF45194D41240053631F /* atemOSC.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = atemOSC.icns; sourceTree = "<group>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		256AC3D80F4B6AC300CF3369 /* SwitcherPanelAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitcherPanelAppDelegate.h; sourceTree = "<group>"; };
 		256AC3D90F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SwitcherPanelAppDelegate.mm; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 			children = (
 				8D1107310486CEB800E47090 /* atemOSC-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				1857BF45194D41240053631F /* atemOSC.icns */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
 			);
 			name = Resources;
@@ -246,6 +249,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				1857BF46194D41240053631F /* atemOSC.icns in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

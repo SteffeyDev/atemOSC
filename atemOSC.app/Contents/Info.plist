@@ -8,6 +8,8 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>atemOSC</string>
+	<key>CFBundleIconFile</key>
+	<string>atemOSC</string>
 	<key>CFBundleIdentifier</key>
 	<string>cc.buechele.atemOSC</string>
 	<key>CFBundleInfoDictionaryVersion</key>
