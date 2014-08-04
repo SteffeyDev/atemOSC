@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>BuildMachineOSBuild</key>
-	<string>13D65</string>
+	<string>13E28</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
@@ -39,7 +39,7 @@
 	<key>DTXcodeBuild</key>
 	<string>5B1008</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>10.9</string>
+	<string>10.8</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
