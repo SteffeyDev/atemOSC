@@ -5,34 +5,34 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>64CE6572-BA31-475C-82F8-78B7FF823C08</string>
+	<string>9BACB3F4-1624-4BCA-9856-85502D308195</string>
 	<key>IDESourceControlProjectName</key>
 	<string>atemOSC</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>71771B3F-A303-4894-B7F4-A3BDA1244061</key>
-		<string>https://github.com/danielbuechele/atemOSC.git</string>
+		<key>69690B3F-39D4-4925-A1C5-5684AB536889</key>
+		<string>ssh://github.com/LanSmash/atemOSC.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>atemOSC/atemOSC.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>71771B3F-A303-4894-B7F4-A3BDA1244061</key>
+		<key>69690B3F-39D4-4925-A1C5-5684AB536889</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/danielbuechele/atemOSC.git</string>
+	<string>ssh://github.com/LanSmash/atemOSC.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>71771B3F-A303-4894-B7F4-A3BDA1244061</string>
+	<string>69690B3F-39D4-4925-A1C5-5684AB536889</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>71771B3F-A303-4894-B7F4-A3BDA1244061</string>
+			<string>69690B3F-39D4-4925-A1C5-5684AB536889</string>
 			<key>IDESourceControlWCCName</key>
 			<string>atemOSC</string>
 		</dict>

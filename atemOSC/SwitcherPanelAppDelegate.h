@@ -55,6 +55,7 @@ class InputMonitor;
 	IBMDSwitcherMediaPool*		mMediaPool;
     IBMDSwitcherStills*			mStills;
 	std::vector<IBMDSwitcherMediaPlayer*>	mMediaPlayers;
+	std::vector<IBMDSwitcherInputAux*>	mSwitcherInputAuxList;
 	std::list<InputMonitor*>	mInputMonitors;
     std::list<IBMDSwitcherKey*>	keyers;
     std::list<IBMDSwitcherDownstreamKey*>	dsk;
