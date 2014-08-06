@@ -239,7 +239,14 @@ public:
 	}
 	
 	// Switcher events ignored by this sample app
-	HRESULT STDMETHODCALLTYPE	Notify(BMDSwitcherEventType eventType) { return S_OK; }
+	HRESULT STDMETHODCALLTYPE	Notify(BMDSwitcherEventType eventType) {
+        switch(eventType) {
+            case bmdSwitcherEventTypeDisconnected:
+                [mUiDelegate performSelectorInBackground:@selector(switcherDisconnected) withObject:nil];
+                break;
+                
+        }
+        return S_OK; }
 	
 	HRESULT STDMETHODCALLTYPE	Disconnected(void)
 	{
@@ -264,6 +271,7 @@ private:
 	mSwitcher = NULL;
 	mMixEffectBlock = NULL;
 	mMediaPool = NULL;
+    isConnectedToATEM = NO;
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
@@ -312,182 +320,122 @@ private:
 }
 
 - (void) receivedOSCMessage:(OSCMessage *)m	{
-    NSArray *address = [[m address] componentsSeparatedByString:@"/"];
- 
-    if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-        ([[address objectAtIndex:2] isEqualToString:@"preview"] || [[address objectAtIndex:2] isEqualToString:@"program"])) {
+    if (isConnectedToATEM) { //Do nothing if not connected
+        NSArray *address = [[m address] componentsSeparatedByString:@"/"];
+    
+        if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+            ([[address objectAtIndex:2] isEqualToString:@"preview"] || [[address objectAtIndex:2]     isEqualToString:@"program"])) {
         
-        [self activateChannel:[[address objectAtIndex:3] intValue] isProgram:[[address objectAtIndex:2] isEqualToString:@"program"]];
+            [self activateChannel:[[address objectAtIndex:3] intValue] isProgram:[[address objectAtIndex:2] isEqualToString:@"program"]];
         
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-               [[address objectAtIndex:3] isEqualToString:@"bar"]) {
-        if (mMoveSliderDownwards) 
-            mMixEffectBlock->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, [[m valueAtIndex:0] floatValue]);
-        else 
-            mMixEffectBlock->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, 1.0-[[m valueAtIndex:0] floatValue]);
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-               [[address objectAtIndex:3] isEqualToString:@"cut"]) {
-        if ([[m valueAtIndex:0] floatValue]==1.0)  mMixEffectBlock->PerformCut();
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-               [[address objectAtIndex:3] isEqualToString:@"auto"]) {
-        if ([[m valueAtIndex:0] floatValue]==1.0)  mMixEffectBlock->PerformAutoTransition();
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-               [[address objectAtIndex:3] isEqualToString:@"ftb"]) {
-        mMixEffectBlock->PerformFadeToBlack();
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-               [[address objectAtIndex:3] isEqualToString:@"set-type"]) {
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
+                   [[address objectAtIndex:3] isEqualToString:@"bar"]) {
+            if (mMoveSliderDownwards)
+                mMixEffectBlock->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, [[m valueAtIndex:0] floatValue]);
+            else
+                mMixEffectBlock->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, 1.0-[[m valueAtIndex:0] floatValue]);
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
+                   [[address objectAtIndex:3] isEqualToString:@"cut"]) {
+            if ([[m valueAtIndex:0] floatValue]==1.0)  mMixEffectBlock->PerformCut();
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
+                   [[address objectAtIndex:3] isEqualToString:@"auto"]) {
+            if ([[m valueAtIndex:0] floatValue]==1.0)  mMixEffectBlock->PerformAutoTransition();
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
+                   [[address objectAtIndex:3] isEqualToString:@"ftb"]) {
+            mMixEffectBlock->PerformFadeToBlack();
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"nextusk"]) {
+            switch ([[address objectAtIndex:3] intValue]) {
+                case 0:
+                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground); break;
+                case 1:
+                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey1); break;
+                case 2:
+                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey2); break;
+                case 3:
+                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey3); break;
+                case 4:
+                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey4); break;
+                default:
+                    break;
+            }
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"usk"]) {
+            int t = [[address objectAtIndex:3] intValue];
         
-        HRESULT result;
-        NSString *style = [address objectAtIndex:4];
-        REFIID transitionStyleID = IID_IBMDSwitcherTransitionParameters;
-        IBMDSwitcherTransitionParameters* mTransitionStyleParameters=NULL;
-        result = mMixEffectBlock->QueryInterface(transitionStyleID, (void**)&mTransitionStyleParameters);
-        if (SUCCEEDED(result))
-        {
-            if ([style isEqualToString:@"mix"]){
-                mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
-            }
-            if ([style isEqualToString:@"dip"]){
-                mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDip);
-            }
-            if ([style isEqualToString:@"wipe"]){
-                mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleWipe);
-            }
-            if ([style isEqualToString:@"sting"]){
-                mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleStinger);
-            }
-            if ([style isEqualToString:@"dve"]){
-                mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
-            }
-        }
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"nextusk"]) {
-        switch ([[address objectAtIndex:3] intValue]) {
-            case 0:
-                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground); break;
-            case 1:
-                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey1); break;
-            case 2:
-                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey2); break;
-            case 3:
-                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey3); break;
-            case 4:
-                switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey4); break;
-            default:
-                break;
-        }
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"usk"]) {
-        int t = [[address objectAtIndex:3] intValue];
-        
-        if (t<=keyers.size()) {
+            if (t<=keyers.size()) {
             
-            if ([[m value] floatValue] != 0.0) {
-                std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
-                std::advance(iter, t-1);
-                IBMDSwitcherKey * key = *iter;
-                bool onAir;
-                key->GetOnAir(&onAir);
-                key->SetOnAir(!onAir);
-                NSLog(@"dsk on %@",m);
+                if ([[m value] floatValue] != 0.0) {
+                    std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
+                    std::advance(iter, t-1);
+                    IBMDSwitcherKey * key = *iter;
+                    bool onAir;
+                    key->GetOnAir(&onAir);
+                    key->SetOnAir(!onAir);
+                    NSLog(@"dsk on %@",m);
+                }
             }
-        }
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"dsk"]) {
-        if ([[address objectAtIndex:3] isEqualToString:@"tie"])
-        {
-            int t = [[address objectAtIndex:4] intValue];
-            
-            if (t<=dsk.size()) {
-                
-                std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                std::advance(iter, t-1);
-                IBMDSwitcherDownstreamKey * key = *iter;
-                
-                bool isTied;
-                key->GetTie(&isTied);
-                bool isTransitioning;
-                key->IsTransitioning(&isTransitioning);
-                if (!isTransitioning) key->SetTie(!isTied);
-            }
-        } else if ([[address objectAtIndex:3] isEqualToString:@"toggle"])
-        {
-            int t = [[address objectAtIndex:4] intValue];
-            
-            if (t<=dsk.size()) {
-                
-                std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                std::advance(iter, t-1);
-                IBMDSwitcherDownstreamKey * key = *iter;
-                
-                bool isLive;
-                key->GetOnAir(&isLive);
-                bool isTransitioning;
-                key->IsTransitioning(&isTransitioning);
-                if (!isTransitioning) key->SetOnAir(!isLive);
-            }
-        } else {
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"dsk"]) {
             int t = [[address objectAtIndex:3] intValue];
             
             if (t<=dsk.size()) {
-                
+            
                 std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
                 std::advance(iter, t-1);
                 IBMDSwitcherDownstreamKey * key = *iter;
-                
+            
                 bool isTransitioning;
                 key->IsAutoTransitioning(&isTransitioning);
                 if (!isTransitioning) key->PerformAutoTransition();
             }
-        }
-    } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-               [[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
-        int mplayer = [[address objectAtIndex:3] intValue];
-        NSString *type = [address objectAtIndex:4];
-        int requestedValue = [[address objectAtIndex:5] intValue];
-        BMDSwitcherMediaPlayerSourceType sourceType;
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
+            int mplayer = [[address objectAtIndex:3] intValue];
+            NSString *type = [address objectAtIndex:4];
+            int requestedValue = [[address objectAtIndex:5] intValue];
+            BMDSwitcherMediaPlayerSourceType sourceType;
 
-        // check we have the media pool
-        if (! mMediaPool)
-        {
-            NSLog(@"No media pool\n");
-            return;
-        }
+            // check we have the media pool
+            if (! mMediaPool)
+            {
+                NSLog(@"No media pool\n");
+                return;
+            }
+    
+            if (mMediaPlayers.size() < mplayer)
+            {
+                NSLog(@"No media player %d", mplayer);
+                return;
+            }
 
-        if (mMediaPlayers.size() < mplayer)
-        {
-            NSLog(@"No media player %d", mplayer);
-            return;
-        }
-
-        if ([type isEqualToString:@"clip"])
-        {
-            sourceType = bmdSwitcherMediaPlayerSourceTypeClip;
-        }
-        else if ([type isEqualToString:@"still"])
-        {
-            sourceType = bmdSwitcherMediaPlayerSourceTypeStill;
-        }
-        else
-        {
-            NSLog(@"You must specify the Media type 'clip' or 'still'");
-            return;
-        }
-        // set media player source
-        HRESULT result;
-        result = mMediaPlayers[mplayer-1]->SetSource(sourceType, requestedValue-1);
-        if (FAILED(result))
-        {
-            NSLog(@"Could not set media player %d source\n", mplayer);
-            return;
+            if ([type isEqualToString:@"clip"])
+            {
+                sourceType = bmdSwitcherMediaPlayerSourceTypeClip;
+            }
+            else if ([type isEqualToString:@"still"])
+            {
+                sourceType = bmdSwitcherMediaPlayerSourceTypeStill;
+            }
+            else
+            {
+                NSLog(@"You must specify the Media type 'clip' or 'still'");
+                return;
+            }
+            // set media player source
+            HRESULT result;
+            result = mMediaPlayers[mplayer-1]->SetSource(sourceType, requestedValue-1);
+            if (FAILED(result))
+            {
+                NSLog(@"Could not set media player %d source\n", mplayer);
+                return;
+            }
         }
     }
-
         
 }
 
@@ -618,18 +566,6 @@ private:
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tFade-to-black: " attributes:addressAttribute]];
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/ftb\n" attributes:infoAttribute]];
             
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nTransition type:\n" attributes:addressAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Mix: " attributes:addressAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-style/mix\n" attributes:infoAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Dip: " attributes:addressAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-style/dip\n" attributes:infoAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Wipe: " attributes:addressAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-style/wipe\n" attributes:infoAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Stinger: " attributes:addressAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-style/sting\n" attributes:infoAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to DVE: " attributes:addressAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-style/dve\n" attributes:infoAttribute]];
-            
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nUpstream Keyers:\n" attributes:addressAttribute]];
             for (int i = 0; i<keyers.size();i++) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tOn Air KEY %d: ",i+1] attributes:addressAttribute]];
@@ -647,10 +583,6 @@ private:
             for (int i = 0; i<dsk.size();i++) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAuto-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/%d\n",i+1] attributes:infoAttribute]];
-                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tTie Next-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
-                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/tie/%d\n",i+1] attributes:infoAttribute]];
-                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tToggle DSK%d: ",i+1] attributes:addressAttribute]];
-                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/toggle/%d\n",i+1] attributes:infoAttribute]];
             }
 
             
@@ -715,16 +647,20 @@ private:
     
 }
 
-
-
-- (IBAction)connectButtonPressed:(id)sender
-{
-
-	NSString* address = [mAddressTextField stringValue];
+- (IBAction)mAddressTextFieldUpdated:(id)sender {
+    //Updated: save state everytime text field changed
+    NSString* address = [mAddressTextField stringValue];
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    [prefs setObject:address forKey:@"atem"];    
+    [prefs setObject:address forKey:@"atem"];
     [prefs synchronize];
+}
 
+
+
+- (void)connectBMD
+{
+    NSString* address = [mAddressTextField stringValue];
+	
 	BMDSwitcherConnectToFailure			failReason;
 
 	// Note that ConnectTo() can take several seconds to return, both for success or failure,
@@ -758,7 +694,17 @@ private:
 			default:
 				reason = @"Connection failed for unknown reason";
 		}
-		NSBeginAlertSheet(reason, @"OK", nil, nil, window, self, NULL, NULL, window, @"");
+        //Delay 2 seconds before everytime connect/reconnect
+        //Because the session ID from ATEM switcher will alive not more then 2 seconds
+        //After 2 second of idle, the session will be reset then reconnect won't cause error
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+                       ^(void){
+                           //To run in background thread
+                           [self switcherDisconnected];
+                       });
+		NSLog(reason);
 	}
 }
 
@@ -773,6 +719,7 @@ private:
 	IBMDSwitcherInputIterator* inputIterator = NULL;
 	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
 	REFIID mediaPoolIID = IID_IBMDSwitcherMediaPool;
+    isConnectedToATEM = YES;
     
     if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
         self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
@@ -785,7 +732,7 @@ private:
     [newMsg addFloat:0.0];
     [outPort sendThisMessage:newMsg];
 	
-	[mConnectButton setEnabled:NO];			// disable Connect button while connected
+	//[mConnectButton setEnabled:NO];			// disable Connect button while connected
     [greenLight setHidden:NO];
     [redLight setHidden:YES];
 	
@@ -904,6 +851,7 @@ finish:
 
 - (void)switcherDisconnected
 {
+    isConnectedToATEM = NO;
 	if (self.activity) {
         [[NSProcessInfo processInfo] endActivity:self.activity];
     }
@@ -917,7 +865,7 @@ finish:
     [newMsg addFloat:1.0];
     [outPort sendThisMessage:newMsg];
     
-    [mConnectButton setEnabled:YES];			// enable connect button so user can re-connect
+    //[mConnectButton setEnabled:YES];			// enable connect button so user can re-connect
 	[mSwitcherNameLabel setStringValue:@""];
     [greenLight setHidden:YES];
     [redLight setHidden:NO];
@@ -945,6 +893,7 @@ finish:
 		mSwitcher->Release();
 		mSwitcher = NULL;
 	}
+    [self connectBMD];
 }
 
 //
