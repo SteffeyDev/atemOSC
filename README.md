@@ -1,4 +1,7 @@
-# atemOSC v2.3.4
+# atemOSC v2.3.5
+
+## Changelog v2.3.5
+- added support for setting Aux output source
 
 ## Changelog v2.3.4
 - added support for specifying transition style
@@ -80,19 +83,23 @@ To set the transition style of the Auto transition:
 
 Additional options.
 
+ - **Set Aux $i source to $x** `/atem/aux/$i $x`
+   - Where $x is a valid program source. Check the Help Menu for the correct values.
+   - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
+   - (up to `/atem/aux/6 $x`, depends on your ATEM switcher)
  - **Toggle Upstream Keyer 1** `/atem/usk/1` (up to `/atem/usk/4`, depends on your ATEM switcher)
  - **Prepare Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
  - **Auto Toggle Downstreamkeyer 1** `/atem/dsk/1` (up to `/atem/dsk/4`, depends on your ATEM switcher)
  - **Tie Downstreamkeyer 1** `/atem/dsk/tie/1` (up to `/atem/dsk/tie/4`, depends on your ATEM switcher)
  - **Cut Toggle Downstreamkeyer 1** `/atem/dsk/toggle/1` (up to `/atem/dsk/toggle/4`, depends on your ATEM switcher)
  - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip/$x`
-   - e.g. `/atem/mplayer/1/clip/1` ()up to `/atem/mplayer/1/clip/2`, depends on your ATEM switcher
+   - e.g. `/atem/mplayer/1/clip/1` (up to `/atem/mplayer/1/clip/2`, depends on your ATEM switcher)
    - e.g. `/atem/mplayer/2/clip/1` (up to `/atem/mplayer/2/clip/2`, depends on your ATEM switcher)
  - **Set Media Player $i source to Still $x** `/atem/mplayer/$i/still/$x`
    - e.g. `/atem/mplayer/1/still/1` (up to `/atem/mplayer/1/still/20`, depends on your ATEM switcher)
    - e.g. `/atem/mplayer/2/still/1` (up to `/atem/mplayer/2/still/20`, depends on your ATEM switcher)
  
-All OSC-addresses expect float-values between 0.0 and 1.0.
+All OSC-addresses expect float-values between 0.0 and 1.0 unless otherwise specified.
 
 **A full overview of all OSC-addresses available for your switcher can be obtained from the help-menu inside the application.**
 

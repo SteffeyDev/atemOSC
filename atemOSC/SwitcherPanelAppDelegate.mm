@@ -434,11 +434,19 @@ private:
                 NSLog(@"Could not set media player %d source\n", mplayer);
                 return;
             }
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"aux"]) {
+            int auxToChange = [[address objectAtIndex:3] intValue];
+            int source = [[m value] intValue];
+            [self handleAuxSource:auxToChange channel:source];
         }
     }
-        
+    
 }
 
+- (void) handleAuxSource:(int)auxToChange channel:(int)channel {
+    mSwitcherInputAuxList[auxToChange-1]->SetInputSource(channel);
+}
 
 - (void) activateChannel:(int)channel isProgram:(BOOL)program {
     NSString *strip;
@@ -593,6 +601,13 @@ private:
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ",[a title]] attributes:addressAttribute]];
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%ld\n",(long)[a tag]] attributes:infoAttribute]];
                 i++;
+            }
+            
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAux Outputs:\n" attributes:addressAttribute]];
+            for (int i = 0; i<mSwitcherInputAuxList.size();i++) {
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Aux %d to Source: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/aux/%d\t<valid_program_source>\n",i+1] attributes:infoAttribute]];
             }
             
             if (mMediaPlayers.size() > 0)
@@ -758,6 +773,14 @@ private:
 		while (S_OK == inputIterator->Next(&input))
 		{
 			InputMonitor* inputMonitor = new InputMonitor(input, self);
+			IBMDSwitcherInputAux* auxObj;
+			result = input->QueryInterface(IID_IBMDSwitcherInputAux, (void**)&auxObj);
+			if (SUCCEEDED(result))
+			{
+				BMDSwitcherInputId auxId;
+				result = auxObj->GetInputSource(&auxId);
+				mSwitcherInputAuxList.push_back(auxObj);
+			}
 			input->Release();
 			mInputMonitors.push_back(inputMonitor);
 		}
