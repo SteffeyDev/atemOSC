@@ -437,7 +437,7 @@ private:
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"aux"]) {
             int auxToChange = [[address objectAtIndex:3] intValue];
-            int source = [[address objectAtIndex:4] intValue];
+            int source = [[m value] intValue];
             [self handleAuxSource:auxToChange channel:source];
         }
     }
@@ -445,7 +445,7 @@ private:
 }
 
 - (void) handleAuxSource:(int)auxToChange channel:(int)channel {
-    mSwitcherInputAuxList[auxToChange]->SetInputSource(channel);
+    mSwitcherInputAuxList[auxToChange-1]->SetInputSource(channel);
 }
 
 - (void) activateChannel:(int)channel isProgram:(BOOL)program {
