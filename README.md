@@ -1,6 +1,6 @@
 # atemOSC v2.4.0
 
-## Changelog v2.3.3
+## Changelog v2.4.0
 - added support for controlling SuperSource
 
 ## Changelog v2.3.3
