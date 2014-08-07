@@ -1,4 +1,7 @@
-# atemOSC v2.3.3
+# atemOSC v2.4.0
+
+## Changelog v2.3.3
+- added support for controlling SuperSource
 
 ## Changelog v2.3.3
 - added support for controlling Media Players
@@ -77,8 +80,14 @@ Additional options.
  - **Set Media Player $i source to Still $x** `/atem/mplayer/$i/still/$x`
    - e.g. `/atem/mplayer/1/still/1` (up to `/atem/mplayer/1/still/20`, depends on your ATEM switcher)
    - e.g. `/atem/mplayer/2/still/1` (up to `/atem/mplayer/2/still/20`, depends on your ATEM switcher)
+ - **SuperSource (when available)**
+   - **Toggle SuperSource Box $i enabled** `/atem/supersource/$i/enabled <0|1>`
+     - Where `<0|1>` is an int-value of 0 (disabled) or 1 (enabled)
+   - **Set SuperSource Box $i source to input $x** `/atem/supersource/$i/source $x`
+     - Where `$x` is a valid program source. Check the Help Menu for the correct values.
+   - Other options are available. Check the Help Menu for the full list.
  
-All OSC-addresses expect float-values between 0.0 and 1.0.
+All OSC-addresses expect float-values between 0.0 and 1.0 unless otherwise stated.
 
 **A full overview of all OSC-addresses available for your switcher can be obtained from the help-menu inside the application.**
 

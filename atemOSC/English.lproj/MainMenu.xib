@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1090" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
@@ -394,7 +394,7 @@
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <size key="minSize" width="358" height="272"/>
-                                    <size key="maxSize" width="463" height="10000000"/>
+                                    <size key="maxSize" width="550" height="10000000"/>
                                     <attributedString key="textStorage">
                                         <fragment content="Switcher needs to be connected to show OSC addresses.">
                                             <attributes>
@@ -406,7 +406,7 @@
                                     </attributedString>
                                     <color key="insertionPointColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <size key="minSize" width="358" height="272"/>
-                                    <size key="maxSize" width="463" height="10000000"/>
+                                    <size key="maxSize" width="550" height="10000000"/>
                                 </textView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -415,7 +415,7 @@
                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="775">
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="775">
                             <rect key="frame" x="358" y="0.0" width="15" height="272"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
