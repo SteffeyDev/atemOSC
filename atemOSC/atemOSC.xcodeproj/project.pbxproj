@@ -45,7 +45,6 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1857BF45194D41240053631F /* atemOSC.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = atemOSC.icns; sourceTree = "<group>"; };
-		18B1638319931EBD005C2E6C /* BMDSwitcherAPI_v4_1_3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BMDSwitcherAPI_v4_1_3.h; path = "../../../../../Applications/Blackmagic ATEM Switchers/Developer SDK/Mac OS X/include/BMDSwitcherAPI_v4_1_3.h"; sourceTree = "<group>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		256AC3D80F4B6AC300CF3369 /* SwitcherPanelAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitcherPanelAppDelegate.h; sourceTree = "<group>"; };
 		256AC3D90F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SwitcherPanelAppDelegate.mm; sourceTree = "<group>"; };
@@ -144,7 +143,6 @@
 			children = (
 				33F328DF1573A29900D4722A /* arduino */,
 				335B268B1573A16300F72574 /* BMDSwitcherAPI.h */,
-				18B1638319931EBD005C2E6C /* BMDSwitcherAPI_v4_1_3.h */,
 				335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
