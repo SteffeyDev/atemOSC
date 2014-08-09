@@ -3,6 +3,13 @@
 ## Changelog v2.4.0
 - added support for controlling SuperSource
 
+## Changelog v2.3.5
+- added support for setting Aux output source
+
+## Changelog v2.3.4
+- added support for specifying transition style
+- added more control over downstream keyer states
+
 ## Changelog v2.3.3
 - added support for controlling Media Players
 - updated OSC-addresses help menu to display correct addresses for ATEM 2M/E and above switchers
@@ -69,13 +76,27 @@ For preview selection `/atem/preview/$i` can be used.
  - **auto** `/atem/transition/auto`
  - **fade-to-black** `/atem/transition/ftb`
 
+To set the transition style of the Auto transition:
+
+ - **Mix** `/atem/transition/set-style/mix`
+ - **Dip** `/atem/transition/set-style/dip`
+ - **Wipe** `/atem/transition/set-style/wipe`
+ - **Stinger** `/atem/transition/set-style/sting`
+ - **DVE** `/atem/transition/set-style/dve`
+
 Additional options.
 
+ - **Set Aux $i source to $x** `/atem/aux/$i $x`
+   - Where $x is a valid program source. Check the Help Menu for the correct values.
+   - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
+   - (up to `/atem/aux/6 $x`, depends on your ATEM switcher)
  - **Toggle Upstream Keyer 1** `/atem/usk/1` (up to `/atem/usk/4`, depends on your ATEM switcher)
  - **Prepare Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
- - **Toggle Downstreamkeyer 1** `/atem/dsk/1` (up to `/atem/dsk/4`, depends on your ATEM switcher)
+ - **Auto Toggle Downstreamkeyer 1** `/atem/dsk/1` (up to `/atem/dsk/4`, depends on your ATEM switcher)
+ - **Tie Downstreamkeyer 1** `/atem/dsk/tie/1` (up to `/atem/dsk/tie/4`, depends on your ATEM switcher)
+ - **Cut Toggle Downstreamkeyer 1** `/atem/dsk/toggle/1` (up to `/atem/dsk/toggle/4`, depends on your ATEM switcher)
  - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip/$x`
-   - e.g. `/atem/mplayer/1/clip/1` ()up to `/atem/mplayer/1/clip/2`, depends on your ATEM switcher
+   - e.g. `/atem/mplayer/1/clip/1` (up to `/atem/mplayer/1/clip/2`, depends on your ATEM switcher)
    - e.g. `/atem/mplayer/2/clip/1` (up to `/atem/mplayer/2/clip/2`, depends on your ATEM switcher)
  - **Set Media Player $i source to Still $x** `/atem/mplayer/$i/still/$x`
    - e.g. `/atem/mplayer/1/still/1` (up to `/atem/mplayer/1/still/20`, depends on your ATEM switcher)

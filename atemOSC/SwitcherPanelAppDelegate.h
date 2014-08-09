@@ -57,12 +57,14 @@ class InputMonitor;
     IBMDSwitcherInputSuperSource*   mSuperSource;
 	std::vector<IBMDSwitcherMediaPlayer*>	mMediaPlayers;
 	std::vector<IBMDSwitcherSuperSourceBox*>	mSuperSourceBoxes;
+	std::vector<IBMDSwitcherInputAux*>	mSwitcherInputAuxList;
 	std::list<InputMonitor*>	mInputMonitors;
     std::list<IBMDSwitcherKey*>	keyers;
     std::list<IBMDSwitcherDownstreamKey*>	dsk;
 
 	bool						mMoveSliderDownwards;
 	bool						mCurrentTransitionReachedHalfway;
+    bool                        isConnectedToATEM;
     
     OSCManager					*manager;
 	OSCInPort					*inPort;
@@ -95,9 +97,10 @@ class InputMonitor;
 @property (assign) IBOutlet NSWindow *window;
 @property (strong) id activity;
 
-- (IBAction)connectButtonPressed:(id)sender;
+-(void)connectBMD;
 - (IBAction)portChanged:(id)sender;
 - (IBAction)helpButtonPressed:(id)sender;
+- (IBAction)mAddressTextFieldUpdated:(id)sender;
 
 - (void)switcherConnected;
 - (void)switcherDisconnected;

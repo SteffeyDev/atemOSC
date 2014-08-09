@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment defaultVersion="1090" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="5056"/>
@@ -87,14 +87,14 @@
         <window title="atemOSC" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="335" y="426" width="394" height="284"/>
+            <rect key="contentRect" x="335" y="426" width="394" height="256"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
             <view key="contentView" id="372">
-                <rect key="frame" x="0.0" y="0.0" width="394" height="284"/>
+                <rect key="frame" x="0.0" y="0.0" width="394" height="256"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <textField verticalHuggingPriority="750" id="533">
-                        <rect key="frame" x="17" y="247" width="130" height="17"/>
+                        <rect key="frame" x="17" y="219" width="130" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Switcher IP address:" id="534">
                             <font key="font" metaFont="system"/>
@@ -103,27 +103,19 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="535">
-                        <rect key="frame" x="152" y="245" width="222" height="22"/>
+                        <rect key="frame" x="152" y="217" width="222" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="536">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
-                    </textField>
-                    <button verticalHuggingPriority="750" id="537">
-                        <rect key="frame" x="14" y="114" width="366" height="32"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="push" title="Connect" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="538">
-                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
                         <connections>
-                            <action selector="connectButtonPressed:" target="494" id="539"/>
+                            <action selector="mAddressTextFieldUpdated:" target="494" id="0sx-0c-87P"/>
                         </connections>
-                    </button>
+                    </textField>
                     <textField verticalHuggingPriority="750" id="543">
-                        <rect key="frame" x="17" y="217" width="102" height="17"/>
+                        <rect key="frame" x="17" y="189" width="102" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Switcher Name:" id="544">
                             <font key="font" metaFont="system"/>
@@ -132,7 +124,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="607">
-                        <rect key="frame" x="152" y="215" width="198" height="22"/>
+                        <rect key="frame" x="152" y="187" width="198" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="608">
                             <font key="font" metaFont="system"/>
@@ -141,7 +133,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="611">
-                        <rect key="frame" x="17" y="161" width="128" height="17"/>
+                        <rect key="frame" x="17" y="133" width="128" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="OSC incoming port:" id="612">
                             <font key="font" metaFont="system"/>
@@ -150,7 +142,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="631">
-                        <rect key="frame" x="17" y="189" width="103" height="17"/>
+                        <rect key="frame" x="17" y="161" width="103" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="OSC IP address:" id="632">
                             <font key="font" metaFont="system"/>
@@ -159,7 +151,7 @@
                         </textFieldCell>
                     </textField>
                     <textField verticalHuggingPriority="750" id="615">
-                        <rect key="frame" x="152" y="159" width="64" height="22"/>
+                        <rect key="frame" x="152" y="131" width="64" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="3333" drawsBackground="YES" id="616">
                             <font key="font" metaFont="system"/>
@@ -172,7 +164,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="633">
-                        <rect key="frame" x="152" y="187" width="222" height="22"/>
+                        <rect key="frame" x="152" y="159" width="222" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="634">
                             <font key="font" metaFont="system"/>
@@ -184,7 +176,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="617">
-                        <rect key="frame" x="310" y="158" width="64" height="22"/>
+                        <rect key="frame" x="310" y="130" width="64" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" title="4444" drawsBackground="YES" id="618">
                             <font key="font" metaFont="system"/>
@@ -197,7 +189,7 @@
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="619">
-                        <rect key="frame" x="239" y="161" width="66" height="17"/>
+                        <rect key="frame" x="239" y="133" width="66" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="outgoing:" id="620">
                             <font key="font" metaFont="system"/>
@@ -206,7 +198,7 @@
                         </textFieldCell>
                     </textField>
                     <box autoresizesSubviews="NO" title="Tally-Interface" borderType="line" id="725">
-                        <rect key="frame" x="5" y="3" width="384" height="111"/>
+                        <rect key="frame" x="5" y="5" width="384" height="111"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <view key="contentView">
                             <rect key="frame" x="1" y="1" width="382" height="95"/>
@@ -332,12 +324,12 @@
                         <color key="fillColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </box>
                     <levelIndicator verticalHuggingPriority="750" id="731">
-                        <rect key="frame" x="358" y="216" width="16" height="18"/>
+                        <rect key="frame" x="358" y="188" width="16" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <levelIndicatorCell key="cell" alignment="left" doubleValue="1" maxValue="1" criticalValue="1" id="732"/>
                     </levelIndicator>
                     <levelIndicator hidden="YES" verticalHuggingPriority="750" id="733">
-                        <rect key="frame" x="358" y="216" width="16" height="18"/>
+                        <rect key="frame" x="358" y="188" width="16" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <levelIndicatorCell key="cell" alignment="left" doubleValue="1" maxValue="1" id="734"/>
                     </levelIndicator>
@@ -352,7 +344,6 @@
                 <outlet property="heltTextView" destination="773" id="778"/>
                 <outlet property="incoming" destination="615" id="621"/>
                 <outlet property="mAddressTextField" destination="535" id="542"/>
-                <outlet property="mConnectButton" destination="537" id="540"/>
                 <outlet property="mSwitcherNameLabel" destination="607" id="609"/>
                 <outlet property="oscdevice" destination="633" id="636"/>
                 <outlet property="outgoing" destination="617" id="622"/>
@@ -385,16 +376,16 @@
                         <rect key="frame" x="8" y="7" width="373" height="272"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="lkx-iR-wZf">
-                            <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
+                            <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" drawsBackground="NO" importsGraphics="NO" findStyle="panel" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" id="773">
-                                    <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="358" height="272"/>
-                                    <size key="maxSize" width="550" height="10000000"/>
+                                    <size key="minSize" width="373" height="272"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
                                     <attributedString key="textStorage">
                                         <fragment content="Switcher needs to be connected to show OSC addresses.">
                                             <attributes>
@@ -405,8 +396,8 @@
                                         </fragment>
                                     </attributedString>
                                     <color key="insertionPointColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="358" height="272"/>
-                                    <size key="maxSize" width="550" height="10000000"/>
+                                    <size key="minSize" width="373" height="272"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
                                 </textView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -415,8 +406,8 @@
                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <scroller key="verticalScroller" verticalHuggingPriority="750" horizontal="NO" id="775">
-                            <rect key="frame" x="358" y="0.0" width="15" height="272"/>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="775">
+                            <rect key="frame" x="357" y="0.0" width="16" height="272"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
