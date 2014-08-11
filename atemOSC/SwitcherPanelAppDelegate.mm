@@ -412,7 +412,7 @@ private:
                 NSLog(@"No media player %d", mplayer);
                 return;
             }
-
+            
             if ([type isEqualToString:@"clip"])
             {
                 sourceType = bmdSwitcherMediaPlayerSourceTypeClip;
@@ -434,19 +434,101 @@ private:
                 NSLog(@"Could not set media player %d source\n", mplayer);
                 return;
             }
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"aux"]) {
+        }else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                  [[address objectAtIndex:2] isEqualToString:@"supersource"]) {
+            [self handleSuperSource:m address:address];
+        }else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                  [[address objectAtIndex:2] isEqualToString:@"aux"]) {
             int auxToChange = [[address objectAtIndex:3] intValue];
             int source = [[m value] intValue];
             [self handleAuxSource:auxToChange channel:source];
         }
     }
-    
 }
 
 - (void) handleAuxSource:(int)auxToChange channel:(int)channel {
     mSwitcherInputAuxList[auxToChange-1]->SetInputSource(channel);
 }
+
+- (void) handleSuperSource:(OSCMessage *)m address:(NSArray*)address {
+    if ([[address objectAtIndex:3] isEqualToString:@"border-enabled"]) {
+        bool value = [[address objectAtIndex:4] boolValue];
+        mSuperSource->SetBorderEnabled(value);
+    } else if ([[address objectAtIndex:3] isEqualToString:@"border-outer"]) {
+        float value = [[m value] floatValue];
+        mSuperSource->SetBorderWidthOut(value);
+    } else if ([[address objectAtIndex:3] isEqualToString:@"border-inner"]) {
+        float value = [[m value] floatValue];
+        mSuperSource->SetBorderWidthIn(value);
+    } else if ([[address objectAtIndex:3] isEqualToString:@"border-hue"]) {
+        float value = [[m value] floatValue];
+        mSuperSource->SetBorderHue(value);
+    } else if ([[address objectAtIndex:3] isEqualToString:@"border-saturations"]) {
+        float value = [[m value] floatValue];
+        mSuperSource->SetBorderSaturation(value);
+    } else if ([[address objectAtIndex:3] isEqualToString:@"border-luminescence"]) {
+        float value = [[m value] floatValue];
+        mSuperSource->SetBorderLuma(value);
+    } else if ([[address objectAtIndex:3] isEqualToString:@"box"]) {
+        [self handleSuperSourceBox:m address:address];
+    }
+}
+
+- (void) handleSuperSourceBox:(OSCMessage *)m address:(NSArray*)address {
+    int box = [[address objectAtIndex:4] intValue];
+    
+    // check we have the super source
+    if (!mSuperSource)
+    {
+        NSLog(@"No super source\n");
+        return;
+    }
+    
+    if (mSuperSourceBoxes.size() < box)
+    {
+        NSLog(@"No super source box %d", box);
+        return;
+    }
+    
+    // convert to value required for arrays
+    box = box-1;
+    
+    if ([[address objectAtIndex:5] isEqualToString:@"enabled"]) {
+        bool value = [[m value] boolValue];
+        mSuperSourceBoxes[box]->SetEnabled(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"source"]) {
+        int value = [[m value] intValue];
+        BMDSwitcherInputId InputId = value;
+        mSuperSourceBoxes[box]->SetInputSource(InputId);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"x"]) {
+        float value = [[m value] floatValue];
+        mSuperSourceBoxes[box]->SetPositionX(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"y"]) {
+        float value = [[m value] floatValue];
+        mSuperSourceBoxes[box]->SetPositionY(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"size"]) {
+        float value = [[m value] floatValue];
+        mSuperSourceBoxes[box]->SetSize(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"cropped"]) {
+        bool value = [[m value] boolValue];
+        mSuperSourceBoxes[box]->SetCropped(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-top"]) {
+        float value = [[m value] floatValue];
+        mSuperSourceBoxes[box]->SetCropTop(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-bottom"]) {
+        float value = [[m value] floatValue];
+        mSuperSourceBoxes[box]->SetCropBottom(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-left"]) {
+        float value = [[m value] floatValue];
+        mSuperSourceBoxes[box]->SetCropLeft(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-right"]) {
+        float value = [[m value] floatValue];
+        mSuperSourceBoxes[box]->SetCropRight(value);
+    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-reset"]) {
+        mSuperSourceBoxes[box]->ResetCrop();
+    }
+}
+
 
 - (void) activateChannel:(int)channel isProgram:(BOOL)program {
     NSString *strip;
@@ -652,6 +734,50 @@ private:
                 }
             }
             
+            
+            if (mSuperSourceBoxes.size() > 0)
+            {
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSuper Source:\n" attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tValid values specified in <>\n\n" attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border enabled flag: " attributes:  addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-enabled\t<0|1>\n" attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border outer width: " attributes:  addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-outer\t<float>\n" attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border inner width: " attributes:  addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-inner\t<float>\n" attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border hue: " attributes:  addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-hue\t<float>\n" attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border saturation: " attributes:  addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-saturation\t<float>\n" attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border luminescence: " attributes:  addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-luminescence\t<float>\n" attributes:infoAttribute]];
+                for (int i = 1; i <= mSuperSourceBoxes.size(); i++)
+                {
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d enabled: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/enabled\t<0|1>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Input source: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/source\t<see sources for valid options>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Position X: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/x\t<float>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Position Y: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/y\t<float>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Size: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/size\t<float>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Cropped Enabled: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/cropped\t<0|1>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Crop Top: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-top\t<float>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Crop Bottom: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-bottom\t<float>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Crop Left: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-left\t<float>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Crop Right: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-right\t<float>\n",i] attributes:infoAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tReset Box %d Crop: ",i] attributes:  addressAttribute]];
+                    [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-reset\t<1>\n",i] attributes:infoAttribute]];
+                }
+            }
+            
             [helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
             [[heltTextView textStorage] setAttributedString:helpString];
         }
@@ -733,8 +859,8 @@ private:
 	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
 	IBMDSwitcherInputIterator* inputIterator = NULL;
 	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
-	REFIID mediaPoolIID = IID_IBMDSwitcherMediaPool;
-    isConnectedToATEM = YES;
+	IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
+    	isConnectedToATEM = YES;
     
     if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
         self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
@@ -781,17 +907,21 @@ private:
 				result = auxObj->GetInputSource(&auxId);
 				mSwitcherInputAuxList.push_back(auxObj);
 			}
+			BMDSwitcherInputId id;
+            		input->GetInputId(&id);
+            		NSString* name;
+         		   input->GetString(bmdSwitcherInputPropertyIdLongName, (CFStringRef*)&name);
+         		   if ([name isEqual: @"SuperSource"])
+         		   {
+         		       input->QueryInterface(IID_IBMDSwitcherInputSuperSource, (void**)&mSuperSource);
+         		   }
 			input->Release();
+            [name release];
 			mInputMonitors.push_back(inputMonitor);
 		}
 		inputIterator->Release();
 		inputIterator = NULL;
 	}
-		
-    
-
-
-    
     
 	// Get the mix effect block iterator
 	result = mSwitcher->CreateIterator(IID_IBMDSwitcherMixEffectBlockIterator, (void**)&iterator);
@@ -847,13 +977,28 @@ private:
     mediaPlayerIterator = NULL;
     
 	// get media pool
-	result = mSwitcher->QueryInterface(mediaPoolIID, (void**)&mMediaPool);
+	result = mSwitcher->QueryInterface(IID_IBMDSwitcherMediaPool, (void**)&mMediaPool);
 	if (FAILED(result))
 	{
 		NSLog(@"Could not get IBMDSwitcherMediaPool interface\n");
 		return;
 	}
     
+	// Super source
+    if (mSuperSource) {
+        result = mSuperSource->CreateIterator(IID_IBMDSwitcherSuperSourceBoxIterator, (void**)&superSourceIterator);
+        if (FAILED(result))
+        {
+            NSLog(@"Could not create IBMDSwitcherSuperSourceBoxIterator iterator\n");
+            return;
+        }
+        IBMDSwitcherSuperSourceBox* superSourceBox = NULL;
+        while (S_OK == superSourceIterator->Next(&superSourceBox)) {
+            mSuperSourceBoxes.push_back(superSourceBox);
+        }
+        superSourceIterator->Release();
+        superSourceIterator = NULL;
+    }
     
     switcherTransitionParameters = NULL;
     mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
