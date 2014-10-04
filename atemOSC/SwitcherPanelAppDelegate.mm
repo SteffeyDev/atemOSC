@@ -348,6 +348,33 @@ private:
                    [[address objectAtIndex:3] isEqualToString:@"ftb"]) {
             mMixEffectBlock->PerformFadeToBlack();
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
+                   [[address objectAtIndex:3] isEqualToString:@"set-type"]) {
+            
+            HRESULT result;
+            NSString *style = [address objectAtIndex:4];
+            REFIID transitionStyleID = IID_IBMDSwitcherTransitionParameters;
+            IBMDSwitcherTransitionParameters* mTransitionStyleParameters=NULL;
+            result = mMixEffectBlock->QueryInterface(transitionStyleID, (void**)&mTransitionStyleParameters);
+            if (SUCCEEDED(result))
+            {
+                if ([style isEqualToString:@"mix"]){
+                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
+                }
+                if ([style isEqualToString:@"dip"]){
+                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDip);
+                }
+                if ([style isEqualToString:@"wipe"]){
+                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleWipe);
+                }
+                if ([style isEqualToString:@"sting"]){
+                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleStinger);
+                }
+                if ([style isEqualToString:@"dve"]){
+                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
+                }
+            }
+        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"nextusk"]) {
             switch ([[address objectAtIndex:3] intValue]) {
                 case 0:
@@ -381,17 +408,81 @@ private:
             }
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"dsk"]) {
-            int t = [[address objectAtIndex:3] intValue];
-            
-            if (t<=dsk.size()) {
-            
-                std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                std::advance(iter, t-1);
-                IBMDSwitcherDownstreamKey * key = *iter;
-            
-                bool isTransitioning;
-                key->IsAutoTransitioning(&isTransitioning);
-                if (!isTransitioning) key->PerformAutoTransition();
+            if ([[address objectAtIndex:3] isEqualToString:@"set-tie"])
+            {
+                int t = [[address objectAtIndex:4] intValue];
+                bool value = [[m value] boolValue];
+                
+                if (t<=dsk.size()) {
+                    
+                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
+                    std::advance(iter, t-1);
+                    IBMDSwitcherDownstreamKey * key = *iter;
+                    
+                    bool isTransitioning;
+                    key->IsTransitioning(&isTransitioning);
+                    if (!isTransitioning) key->SetTie(value);
+                }
+            } else if ([[address objectAtIndex:3] isEqualToString:@"tie"])
+            {
+                int t = [[address objectAtIndex:4] intValue];
+                
+                if (t<=dsk.size()) {
+                    
+                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
+                    std::advance(iter, t-1);
+                    IBMDSwitcherDownstreamKey * key = *iter;
+                    
+                    bool isTied;
+                    key->GetTie(&isTied);
+                    bool isTransitioning;
+                    key->IsTransitioning(&isTransitioning);
+                    if (!isTransitioning) key->SetTie(!isTied);
+                }
+            } else if ([[address objectAtIndex:3] isEqualToString:@"toggle"])
+            {
+                int t = [[address objectAtIndex:4] intValue];
+                
+                if (t<=dsk.size()) {
+                    
+                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
+                    std::advance(iter, t-1);
+                    IBMDSwitcherDownstreamKey * key = *iter;
+                    
+                    bool isLive;
+                    key->GetOnAir(&isLive);
+                    bool isTransitioning;
+                    key->IsTransitioning(&isTransitioning);
+                    if (!isTransitioning) key->SetOnAir(!isLive);
+                }
+            } else if ([[address objectAtIndex:3] isEqualToString:@"on-air"])
+            {
+                int t = [[address objectAtIndex:4] intValue];
+                bool value = [[m value] boolValue];
+                
+                if (t<=dsk.size()) {
+                    
+                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
+                    std::advance(iter, t-1);
+                    IBMDSwitcherDownstreamKey * key = *iter;
+                    
+                    bool isTransitioning;
+                    key->IsTransitioning(&isTransitioning);
+                    if (!isTransitioning) key->SetOnAir(value);
+                }
+            } else {
+                int t = [[address objectAtIndex:3] intValue];
+                
+                if (t<=dsk.size()) {
+                    
+                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
+                    std::advance(iter, t-1);
+                    IBMDSwitcherDownstreamKey * key = *iter;
+                    
+                    bool isTransitioning;
+                    key->IsAutoTransitioning(&isTransitioning);
+                    if (!isTransitioning) key->PerformAutoTransition();
+                }
             }
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
@@ -656,6 +747,18 @@ private:
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tFade-to-black: " attributes:addressAttribute]];
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/ftb\n" attributes:infoAttribute]];
             
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nTransition type:\n" attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Mix: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/mix\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Dip: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/dip\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Wipe: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/wipe\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Stinger: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/sting\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to DVE: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/dve\n" attributes:infoAttribute]];
+            
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nUpstream Keyers:\n" attributes:addressAttribute]];
             for (int i = 0; i<keyers.size();i++) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tOn Air KEY %d: ",i+1] attributes:addressAttribute]];
@@ -673,6 +776,14 @@ private:
             for (int i = 0; i<dsk.size();i++) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAuto-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/%d\n",i+1] attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet DSK On Ait%d: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/on-air/%d\t<0|1>\n",i+1] attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tTie Next-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/tie/%d\n",i+1] attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Tie Next-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d\t<0|1>\n",i+1] attributes:infoAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tToggle DSK%d: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/toggle/%d\n",i+1] attributes:infoAttribute]];
             }
 
             

@@ -1,4 +1,7 @@
-# atemOSC v2.4.0
+# atemOSC v2.4.1
+
+## Changelog v2.4.1
+- updated support for controlling DSKs
 
 ## Changelog v2.4.0
 - added support for controlling SuperSource
@@ -92,8 +95,12 @@ Additional options.
    - (up to `/atem/aux/6 $x`, depends on your ATEM switcher)
  - **Toggle Upstream Keyer 1** `/atem/usk/1` (up to `/atem/usk/4`, depends on your ATEM switcher)
  - **Prepare Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
- - **Auto Toggle Downstreamkeyer 1** `/atem/dsk/1` (up to `/atem/dsk/4`, depends on your ATEM switcher)
- - **Tie Downstreamkeyer 1** `/atem/dsk/tie/1` (up to `/atem/dsk/tie/4`, depends on your ATEM switcher)
+ - **Auto Toggle On Air Downstreamkeyer 1** `/atem/dsk/1` (up to `/atem/dsk/4`, depends on your ATEM switcher)
+ - **Force On Air Downstreamkeyer 1** `/atem/dsk/on-air/1	<0|1>` (up to `/atem/dsk/4`, depends on your ATEM switcher)
+     - Where `<0|1>` is an int-value of 0 (disabled) or 1 (enabled)
+ - **Toggle Tie Downstreamkeyer 1** `/atem/dsk/tie/1` (up to `/atem/dsk/tie/4`, depends on your ATEM switcher)
+ - **Force Tie Downstreamkeyer 1** `/atem/dsk/set-tie/1	<0|1>` (up to `/atem/dsk/4`, depends on your ATEM switcher)
+     - Where `<0|1>` is an int-value of 0 (disabled) or 1 (enabled)
  - **Cut Toggle Downstreamkeyer 1** `/atem/dsk/toggle/1` (up to `/atem/dsk/toggle/4`, depends on your ATEM switcher)
  - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip/$x`
    - e.g. `/atem/mplayer/1/clip/1` (up to `/atem/mplayer/1/clip/2`, depends on your ATEM switcher)
