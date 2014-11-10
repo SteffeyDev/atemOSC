@@ -327,6 +327,7 @@ private:
 }
 
 - (void) receivedOSCMessage:(OSCMessage *)m	{
+    [self logMessage:[NSString stringWithFormat:@"Received OSC message: %@\tValue: %@", [m address], [m value]]];
     if (isConnectedToATEM) { //Do nothing if not connected
         NSArray *address = [[m address] componentsSeparatedByString:@"/"];
     
@@ -410,7 +411,7 @@ private:
                     bool onAir;
                     key->GetOnAir(&onAir);
                     key->SetOnAir(!onAir);
-                    NSLog(@"dsk on %@",m);
+                    [self logMessage:[NSString stringWithFormat:@"dsk on %@", m]];
                 }
             }
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
@@ -501,13 +502,13 @@ private:
             // check we have the media pool
             if (! mMediaPool)
             {
-                NSLog(@"No media pool\n");
+                [self logMessage:@"No media pool\n"];
                 return;
             }
     
             if (mMediaPlayers.size() < mplayer)
             {
-                NSLog(@"No media player %d", mplayer);
+                [self logMessage:[NSString stringWithFormat:@"No media player %d", mplayer]];
                 return;
             }
             
@@ -521,7 +522,7 @@ private:
             }
             else
             {
-                NSLog(@"You must specify the Media type 'clip' or 'still'");
+                [self logMessage:@"You must specify the Media type 'clip' or 'still'"];
                 return;
             }
             // set media player source
@@ -529,7 +530,7 @@ private:
             result = mMediaPlayers[mplayer-1]->SetSource(sourceType, requestedValue-1);
             if (FAILED(result))
             {
-                NSLog(@"Could not set media player %d source\n", mplayer);
+                [self logMessage:[NSString stringWithFormat:@"Could not set media player %d source\n", mplayer]];
                 return;
             }
         }else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
@@ -578,13 +579,13 @@ private:
     // check we have the super source
     if (!mSuperSource)
     {
-        NSLog(@"No super source\n");
+        [self logMessage:@"No super source"];
         return;
     }
     
     if (mSuperSourceBoxes.size() < box)
     {
-        NSLog(@"No super source box %d", box);
+        [self logMessage:[NSString stringWithFormat:@"No super source box %d", box]];
         return;
     }
     
@@ -906,6 +907,11 @@ private:
     
 }
 
+- (IBAction)logButtonPressed:(id)sender {
+    [logTextView setTextColor:[NSColor whiteColor]];
+    logPanel.isVisible = YES;
+}
+
 - (IBAction)mAddressTextFieldUpdated:(id)sender {
     //Updated: save state everytime text field changed
     NSString* address = [mAddressTextField stringValue];
@@ -963,7 +969,7 @@ private:
                            //To run in background thread
                            [self switcherDisconnected];
                        });
-		NSLog(reason);
+		[self logMessage:[NSString stringWithFormat:@"%@", reason]];
 	}
 }
 
@@ -998,7 +1004,7 @@ private:
 	NSString* productName;
 	if (FAILED(mSwitcher->GetProductName((CFStringRef*)&productName)))
 	{
-		NSLog(@"Could not get switcher product name");
+		[self logMessage:@"Could not get switcher product name"];
 		return;
 	}
 	
@@ -1045,14 +1051,14 @@ private:
 	result = mSwitcher->CreateIterator(IID_IBMDSwitcherMixEffectBlockIterator, (void**)&iterator);
 	if (FAILED(result))
 	{
-		NSLog(@"Could not create IBMDSwitcherMixEffectBlockIterator iterator");
+		[self logMessage:@"Could not create IBMDSwitcherMixEffectBlockIterator iterator"];
 		return;
 	}
 	
 	// Use the first Mix Effect Block
 	if (S_OK != iterator->Next(&mMixEffectBlock))
 	{
-		NSLog(@"Could not get the first IBMDSwitcherMixEffectBlock");
+		[self logMessage:@"Could not get the first IBMDSwitcherMixEffectBlock"];
 		return;
 	}
     
@@ -1083,7 +1089,7 @@ private:
     result = mSwitcher->CreateIterator(IID_IBMDSwitcherMediaPlayerIterator, (void**)&mediaPlayerIterator);
     if (FAILED(result))
     {
-        NSLog(@"Could not create IBMDSwitcherMediaPlayerIterator iterator\n");
+        [self logMessage:@"Could not create IBMDSwitcherMediaPlayerIterator iterator"];
         return;
     }
     
@@ -1098,7 +1104,7 @@ private:
 	result = mSwitcher->QueryInterface(IID_IBMDSwitcherMediaPool, (void**)&mMediaPool);
 	if (FAILED(result))
 	{
-		NSLog(@"Could not get IBMDSwitcherMediaPool interface\n");
+		[self logMessage:@"Could not get IBMDSwitcherMediaPool interface"];
 		return;
 	}
     
@@ -1107,7 +1113,7 @@ private:
         result = mSuperSource->CreateIterator(IID_IBMDSwitcherSuperSourceBoxIterator, (void**)&superSourceIterator);
         if (FAILED(result))
         {
-            NSLog(@"Could not create IBMDSwitcherSuperSourceBoxIterator iterator\n");
+            [self logMessage:@"Could not create IBMDSwitcherSuperSourceBoxIterator iterator"];
             return;
         }
         IBMDSwitcherSuperSourceBox* superSourceBox = NULL;
@@ -1182,6 +1188,32 @@ finish:
     [self connectBMD];
 }
 
+- (void)logMessage:(NSString *)message
+{
+    if (message) {
+        [self appendMessage:message];
+        NSLog(@"%@", message);
+    }
+}
+
+- (void)appendMessage:(NSString *)message
+{
+    NSDate *now = [NSDate date];
+    NSDateFormatter *formatter = nil;
+    formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    
+    NSString *messageWithNewLine = [NSString stringWithFormat:@"[%@] %@\n", [formatter stringFromDate:now], message];
+    [formatter release];
+    
+    // Append string to textview
+    [logTextView.textStorage appendAttributedString:[[NSAttributedString alloc]initWithString:messageWithNewLine]];
+    
+    [logTextView scrollRangeToVisible: NSMakeRange(logTextView.string.length, 0)];
+    
+    [logTextView setTextColor:[NSColor whiteColor]];
+}
+
 //
 // GUI updates
 //
@@ -1194,7 +1226,7 @@ finish:
 	result = mSwitcher->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator);
 	if (FAILED(result))
 	{
-		NSLog(@"Could not create IBMDSwitcherInputIterator iterator");
+        [self logMessage:@"Could not create IBMDSwitcherInputIterator iterator"];
 		return;
 	}
 	
@@ -1342,7 +1374,7 @@ finish:
         
         if ([port open]) {
 
-            NSLog(@"successfully connected");
+            [self logMessage:@"successfully connected"];
             
             [connectButton setEnabled:NO];
             [serialSelectMenu setEnabled:NO];
@@ -1358,7 +1390,7 @@ finish:
             
         } else { // an error occured while creating port
             
-            NSLog(@"error connecting");
+            [self logMessage:@"error connecting"];
             //[serialScreenMessage setStringValue:@"Error Trying to Connect..."];
             [self setPort:nil];
             
@@ -1378,7 +1410,7 @@ finish:
     if ([data length] > 0) {
         
         NSString *receivedText = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-        NSLog(@"Serial Port Data Received: %@",receivedText);
+        [self logMessage:[NSString stringWithFormat:@"Serial Port Data Received: %@",receivedText]];
         
         
         //Typically, I arrange my serial messages coming from the Arduino in chunks, with the
@@ -1393,7 +1425,7 @@ finish:
         
     } else { 
         // port closed
-        NSLog(@"Port was closed on a readData operation...not good!");
+        [self logMessage:@"Port was closed on a readData operation...not good!"];
         [connectButton setEnabled:YES];
         [serialSelectMenu setEnabled:YES];
         [tallyGreenLight setHidden:YES];
@@ -1420,10 +1452,10 @@ finish:
     if([port isOpen]) {
         if (channel>0 && channel<7) {
             
-            if (channel == [[tallyA selectedItem] tag]) {NSLog(@"A");[port writeString:@"A" usingEncoding:NSUTF8StringEncoding error:NULL];}
-            else if (channel == [[tallyB selectedItem] tag]) {NSLog(@"B");[port writeString:@"B" usingEncoding:NSUTF8StringEncoding error:NULL];}
-            else if (channel == [[tallyC selectedItem] tag]) {NSLog(@"C");[port writeString:@"C" usingEncoding:NSUTF8StringEncoding error:NULL];}
-            else if (channel == [[tallyD selectedItem] tag]) {NSLog(@"D");[port writeString:@"D" usingEncoding:NSUTF8StringEncoding error:NULL];}
+            if (channel == [[tallyA selectedItem] tag]) {[self logMessage:@"A"];[port writeString:@"A" usingEncoding:NSUTF8StringEncoding error:NULL];}
+            else if (channel == [[tallyB selectedItem] tag]) {[self logMessage:@"B"];[port writeString:@"B" usingEncoding:NSUTF8StringEncoding error:NULL];}
+            else if (channel == [[tallyC selectedItem] tag]) {[self logMessage:@"C"];[port writeString:@"C" usingEncoding:NSUTF8StringEncoding error:NULL];}
+            else if (channel == [[tallyD selectedItem] tag]) {[self logMessage:@"D"];[port writeString:@"D" usingEncoding:NSUTF8StringEncoding error:NULL];}
             else {[port writeString:@"0" usingEncoding:NSUTF8StringEncoding error:NULL];};
 
         } else {
@@ -1453,13 +1485,13 @@ finish:
 
 - (void)didAddPorts:(NSNotification *)theNotification
 {
-    NSLog(@"A port was added");
+    [self logMessage:@"A port was added"];
     [self listDevices];
 }
 
 - (void)didRemovePorts:(NSNotification *)theNotification
 {
-    NSLog(@"A port was removed");
+    [self logMessage:@"A port was removed"];
     [self listDevices];
 }
 

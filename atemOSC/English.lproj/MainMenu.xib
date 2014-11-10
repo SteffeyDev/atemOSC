@@ -100,6 +100,12 @@
                                     <action selector="helpButtonPressed:" target="494" id="790"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Log" id="hsp-RM-dO4">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="logButtonPressed:" target="494" id="TUF-rx-krJ"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Github page" tag="2" id="788">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
@@ -370,6 +376,8 @@
                 <outlet property="helpPanel" destination="770" id="777"/>
                 <outlet property="heltTextView" destination="773" id="778"/>
                 <outlet property="incoming" destination="615" id="621"/>
+                <outlet property="logPanel" destination="0qs-BG-ADh" id="atc-oV-mmX"/>
+                <outlet property="logTextView" destination="yea-mf-8MA" id="Hc0-Hb-WQr"/>
                 <outlet property="mAddressTextField" destination="535" id="542"/>
                 <outlet property="mSwitcherNameLabel" destination="607" id="609"/>
                 <outlet property="oscdevice" destination="633" id="636"/>
@@ -394,7 +402,7 @@
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="283" y="305" width="389" height="286"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
             <view key="contentView" id="771">
                 <rect key="frame" x="0.0" y="0.0" width="389" height="286"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -434,6 +442,50 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="775">
+                            <rect key="frame" x="357" y="0.0" width="16" height="272"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
+                </subviews>
+            </view>
+        </window>
+        <window title="Log" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="0qs-BG-ADh" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="283" y="305" width="389" height="286"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+            <view key="contentView" id="Vth-fT-VkJ">
+                <rect key="frame" x="0.0" y="0.0" width="389" height="286"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <scrollView borderType="none" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" id="YKg-SP-4Gm">
+                        <rect key="frame" x="8" y="7" width="373" height="272"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Ehi-52-hIa">
+                            <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView editable="NO" drawsBackground="NO" importsGraphics="NO" findStyle="panel" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" id="yea-mf-8MA">
+                                    <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <size key="minSize" width="358" height="272"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
+                                    <attributedString key="textStorage">
+                                    </attributedString>
+                                    <color key="insertionPointColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <size key="minSize" width="358" height="272"/>
+                                    <size key="maxSize" width="463" height="10000000"/>
+                                </textView>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="84T-Yp-D5V">
+                            <rect key="frame" x="-100" y="-100" width="87" height="18"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="ZBP-Oa-hwz">
                             <rect key="frame" x="357" y="0.0" width="16" height="272"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
