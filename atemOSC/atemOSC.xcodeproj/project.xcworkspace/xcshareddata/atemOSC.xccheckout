@@ -11,17 +11,17 @@
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>B2E5A21DE29112A2C3D0401A54496AD892E8B08B</key>
-		<string>ssh://github.com/LanSmash/atemOSC.git</string>
+		<string>github.com:LanSmash/atemOSC.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>atemOSC/atemOSC.xcodeproj/project.xcworkspace</string>
+	<string>atemOSC/atemOSC.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>B2E5A21DE29112A2C3D0401A54496AD892E8B08B</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/LanSmash/atemOSC.git</string>
+	<string>github.com:LanSmash/atemOSC.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>

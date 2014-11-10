@@ -1,4 +1,8 @@
-# atemOSC v2.4.1
+# atemOSC v2.4.2
+
+## Changelog v2.4.2
+- updated to ATEM SDK v6.0
+- re-added Edit menu to allow for Copy/Paste
 
 ## Changelog v2.4.1
 - updated support for controlling DSKs
