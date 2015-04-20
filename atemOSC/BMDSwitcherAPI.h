@@ -123,6 +123,12 @@ BMD_CONST REFIID IID_IBMDSwitcherMediaPool                        = /* 59A3056E-
 BMD_CONST REFIID IID_IBMDSwitcherCameraControlParameterIterator   = /* 6B6E289F-0847-480A-A0BD-E8FB78A5505A */ {0x6B,0x6E,0x28,0x9F,0x08,0x47,0x48,0x0A,0xA0,0xBD,0xE8,0xFB,0x78,0xA5,0x50,0x5A};
 BMD_CONST REFIID IID_IBMDSwitcherCameraControlCallback            = /* 90337CAC-9376-4A62-A58F-10936130970B */ {0x90,0x33,0x7C,0xAC,0x93,0x76,0x4A,0x62,0xA5,0x8F,0x10,0x93,0x61,0x30,0x97,0x0B};
 BMD_CONST REFIID IID_IBMDSwitcherCameraControl                    = /* 95D7C0B6-9A84-4715-BE27-8A9CCAA9E6A9 */ {0x95,0xD7,0xC0,0xB6,0x9A,0x84,0x47,0x15,0xBE,0x27,0x8A,0x9C,0xCA,0xA9,0xE6,0xA9};
+BMD_CONST REFIID IID_IBMDSwitcherMacro                            = /* 2F1DF648-CB02-48D5-B5EB-B857BBD626A7 */ {0x2F,0x1D,0xF6,0x48,0xCB,0x02,0x48,0xD5,0xB5,0xEB,0xB8,0x57,0xBB,0xD6,0x26,0xA7};
+BMD_CONST REFIID IID_IBMDSwitcherTransferMacro                    = /* 9BAD28DB-F0CC-4696-82EE-B1E3E5A7C129 */ {0x9B,0xAD,0x28,0xDB,0xF0,0xCC,0x46,0x96,0x82,0xEE,0xB1,0xE3,0xE5,0xA7,0xC1,0x29};
+BMD_CONST REFIID IID_IBMDSwitcherMacroPoolCallback                = /* E29294A0-FB4C-418D-9AE1-C6CBA288104F */ {0xE2,0x92,0x94,0xA0,0xFB,0x4C,0x41,0x8D,0x9A,0xE1,0xC6,0xCB,0xA2,0x88,0x10,0x4F};
+BMD_CONST REFIID IID_IBMDSwitcherMacroPool                        = /* 5FA28BFC-7934-42F4-BED8-8744D62D210F */ {0x5F,0xA2,0x8B,0xFC,0x79,0x34,0x42,0xF4,0xBE,0xD8,0x87,0x44,0xD6,0x2D,0x21,0x0F};
+BMD_CONST REFIID IID_IBMDSwitcherMacroControlCallback             = /* F6A62317-60F6-4D5C-A5DD-2DC372B9F4FF */ {0xF6,0xA6,0x23,0x17,0x60,0xF6,0x4D,0x5C,0xA5,0xDD,0x2D,0xC3,0x72,0xB9,0xF4,0xFF};
+BMD_CONST REFIID IID_IBMDSwitcherMacroControl                     = /* 2E23E657-A7F0-4C4A-BCBE-4B8D3DD061AC */ {0x2E,0x23,0xE6,0x57,0xA7,0xF0,0x4C,0x4A,0xBC,0xBE,0x4B,0x8D,0x3D,0xD0,0x61,0xAC};
 
 /* Enum BMDSwitcherInputPropertyId - IBMDSwitcherInput Property ID */
 
@@ -131,7 +137,7 @@ enum _BMDSwitcherInputPropertyId {
     bmdSwitcherInputPropertyIdPortType                           = 'prtp',	// Int type (BMDSwitcherPortType), Get only
     bmdSwitcherInputPropertyIdInputAvailability                  = 'avlb',	// Int type (BMDSwitcherInputAvailability), Get only
     bmdSwitcherInputPropertyIdShortName                          = 'shnm',	// String type, Get/Set
-    bmdSwitcherInputPropertyIdLongName                           = 'lgnm',	// String type, Get only
+    bmdSwitcherInputPropertyIdLongName                           = 'lgnm',	// String type, Get/Set
     bmdSwitcherInputPropertyIdIsProgramTallied                   = 'ipgt',	// Flag type, Get only
     bmdSwitcherInputPropertyIdIsPreviewTallied                   = 'iprt',	// Flag type, Get only
     bmdSwitcherInputPropertyIdAvailableExternalPortTypes         = 'aept',	// Int type (BMDSwitcherExternalPortType), Get only
@@ -801,6 +807,44 @@ enum _BMDSwitcherCameraControlParameterType {
     bmdSwitcherCameraControlParameterTypeFixedPoint16Bit         = 'ccfp'
 };
 
+/* Enum BMDSwitcherMacroPoolEventType - Used in IBMDSwitcherMacroPoolCallback */
+
+typedef uint32_t BMDSwitcherMacroPoolEventType;
+enum _BMDSwitcherMacroPoolEventType {
+    bmdSwitcherMacroPoolEventTypeValidChanged                    = 'mava',
+    bmdSwitcherMacroPoolEventTypeHasUnsupportedOpsChanged        = 'maop',
+    bmdSwitcherMacroPoolEventTypeNameChanged                     = 'mana',
+    bmdSwitcherMacroPoolEventTypeDescriptionChanged              = 'made',
+    bmdSwitcherMacroPoolEventTypeTransferCompleted               = 'mats',
+    bmdSwitcherMacroPoolEventTypeTransferCancelled               = 'matc',
+    bmdSwitcherMacroPoolEventTypeTransferFailed                  = 'matf'
+};
+
+/* Enum BMDSwitcherMacroControlEventType - Used in IBMDSwitcherMacroControlCallback */
+
+typedef uint32_t BMDSwitcherMacroControlEventType;
+enum _BMDSwitcherMacroControlEventType {
+    bmdSwitcherMacroControlEventTypeRunStatusChanged             = 'marn',
+    bmdSwitcherMacroControlEventTypeRecordStatusChanged          = 'marc'
+};
+
+/* Enum BMDSwitcherMacroRunStatus - Used in IBMDSwitcherMacroControl */
+
+typedef uint32_t BMDSwitcherMacroRunStatus;
+enum _BMDSwitcherMacroRunStatus {
+    bmdSwitcherMacroRunStatusIdle                                = 0x00,
+    bmdSwitcherMacroRunStatusRunning                             = 0x01,
+    bmdSwitcherMacroRunStatusWaitingForUser                      = 0x02
+};
+
+/* Enum BMDSwitcherMacroRecordStatus - Used in IBMDSwitcherMacroControl */
+
+typedef uint32_t BMDSwitcherMacroRecordStatus;
+enum _BMDSwitcherMacroRecordStatus {
+    bmdSwitcherMacroRecordStatusIdle                             = 0x00,
+    bmdSwitcherMacroRecordStatusRecording                        = 0x01
+};
+
 #if defined(__cplusplus)
 
 // Forward Declarations
@@ -879,6 +923,12 @@ class IBMDSwitcherMediaPool;
 class IBMDSwitcherCameraControlParameterIterator;
 class IBMDSwitcherCameraControlCallback;
 class IBMDSwitcherCameraControl;
+class IBMDSwitcherMacro;
+class IBMDSwitcherTransferMacro;
+class IBMDSwitcherMacroPoolCallback;
+class IBMDSwitcherMacroPool;
+class IBMDSwitcherMacroControlCallback;
+class IBMDSwitcherMacroControl;
 
 /* Interface IBMDSwitcherAudioMonitorOutputCallback - Audio Monitor Output Object Callback */
 
@@ -2237,13 +2287,106 @@ protected:
     virtual ~IBMDSwitcherCameraControl () {} // call Release method to drop reference count
 };
 
+/* Interface IBMDSwitcherMacro - Macro */
+
+class IBMDSwitcherMacro : public IUnknown
+{
+public:
+    virtual int32_t GetSize (void) = 0;
+    virtual HRESULT GetBytes (/* out */ void** buffer) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacro () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransferMacro - MacroTransfer */
+
+class IBMDSwitcherTransferMacro : public IUnknown
+{
+public:
+    virtual HRESULT Cancel (void) = 0;
+    virtual HRESULT GetProgress (/* out */ double* progress) = 0;
+    virtual HRESULT GetMacro (/* out */ IBMDSwitcherMacro** macro) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransferMacro () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacroPoolCallback - Macro Pool Callback Delegate */
+
+class IBMDSwitcherMacroPoolCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherMacroPoolEventType eventType, /* in */ uint32_t index, /* in */ IBMDSwitcherTransferMacro* macroTransfer) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacroPoolCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacroPool - Management of Macros */
+
+class IBMDSwitcherMacroPool : public IUnknown
+{
+public:
+    virtual HRESULT GetMaxCount (/* out */ uint32_t* maxCount) = 0; // Returns the maximum number of macros that can be stored
+    virtual HRESULT Delete (/* in */ uint32_t index) = 0; // Delete a macro
+    virtual HRESULT IsValid (/* in */ uint32_t index, /* out */ bool* valid) = 0; // Returns whether the specified macro is valid
+    virtual HRESULT HasUnsupportedOps (/* in */ uint32_t index, /* out */ bool* hasUnsupportedOps) = 0; // Returns whether the specified macro has any unsupported or invalid operations
+    virtual HRESULT GetName (/* in */ uint32_t index, /* out */ CFStringRef* name) = 0; // Macro's name
+    virtual HRESULT SetName (/* in */ uint32_t index, /* in */ CFStringRef name) = 0;
+    virtual HRESULT GetDescription (/* in */ uint32_t index, /* out */ CFStringRef* description) = 0; // Macro's description property
+    virtual HRESULT SetDescription (/* in */ uint32_t index, /* in */ CFStringRef description) = 0;
+    virtual HRESULT CreateMacro (/* in */ uint32_t sizeBytes, /* out */ IBMDSwitcherMacro** macro) = 0;
+    virtual HRESULT Upload (/* in */ uint32_t index, /* in */ CFStringRef name, /* in */ CFStringRef description, /* in */ IBMDSwitcherMacro* macro, /* out */ IBMDSwitcherTransferMacro** macroTransfer) = 0;
+    virtual HRESULT Download (/* in */ uint32_t index, /* out */ IBMDSwitcherTransferMacro** macroTransfer) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherMacroPoolCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMacroPoolCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacroPool () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacroControlCallback - Macro Control Callback Delegate */
+
+class IBMDSwitcherMacroControlCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherMacroControlEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacroControlCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacroControl - Recording and Playback of Macros */
+
+class IBMDSwitcherMacroControl : public IUnknown
+{
+public:
+    virtual HRESULT Run (/* in */ uint32_t index) = 0; // Begin running a macro
+    virtual HRESULT GetLoop (/* out */ bool* loop) = 0;
+    virtual HRESULT SetLoop (/* in */ bool loop) = 0;
+    virtual HRESULT ResumeRunning (void) = 0; // Resume execution of the currently running macro that is waiting for the user to continue
+    virtual HRESULT StopRunning (void) = 0; // Terminate execution of the currently running macro
+    virtual HRESULT Record (/* in */ uint32_t index, /* in */ CFStringRef name, /* in */ CFStringRef description) = 0; // Start recording a new macro
+    virtual HRESULT RecordUserWait (void) = 0; // Insert a user wait event into the currently recording macro
+    virtual HRESULT RecordPause (/* in */ uint32_t frames) = 0; // Insert a frame delay into currently recording macro
+    virtual HRESULT StopRecording (void) = 0; // Stop recording and save the current macro
+    virtual HRESULT GetRunStatus (/* out */ BMDSwitcherMacroRunStatus* status, /* out */ bool* loop, /* out */ uint32_t* index) = 0; // Get the current macro running status
+    virtual HRESULT GetRecordStatus (/* out */ BMDSwitcherMacroRecordStatus* status, /* out */ uint32_t* index) = 0; // Get the current macro recording status
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherMacroControlCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMacroControlCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacroControl () {} // call Release method to drop reference count
+};
+
 /* Functions */
 
 extern "C" {
 
     IBMDSwitcherDiscovery* CreateBMDSwitcherDiscoveryInstance (void);
 
-};
+}
 
 
 #endif      // defined(__cplusplus)
