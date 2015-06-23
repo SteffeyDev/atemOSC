@@ -1,5 +1,5 @@
 /* -LICENSE-START-
-** Copyright (c) 2013 Blackmagic Design
+** Copyright (c) 2014 Blackmagic Design
 **
 ** Permission is hereby granted, free of charge, to any person or organization
 ** obtaining a copy of the software and accompanying documentation covered by
@@ -54,7 +54,7 @@ BMD_CONST REFIID IID_IBMDSwitcherAudioMonitorOutput               = /* 21E041C3-
 BMD_CONST REFIID IID_IBMDSwitcherAudioInputCallback               = /* 26E05D77-EFB9-4253-86D8-2F1E82E462F6 */ {0x26,0xE0,0x5D,0x77,0xEF,0xB9,0x42,0x53,0x86,0xD8,0x2F,0x1E,0x82,0xE4,0x62,0xF6};
 BMD_CONST REFIID IID_IBMDSwitcherAudioInput                       = /* 321EA41E-544B-491B-B9AA-F6FCAECEF74F */ {0x32,0x1E,0xA4,0x1E,0x54,0x4B,0x49,0x1B,0xB9,0xAA,0xF6,0xFC,0xAE,0xCE,0xF7,0x4F};
 BMD_CONST REFIID IID_IBMDSwitcherAudioMixerCallback               = /* A203DA24-9910-450C-AA6A-9AA05C5C856E */ {0xA2,0x03,0xDA,0x24,0x99,0x10,0x45,0x0C,0xAA,0x6A,0x9A,0xA0,0x5C,0x5C,0x85,0x6E};
-BMD_CONST REFIID IID_IBMDSwitcherAudioMixer                       = /* 58739C15-063E-4FC1-B59B-CC3D9A012D99 */ {0x58,0x73,0x9C,0x15,0x06,0x3E,0x4F,0xC1,0xB5,0x9B,0xCC,0x3D,0x9A,0x01,0x2D,0x99};
+BMD_CONST REFIID IID_IBMDSwitcherAudioMixer                       = /* CD3AD708-6F82-41EB-B8B2-64605D4040F2 */ {0xCD,0x3A,0xD7,0x08,0x6F,0x82,0x41,0xEB,0xB8,0xB2,0x64,0x60,0x5D,0x40,0x40,0xF2};
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParametersCallback        = /* AB31E347-5177-4595-8E52-650BF9B08B7F */ {0xAB,0x31,0xE3,0x47,0x51,0x77,0x45,0x95,0x8E,0x52,0x65,0x0B,0xF9,0xB0,0x8B,0x7F};
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParameters                = /* EE88B575-6044-4372-B1D6-9733AF342DCA */ {0xEE,0x88,0xB5,0x75,0x60,0x44,0x43,0x72,0xB1,0xD6,0x97,0x33,0xAF,0x34,0x2D,0xCA};
 BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParametersCallback      = /* FE3F97EC-5F2D-4E47-AA7A-38962F9CB3CE */ {0xFE,0x3F,0x97,0xEC,0x5F,0x2D,0x4E,0x47,0xAA,0x7A,0x38,0x96,0x2F,0x9C,0xB3,0xCE};
@@ -120,6 +120,15 @@ BMD_CONST REFIID IID_IBMDSwitcherClipCallback                     = /* 407117B4-
 BMD_CONST REFIID IID_IBMDSwitcherClip                             = /* 94AAF18A-7AF4-4721-8C1E-1843D42644E7 */ {0x94,0xAA,0xF1,0x8A,0x7A,0xF4,0x47,0x21,0x8C,0x1E,0x18,0x43,0xD4,0x26,0x44,0xE7};
 BMD_CONST REFIID IID_IBMDSwitcherMediaPoolCallback                = /* B8617A16-1B17-4FD6-93BF-664FA71F2A50 */ {0xB8,0x61,0x7A,0x16,0x1B,0x17,0x4F,0xD6,0x93,0xBF,0x66,0x4F,0xA7,0x1F,0x2A,0x50};
 BMD_CONST REFIID IID_IBMDSwitcherMediaPool                        = /* 59A3056E-7B62-46F0-8B78-1FB149F7372C */ {0x59,0xA3,0x05,0x6E,0x7B,0x62,0x46,0xF0,0x8B,0x78,0x1F,0xB1,0x49,0xF7,0x37,0x2C};
+BMD_CONST REFIID IID_IBMDSwitcherCameraControlParameterIterator   = /* 6B6E289F-0847-480A-A0BD-E8FB78A5505A */ {0x6B,0x6E,0x28,0x9F,0x08,0x47,0x48,0x0A,0xA0,0xBD,0xE8,0xFB,0x78,0xA5,0x50,0x5A};
+BMD_CONST REFIID IID_IBMDSwitcherCameraControlCallback            = /* 90337CAC-9376-4A62-A58F-10936130970B */ {0x90,0x33,0x7C,0xAC,0x93,0x76,0x4A,0x62,0xA5,0x8F,0x10,0x93,0x61,0x30,0x97,0x0B};
+BMD_CONST REFIID IID_IBMDSwitcherCameraControl                    = /* 95D7C0B6-9A84-4715-BE27-8A9CCAA9E6A9 */ {0x95,0xD7,0xC0,0xB6,0x9A,0x84,0x47,0x15,0xBE,0x27,0x8A,0x9C,0xCA,0xA9,0xE6,0xA9};
+BMD_CONST REFIID IID_IBMDSwitcherMacro                            = /* 2F1DF648-CB02-48D5-B5EB-B857BBD626A7 */ {0x2F,0x1D,0xF6,0x48,0xCB,0x02,0x48,0xD5,0xB5,0xEB,0xB8,0x57,0xBB,0xD6,0x26,0xA7};
+BMD_CONST REFIID IID_IBMDSwitcherTransferMacro                    = /* 9BAD28DB-F0CC-4696-82EE-B1E3E5A7C129 */ {0x9B,0xAD,0x28,0xDB,0xF0,0xCC,0x46,0x96,0x82,0xEE,0xB1,0xE3,0xE5,0xA7,0xC1,0x29};
+BMD_CONST REFIID IID_IBMDSwitcherMacroPoolCallback                = /* E29294A0-FB4C-418D-9AE1-C6CBA288104F */ {0xE2,0x92,0x94,0xA0,0xFB,0x4C,0x41,0x8D,0x9A,0xE1,0xC6,0xCB,0xA2,0x88,0x10,0x4F};
+BMD_CONST REFIID IID_IBMDSwitcherMacroPool                        = /* 5FA28BFC-7934-42F4-BED8-8744D62D210F */ {0x5F,0xA2,0x8B,0xFC,0x79,0x34,0x42,0xF4,0xBE,0xD8,0x87,0x44,0xD6,0x2D,0x21,0x0F};
+BMD_CONST REFIID IID_IBMDSwitcherMacroControlCallback             = /* F6A62317-60F6-4D5C-A5DD-2DC372B9F4FF */ {0xF6,0xA6,0x23,0x17,0x60,0xF6,0x4D,0x5C,0xA5,0xDD,0x2D,0xC3,0x72,0xB9,0xF4,0xFF};
+BMD_CONST REFIID IID_IBMDSwitcherMacroControl                     = /* 2E23E657-A7F0-4C4A-BCBE-4B8D3DD061AC */ {0x2E,0x23,0xE6,0x57,0xA7,0xF0,0x4C,0x4A,0xBC,0xBE,0x4B,0x8D,0x3D,0xD0,0x61,0xAC};
 
 /* Enum BMDSwitcherInputPropertyId - IBMDSwitcherInput Property ID */
 
@@ -128,7 +137,7 @@ enum _BMDSwitcherInputPropertyId {
     bmdSwitcherInputPropertyIdPortType                           = 'prtp',	// Int type (BMDSwitcherPortType), Get only
     bmdSwitcherInputPropertyIdInputAvailability                  = 'avlb',	// Int type (BMDSwitcherInputAvailability), Get only
     bmdSwitcherInputPropertyIdShortName                          = 'shnm',	// String type, Get/Set
-    bmdSwitcherInputPropertyIdLongName                           = 'lgnm',	// String type, Get only
+    bmdSwitcherInputPropertyIdLongName                           = 'lgnm',	// String type, Get/Set
     bmdSwitcherInputPropertyIdIsProgramTallied                   = 'ipgt',	// Flag type, Get only
     bmdSwitcherInputPropertyIdIsPreviewTallied                   = 'iprt',	// Flag type, Get only
     bmdSwitcherInputPropertyIdAvailableExternalPortTypes         = 'aept',	// Int type (BMDSwitcherExternalPortType), Get only
@@ -387,7 +396,8 @@ enum _BMDSwitcherAudioInputEventType {
 typedef uint32_t BMDSwitcherAudioMixerEventType;
 enum _BMDSwitcherAudioMixerEventType {
     bmdSwitcherAudioMixerEventTypeProgramOutGainChanged          = 'pgnC',
-    bmdSwitcherAudioMixerEventTypeProgramOutBalanceChanged       = 'balC'
+    bmdSwitcherAudioMixerEventTypeProgramOutBalanceChanged       = 'balC',
+    bmdSwitcherAudioMixerEventTypeProgramOutFollowFadeToBlackChanged = 'ffbC'
 };
 
 /* Enum BMDSwitcherAudioInputType - Audio Input Type */
@@ -468,22 +478,22 @@ enum _BMDSwitcherKeyPatternParametersEventType {
 
 typedef uint32_t BMDSwitcherKeyFlyKeyFrameParametersEventType;
 enum _BMDSwitcherKeyFlyKeyFrameParametersEventType {
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeSizeXChanged     = 'fszx',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeSizeYChanged     = 'fszy',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypePositionXChanged = 'fpsx',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypePositionYChanged = 'fpsy',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeRotationChanged  = 'frot',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderWidthOutChanged = 'fbwo',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderWidthInChanged = 'fbwi',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderSoftnessOutChanged = 'fbso',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderSoftnessInChanged = 'fbsi',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderBevelSoftnessChanged = 'fbbs',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderBevelPositionChanged = 'fbbp',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderHueChanged = 'fbhu',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderSaturationChanged = 'fbst',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderLumaChanged = 'fblm',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderLightSourceDirectionChanged = 'fbld',
-    BMDSwitcherKeyFlyKeyFrameParametersEventTypeBorderLightSourceAltitudeChanged = 'fbla'
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeSizeXChanged     = 'fszx',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeSizeYChanged     = 'fszy',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypePositionXChanged = 'fpsx',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypePositionYChanged = 'fpsy',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeRotationChanged  = 'frot',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderWidthOutChanged = 'fbwo',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderWidthInChanged = 'fbwi',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderSoftnessOutChanged = 'fbso',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderSoftnessInChanged = 'fbsi',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderBevelSoftnessChanged = 'fbbs',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderBevelPositionChanged = 'fbbp',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderHueChanged = 'fbhu',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderSaturationChanged = 'fbst',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderLumaChanged = 'fblm',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderLightSourceDirectionChanged = 'fbld',
+    bmdSwitcherKeyFlyKeyFrameParametersEventTypeBorderLightSourceAltitudeChanged = 'fbla'
 };
 
 /* Enum BMDSwitcherKeyFlyParametersEventType - Used in IBMDSwitcherKeyFlyParametersCallback */
@@ -776,6 +786,65 @@ enum _BMDSwitcherMediaPoolEventType {
     bmdSwitcherMediaPoolEventTypeTransferFailed                  = 'fail'
 };
 
+/* Enum BMDSwitcherCameraControlEventType - Used in IBMDSwitcherCameraControlCallback */
+
+typedef uint32_t BMDSwitcherCameraControlEventType;
+enum _BMDSwitcherCameraControlEventType {
+    bmdSwitcherCameraControlEventTypePeriodicFlushIntervalChanged = 'pfic',
+    bmdSwitcherCameraControlEventTypeParameterValueChanged       = 'pmvc',
+    bmdSwitcherCameraControlEventTypeParameterPeriodicFlushEnabledChanged = 'pmpc'
+};
+
+/* Enum BMDSwitcherCameraControlParameterType - Used in IBMDSwitcherCameraControl */
+
+typedef uint32_t BMDSwitcherCameraControlParameterType;
+enum _BMDSwitcherCameraControlParameterType {
+    bmdSwitcherCameraControlParameterTypeVoidBool                = 'ccvb',
+    bmdSwitcherCameraControlParameterTypeSigned8Bit              = 'ccs8',
+    bmdSwitcherCameraControlParameterTypeSigned16Bit             = 'ccs1',
+    bmdSwitcherCameraControlParameterTypeSigned32Bit             = 'ccs3',
+    bmdSwitcherCameraControlParameterTypeSigned64Bit             = 'ccs6',
+    bmdSwitcherCameraControlParameterTypeFixedPoint16Bit         = 'ccfp'
+};
+
+/* Enum BMDSwitcherMacroPoolEventType - Used in IBMDSwitcherMacroPoolCallback */
+
+typedef uint32_t BMDSwitcherMacroPoolEventType;
+enum _BMDSwitcherMacroPoolEventType {
+    bmdSwitcherMacroPoolEventTypeValidChanged                    = 'mava',
+    bmdSwitcherMacroPoolEventTypeHasUnsupportedOpsChanged        = 'maop',
+    bmdSwitcherMacroPoolEventTypeNameChanged                     = 'mana',
+    bmdSwitcherMacroPoolEventTypeDescriptionChanged              = 'made',
+    bmdSwitcherMacroPoolEventTypeTransferCompleted               = 'mats',
+    bmdSwitcherMacroPoolEventTypeTransferCancelled               = 'matc',
+    bmdSwitcherMacroPoolEventTypeTransferFailed                  = 'matf'
+};
+
+/* Enum BMDSwitcherMacroControlEventType - Used in IBMDSwitcherMacroControlCallback */
+
+typedef uint32_t BMDSwitcherMacroControlEventType;
+enum _BMDSwitcherMacroControlEventType {
+    bmdSwitcherMacroControlEventTypeRunStatusChanged             = 'marn',
+    bmdSwitcherMacroControlEventTypeRecordStatusChanged          = 'marc'
+};
+
+/* Enum BMDSwitcherMacroRunStatus - Used in IBMDSwitcherMacroControl */
+
+typedef uint32_t BMDSwitcherMacroRunStatus;
+enum _BMDSwitcherMacroRunStatus {
+    bmdSwitcherMacroRunStatusIdle                                = 0x00,
+    bmdSwitcherMacroRunStatusRunning                             = 0x01,
+    bmdSwitcherMacroRunStatusWaitingForUser                      = 0x02
+};
+
+/* Enum BMDSwitcherMacroRecordStatus - Used in IBMDSwitcherMacroControl */
+
+typedef uint32_t BMDSwitcherMacroRecordStatus;
+enum _BMDSwitcherMacroRecordStatus {
+    bmdSwitcherMacroRecordStatusIdle                             = 0x00,
+    bmdSwitcherMacroRecordStatusRecording                        = 0x01
+};
+
 #if defined(__cplusplus)
 
 // Forward Declarations
@@ -851,6 +920,15 @@ class IBMDSwitcherClipCallback;
 class IBMDSwitcherClip;
 class IBMDSwitcherMediaPoolCallback;
 class IBMDSwitcherMediaPool;
+class IBMDSwitcherCameraControlParameterIterator;
+class IBMDSwitcherCameraControlCallback;
+class IBMDSwitcherCameraControl;
+class IBMDSwitcherMacro;
+class IBMDSwitcherTransferMacro;
+class IBMDSwitcherMacroPoolCallback;
+class IBMDSwitcherMacroPool;
+class IBMDSwitcherMacroControlCallback;
+class IBMDSwitcherMacroControl;
 
 /* Interface IBMDSwitcherAudioMonitorOutputCallback - Audio Monitor Output Object Callback */
 
@@ -861,7 +939,7 @@ public:
     virtual HRESULT LevelNotification (/* in */ double left, /* in */ double right, /* in */ double peakLeft, /* in */ double peakRight) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudioMonitorOutputCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudioMonitorOutputCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherAudioMonitorOutput - Audio Monitor Output Object */
@@ -888,7 +966,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherAudioMonitorOutputCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudioMonitorOutput () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudioMonitorOutput () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherAudioInputCallback - Audio Input Object Callback */
@@ -900,7 +978,7 @@ public:
     virtual HRESULT LevelNotification (/* in */ double left, /* in */ double right, /* in */ double peakLeft, /* in */ double peakRight) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudioInputCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudioInputCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherAudioInput - Audio Input Object */
@@ -923,7 +1001,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherAudioInputCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudioInput () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudioInput () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherAudioMixerCallback - Audio Mixer Object Callback */
@@ -935,7 +1013,7 @@ public:
     virtual HRESULT ProgramOutLevelNotification (/* in */ double left, /* in */ double right, /* in */ double peakLeft, /* in */ double peakRight) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudioMixerCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudioMixerCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherAudioMixer - Audio Mixer Object */
@@ -945,8 +1023,10 @@ class IBMDSwitcherAudioMixer : public IUnknown
 public:
     virtual HRESULT GetProgramOutGain (/* out */ double* gain) = 0;
     virtual HRESULT SetProgramOutGain (/* in */ double gain) = 0;
-    virtual HRESULT GetProgramOutBalance (/* out */ double* balance) = 0;
-    virtual HRESULT SetProgramOutBalance (/* in */ double balance) = 0;
+    virtual HRESULT GetProgramOutBalance (/* out */ double* balance /* [-1.00, 1.00] */) = 0;
+    virtual HRESULT SetProgramOutBalance (/* in */ double balance /* [-1.00, 1.00] */) = 0;
+    virtual HRESULT GetProgramOutFollowFadeToBlack (/* out */ bool* follow) = 0;
+    virtual HRESULT SetProgramOutFollowFadeToBlack (/* in */ bool follow) = 0;
     virtual HRESULT SetAllLevelNotificationsEnable (/* in */ bool enable) = 0;
     virtual HRESULT ResetProgramOutLevelNotificationPeaks (void) = 0;
     virtual HRESULT ResetAllLevelNotificationPeaks (void) = 0;
@@ -955,7 +1035,7 @@ public:
     virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudioMixer () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudioMixer () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyLumaParametersCallback - Luma Key Parameters Callback */
@@ -966,7 +1046,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherKeyLumaParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyLumaParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyLumaParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyLumaParameters - Luma Key Parameters */
@@ -986,7 +1066,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyLumaParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyLumaParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyLumaParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyChromaParametersCallback - Chroma Key Parameters Callback */
@@ -997,7 +1077,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherKeyChromaParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyChromaParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyChromaParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyChromaParameters - Chroma Key Parameters */
@@ -1019,7 +1099,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyChromaParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyChromaParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyChromaParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyPatternParametersCallback - Pattern Key Parameters Callback */
@@ -1030,7 +1110,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherKeyPatternParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyPatternParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyPatternParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyPatternParameters - Pattern Key Parameters */
@@ -1056,7 +1136,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyPatternParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyPatternParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyPatternParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyFlyKeyFrameParametersCallback - Key Fly Frame Parameters Callback */
@@ -1067,7 +1147,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherKeyFlyKeyFrameParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyFlyKeyFrameParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyFlyKeyFrameParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyFlyKeyFrameParameters - Key Fly Frame Parameters */
@@ -1099,14 +1179,14 @@ public:
     virtual HRESULT SetBorderBevelPosition (/* in */ double bevelPosition) = 0;
     virtual HRESULT GetBorderOpacity (/* out */ double* opacity) = 0;
     virtual HRESULT SetBorderOpacity (/* in */ double opacity) = 0;
-    virtual HRESULT GetBorderHue (/* out */ double* hue) = 0;
-    virtual HRESULT SetBorderHue (/* in */ double hue) = 0;
+    virtual HRESULT GetBorderHue (/* out */ double* hue /* [0, 360) */) = 0;
+    virtual HRESULT SetBorderHue (/* in */ double hue /* [0, 360) */) = 0;
     virtual HRESULT GetBorderSaturation (/* out */ double* sat) = 0;
     virtual HRESULT SetBorderSaturation (/* in */ double sat) = 0;
     virtual HRESULT GetBorderLuma (/* out */ double* luma) = 0;
     virtual HRESULT SetBorderLuma (/* in */ double luma) = 0;
-    virtual HRESULT GetBorderLightSourceDirection (/* out */ double* degrees) = 0;
-    virtual HRESULT SetBorderLightSourceDirection (/* in */ double degrees) = 0;
+    virtual HRESULT GetBorderLightSourceDirection (/* out */ double* degrees /* [0, 360) */) = 0;
+    virtual HRESULT SetBorderLightSourceDirection (/* in */ double degrees /* [0, 360) */) = 0;
     virtual HRESULT GetBorderLightSourceAltitude (/* out */ double* altitude) = 0;
     virtual HRESULT SetBorderLightSourceAltitude (/* in */ double altitude) = 0;
     virtual HRESULT GetMaskTop (/* out */ double* top) = 0;
@@ -1121,7 +1201,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyFlyKeyFrameParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyFlyKeyFrameParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyFlyKeyFrameParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyFlyParametersCallback - Key Fly Parameters Callback */
@@ -1129,10 +1209,10 @@ protected:
 class IBMDSwitcherKeyFlyParametersCallback : public IUnknown
 {
 public:
-    virtual HRESULT Notify (/* in */ BMDSwitcherKeyFlyParametersEventType eventType, /* in */ BMDSwitcherFlyKeyFrame keyFrame) = 0;
+    virtual HRESULT Notify (/* in */ BMDSwitcherKeyFlyParametersEventType eventType, /* in */ BMDSwitcherFlyKeyFrame keyFrame /* Only used when eventType is bmdSwitcherFlyParametersEventTypeIsKeyFrameStoredChanged */) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyFlyParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyFlyParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyFlyParameters - Key Fly Parameters */
@@ -1169,7 +1249,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyFlyParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyFlyParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyFlyParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyDVEParametersCallback - DVE Key Parameters Callback */
@@ -1180,7 +1260,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherKeyDVEParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyDVEParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyDVEParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyDVEParameters - DVE Key Parameters */
@@ -1190,8 +1270,8 @@ class IBMDSwitcherKeyDVEParameters : public IUnknown
 public:
     virtual HRESULT GetShadow (/* out */ bool* shadowOn) = 0;
     virtual HRESULT SetShadow (/* in */ bool shadowOn) = 0;
-    virtual HRESULT GetLightSourceDirection (/* out */ double* degrees) = 0;
-    virtual HRESULT SetLightSourceDirection (/* in */ double degrees) = 0;
+    virtual HRESULT GetLightSourceDirection (/* out */ double* degrees /* [0, 360) */) = 0;
+    virtual HRESULT SetLightSourceDirection (/* in */ double degrees /* [0, 360) */) = 0;
     virtual HRESULT GetLightSourceAltitude (/* out */ double* altitude) = 0;
     virtual HRESULT SetLightSourceAltitude (/* in */ double altitude) = 0;
     virtual HRESULT GetBorderEnabled (/* out */ bool* on) = 0;
@@ -1212,8 +1292,8 @@ public:
     virtual HRESULT SetBorderBevelPosition (/* in */ double bevelPosition) = 0;
     virtual HRESULT GetBorderOpacity (/* out */ double* opacity) = 0;
     virtual HRESULT SetBorderOpacity (/* in */ double opacity) = 0;
-    virtual HRESULT GetBorderHue (/* out */ double* hue) = 0;
-    virtual HRESULT SetBorderHue (/* in */ double hue) = 0;
+    virtual HRESULT GetBorderHue (/* out */ double* hue /* [0, 360) */) = 0;
+    virtual HRESULT SetBorderHue (/* in */ double hue /* [0, 360) */) = 0;
     virtual HRESULT GetBorderSaturation (/* out */ double* sat) = 0;
     virtual HRESULT SetBorderSaturation (/* in */ double sat) = 0;
     virtual HRESULT GetBorderLuma (/* out */ double* luma) = 0;
@@ -1233,7 +1313,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyDVEParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyDVEParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyDVEParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyCallback - Key Object Callback */
@@ -1244,7 +1324,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherKeyEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKey - Key Object */
@@ -1279,7 +1359,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKey () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKey () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMediaPlayerCallback - Media Player Callback */
@@ -1294,7 +1374,7 @@ public:
     virtual HRESULT ClipFrameChanged (void) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMediaPlayerCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMediaPlayerCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMediaPlayer - Media Player */
@@ -1316,7 +1396,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMediaPlayerCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMediaPlayer () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMediaPlayer () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionMixParametersCallback - Transition Mix Parameters Callback */
@@ -1327,7 +1407,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherTransitionMixParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionMixParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionMixParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionMixParameters - Transition Mix Parameters */
@@ -1341,7 +1421,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionMixParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionMixParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionMixParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionDipParametersCallback - Transition Dip Parameters Callback */
@@ -1352,7 +1432,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherTransitionDipParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionDipParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionDipParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionDipParameters - Transition Dip Parameters */
@@ -1368,7 +1448,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionDipParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionDipParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionDipParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionWipeParametersCallback - Transition Wipe Parameters Callback */
@@ -1379,7 +1459,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherTransitionWipeParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionWipeParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionWipeParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionWipeParameters - Transition Wipe Parameters */
@@ -1411,7 +1491,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionWipeParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionWipeParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionWipeParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionDVEParametersCallback - Transition DVE Parameters Callback */
@@ -1422,7 +1502,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherTransitionDVEParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionDVEParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionDVEParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionDVEParameters - Transition DVE Parameters */
@@ -1460,7 +1540,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionDVEParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionDVEParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionDVEParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionStingerParametersCallback - Transition Stinger Parameters Callback */
@@ -1471,7 +1551,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherTransitionStingerParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionStingerParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionStingerParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionStingerParameters - Transition Stinger Parameters */
@@ -1501,7 +1581,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionStingerParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionStingerParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionStingerParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionParametersCallback - Transition Parameters Object Callback */
@@ -1512,7 +1592,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherTransitionParametersEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionParametersCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionParametersCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherTransitionParameters - Transition Parameters Object */
@@ -1530,7 +1610,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTransitionParametersCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherTransitionParameters () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherTransitionParameters () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMixEffectBlockCallback - Mix Effect Block Notification Callback */
@@ -1541,7 +1621,7 @@ public:
     virtual HRESULT PropertyChanged (/* in */ BMDSwitcherMixEffectBlockPropertyId propertyId) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMixEffectBlockCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMixEffectBlockCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMixEffectBlock - Mix Effect Block */
@@ -1565,7 +1645,7 @@ public:
     virtual HRESULT PerformFadeToBlack (void) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMixEffectBlock () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMixEffectBlock () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInputCallback - Switcher Input Object Callback */
@@ -1576,7 +1656,7 @@ public:
     virtual HRESULT PropertyChanged (/* in */ BMDSwitcherInputPropertyId propertyId) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInputCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInputCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInput - Switcher Input Object */
@@ -1597,7 +1677,7 @@ public:
     virtual HRESULT GetInputId (/* out */ BMDSwitcherInputId* inputId) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInput () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInput () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInputColorCallback - Color Input Object Callback */
@@ -1608,7 +1688,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherInputColorEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInputColorCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInputColorCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInputColor - Color Input Object */
@@ -1626,7 +1706,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherInputColorCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInputColor () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInputColor () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInputAuxCallback - Aux Input Object Callback */
@@ -1637,7 +1717,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherInputAuxEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInputAuxCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInputAuxCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInputAux - Aux Input Object */
@@ -1652,7 +1732,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherInputAuxCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInputAux () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInputAux () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherSuperSourceBoxCallback - SuperSource Box Object Callback */
@@ -1663,7 +1743,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherSuperSourceBoxEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherSuperSourceBoxCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherSuperSourceBoxCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherSuperSourceBox - SuperSource Box Object */
@@ -1697,7 +1777,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherSuperSourceBoxCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherSuperSourceBox () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherSuperSourceBox () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInputSuperSourceCallback - SuperSource Input Object Callback */
@@ -1708,7 +1788,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherInputSuperSourceEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInputSuperSourceCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInputSuperSourceCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInputSuperSource - SuperSource Input Object */
@@ -1748,8 +1828,8 @@ public:
     virtual HRESULT SetBorderBevelSoftness (/* in */ double bevelSoftness) = 0;
     virtual HRESULT GetBorderBevelPosition (/* out */ double* bevelPosition) = 0;
     virtual HRESULT SetBorderBevelPosition (/* in */ double bevelPosition) = 0;
-    virtual HRESULT GetBorderHue (/* out */ double* hue) = 0;
-    virtual HRESULT SetBorderHue (/* in */ double hue) = 0;
+    virtual HRESULT GetBorderHue (/* out */ double* hue /* [0, 360) */) = 0;
+    virtual HRESULT SetBorderHue (/* in */ double hue /* [0, 360) */) = 0;
     virtual HRESULT GetBorderSaturation (/* out */ double* sat) = 0;
     virtual HRESULT SetBorderSaturation (/* in */ double sat) = 0;
     virtual HRESULT GetBorderLuma (/* out */ double* luma) = 0;
@@ -1763,7 +1843,7 @@ public:
     virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInputSuperSource () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInputSuperSource () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMultiViewCallback - MultiView Object Callback */
@@ -1774,7 +1854,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherMultiViewEventType eventType, /* in */ int32_t window) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMultiViewCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMultiViewCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMultiView - MultiView Object */
@@ -1793,7 +1873,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMultiViewCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMultiView () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMultiView () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherDownstreamKeyCallback - Downstream Key Object Callback */
@@ -1804,7 +1884,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherDownstreamKeyEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherDownstreamKeyCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherDownstreamKeyCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherDownstreamKey - Downstream Key Object */
@@ -1851,7 +1931,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherDownstreamKeyCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherDownstreamKey () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherDownstreamKey () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherInputIterator - Input Iterator */
@@ -1863,7 +1943,7 @@ public:
     virtual HRESULT GetById (/* in */ BMDSwitcherInputId inputId, /* out */ IBMDSwitcherInput** input) = 0;
 
 protected:
-    virtual ~IBMDSwitcherInputIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherInputIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherSuperSourceBoxIterator - SuperSource Box Iterator */
@@ -1874,7 +1954,7 @@ public:
     virtual HRESULT Next (/* out */ IBMDSwitcherSuperSourceBox** box) = 0;
 
 protected:
-    virtual ~IBMDSwitcherSuperSourceBoxIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherSuperSourceBoxIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMixEffectBlockIterator - Mix Effect Block Iterator */
@@ -1885,7 +1965,7 @@ public:
     virtual HRESULT Next (/* out */ IBMDSwitcherMixEffectBlock** mixEffectBlock) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMixEffectBlockIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMixEffectBlockIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherDownstreamKeyIterator - Downstream Key Iterator */
@@ -1896,7 +1976,7 @@ public:
     virtual HRESULT Next (/* out */ IBMDSwitcherDownstreamKey** downstreamKey) = 0;
 
 protected:
-    virtual ~IBMDSwitcherDownstreamKeyIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherDownstreamKeyIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyIterator - Key Iterator */
@@ -1907,7 +1987,7 @@ public:
     virtual HRESULT Next (/* out */ IBMDSwitcherKey** key) = 0;
 
 protected:
-    virtual ~IBMDSwitcherKeyIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherKeyIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMediaPlayerIterator - Media Player Iterator */
@@ -1918,7 +1998,7 @@ public:
     virtual HRESULT Next (/* out */ IBMDSwitcherMediaPlayer** mediaPlayer) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMediaPlayerIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMediaPlayerIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMultiViewIterator - MultiView Iterator */
@@ -1929,7 +2009,7 @@ public:
     virtual HRESULT Next (/* out */ IBMDSwitcherMultiView** multiView) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMultiViewIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMultiViewIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherAudioMonitorOutputIterator - Audio Monitor Output Iterator */
@@ -1940,7 +2020,7 @@ public:
     virtual HRESULT Next (/* out */ IBMDSwitcherAudioMonitorOutput** audioMonitorOutput) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudioMonitorOutputIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudioMonitorOutputIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherAudioInputIterator - Audio Input Iterator */
@@ -1952,7 +2032,7 @@ public:
     virtual HRESULT GetById (/* in */ BMDSwitcherAudioInputId audioInputId, /* out */ IBMDSwitcherAudioInput** audioInput) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudioInputIterator () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudioInputIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherCallback - Switcher Callback Delegate */
@@ -1963,7 +2043,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherEventType eventType) = 0;
 
 protected:
-    virtual ~IBMDSwitcherCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcher - Switcher Object */
@@ -1983,7 +2063,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcher () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcher () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherDiscovery - Used to discover and connect to switchers */
@@ -1994,7 +2074,7 @@ public:
     virtual HRESULT ConnectTo (/* in */ CFStringRef deviceAddress, /* out */ IBMDSwitcher** switcherDevice, /* out */ BMDSwitcherConnectToFailure* failReason) = 0;
 
 protected:
-    virtual ~IBMDSwitcherDiscovery () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherDiscovery () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherFrame - Frame */
@@ -2009,7 +2089,7 @@ public:
     virtual HRESULT GetBytes (/* out */ void** buffer) = 0;
 
 protected:
-    virtual ~IBMDSwitcherFrame () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherFrame () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherAudio - Audio */
@@ -2021,7 +2101,7 @@ public:
     virtual HRESULT GetBytes (/* out */ void** buffer) = 0;
 
 protected:
-    virtual ~IBMDSwitcherAudio () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherAudio () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherLockCallback - Lock Callback Delegate */
@@ -2032,7 +2112,7 @@ public:
     virtual HRESULT Obtained (void) = 0;
 
 protected:
-    virtual ~IBMDSwitcherLockCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherLockCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherStillsCallback - Stills Callback Delegate */
@@ -2043,7 +2123,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherMediaPoolEventType eventType, /* in */ IBMDSwitcherFrame* frame, /* in */ int32_t index) = 0;
 
 protected:
-    virtual ~IBMDSwitcherStillsCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherStillsCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherStills - Stills */
@@ -2067,7 +2147,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherStillsCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherStills () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherStills () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherClipCallback - Clip Callback Delegate */
@@ -2078,7 +2158,7 @@ public:
     virtual HRESULT Notify (/* in */ BMDSwitcherMediaPoolEventType eventType, /* in */ IBMDSwitcherFrame* frame, /* in */ int32_t frameIndex, /* in */ IBMDSwitcherAudio* audio, /* in */ int32_t clipIndex) = 0;
 
 protected:
-    virtual ~IBMDSwitcherClipCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherClipCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherClip - Clip */
@@ -2113,7 +2193,7 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherClipCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherClip () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherClip () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMediaPoolCallback - Media Pool Callback Delegate */
@@ -2125,7 +2205,7 @@ public:
     virtual HRESULT FrameTotalForClipsChanged (void) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMediaPoolCallback () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMediaPoolCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherMediaPool - Frame Pool for Media Players */
@@ -2146,7 +2226,158 @@ public:
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMediaPoolCallback* callback) = 0;
 
 protected:
-    virtual ~IBMDSwitcherMediaPool () {}; // call Release method to drop reference count
+    virtual ~IBMDSwitcherMediaPool () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherCameraControlParameterIterator - Camera Control Parameter Iterator */
+
+class IBMDSwitcherCameraControlParameterIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ uint32_t* destinationDevice, /* out */ uint32_t* category, /* out */ uint32_t* parameter) = 0;
+
+protected:
+    virtual ~IBMDSwitcherCameraControlParameterIterator () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherCameraControlCallback - Switcher Camera Control Callback Delegate */
+
+class IBMDSwitcherCameraControlCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherCameraControlEventType eventType, /* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter) = 0;
+
+protected:
+    virtual ~IBMDSwitcherCameraControlCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherCameraControl - Switcher Camera Control Object */
+
+class IBMDSwitcherCameraControl : public IUnknown
+{
+public:
+    virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+    virtual HRESULT GetPeriodicFlushInterval (/* out */ uint32_t* intervalMs /* In milliseconds */) = 0;
+    virtual HRESULT SetPeriodicFlushInterval (/* in */ uint32_t intervalMs /* In milliseconds */) = 0;
+    virtual HRESULT GetParameterInfo (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* out */ BMDSwitcherCameraControlParameterType* type, /* out */ uint32_t* count) = 0;
+    virtual HRESULT GetParameterPeriodicFlushEnabled (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* out */ bool* enabled) = 0;
+    virtual HRESULT SetParameterPeriodicFlushEnabled (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ bool enabled) = 0;
+    virtual HRESULT SetFlags (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const bool* values) = 0;
+    virtual HRESULT ToggleFlags (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const bool* values) = 0;
+    virtual HRESULT GetFlags (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ bool* values) = 0;
+    virtual HRESULT SetBytes (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int8_t* bytes) = 0;
+    virtual HRESULT OffsetBytes (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int8_t* bytes) = 0;
+    virtual HRESULT GetBytes (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ int8_t* bytes) = 0;
+    virtual HRESULT SetInt16s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int16_t* values) = 0;
+    virtual HRESULT OffsetInt16s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int16_t* values) = 0;
+    virtual HRESULT GetInt16s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ int16_t* values) = 0;
+    virtual HRESULT SetInt32s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int32_t* values) = 0;
+    virtual HRESULT OffsetInt32s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int32_t* values) = 0;
+    virtual HRESULT GetInt32s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ int32_t* values) = 0;
+    virtual HRESULT SetInt64s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int64_t* values) = 0;
+    virtual HRESULT OffsetInt64s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int64_t* values) = 0;
+    virtual HRESULT GetInt64s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ int64_t* values) = 0;
+    virtual HRESULT OffsetFloats (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const double* values) = 0;
+    virtual HRESULT SetFloats (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const double* values) = 0;
+    virtual HRESULT GetFloats (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ double* values) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherCameraControlCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherCameraControlCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherCameraControl () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacro - Macro */
+
+class IBMDSwitcherMacro : public IUnknown
+{
+public:
+    virtual int32_t GetSize (void) = 0;
+    virtual HRESULT GetBytes (/* out */ void** buffer) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacro () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherTransferMacro - MacroTransfer */
+
+class IBMDSwitcherTransferMacro : public IUnknown
+{
+public:
+    virtual HRESULT Cancel (void) = 0;
+    virtual HRESULT GetProgress (/* out */ double* progress) = 0;
+    virtual HRESULT GetMacro (/* out */ IBMDSwitcherMacro** macro) = 0;
+
+protected:
+    virtual ~IBMDSwitcherTransferMacro () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacroPoolCallback - Macro Pool Callback Delegate */
+
+class IBMDSwitcherMacroPoolCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherMacroPoolEventType eventType, /* in */ uint32_t index, /* in */ IBMDSwitcherTransferMacro* macroTransfer) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacroPoolCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacroPool - Management of Macros */
+
+class IBMDSwitcherMacroPool : public IUnknown
+{
+public:
+    virtual HRESULT GetMaxCount (/* out */ uint32_t* maxCount) = 0; // Returns the maximum number of macros that can be stored
+    virtual HRESULT Delete (/* in */ uint32_t index) = 0; // Delete a macro
+    virtual HRESULT IsValid (/* in */ uint32_t index, /* out */ bool* valid) = 0; // Returns whether the specified macro is valid
+    virtual HRESULT HasUnsupportedOps (/* in */ uint32_t index, /* out */ bool* hasUnsupportedOps) = 0; // Returns whether the specified macro has any unsupported or invalid operations
+    virtual HRESULT GetName (/* in */ uint32_t index, /* out */ CFStringRef* name) = 0; // Macro's name
+    virtual HRESULT SetName (/* in */ uint32_t index, /* in */ CFStringRef name) = 0;
+    virtual HRESULT GetDescription (/* in */ uint32_t index, /* out */ CFStringRef* description) = 0; // Macro's description property
+    virtual HRESULT SetDescription (/* in */ uint32_t index, /* in */ CFStringRef description) = 0;
+    virtual HRESULT CreateMacro (/* in */ uint32_t sizeBytes, /* out */ IBMDSwitcherMacro** macro) = 0;
+    virtual HRESULT Upload (/* in */ uint32_t index, /* in */ CFStringRef name, /* in */ CFStringRef description, /* in */ IBMDSwitcherMacro* macro, /* out */ IBMDSwitcherTransferMacro** macroTransfer) = 0;
+    virtual HRESULT Download (/* in */ uint32_t index, /* out */ IBMDSwitcherTransferMacro** macroTransfer) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherMacroPoolCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMacroPoolCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacroPool () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacroControlCallback - Macro Control Callback Delegate */
+
+class IBMDSwitcherMacroControlCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherMacroControlEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacroControlCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMacroControl - Recording and Playback of Macros */
+
+class IBMDSwitcherMacroControl : public IUnknown
+{
+public:
+    virtual HRESULT Run (/* in */ uint32_t index) = 0; // Begin running a macro
+    virtual HRESULT GetLoop (/* out */ bool* loop) = 0;
+    virtual HRESULT SetLoop (/* in */ bool loop) = 0;
+    virtual HRESULT ResumeRunning (void) = 0; // Resume execution of the currently running macro that is waiting for the user to continue
+    virtual HRESULT StopRunning (void) = 0; // Terminate execution of the currently running macro
+    virtual HRESULT Record (/* in */ uint32_t index, /* in */ CFStringRef name, /* in */ CFStringRef description) = 0; // Start recording a new macro
+    virtual HRESULT RecordUserWait (void) = 0; // Insert a user wait event into the currently recording macro
+    virtual HRESULT RecordPause (/* in */ uint32_t frames) = 0; // Insert a frame delay into currently recording macro
+    virtual HRESULT StopRecording (void) = 0; // Stop recording and save the current macro
+    virtual HRESULT GetRunStatus (/* out */ BMDSwitcherMacroRunStatus* status, /* out */ bool* loop, /* out */ uint32_t* index) = 0; // Get the current macro running status
+    virtual HRESULT GetRecordStatus (/* out */ BMDSwitcherMacroRecordStatus* status, /* out */ uint32_t* index) = 0; // Get the current macro recording status
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherMacroControlCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMacroControlCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMacroControl () {} // call Release method to drop reference count
 };
 
 /* Functions */
@@ -2155,7 +2386,7 @@ extern "C" {
 
     IBMDSwitcherDiscovery* CreateBMDSwitcherDiscoveryInstance (void);
 
-};
+}
 
 
 #endif      // defined(__cplusplus)
