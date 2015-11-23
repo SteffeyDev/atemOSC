@@ -55,6 +55,8 @@ class InputMonitor;
 	IBMDSwitcherMediaPool*		mMediaPool;
     IBMDSwitcherStills*			mStills;
     IBMDSwitcherInputSuperSource*   mSuperSource;
+    IBMDSwitcherMacroPool*      mMacroPool;
+    IBMDSwitcherMacroControl*   mMacroControl;
 	std::vector<IBMDSwitcherMediaPlayer*>	mMediaPlayers;
 	std::vector<IBMDSwitcherSuperSourceBox*>	mSuperSourceBoxes;
 	std::vector<IBMDSwitcherInputAux*>	mSwitcherInputAuxList;

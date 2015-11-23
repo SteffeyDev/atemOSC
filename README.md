@@ -1,4 +1,8 @@
-# atemOSC v2.4.3
+# atemOSC v2.4.4
+
+## Changelog v2.4.4
+- updated to ATEM SDK v6.6
+- added support for running ATEM Macros 
 
 ## Changelog v2.4.3
 - updated to ATEM SDK v6.4
@@ -122,6 +126,22 @@ Additional options.
    - **Set SuperSource Box $i source to input $x** `/atem/supersource/$i/source $x`
      - Where `$x` is a valid program source. Check the Help Menu for the correct values.
    - Other options are available. Check the Help Menu for the full list.
+ - **Macros**
+   - Macros should be recorded within the ATEM Control Panel software.
+   - Macros are stored within the ATEM in a 0-index array
+     - This means that to access the first recorded Macro, you should use an index `$i` of `0`, to access the second recorded Macro, you should use an index of `1` etc.
+   - Get the Maximum Number of Macros: `/atem/macros/get-max-number`
+     - Returns an `int` of the maximum number of Macros supported by your ATEM
+     - Access to these Macros should be used via an index of `n-1`
+   - Stop the currently active Macro (if any): `/atem/macros/stop`
+   - Get the Name of a Macro: `/atem/macros/$i/name`
+     - Returns a `string` with the name, or "" if the Macro is invalid
+   - Get the Description of a Macro: `/atem/macros/$i/description`
+     - Returns a `string` with the description, or "" if the Macro is invalid
+   - Get whether the Macro at index $i is valid: `/atem/macros/$i/is-valid`
+     - Returns an `int` of `0|1` to indicate whether the requested Macro is valid
+   - Run the Macro at index $i: `/atem/macros/$i/run`
+     - Returns an `int` of `0|1` to indicate whether the requested Macro was executed. A `0` will be returned if the Macro is invalid, or does not exist
  
 All OSC-addresses expect float-values between 0.0 and 1.0 unless otherwise stated.
 
@@ -129,6 +149,8 @@ All OSC-addresses expect float-values between 0.0 and 1.0 unless otherwise state
 
 ----------
 
-I am using this software with TouchOSC on the iPad. An TouchOSC-interface for the iPad can be found in the repository as well.
+This software has been used successfuly with TouchOSC on the iPad. A TouchOSC-interface for the iPad can be found in the repository.
 
 ![TouchOSC interface](https://github.com/danielbuechele/atemOSC/raw/master/ipad-interface.png)
+
+This software has been used successfuly with [ControllerMate](http://www.orderedbytes.com/controllermate/) and [X-keys](http://xkeys.com/XkeysKeyboards/index.php) via [sendOSC](http://archive.cnmat.berkeley.edu/OpenSoundControl/clients/sendOSC.html) and [iTerm 2](https://www.iterm2.com/). An example ActionScript for use within ControllerMate can be found in the repository.
