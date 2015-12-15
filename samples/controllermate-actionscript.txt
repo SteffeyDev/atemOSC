@@ -1,0 +1,25 @@
+set _ip to "10.0.0.10" -- Change this to the IP of the machine running atemOSC
+
+set front_app to (path to frontmost application as Unicode text) -- So we can switch back
+
+set cmd to "sendOSC -h " & _ip & " 10000 /atem/transition/set-type/mix"
+
+tell application "iTerm"
+	activate
+	if (count of terminals) = 0 then
+		set t to (make new terminal)
+	else
+		set t to current terminal
+	end if
+	
+	tell t
+		set mysession to (launch session "Default")
+		tell mysession
+			write text cmd
+		end tell
+	end tell
+end tell
+
+tell application front_app
+	activate
+end tell

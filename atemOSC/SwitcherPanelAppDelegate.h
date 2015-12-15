@@ -55,6 +55,8 @@ class InputMonitor;
 	IBMDSwitcherMediaPool*		mMediaPool;
     IBMDSwitcherStills*			mStills;
     IBMDSwitcherInputSuperSource*   mSuperSource;
+    IBMDSwitcherMacroPool*      mMacroPool;
+    IBMDSwitcherMacroControl*   mMacroControl;
 	std::vector<IBMDSwitcherMediaPlayer*>	mMediaPlayers;
 	std::vector<IBMDSwitcherSuperSourceBox*>	mSuperSourceBoxes;
 	std::vector<IBMDSwitcherInputAux*>	mSwitcherInputAuxList;
@@ -88,6 +90,8 @@ class InputMonitor;
     IBOutlet NSPanel *helpPanel;
     IBOutlet NSTextView *heltTextView;
     
+    IBOutlet NSPanel *logPanel;
+    IBOutlet NSTextView *logTextView;
     
     AMSerialPort *port;
     IBOutlet NSPopUpButton	*serialSelectMenu;
@@ -100,6 +104,7 @@ class InputMonitor;
 -(void)connectBMD;
 - (IBAction)portChanged:(id)sender;
 - (IBAction)helpButtonPressed:(id)sender;
+- (IBAction)logButtonPressed:(id)sender;
 - (IBAction)mAddressTextFieldUpdated:(id)sender;
 
 - (void)switcherConnected;
