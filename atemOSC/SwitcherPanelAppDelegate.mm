@@ -80,7 +80,7 @@ public:
 		if (newCount == 0)
 			delete this;
 		return newCount;
-	}
+    }
 	
 	HRESULT PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId)
 	{
@@ -169,20 +169,20 @@ public:
 		if (newCount == 0)
 			delete this;
 		return newCount;
-	}
+    }
     
-	HRESULT PropertyChanged(BMDSwitcherInputPropertyId propertyId)
-	{
-		switch (propertyId)
-		{
-			case bmdSwitcherInputPropertyIdLongName:
-				[mUiDelegate performSelectorOnMainThread:@selector(updatePopupButtonItems) withObject:nil waitUntilDone:YES];
-			default:	// ignore other property changes not used for this sample app
-				break;
-		}
-		
-		return S_OK;
-	}
+    HRESULT Notify(BMDSwitcherInputEventType eventType)
+    {
+        switch (eventType)
+        {
+            case bmdSwitcherInputEventTypeLongNameChanged:
+                [mUiDelegate performSelectorOnMainThread:@selector(updatePopupButtonItems) withObject:nil waitUntilDone:YES];
+            default:	// ignore other property changes not used for this sample app
+                break;
+        }
+        
+        return S_OK;
+    }
 	IBMDSwitcherInput* input() { return mInput; }
 	
 private:
@@ -195,70 +195,63 @@ private:
 class SwitcherMonitor : public IBMDSwitcherCallback
 {
 public:
-	SwitcherMonitor(SwitcherPanelAppDelegate* uiDelegate) :	mUiDelegate(uiDelegate), mRefCount(1) { }
+    SwitcherMonitor(SwitcherPanelAppDelegate* uiDelegate) :	mUiDelegate(uiDelegate), mRefCount(1) { }
     
 protected:
-	virtual ~SwitcherMonitor() { }
-	
+    virtual ~SwitcherMonitor() { }
+    
 public:
-	// IBMDSwitcherCallback interface
-	HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
-	{
-		if (!ppv)
-			return E_POINTER;
-		
-		if (iid == IID_IBMDSwitcherCallback)
-		{
-			*ppv = static_cast<IBMDSwitcherCallback*>(this);
-			AddRef();
-			return S_OK;
-		}
-		
-		if (CFEqual(&iid, IUnknownUUID))
-		{
-			*ppv = static_cast<IUnknown*>(this);
-			AddRef();
-			return S_OK;
-		}
-		
-		*ppv = NULL;
-		return E_NOINTERFACE;
-	}
-    
-	ULONG STDMETHODCALLTYPE AddRef(void)
-	{
-		return ::OSAtomicIncrement32(&mRefCount);
-	}
-    
-	ULONG STDMETHODCALLTYPE Release(void)
-	{
-		int newCount = ::OSAtomicDecrement32(&mRefCount);
-		if (newCount == 0)
-			delete this;
-		return newCount;
-	}
-	
-	// Switcher events ignored by this sample app
-	HRESULT STDMETHODCALLTYPE	Notify(BMDSwitcherEventType eventType) {
-        switch(eventType) {
-            case bmdSwitcherEventTypeDisconnected:
-                [mUiDelegate performSelectorInBackground:@selector(switcherDisconnected) withObject:nil];
-                break;
-                
+    // IBMDSwitcherCallback interface
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
+    {
+        if (!ppv)
+            return E_POINTER;
+        
+        if (iid == IID_IBMDSwitcherCallback)
+        {
+            *ppv = static_cast<IBMDSwitcherCallback*>(this);
+            AddRef();
+            return S_OK;
         }
-        return S_OK; }
-	
-	HRESULT STDMETHODCALLTYPE	Disconnected(void)
-	{
-		[mUiDelegate performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
-		return S_OK;
-	}
-	
+        
+        if (CFEqual(&iid, IUnknownUUID))
+        {
+            *ppv = static_cast<IUnknown*>(this);
+            AddRef();
+            return S_OK;
+        }
+        
+        *ppv = NULL;
+        return E_NOINTERFACE;
+    }
+    
+    ULONG STDMETHODCALLTYPE AddRef(void)
+    {
+        return ::OSAtomicIncrement32(&mRefCount);
+    }
+    
+    ULONG STDMETHODCALLTYPE Release(void)
+    {
+        int newCount = ::OSAtomicDecrement32(&mRefCount);
+        if (newCount == 0)
+            delete this;
+        return newCount;
+    }
+    
+    // Switcher events ignored by this sample app
+    HRESULT STDMETHODCALLTYPE	Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)
+    {
+        if (eventType == bmdSwitcherEventTypeDisconnected)
+        {
+            [mUiDelegate performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
+        }
+        return S_OK;
+    }
+    
 private:
-	SwitcherPanelAppDelegate*	mUiDelegate;
-	int							mRefCount;
+    SwitcherPanelAppDelegate*	mUiDelegate;
+    int							mRefCount;
 };
-
 
 @implementation SwitcherPanelAppDelegate
 
@@ -278,6 +271,7 @@ private:
 	mSwitcher = NULL;
 	mMixEffectBlock = NULL;
 	mMediaPool = NULL;
+    mMacroPool = NULL;
     isConnectedToATEM = NO;
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
@@ -537,6 +531,9 @@ private:
                   [[address objectAtIndex:2] isEqualToString:@"supersource"]) {
             [self handleSuperSource:m address:address];
         }else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                  [[address objectAtIndex:2] isEqualToString:@"macros"]) {
+            [self handleMacros:m address:address];
+        }else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                   [[address objectAtIndex:2] isEqualToString:@"aux"]) {
             int auxToChange = [[address objectAtIndex:3] intValue];
             int source = [[m value] intValue];
@@ -547,6 +544,58 @@ private:
 
 - (void) handleAuxSource:(int)auxToChange channel:(int)channel {
     mSwitcherInputAuxList[auxToChange-1]->SetInputSource(channel);
+}
+
+- (void) handleMacros:(OSCMessage *)m address:(NSArray*)address {
+    if (!mMacroPool || !mMacroControl)
+    {
+        // No Macro support
+        OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+        [newMsg addInt:(int)0];
+        [outPort sendThisMessage:newMsg];
+        return;
+    }
+    if ([[address objectAtIndex:3] isEqualToString:@"get-max-number"]) {
+        uint32_t value = [self getMaxNumberOfMacros];
+        
+        OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+        [newMsg addInt:(int)value];
+        [outPort sendThisMessage:newMsg];
+    } else if ([[address objectAtIndex:3] isEqualToString:@"stop"]) {
+        [self stopRunningMacro];
+    } else {
+        int macroIndex = [[address objectAtIndex:3] intValue];
+        if ([[address objectAtIndex:4] isEqualToString:@"name"]) {
+            NSString *value = [self getNameOfMacro:macroIndex];
+            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+            [newMsg addString:(NSString *)value];
+            [outPort sendThisMessage:newMsg];
+        } else if ([[address objectAtIndex:4] isEqualToString:@"description"]) {
+            NSString *value = [self getDescriptionOfMacro:macroIndex];
+            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+            [newMsg addString:(NSString *)value];
+            [outPort sendThisMessage:newMsg];
+        } else if ([[address objectAtIndex:4] isEqualToString:@"is-valid"]) {
+            int value = 0;
+            if ([self isMacroValid:macroIndex])
+            {
+                value = 1;
+            }
+            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+            [newMsg addInt:(int)value];
+            [outPort sendThisMessage:newMsg];
+        } else if ([[address objectAtIndex:4] isEqualToString:@"run"]) {
+            int value = 0;
+            if ([self isMacroValid:macroIndex])
+            {
+                // Try to run the valid Macro
+                value = [self runMacroAtIndex:macroIndex];
+            }
+            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+            [newMsg addInt:(int)value];
+            [outPort sendThisMessage:newMsg];
+        }
+    }
 }
 
 - (void) handleSuperSource:(OSCMessage *)m address:(NSArray*)address {
@@ -769,7 +818,7 @@ private:
             
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nUpstream Keyers:\n" attributes:addressAttribute]];
             for (int i = 0; i<keyers.size();i++) {
-                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tOn Air KEY %d: ",i+1] attributes:addressAttribute]];
+                [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tOn Air KEY %d toggle: ",i+1] attributes:addressAttribute]];
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/usk/%d\n",i+1] attributes:infoAttribute]];
             }
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tBKGD: "] attributes:addressAttribute]];
@@ -896,6 +945,21 @@ private:
                     [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-reset\t<1>\n",i] attributes:infoAttribute]];
                 }
             }
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nMacros:\n" attributes:addressAttribute]];
+            
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet the Maximum Number of Macros: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/get-max-number\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tStop the currently active Macro (if any): " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/stop\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet the Name of a Macro: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/name\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet the Description of a Macro: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/description\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet whether the Macro at <index> is valid: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/is-valid\n" attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tRun the Macro at <index>: " attributes:addressAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/run\n" attributes:infoAttribute]];
             
             [helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
             [[heltTextView textStorage] setAttributedString:helpString];
@@ -1034,7 +1098,7 @@ private:
 			BMDSwitcherInputId id;
             		input->GetInputId(&id);
             		NSString* name;
-         		   input->GetString(bmdSwitcherInputPropertyIdLongName, (CFStringRef*)&name);
+         		   input->GetLongName((CFStringRef*)&name);
          		   if ([name isEqual: @"SuperSource"])
          		   {
          		       input->QueryInterface(IID_IBMDSwitcherInputSuperSource, (void**)&mSuperSource);
@@ -1100,13 +1164,29 @@ private:
     mediaPlayerIterator->Release();
     mediaPlayerIterator = NULL;
     
-	// get media pool
-	result = mSwitcher->QueryInterface(IID_IBMDSwitcherMediaPool, (void**)&mMediaPool);
-	if (FAILED(result))
-	{
-		[self logMessage:@"Could not get IBMDSwitcherMediaPool interface"];
-		return;
-	}
+    // get media pool
+    result = mSwitcher->QueryInterface(IID_IBMDSwitcherMediaPool, (void**)&mMediaPool);
+    if (FAILED(result))
+    {
+        [self logMessage:@"Could not get IBMDSwitcherMediaPool interface"];
+        return;
+    }
+    
+    // get macro pool
+    result = mSwitcher->QueryInterface(IID_IBMDSwitcherMacroPool, (void**)&mMacroPool);
+    if (FAILED(result))
+    {
+        [self logMessage:@"Could not get IID_IBMDSwitcherMacroPool interface"];
+        return;
+    }
+    
+    // get macro controller
+    result = mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl);
+    if (FAILED(result))
+    {
+        [self logMessage:@"Could not get IID_IBMDSwitcherMacroControl interface"];
+        return;
+    }
     
 	// Super source
     if (mSuperSource) {
@@ -1188,6 +1268,130 @@ finish:
     [self connectBMD];
 }
 
+- (BOOL)isMacroValid:(uint32_t)index
+{
+    HRESULT result;
+    bool isValid;
+    if (mMacroPool) {
+        result = mMacroPool->IsValid(index, &isValid);
+        switch (result) {
+            case S_OK:
+                return isValid;
+            case E_INVALIDARG:
+                [self logMessage:[NSString stringWithFormat:@"Could not check whether the Macro at index %d is valid because the index is invalid.", index]];
+                break;
+            default:
+                [self logMessage:[NSString stringWithFormat:@"Could not check whether the Macro at index %d is valid.", index]];
+                break;
+        }
+        return NO;
+    }
+    return NO;
+}
+
+- (BOOL)runMacroAtIndex:(uint32_t)index
+{
+    HRESULT result;
+    bool isValid;
+    if (mMacroControl) {
+        if (![self isMacroValid:index])
+        {
+            [self logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because it is not valid.", index]];
+            return NO;
+        }
+        
+        result = mMacroControl->Run(index);
+        switch (result) {
+            case S_OK:
+                return isValid;
+            case E_INVALIDARG:
+                [self logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because the index is invalid.", index]];
+                break;
+            case E_FAIL:
+                [self logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d.", index]];
+                break;
+            default:
+                [self logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d.", index]];
+                break;
+        }
+        return NO;
+    }
+    return NO;
+}
+
+- (BOOL)stopRunningMacro
+{
+    HRESULT result;
+    if (mMacroControl) {
+        result = mMacroControl->StopRunning();
+        switch (result) {
+            case S_OK:
+                return YES;
+            default:
+                [self logMessage:@"Could not stop the current Macro."];
+                break;
+        }
+        return NO;
+    }
+    return NO;
+}
+
+- (uint32_t)getMaxNumberOfMacros
+{
+    uint32_t maxNumberOfMacros = 0;
+    if (mMacroPool)
+    {
+        if (S_OK == mMacroPool->GetMaxCount(&maxNumberOfMacros)) {
+            return maxNumberOfMacros;
+        } else {
+            [self logMessage:@"Could not get max the number of Macros available."];
+        }
+    }
+    return maxNumberOfMacros;
+}
+
+- (NSString*)getNameOfMacro:(uint32_t)index
+{
+    HRESULT result;
+    NSString *name = @"";
+    result = mMacroPool->GetName(index, (CFStringRef*)&name);
+    switch (result)
+    {
+        case S_OK:
+            return name;
+        case E_INVALIDARG:
+            [self logMessage:[NSString stringWithFormat:@"Could not get the name of the Macro at index %d because the index is invalid.", index]];
+            break;
+        case E_OUTOFMEMORY:
+            [self logMessage:[NSString stringWithFormat:@"Insufficient memory to get the name of the Macro at index %d.", index]];
+            break;
+        default:
+            [self logMessage:[NSString stringWithFormat:@"Could not get the name of the Macro at index %d.", index]];
+    }
+    return name;
+}
+
+- (NSString*)getDescriptionOfMacro:(uint32_t)index
+{
+    HRESULT result;
+    NSString *description = @"";
+    result = mMacroPool->GetDescription(index, (CFStringRef*)&description);
+    switch (result)
+    {
+        case S_OK:
+            return description;
+        case E_INVALIDARG:
+            [self logMessage:[NSString stringWithFormat:@"Could not get the description of the Macro at index %d because the index is invalid.", index]];
+            break;
+        case E_OUTOFMEMORY:
+            [self logMessage:[NSString stringWithFormat:@"Insufficient memory to get the description of the Macro at index %d.", index]];
+            break;
+        default:
+            [self logMessage:[NSString stringWithFormat:@"Could not get the description of the Macro at index %d.", index]];
+    }
+    return description;
+}
+
 - (void)logMessage:(NSString *)message
 {
     if (message) {
@@ -1240,7 +1444,7 @@ finish:
         
         
 		input->GetInputId(&id);
-		input->GetString(bmdSwitcherInputPropertyIdLongName, (CFStringRef*)&name);
+		input->GetLongName((CFStringRef*)&name);
 		
         [tallyA addItemWithTitle:name];
 		[[tallyA lastItem] setTag:id];
