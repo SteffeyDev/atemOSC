@@ -40,79 +40,79 @@ static inline bool	operator== (const REFIID& iid1, const REFIID& iid2)
 class MixEffectBlockMonitor : public IBMDSwitcherMixEffectBlockCallback
 {
 public:
-	MixEffectBlockMonitor(SwitcherPanelAppDelegate* uiDelegate) : mUiDelegate(uiDelegate), mRefCount(1) { }
+    MixEffectBlockMonitor(SwitcherPanelAppDelegate* uiDelegate) : mUiDelegate(uiDelegate), mRefCount(1) { }
     
 protected:
-	virtual ~MixEffectBlockMonitor() { }
+    virtual ~MixEffectBlockMonitor() { }
     
 public:
-	HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
-	{
-		if (!ppv)
-			return E_POINTER;
-		
-		if (iid == IID_IBMDSwitcherMixEffectBlockCallback)
-		{
-			*ppv = static_cast<IBMDSwitcherMixEffectBlockCallback*>(this);
-			AddRef();
-			return S_OK;
-		}
-		
-		if (CFEqual(&iid, IUnknownUUID))
-		{
-			*ppv = static_cast<IUnknown*>(this);
-			AddRef();
-			return S_OK;
-		}
-		
-		*ppv = NULL;
-		return E_NOINTERFACE;
-	}
-    
-	ULONG STDMETHODCALLTYPE AddRef(void)
-	{
-		return ::OSAtomicIncrement32(&mRefCount);
-	}
-    
-	ULONG STDMETHODCALLTYPE Release(void)
-	{
-		int newCount = ::OSAtomicDecrement32(&mRefCount);
-		if (newCount == 0)
-			delete this;
-		return newCount;
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
+    {
+        if (!ppv)
+            return E_POINTER;
+        
+        if (iid == IID_IBMDSwitcherMixEffectBlockCallback)
+        {
+            *ppv = static_cast<IBMDSwitcherMixEffectBlockCallback*>(this);
+            AddRef();
+            return S_OK;
+        }
+        
+        if (CFEqual(&iid, IUnknownUUID))
+        {
+            *ppv = static_cast<IUnknown*>(this);
+            AddRef();
+            return S_OK;
+        }
+        
+        *ppv = NULL;
+        return E_NOINTERFACE;
     }
-	
-	HRESULT PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId)
-	{
-		switch (propertyId)
-		{
-			case bmdSwitcherMixEffectBlockPropertyIdProgramInput:
-				[mUiDelegate performSelectorOnMainThread:@selector(updateProgramButtonSelection) withObject:nil waitUntilDone:YES];
-				break;
-			case bmdSwitcherMixEffectBlockPropertyIdPreviewInput:
-				[mUiDelegate performSelectorOnMainThread:@selector(updatePreviewButtonSelection) withObject:nil waitUntilDone:YES];
-				break;
-			case bmdSwitcherMixEffectBlockPropertyIdInTransition:
-				[mUiDelegate performSelectorOnMainThread:@selector(updateInTransitionState) withObject:nil waitUntilDone:YES];
-				break;
-			case bmdSwitcherMixEffectBlockPropertyIdTransitionPosition:
-				[mUiDelegate performSelectorOnMainThread:@selector(updateSliderPosition) withObject:nil waitUntilDone:YES];
-				break;
-			case bmdSwitcherMixEffectBlockPropertyIdTransitionFramesRemaining:
-				[mUiDelegate performSelectorOnMainThread:@selector(updateTransitionFramesTextField) withObject:nil waitUntilDone:YES];
-				break;
-			case bmdSwitcherMixEffectBlockPropertyIdFadeToBlackFramesRemaining:
-				[mUiDelegate performSelectorOnMainThread:@selector(updateFTBFramesTextField) withObject:nil waitUntilDone:YES];
-				break;
-			default:	// ignore other property changes not used for this sample app
-				break;
-		}
-		return S_OK;
-	}
+    
+    ULONG STDMETHODCALLTYPE AddRef(void)
+    {
+        return ::OSAtomicIncrement32(&mRefCount);
+    }
+    
+    ULONG STDMETHODCALLTYPE Release(void)
+    {
+        int newCount = ::OSAtomicDecrement32(&mRefCount);
+        if (newCount == 0)
+            delete this;
+        return newCount;
+    }
+    
+    HRESULT PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId)
+    {
+        switch (propertyId)
+        {
+            case bmdSwitcherMixEffectBlockPropertyIdProgramInput:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateProgramButtonSelection) withObject:nil waitUntilDone:YES];
+                break;
+            case bmdSwitcherMixEffectBlockPropertyIdPreviewInput:
+                [mUiDelegate performSelectorOnMainThread:@selector(updatePreviewButtonSelection) withObject:nil waitUntilDone:YES];
+                break;
+            case bmdSwitcherMixEffectBlockPropertyIdInTransition:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateInTransitionState) withObject:nil waitUntilDone:YES];
+                break;
+            case bmdSwitcherMixEffectBlockPropertyIdTransitionPosition:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateSliderPosition) withObject:nil waitUntilDone:YES];
+                break;
+            case bmdSwitcherMixEffectBlockPropertyIdTransitionFramesRemaining:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateTransitionFramesTextField) withObject:nil waitUntilDone:YES];
+                break;
+            case bmdSwitcherMixEffectBlockPropertyIdFadeToBlackFramesRemaining:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateFTBFramesTextField) withObject:nil waitUntilDone:YES];
+                break;
+            default:	// ignore other property changes not used for this sample app
+                break;
+        }
+        return S_OK;
+    }
     
 private:
-	SwitcherPanelAppDelegate*		mUiDelegate;
-	int								mRefCount;
+    SwitcherPanelAppDelegate*		mUiDelegate;
+    int								mRefCount;
 };
 
 // Monitor the properties on Switcher Inputs.
@@ -120,55 +120,55 @@ private:
 class InputMonitor : public IBMDSwitcherInputCallback
 {
 public:
-	InputMonitor(IBMDSwitcherInput* input, SwitcherPanelAppDelegate* uiDelegate) : mInput(input), mUiDelegate(uiDelegate), mRefCount(1)
-	{
-		mInput->AddRef();
-		mInput->AddCallback(this);
-	}
+    InputMonitor(IBMDSwitcherInput* input, SwitcherPanelAppDelegate* uiDelegate) : mInput(input), mUiDelegate(uiDelegate), mRefCount(1)
+    {
+        mInput->AddRef();
+        mInput->AddCallback(this);
+    }
     
 protected:
-	~InputMonitor()
-	{
-		mInput->RemoveCallback(this);
-		mInput->Release();
-	}
-	
+    ~InputMonitor()
+    {
+        mInput->RemoveCallback(this);
+        mInput->Release();
+    }
+    
 public:
-	// IBMDSwitcherInputCallback interface
-	HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
-	{
-		if (!ppv)
-			return E_POINTER;
-		
-		if (iid == IID_IBMDSwitcherInputCallback)
-		{
-			*ppv = static_cast<IBMDSwitcherInputCallback*>(this);
-			AddRef();
-			return S_OK;
-		}
-		
-		if (CFEqual(&iid, IUnknownUUID))
-		{
-			*ppv = static_cast<IUnknown*>(this);
-			AddRef();
-			return S_OK;
-		}
-		
-		*ppv = NULL;
-		return E_NOINTERFACE;
-	}
+    // IBMDSwitcherInputCallback interface
+    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
+    {
+        if (!ppv)
+            return E_POINTER;
+        
+        if (iid == IID_IBMDSwitcherInputCallback)
+        {
+            *ppv = static_cast<IBMDSwitcherInputCallback*>(this);
+            AddRef();
+            return S_OK;
+        }
+        
+        if (CFEqual(&iid, IUnknownUUID))
+        {
+            *ppv = static_cast<IUnknown*>(this);
+            AddRef();
+            return S_OK;
+        }
+        
+        *ppv = NULL;
+        return E_NOINTERFACE;
+    }
     
-	ULONG STDMETHODCALLTYPE AddRef(void)
-	{
-		return ::OSAtomicIncrement32(&mRefCount);
-	}
+    ULONG STDMETHODCALLTYPE AddRef(void)
+    {
+        return ::OSAtomicIncrement32(&mRefCount);
+    }
     
-	ULONG STDMETHODCALLTYPE Release(void)
-	{
-		int newCount = ::OSAtomicDecrement32(&mRefCount);
-		if (newCount == 0)
-			delete this;
-		return newCount;
+    ULONG STDMETHODCALLTYPE Release(void)
+    {
+        int newCount = ::OSAtomicDecrement32(&mRefCount);
+        if (newCount == 0)
+            delete this;
+        return newCount;
     }
     
     HRESULT Notify(BMDSwitcherInputEventType eventType)
@@ -183,12 +183,12 @@ public:
         
         return S_OK;
     }
-	IBMDSwitcherInput* input() { return mInput; }
-	
+    IBMDSwitcherInput* input() { return mInput; }
+    
 private:
-	IBMDSwitcherInput*			mInput;
-	SwitcherPanelAppDelegate*	mUiDelegate;
-	int							mRefCount;
+    IBMDSwitcherInput*			mInput;
+    SwitcherPanelAppDelegate*	mUiDelegate;
+    int							mRefCount;
 };
 
 // Callback class to monitor switcher disconnection
@@ -281,37 +281,33 @@ private:
 	mCurrentTransitionReachedHalfway = false;
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
-	if (! mSwitcherDiscovery)
-	{
+	if (! mSwitcherDiscovery) {
 		NSBeginAlertSheet(@"Could not create Switcher Discovery Instance.\nATEM Switcher Software may not be installed.\n",
 							@"OK", nil, nil, window, self, @selector(sheetDidEndShouldTerminate:returnCode:contextInfo:), NULL, window, @"");
-	}
+	} else {
+        [self switcherDisconnected];		// start with switcher disconnected
+    
+    
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        mAddressTextField.stringValue = [prefs stringForKey:@"atem"];
+    
+        outgoing.intValue = [prefs integerForKey:@"outgoing"];
+        incoming.intValue = [prefs integerForKey:@"incoming"];
+        oscdevice.stringValue = [prefs objectForKey:@"oscdevice"];
+    
+        //	make an osc manager- i'm using a custom in-port to record a bunch of extra conversion for the display, but you can just make a "normal" manager
+        manager = [[OSCManager alloc] init];
+    
+        [self portChanged:self];
+    
+        /// set up notifications
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddPorts:) name:AMSerialPortListDidAddPortsNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemovePorts:) name:AMSerialPortListDidRemovePortsNotification object:nil];
 	
-	[self switcherDisconnected];		// start with switcher disconnected
-    
-    
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    mAddressTextField.stringValue = [prefs stringForKey:@"atem"];
-    
-    outgoing.intValue = [prefs integerForKey:@"outgoing"];
-    incoming.intValue = [prefs integerForKey:@"incoming"];
-    oscdevice.stringValue = [prefs objectForKey:@"oscdevice"];
-    
-    //	make an osc manager- i'm using i'm using a custom in-port to record a bunch of extra conversion for the display, but you can just make a "normal" manager
-    manager = [[OSCManager alloc] init];
-    
-    
-    [self portChanged:self];
-    
-    
-    /// set up notifications
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didAddPorts:) name:AMSerialPortListDidAddPortsNotification object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didRemovePorts:) name:AMSerialPortListDidRemovePortsNotification object:nil];
-	
-	/// initialize port list to arm notifications
-	[AMSerialPortList sharedPortList];
-	[self listDevices];
-
+        /// initialize port list to arm notifications
+        [AMSerialPortList sharedPortList];
+        [self listDevices];
+    }
     
 }
 
@@ -500,7 +496,7 @@ private:
                 return;
             }
     
-            if (mMediaPlayers.size() < mplayer)
+            if (mMediaPlayers.size() < mplayer || mplayer < 0)
             {
                 [self logMessage:[NSString stringWithFormat:@"No media player %d", mplayer]];
                 return;
@@ -749,17 +745,7 @@ private:
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
 {
-	mSwitcherMonitor->Release();
-	mSwitcherMonitor = NULL;
-	
-	mMixEffectBlockMonitor->Release();
-	mMixEffectBlockMonitor = NULL;
-
-	if (mSwitcherDiscovery)
-	{
-		mSwitcherDiscovery->Release();
-		mSwitcherDiscovery = NULL;
-	}
+	[self cleanUpConnection];
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)sender
@@ -1048,7 +1034,7 @@ private:
 	IBMDSwitcherInputIterator* inputIterator = NULL;
 	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
 	IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
-    	isConnectedToATEM = YES;
+    isConnectedToATEM = YES;
     
     if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
         self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
@@ -1093,7 +1079,10 @@ private:
 			{
 				BMDSwitcherInputId auxId;
 				result = auxObj->GetInputSource(&auxId);
-				mSwitcherInputAuxList.push_back(auxObj);
+                if (SUCCEEDED(result))
+                {
+                    mSwitcherInputAuxList.push_back(auxObj);
+                }
 			}
 			BMDSwitcherInputId id;
             		input->GetInputId(&id);
@@ -1131,8 +1120,11 @@ private:
     IBMDSwitcherKeyIterator* keyIterator = NULL;
     result = mMixEffectBlock->CreateIterator(IID_IBMDSwitcherKeyIterator, (void**)&keyIterator);
     IBMDSwitcherKey* key = NULL;
-    while (S_OK == keyIterator->Next(&key)) {
-        keyers.push_back(key);
+    if (SUCCEEDED(result))
+    {
+        while (S_OK == keyIterator->Next(&key)) {
+            keyers.push_back(key);
+        }
     }
     keyIterator->Release();
     keyIterator = NULL;
@@ -1142,8 +1134,11 @@ private:
     IBMDSwitcherDownstreamKeyIterator* dskIterator = NULL;
     result = mSwitcher->CreateIterator(IID_IBMDSwitcherDownstreamKeyIterator, (void**)&dskIterator);
     IBMDSwitcherDownstreamKey* downstreamKey = NULL;
-    while (S_OK == dskIterator->Next(&downstreamKey)) {
-        dsk.push_back(downstreamKey);
+    if (SUCCEEDED(result))
+    {
+        while (S_OK == dskIterator->Next(&downstreamKey)) {
+            dsk.push_back(downstreamKey);
+        }
     }
     dskIterator->Release();
     dskIterator = NULL;
@@ -1223,6 +1218,7 @@ finish:
 
 - (void)switcherDisconnected
 {
+
     isConnectedToATEM = NO;
 	if (self.activity) {
         [[NSProcessInfo processInfo] endActivity:self.activity];
@@ -1243,29 +1239,72 @@ finish:
     [redLight setHidden:NO];
 	
     
-	[self mixEffectBlockBoxSetEnabled:NO];
-	
-	// cleanup resources created when switcher was connected
-	for (std::list<InputMonitor*>::iterator it = mInputMonitors.begin(); it != mInputMonitors.end(); ++it)
-	{
-		(*it)->Release();
-	}
-	mInputMonitors.clear();
-	
-	if (mMixEffectBlock)
-	{
-		mMixEffectBlock->RemoveCallback(mMixEffectBlockMonitor);
-		mMixEffectBlock->Release();
-		mMixEffectBlock = NULL;
-	}
-	
-	if (mSwitcher)
-	{
-		mSwitcher->RemoveCallback(mSwitcherMonitor);
-		mSwitcher->Release();
-		mSwitcher = NULL;
-	}
+    [self mixEffectBlockBoxSetEnabled:NO];
+    
+    [self cleanUpConnection];
+
     [self connectBMD];
+}
+
+- (void)cleanUpConnection
+{
+    // cleanup resources created when switcher was connected
+    for (std::list<InputMonitor*>::iterator it = mInputMonitors.begin(); it != mInputMonitors.end(); ++it)
+    {
+        (*it)->Release();
+    }
+    mInputMonitors.clear();
+    
+    while (mMediaPlayers.size())
+    {
+        mMediaPlayers.back()->Release();
+        mMediaPlayers.pop_back();
+    }
+    
+    if (mStills)
+    {
+        mStills->Release();
+        mStills = NULL;
+    }
+    
+    if (mMediaPool)
+    {
+        mMediaPool->Release();
+        mMediaPool = NULL;
+    }
+    
+    while (mSuperSourceBoxes.size())
+    {
+        mSuperSourceBoxes.back()->Release();
+        mSuperSourceBoxes.pop_back();
+    }
+    
+    while (keyers.size())
+    {
+        keyers.back()->Release();
+        keyers.pop_back();
+    }
+    
+    while (dsk.size())
+    {
+        dsk.back()->Release();
+        dsk.pop_back();
+    }
+    
+    if (mMixEffectBlock)
+    {
+        mMixEffectBlock->RemoveCallback(mMixEffectBlockMonitor);
+        mMixEffectBlock->Release();
+        mMixEffectBlock = NULL;
+    }
+    
+    // disconnect monitors
+    if (mSwitcher)
+    {
+        mSwitcher->RemoveCallback(mSwitcherMonitor);
+        mSwitcher->Release();
+        mSwitcher = NULL;
+    }
 }
 
 - (BOOL)isMacroValid:(uint32_t)index

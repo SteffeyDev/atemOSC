@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "B2E5A21DE29112A2C3D0401A54496AD892E8B08B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "B2E5A21DE29112A2C3D0401A54496AD892E8B08B" : 0,
+    "29F51AED34FA24E0FF2C6C2F988ED93A468E8AFE" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "E9CD2877-DB7A-4C51-BA2F-5A277C157C3F",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "B2E5A21DE29112A2C3D0401A54496AD892E8B08B" : "atemOSC\/",
+    "29F51AED34FA24E0FF2C6C2F988ED93A468E8AFE" : "vvopensource\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "atemOSC",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "atemOSC\/atemOSC.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mrRay\/vvopensource.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "29F51AED34FA24E0FF2C6C2F988ED93A468E8AFE"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:LanSmash\/atemOSC.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B2E5A21DE29112A2C3D0401A54496AD892E8B08B"
+    }
+  ]
+}

@@ -1,4 +1,7 @@
-# atemOSC v2.4.4
+# atemOSC v2.4.5
+
+## Changelog v2.4.5
+- updated to ATEM SDK v6.9 to fix mediaPlayer issue
 
 ## Changelog v2.4.4
 - updated to ATEM SDK v6.6
