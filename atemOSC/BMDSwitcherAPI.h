@@ -57,8 +57,10 @@ BMD_CONST REFIID IID_IBMDSwitcherAudioInputCallback               = /* 26E05D77-
 BMD_CONST REFIID IID_IBMDSwitcherAudioInput                       = /* 321EA41E-544B-491B-B9AA-F6FCAECEF74F */ {0x32,0x1E,0xA4,0x1E,0x54,0x4B,0x49,0x1B,0xB9,0xAA,0xF6,0xFC,0xAE,0xCE,0xF7,0x4F};
 BMD_CONST REFIID IID_IBMDSwitcherAudioMixerCallback               = /* A203DA24-9910-450C-AA6A-9AA05C5C856E */ {0xA2,0x03,0xDA,0x24,0x99,0x10,0x45,0x0C,0xAA,0x6A,0x9A,0xA0,0x5C,0x5C,0x85,0x6E};
 BMD_CONST REFIID IID_IBMDSwitcherAudioMixer                       = /* CD3AD708-6F82-41EB-B8B2-64605D4040F2 */ {0xCD,0x3A,0xD7,0x08,0x6F,0x82,0x41,0xEB,0xB8,0xB2,0x64,0x60,0x5D,0x40,0x40,0xF2};
-BMD_CONST REFIID IID_IBMDSwitcherTalkbackCallback                 = /* 0B90E45D-E976-45E1-A8A2-0ED4EF102E46 */ {0x0B,0x90,0xE4,0x5D,0xE9,0x76,0x45,0xE1,0xA8,0xA2,0x0E,0xD4,0xEF,0x10,0x2E,0x46};
-BMD_CONST REFIID IID_IBMDSwitcherTalkback                         = /* 43E40D41-ADDC-43D2-871F-7BDB322E9BAA */ {0x43,0xE4,0x0D,0x41,0xAD,0xDC,0x43,0xD2,0x87,0x1F,0x7B,0xDB,0x32,0x2E,0x9B,0xAA};
+BMD_CONST REFIID IID_IBMDSwitcherTalkbackCallback                 = /* 5F9A1C63-791C-4573-B28B-D9F2C00B8368 */ {0x5F,0x9A,0x1C,0x63,0x79,0x1C,0x45,0x73,0xB2,0x8B,0xD9,0xF2,0xC0,0x0B,0x83,0x68};
+BMD_CONST REFIID IID_IBMDSwitcherTalkback                         = /* 92220740-F63B-43A8-8D51-5B85901B4847 */ {0x92,0x22,0x07,0x40,0xF6,0x3B,0x43,0xA8,0x8D,0x51,0x5B,0x85,0x90,0x1B,0x48,0x47};
+BMD_CONST REFIID IID_IBMDSwitcherAudioHeadphoneOutput             = /* A2836B54-B3A0-4C6B-8BC8-16DC81213C60 */ {0xA2,0x83,0x6B,0x54,0xB3,0xA0,0x4C,0x6B,0x8B,0xC8,0x16,0xDC,0x81,0x21,0x3C,0x60};
+BMD_CONST REFIID IID_IBMDSwitcherAudioHeadphoneOutputCallback     = /* C97CD29E-1871-42EE-9A51-DF34B6A5ACDB */ {0xC9,0x7C,0xD2,0x9E,0x18,0x71,0x42,0xEE,0x9A,0x51,0xDF,0x34,0xB6,0xA5,0xAC,0xDB};
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParametersCallback        = /* AB31E347-5177-4595-8E52-650BF9B08B7F */ {0xAB,0x31,0xE3,0x47,0x51,0x77,0x45,0x95,0x8E,0x52,0x65,0x0B,0xF9,0xB0,0x8B,0x7F};
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParameters                = /* EE88B575-6044-4372-B1D6-9733AF342DCA */ {0xEE,0x88,0xB5,0x75,0x60,0x44,0x43,0x72,0xB1,0xD6,0x97,0x33,0xAF,0x34,0x2D,0xCA};
 BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParametersCallback      = /* FE3F97EC-5F2D-4E47-AA7A-38962F9CB3CE */ {0xFE,0x3F,0x97,0xEC,0x5F,0x2D,0x4E,0x47,0xAA,0x7A,0x38,0x96,0x2F,0x9C,0xB3,0xCE};
@@ -66,9 +68,9 @@ BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParameters              = /* 07658026-
 BMD_CONST REFIID IID_IBMDSwitcherKeyPatternParametersCallback     = /* FBF24499-06EB-4C54-BE92-21C403C1093C */ {0xFB,0xF2,0x44,0x99,0x06,0xEB,0x4C,0x54,0xBE,0x92,0x21,0xC4,0x03,0xC1,0x09,0x3C};
 BMD_CONST REFIID IID_IBMDSwitcherKeyPatternParameters             = /* 267EDB96-5921-4BA5-88BA-C83123E153D2 */ {0x26,0x7E,0xDB,0x96,0x59,0x21,0x4B,0xA5,0x88,0xBA,0xC8,0x31,0x23,0xE1,0x53,0xD2};
 BMD_CONST REFIID IID_IBMDSwitcherKeyFlyKeyFrameParametersCallback = /* 136BDD85-690B-4691-BA1D-AB8A61F97AE0 */ {0x13,0x6B,0xDD,0x85,0x69,0x0B,0x46,0x91,0xBA,0x1D,0xAB,0x8A,0x61,0xF9,0x7A,0xE0};
-BMD_CONST REFIID IID_IBMDSwitcherKeyFlyKeyFrameParameters         = /* 8F3A7FA5-6B08-4999-B446-B64E9CFA3E37 */ {0x8F,0x3A,0x7F,0xA5,0x6B,0x08,0x49,0x99,0xB4,0x46,0xB6,0x4E,0x9C,0xFA,0x3E,0x37};
+BMD_CONST REFIID IID_IBMDSwitcherKeyFlyKeyFrameParameters         = /* 57F0D002-53BB-4787-83F9-1851A257B116 */ {0x57,0xF0,0xD0,0x02,0x53,0xBB,0x47,0x87,0x83,0xF9,0x18,0x51,0xA2,0x57,0xB1,0x16};
 BMD_CONST REFIID IID_IBMDSwitcherKeyFlyParametersCallback         = /* A9D6543D-0447-4048-B5AD-806622B9BF1A */ {0xA9,0xD6,0x54,0x3D,0x04,0x47,0x40,0x48,0xB5,0xAD,0x80,0x66,0x22,0xB9,0xBF,0x1A};
-BMD_CONST REFIID IID_IBMDSwitcherKeyFlyParameters                 = /* 4CA84EC1-5A83-4A9D-A37A-72D32CDF1201 */ {0x4C,0xA8,0x4E,0xC1,0x5A,0x83,0x4A,0x9D,0xA3,0x7A,0x72,0xD3,0x2C,0xDF,0x12,0x01};
+BMD_CONST REFIID IID_IBMDSwitcherKeyFlyParameters                 = /* 36CD0B7F-E52E-4D94-ADF5-EEDCA6BCDF82 */ {0x36,0xCD,0x0B,0x7F,0xE5,0x2E,0x4D,0x94,0xAD,0xF5,0xEE,0xDC,0xA6,0xBC,0xDF,0x82};
 BMD_CONST REFIID IID_IBMDSwitcherKeyDVEParametersCallback         = /* E437655F-32BB-4652-BA77-4083B435566A */ {0xE4,0x37,0x65,0x5F,0x32,0xBB,0x46,0x52,0xBA,0x77,0x40,0x83,0xB4,0x35,0x56,0x6A};
 BMD_CONST REFIID IID_IBMDSwitcherKeyDVEParameters                 = /* 92AA5433-70FB-423D-9435-646D171C9D82 */ {0x92,0xAA,0x54,0x33,0x70,0xFB,0x42,0x3D,0x94,0x35,0x64,0x6D,0x17,0x1C,0x9D,0x82};
 BMD_CONST REFIID IID_IBMDSwitcherKeyCallback                      = /* 1972E4DF-1D5F-4C4E-A79B-E5A6E8CE1511 */ {0x19,0x72,0xE4,0xDF,0x1D,0x5F,0x4C,0x4E,0xA7,0x9B,0xE5,0xA6,0xE8,0xCE,0x15,0x11};
@@ -111,9 +113,11 @@ BMD_CONST REFIID IID_IBMDSwitcherKeyIterator                      = /* ECC57473-
 BMD_CONST REFIID IID_IBMDSwitcherMediaPlayerIterator              = /* E910816F-59CB-4224-A77F-06DE3D232275 */ {0xE9,0x10,0x81,0x6F,0x59,0xCB,0x42,0x24,0xA7,0x7F,0x06,0xDE,0x3D,0x23,0x22,0x75};
 BMD_CONST REFIID IID_IBMDSwitcherMultiViewIterator                = /* B7A0D98B-A286-4651-A9E7-5596F62D652E */ {0xB7,0xA0,0xD9,0x8B,0xA2,0x86,0x46,0x51,0xA9,0xE7,0x55,0x96,0xF6,0x2D,0x65,0x2E};
 BMD_CONST REFIID IID_IBMDSwitcherAudioMonitorOutputIterator       = /* C76BAC6A-DFEE-4F2F-B161-226B481D556A */ {0xC7,0x6B,0xAC,0x6A,0xDF,0xEE,0x4F,0x2F,0xB1,0x61,0x22,0x6B,0x48,0x1D,0x55,0x6A};
+BMD_CONST REFIID IID_IBMDSwitcherAudioHeadphoneOutputIterator     = /* 151CFF07-EF32-441F-8FF8-C2163A751EA2 */ {0x15,0x1C,0xFF,0x07,0xEF,0x32,0x44,0x1F,0x8F,0xF8,0xC2,0x16,0x3A,0x75,0x1E,0xA2};
 BMD_CONST REFIID IID_IBMDSwitcherAudioInputIterator               = /* 97959903-651E-4F68-BA42-1FA61508F189 */ {0x97,0x95,0x99,0x03,0x65,0x1E,0x4F,0x68,0xBA,0x42,0x1F,0xA6,0x15,0x08,0xF1,0x89};
 BMD_CONST REFIID IID_IBMDSwitcherSerialPortIterator               = /* E3F0E3CE-5A1A-4D60-94A4-D3DBB2514763 */ {0xE3,0xF0,0xE3,0xCE,0x5A,0x1A,0x4D,0x60,0x94,0xA4,0xD3,0xDB,0xB2,0x51,0x47,0x63};
 BMD_CONST REFIID IID_IBMDSwitcherHyperDeckIterator                = /* 35879F23-168D-4AF2-80B0-6D72838E17F9 */ {0x35,0x87,0x9F,0x23,0x16,0x8D,0x4A,0xF2,0x80,0xB0,0x6D,0x72,0x83,0x8E,0x17,0xF9};
+BMD_CONST REFIID IID_IBMDSwitcherMixMinusOutputIterator           = /* C878F9F2-116D-48D4-9BBF-CA03447EA9A7 */ {0xC8,0x78,0xF9,0xF2,0x11,0x6D,0x48,0xD4,0x9B,0xBF,0xCA,0x03,0x44,0x7E,0xA9,0xA7};
 BMD_CONST REFIID IID_IBMDSwitcherCallback                         = /* EE50FC2C-D0D7-42D6-965A-57498CECC1F6 */ {0xEE,0x50,0xFC,0x2C,0xD0,0xD7,0x42,0xD6,0x96,0x5A,0x57,0x49,0x8C,0xEC,0xC1,0xF6};
 BMD_CONST REFIID IID_IBMDSwitcher                                 = /* 3D480E2F-3CF4-474B-92E7-B7907EE83B41 */ {0x3D,0x48,0x0E,0x2F,0x3C,0xF4,0x47,0x4B,0x92,0xE7,0xB7,0x90,0x7E,0xE8,0x3B,0x41};
 BMD_CONST REFIID IID_IBMDSwitcherDiscovery                        = /* 2CEFAB87-89E6-442F-A4F6-8FE63A50E17E */ {0x2C,0xEF,0xAB,0x87,0x89,0xE6,0x44,0x2F,0xA4,0xF6,0x8F,0xE6,0x3A,0x50,0xE1,0x7E};
@@ -142,6 +146,8 @@ BMD_CONST REFIID IID_IBMDSwitcherHyperDeckClip                    = /* DFBE7482-
 BMD_CONST REFIID IID_IBMDSwitcherHyperDeckClipIterator            = /* 162A6BFE-8290-4EAC-95E4-BA109D7BA4EC */ {0x16,0x2A,0x6B,0xFE,0x82,0x90,0x4E,0xAC,0x95,0xE4,0xBA,0x10,0x9D,0x7B,0xA4,0xEC};
 BMD_CONST REFIID IID_IBMDSwitcherHyperDeckCallback                = /* F745EBDF-F868-4787-B2D4-50064A5D6597 */ {0xF7,0x45,0xEB,0xDF,0xF8,0x68,0x47,0x87,0xB2,0xD4,0x50,0x06,0x4A,0x5D,0x65,0x97};
 BMD_CONST REFIID IID_IBMDSwitcherHyperDeck                        = /* 6BB0F7E1-2013-4C8F-A4C0-1016B0C37D14 */ {0x6B,0xB0,0xF7,0xE1,0x20,0x13,0x4C,0x8F,0xA4,0xC0,0x10,0x16,0xB0,0xC3,0x7D,0x14};
+BMD_CONST REFIID IID_IBMDSwitcherMixMinusOutput                   = /* E787458F-FCF4-4A9B-83D9-E25188170742 */ {0xE7,0x87,0x45,0x8F,0xFC,0xF4,0x4A,0x9B,0x83,0xD9,0xE2,0x51,0x88,0x17,0x07,0x42};
+BMD_CONST REFIID IID_IBMDSwitcherMixMinusOutputCallback           = /* D1D2EDF8-D949-49D0-8501-F001D69AB44F */ {0xD1,0xD2,0xED,0xF8,0xD9,0x49,0x49,0xD0,0x85,0x01,0xF0,0x01,0xD6,0x9A,0xB4,0x4F};
 
 /* Enum BMDSwitcherInputEventType - Used in IBMDSwitcherInputCallback */
 
@@ -184,7 +190,8 @@ enum _BMDSwitcherExternalPortType {
     bmdSwitcherExternalPortTypeInternal                          = 0x00000020,
     bmdSwitcherExternalPortTypeXLR                               = 0x00000040,
     bmdSwitcherExternalPortTypeAESEBU                            = 0x00000080,
-    bmdSwitcherExternalPortTypeRCA                               = 0x00000100
+    bmdSwitcherExternalPortTypeRCA                               = 0x00000100,
+    bmdSwitcherExternalPortTypeTSJack                            = 0x00000200
 };
 
 /* Enum BMDSwitcherInputAvailability - IBMDSwitcherInput availablity bits */
@@ -437,7 +444,19 @@ enum _BMDSwitcherAudioMixOption {
 
 typedef uint32_t BMDSwitcherTalkbackEventType;
 enum _BMDSwitcherTalkbackEventType {
-    bmdSwitcherTalkbackEventTypeMuteSDIChanged                   = 'tmsC'
+    bmdSwitcherTalkbackEventTypeMuteSDIChanged                   = 'tmsC',
+    bmdSwitcherTalkbackEventTypeInputMuteSDIChanged              = 'imsC',
+    bmdSwitcherTalkbackEventTypeCurrentInputSupportsMuteSDIChanged = 'ismC'
+};
+
+/* Enum BMDSwitcherAudioHeadphoneOutputEventType - Used in IBMDSwitcherAudioHeadphoneOutputCallback */
+
+typedef uint32_t BMDSwitcherAudioHeadphoneOutputEventType;
+enum _BMDSwitcherAudioHeadphoneOutputEventType {
+    bmdSwitcherAudioHeadphoneOutputEventTypeGainChanged          = 'hogC',
+    bmdSwitcherAudioHeadphoneOutputEventTypeInputProgramOutGainChanged = 'hopC',
+    bmdSwitcherAudioHeadphoneOutputEventTypeInputTalkbackGainChanged = 'hotC',
+    bmdSwitcherAudioHeadphoneOutputEventTypeInputSidetoneGainChanged = 'hosC'
 };
 
 /* Enum BMDSwitcherTransitionStyle - Transition styles used in IBMDSwitcherTransitionParameters */
@@ -976,6 +995,21 @@ enum _BMDSwitcherHyperDeckErrorType {
     bmdSwitcherHyperDeckErrorTypeNoInput                         = 'eeni'
 };
 
+/* Enum BMDSwitcherMixMinusOutputAudioMode - Mix-Minus Output Audio Mode */
+
+typedef uint32_t BMDSwitcherMixMinusOutputAudioMode;
+enum _BMDSwitcherMixMinusOutputAudioMode {
+    bmdSwitcherMixMinusOutputAudioModeProgramOut                 = 'mmop',
+    bmdSwitcherMixMinusOutputAudioModeMixMinus                   = 'mmom'
+};
+
+/* Enum BMDSwitcherMixMinusOutputEventType - Used in IBMDSwitcherMixMinusOutputCallback */
+
+typedef uint32_t BMDSwitcherMixMinusOutputEventType;
+enum _BMDSwitcherMixMinusOutputEventType {
+    bmdSwitcherMixMinusOutputEventTypeAudioModeChanged           = 'mmmC'
+};
+
 #if defined(__cplusplus)
 
 // Forward Declarations
@@ -988,6 +1022,8 @@ class IBMDSwitcherAudioMixerCallback;
 class IBMDSwitcherAudioMixer;
 class IBMDSwitcherTalkbackCallback;
 class IBMDSwitcherTalkback;
+class IBMDSwitcherAudioHeadphoneOutput;
+class IBMDSwitcherAudioHeadphoneOutputCallback;
 class IBMDSwitcherKeyLumaParametersCallback;
 class IBMDSwitcherKeyLumaParameters;
 class IBMDSwitcherKeyChromaParametersCallback;
@@ -1040,9 +1076,11 @@ class IBMDSwitcherKeyIterator;
 class IBMDSwitcherMediaPlayerIterator;
 class IBMDSwitcherMultiViewIterator;
 class IBMDSwitcherAudioMonitorOutputIterator;
+class IBMDSwitcherAudioHeadphoneOutputIterator;
 class IBMDSwitcherAudioInputIterator;
 class IBMDSwitcherSerialPortIterator;
 class IBMDSwitcherHyperDeckIterator;
+class IBMDSwitcherMixMinusOutputIterator;
 class IBMDSwitcherCallback;
 class IBMDSwitcher;
 class IBMDSwitcherDiscovery;
@@ -1071,6 +1109,8 @@ class IBMDSwitcherHyperDeckClip;
 class IBMDSwitcherHyperDeckClipIterator;
 class IBMDSwitcherHyperDeckCallback;
 class IBMDSwitcherHyperDeck;
+class IBMDSwitcherMixMinusOutput;
+class IBMDSwitcherMixMinusOutputCallback;
 
 /* Interface IBMDSwitcherAudioMonitorOutputCallback - Audio Monitor Output Object Callback */
 
@@ -1185,7 +1225,7 @@ protected:
 class IBMDSwitcherTalkbackCallback : public IUnknown
 {
 public:
-    virtual HRESULT Notify (/* in */ BMDSwitcherTalkbackEventType eventType) = 0;
+    virtual HRESULT Notify (/* in */ BMDSwitcherTalkbackEventType eventType, /* in */ BMDSwitcherAudioInputId audioInputId) = 0;
 
 protected:
     virtual ~IBMDSwitcherTalkbackCallback () {} // call Release method to drop reference count
@@ -1198,11 +1238,46 @@ class IBMDSwitcherTalkback : public IUnknown
 public:
     virtual HRESULT GetMuteSDI (/* out */ bool* muteSDI) = 0;
     virtual HRESULT SetMuteSDI (/* in */ bool muteSDI) = 0;
+    virtual HRESULT InputCanMuteSDI (/* in */ BMDSwitcherAudioInputId audioInputId, /* out */ bool* canMuteSDI) = 0;
+    virtual HRESULT CurrentInputSupportsMuteSDI (/* in */ BMDSwitcherAudioInputId audioInputId, /* out */ bool* supportsMuteSDI) = 0;
+    virtual HRESULT GetInputMuteSDI (/* in */ BMDSwitcherAudioInputId audioInputId, /* out */ bool* muteSDI) = 0;
+    virtual HRESULT SetInputMuteSDI (/* in */ BMDSwitcherAudioInputId audioInputId, /* in */ bool muteSDI) = 0;
     virtual HRESULT AddCallback (/* in */ IBMDSwitcherTalkbackCallback* callback) = 0;
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherTalkbackCallback* callback) = 0;
 
 protected:
     virtual ~IBMDSwitcherTalkback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioHeadphoneOutput - Headphone Output Object */
+
+class IBMDSwitcherAudioHeadphoneOutput : public IUnknown
+{
+public:
+    virtual HRESULT GetGain (/* out */ double* decibel) = 0;
+    virtual HRESULT SetGain (/* in */ double decibel) = 0;
+    virtual HRESULT GetInputProgramOutGain (/* out */ double* decibel) = 0;
+    virtual HRESULT SetInputProgramOutGain (/* in */ double decibel) = 0;
+    virtual HRESULT GetInputTalkbackGain (/* out */ double* decibel) = 0;
+    virtual HRESULT SetInputTalkbackGain (/* in */ double decibel) = 0;
+    virtual HRESULT GetInputSidetoneGain (/* out */ double* decibel) = 0;
+    virtual HRESULT SetInputSidetoneGain (/* in */ double decibel) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherAudioHeadphoneOutputCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherAudioHeadphoneOutputCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioHeadphoneOutput () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioHeadphoneOutputCallback - Headphone Output Object Callback */
+
+class IBMDSwitcherAudioHeadphoneOutputCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherAudioHeadphoneOutputEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioHeadphoneOutputCallback () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyLumaParametersCallback - Luma Key Parameters Callback */
@@ -1326,6 +1401,7 @@ public:
     virtual HRESULT SetSizeX (/* in */ double multiplierX) = 0;
     virtual HRESULT GetSizeY (/* out */ double* multiplierY) = 0;
     virtual HRESULT SetSizeY (/* in */ double multiplierY) = 0;
+    virtual HRESULT GetCanScaleUp (/* out */ bool* canScaleUp) = 0;
     virtual HRESULT GetPositionX (/* out */ double* offsetX) = 0;
     virtual HRESULT SetPositionX (/* in */ double offsetX) = 0;
     virtual HRESULT GetPositionY (/* out */ double* offsetY) = 0;
@@ -1397,6 +1473,7 @@ public:
     virtual HRESULT SetSizeX (/* in */ double multiplierX) = 0;
     virtual HRESULT GetSizeY (/* out */ double* multiplierY) = 0;
     virtual HRESULT SetSizeY (/* in */ double multiplierY) = 0;
+    virtual HRESULT GetCanScaleUp (/* out */ bool* canScaleUp) = 0;
     virtual HRESULT GetPositionX (/* out */ double* offsetX) = 0;
     virtual HRESULT SetPositionX (/* in */ double offsetX) = 0;
     virtual HRESULT GetPositionY (/* out */ double* offsetY) = 0;
@@ -2212,6 +2289,17 @@ protected:
     virtual ~IBMDSwitcherAudioMonitorOutputIterator () {} // call Release method to drop reference count
 };
 
+/* Interface IBMDSwitcherAudioHeadphoneOutputIterator - Audio Headphone Output Iterator */
+
+class IBMDSwitcherAudioHeadphoneOutputIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherAudioHeadphoneOutput** audioHeadphoneOutput) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioHeadphoneOutputIterator () {} // call Release method to drop reference count
+};
+
 /* Interface IBMDSwitcherAudioInputIterator - Audio Input Iterator */
 
 class IBMDSwitcherAudioInputIterator : public IUnknown
@@ -2245,6 +2333,17 @@ public:
 
 protected:
     virtual ~IBMDSwitcherHyperDeckIterator () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMixMinusOutputIterator - Mix-Minus Output Iterator */
+
+class IBMDSwitcherMixMinusOutputIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherMixMinusOutput** mixMinusOutput) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMixMinusOutputIterator () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherCallback - Switcher Callback Delegate */
@@ -2728,6 +2827,29 @@ public:
 
 protected:
     virtual ~IBMDSwitcherHyperDeck () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherMixMinusOutput - Mix-Minus Output Object */
+
+class IBMDSwitcherMixMinusOutput : public IUnknown
+{
+public:
+    virtual HRESULT GetAudioMode (/* out */ BMDSwitcherMixMinusOutputAudioMode* audioMode) = 0;
+    virtual HRESULT SetAudioMode (/* in */ BMDSwitcherMixMinusOutputAudioMode audioMode) = 0;
+    virtual HRESULT GetMinusAudioInputId (/* out */ BMDSwitcherAudioInputId* audioInputId) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherMixMinusOutputCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMixMinusOutputCallback* callback) = 0;
+};
+
+/* Interface IBMDSwitcherMixMinusOutputCallback - Mix-Minus Output Object Callback */
+
+class IBMDSwitcherMixMinusOutputCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherMixMinusOutputEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherMixMinusOutputCallback () {} // call Release method to drop reference count
 };
 
 /* Functions */
