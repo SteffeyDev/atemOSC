@@ -1,4 +1,8 @@
-# atemOSC v2.4.5
+# atemOSC v2.4.6
+
+## Changelog v2.4.6
+- updated to ATEM SDK v7.0.3
+- better handling of AUX outputs
 
 ## Changelog v2.4.5
 - updated to ATEM SDK v6.9 to fix mediaPlayer issue

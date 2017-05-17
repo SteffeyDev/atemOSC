@@ -1,5 +1,5 @@
 /* -LICENSE-START-
-** Copyright (c) 2016 Blackmagic Design
+** Copyright (c) 2017 Blackmagic Design
 **
 ** Permission is hereby granted, free of charge, to any person or organization
 ** obtaining a copy of the software and accompanying documentation covered by
@@ -132,7 +132,7 @@ BMD_CONST REFIID IID_IBMDSwitcherMediaPoolCallback                = /* B8617A16-
 BMD_CONST REFIID IID_IBMDSwitcherMediaPool                        = /* 59A3056E-7B62-46F0-8B78-1FB149F7372C */ {0x59,0xA3,0x05,0x6E,0x7B,0x62,0x46,0xF0,0x8B,0x78,0x1F,0xB1,0x49,0xF7,0x37,0x2C};
 BMD_CONST REFIID IID_IBMDSwitcherCameraControlParameterIterator   = /* 6B6E289F-0847-480A-A0BD-E8FB78A5505A */ {0x6B,0x6E,0x28,0x9F,0x08,0x47,0x48,0x0A,0xA0,0xBD,0xE8,0xFB,0x78,0xA5,0x50,0x5A};
 BMD_CONST REFIID IID_IBMDSwitcherCameraControlCallback            = /* 90337CAC-9376-4A62-A58F-10936130970B */ {0x90,0x33,0x7C,0xAC,0x93,0x76,0x4A,0x62,0xA5,0x8F,0x10,0x93,0x61,0x30,0x97,0x0B};
-BMD_CONST REFIID IID_IBMDSwitcherCameraControl                    = /* 95D7C0B6-9A84-4715-BE27-8A9CCAA9E6A9 */ {0x95,0xD7,0xC0,0xB6,0x9A,0x84,0x47,0x15,0xBE,0x27,0x8A,0x9C,0xCA,0xA9,0xE6,0xA9};
+BMD_CONST REFIID IID_IBMDSwitcherCameraControl                    = /* 889111CC-02CA-4268-ADD1-569166F0F0D9 */ {0x88,0x91,0x11,0xCC,0x02,0xCA,0x42,0x68,0xAD,0xD1,0x56,0x91,0x66,0xF0,0xF0,0xD9};
 BMD_CONST REFIID IID_IBMDSwitcherMacro                            = /* 2F1DF648-CB02-48D5-B5EB-B857BBD626A7 */ {0x2F,0x1D,0xF6,0x48,0xCB,0x02,0x48,0xD5,0xB5,0xEB,0xB8,0x57,0xBB,0xD6,0x26,0xA7};
 BMD_CONST REFIID IID_IBMDSwitcherTransferMacro                    = /* 9BAD28DB-F0CC-4696-82EE-B1E3E5A7C129 */ {0x9B,0xAD,0x28,0xDB,0xF0,0xCC,0x46,0x96,0x82,0xEE,0xB1,0xE3,0xE5,0xA7,0xC1,0x29};
 BMD_CONST REFIID IID_IBMDSwitcherMacroPoolCallback                = /* E29294A0-FB4C-418D-9AE1-C6CBA288104F */ {0xE2,0x92,0x94,0xA0,0xFB,0x4C,0x41,0x8D,0x9A,0xE1,0xC6,0xCB,0xA2,0x88,0x10,0x4F};
@@ -862,6 +862,7 @@ enum _BMDSwitcherCameraControlParameterType {
     bmdSwitcherCameraControlParameterTypeSigned16Bit             = 'ccs1',
     bmdSwitcherCameraControlParameterTypeSigned32Bit             = 'ccs3',
     bmdSwitcherCameraControlParameterTypeSigned64Bit             = 'ccs6',
+    bmdSwitcherCameraControlParameterTypeUTF8                    = 'ccu8',
     bmdSwitcherCameraControlParameterTypeFixedPoint16Bit         = 'ccfp'
 };
 
@@ -1773,8 +1774,8 @@ public:
     virtual HRESULT SetInputFill (/* in */ BMDSwitcherInputId input) = 0;
     virtual HRESULT GetInputCut (/* out */ BMDSwitcherInputId* input) = 0;
     virtual HRESULT SetInputCut (/* in */ BMDSwitcherInputId input) = 0;
-    virtual HRESULT GetFillInputAvailabilityMask (/* in */ BMDSwitcherInputAvailability* mask) = 0;
-    virtual HRESULT GetCutInputAvailabilityMask (/* in */ BMDSwitcherInputAvailability* mask) = 0;
+    virtual HRESULT GetFillInputAvailabilityMask (/* out */ BMDSwitcherInputAvailability* mask) = 0;
+    virtual HRESULT GetCutInputAvailabilityMask (/* out */ BMDSwitcherInputAvailability* mask) = 0;
     virtual HRESULT GetEnableKey (/* out */ bool* enableKey) = 0;
     virtual HRESULT SetEnableKey (/* in */ bool enableKey) = 0;
     virtual HRESULT GetPreMultiplied (/* out */ bool* preMultiplied) = 0;
@@ -2026,7 +2027,7 @@ public:
     virtual HRESULT GetCropRight (/* out */ double* right) = 0;
     virtual HRESULT SetCropRight (/* in */ double right) = 0;
     virtual HRESULT ResetCrop (void) = 0;
-    virtual HRESULT GetInputAvailabilityMask (/* in */ BMDSwitcherInputAvailability* mask) = 0;
+    virtual HRESULT GetInputAvailabilityMask (/* out */ BMDSwitcherInputAvailability* mask) = 0;
     virtual HRESULT AddCallback (/* in */ IBMDSwitcherSuperSourceBoxCallback* callback) = 0;
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherSuperSourceBoxCallback* callback) = 0;
 
@@ -2054,8 +2055,8 @@ public:
     virtual HRESULT SetInputCut (/* in */ BMDSwitcherInputId input) = 0;
     virtual HRESULT GetInputFill (/* out */ BMDSwitcherInputId* input) = 0;
     virtual HRESULT SetInputFill (/* in */ BMDSwitcherInputId input) = 0;
-    virtual HRESULT GetCutInputAvailabilityMask (/* in */ BMDSwitcherInputAvailability* mask) = 0;
-    virtual HRESULT GetFillInputAvailabilityMask (/* in */ BMDSwitcherInputAvailability* mask) = 0;
+    virtual HRESULT GetCutInputAvailabilityMask (/* out */ BMDSwitcherInputAvailability* mask) = 0;
+    virtual HRESULT GetFillInputAvailabilityMask (/* out */ BMDSwitcherInputAvailability* mask) = 0;
     virtual HRESULT GetArtOption (/* out */ BMDSwitcherSuperSourceArtOption* artOption) = 0;
     virtual HRESULT SetArtOption (/* in */ BMDSwitcherSuperSourceArtOption artOption) = 0;
     virtual HRESULT GetPreMultiplied (/* out */ bool* preMultiplied) = 0;
@@ -2064,7 +2065,7 @@ public:
     virtual HRESULT SetClip (/* in */ double clip) = 0;
     virtual HRESULT GetGain (/* out */ double* gain) = 0;
     virtual HRESULT SetGain (/* in */ double gain) = 0;
-    virtual HRESULT GetInverse (/* in */ bool* inverse) = 0;
+    virtual HRESULT GetInverse (/* out */ bool* inverse) = 0;
     virtual HRESULT SetInverse (/* in */ bool inverse) = 0;
     virtual HRESULT GetBorderEnabled (/* out */ bool* enabled) = 0;
     virtual HRESULT SetBorderEnabled (/* in */ bool enabled) = 0;
@@ -2180,7 +2181,7 @@ public:
     virtual HRESULT SetClip (/* in */ double clip) = 0;
     virtual HRESULT GetGain (/* out */ double* gain) = 0;
     virtual HRESULT SetGain (/* in */ double gain) = 0;
-    virtual HRESULT GetInverse (/* in */ bool* inverse) = 0;
+    virtual HRESULT GetInverse (/* out */ bool* inverse) = 0;
     virtual HRESULT SetInverse (/* in */ bool inverse) = 0;
     virtual HRESULT GetMasked (/* out */ bool* maskEnabled) = 0;
     virtual HRESULT SetMasked (/* in */ bool maskEnabled) = 0;
@@ -2584,9 +2585,9 @@ public:
     virtual HRESULT SetFlags (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const bool* values) = 0;
     virtual HRESULT ToggleFlags (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const bool* values) = 0;
     virtual HRESULT GetFlags (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ bool* values) = 0;
-    virtual HRESULT SetBytes (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int8_t* bytes) = 0;
-    virtual HRESULT OffsetBytes (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int8_t* bytes) = 0;
-    virtual HRESULT GetBytes (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ int8_t* bytes) = 0;
+    virtual HRESULT SetInt8s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int8_t* values) = 0;
+    virtual HRESULT OffsetInt8s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int8_t* values) = 0;
+    virtual HRESULT GetInt8s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ int8_t* values) = 0;
     virtual HRESULT SetInt16s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int16_t* values) = 0;
     virtual HRESULT OffsetInt16s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int16_t* values) = 0;
     virtual HRESULT GetInt16s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ int16_t* values) = 0;
@@ -2596,6 +2597,8 @@ public:
     virtual HRESULT SetInt64s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int64_t* values) = 0;
     virtual HRESULT OffsetInt64s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const int64_t* values) = 0;
     virtual HRESULT GetInt64s (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ int64_t* values) = 0;
+    virtual HRESULT SetString (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ CFStringRef value) = 0;
+    virtual HRESULT GetString (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* out */ CFStringRef* value) = 0;
     virtual HRESULT OffsetFloats (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const double* values) = 0;
     virtual HRESULT SetFloats (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in */ uint32_t count, /* in */ const double* values) = 0;
     virtual HRESULT GetFloats (/* in */ uint32_t destinationDevice, /* in */ uint32_t category, /* in */ uint32_t parameter, /* in, out */ uint32_t* count, /* out */ double* values) = 0;
