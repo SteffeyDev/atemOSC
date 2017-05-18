@@ -1,4 +1,8 @@
-# atemOSC v2.4.5
+# atemOSC v2.4.6
+
+## Changelog v2.4.6
+- updated to ATEM SDK v7.0.3
+- better handling of AUX outputs
 
 ## Changelog v2.4.5
 - updated to ATEM SDK v6.9 to fix mediaPlayer issue
@@ -94,13 +98,13 @@ For preview selection `/atem/preview/$i` can be used.
  - **auto** `/atem/transition/auto`
  - **fade-to-black** `/atem/transition/ftb`
 
-To set the transition style of the Auto transition:
+To set the transition type of the Auto transition:
 
- - **Mix** `/atem/transition/set-style/mix`
- - **Dip** `/atem/transition/set-style/dip`
- - **Wipe** `/atem/transition/set-style/wipe`
- - **Stinger** `/atem/transition/set-style/sting`
- - **DVE** `/atem/transition/set-style/dve`
+ - **Mix** `/atem/transition/set-type/mix`
+ - **Dip** `/atem/transition/set-type/dip`
+ - **Wipe** `/atem/transition/set-type/wipe`
+ - **Stinger** `/atem/transition/set-type/sting`
+ - **DVE** `/atem/transition/set-type/dve`
 
 Additional options.
 

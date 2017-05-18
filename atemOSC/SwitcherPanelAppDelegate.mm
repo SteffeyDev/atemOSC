@@ -539,7 +539,8 @@ private:
 }
 
 - (void) handleAuxSource:(int)auxToChange channel:(int)channel {
-    mSwitcherInputAuxList[auxToChange-1]->SetInputSource(channel);
+    BMDSwitcherInputId inputId = channel;
+    mSwitcherInputAuxList[auxToChange-1]->SetInputSource(inputId);
 }
 
 - (void) handleMacros:(OSCMessage *)m address:(NSArray*)address {
@@ -1254,6 +1255,12 @@ finish:
         (*it)->Release();
     }
     mInputMonitors.clear();
+    
+    while (mSwitcherInputAuxList.size())
+    {
+        mSwitcherInputAuxList.back()->Release();
+        mSwitcherInputAuxList.pop_back();
+    }
     
     while (mMediaPlayers.size())
     {
