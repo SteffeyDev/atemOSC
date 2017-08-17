@@ -1,4 +1,7 @@
-# atemOSC v2.4.6
+# atemOSC v2.4.7
+
+## Changelog v2.4.7
+- updated to ATEM SDK v7.2
 
 ## Changelog v2.4.6
 - updated to ATEM SDK v7.0.3

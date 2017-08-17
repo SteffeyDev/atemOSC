@@ -56,7 +56,7 @@ BMD_CONST REFIID IID_IBMDSwitcherAudioMonitorOutput               = /* 21E041C3-
 BMD_CONST REFIID IID_IBMDSwitcherAudioInputCallback               = /* 26E05D77-EFB9-4253-86D8-2F1E82E462F6 */ {0x26,0xE0,0x5D,0x77,0xEF,0xB9,0x42,0x53,0x86,0xD8,0x2F,0x1E,0x82,0xE4,0x62,0xF6};
 BMD_CONST REFIID IID_IBMDSwitcherAudioInput                       = /* 321EA41E-544B-491B-B9AA-F6FCAECEF74F */ {0x32,0x1E,0xA4,0x1E,0x54,0x4B,0x49,0x1B,0xB9,0xAA,0xF6,0xFC,0xAE,0xCE,0xF7,0x4F};
 BMD_CONST REFIID IID_IBMDSwitcherAudioMixerCallback               = /* A203DA24-9910-450C-AA6A-9AA05C5C856E */ {0xA2,0x03,0xDA,0x24,0x99,0x10,0x45,0x0C,0xAA,0x6A,0x9A,0xA0,0x5C,0x5C,0x85,0x6E};
-BMD_CONST REFIID IID_IBMDSwitcherAudioMixer                       = /* CD3AD708-6F82-41EB-B8B2-64605D4040F2 */ {0xCD,0x3A,0xD7,0x08,0x6F,0x82,0x41,0xEB,0xB8,0xB2,0x64,0x60,0x5D,0x40,0x40,0xF2};
+BMD_CONST REFIID IID_IBMDSwitcherAudioMixer                       = /* BCED8CA2-E915-4701-87D4-F68045701E09 */ {0xBC,0xED,0x8C,0xA2,0xE9,0x15,0x47,0x01,0x87,0xD4,0xF6,0x80,0x45,0x70,0x1E,0x09};
 BMD_CONST REFIID IID_IBMDSwitcherTalkbackCallback                 = /* 5F9A1C63-791C-4573-B28B-D9F2C00B8368 */ {0x5F,0x9A,0x1C,0x63,0x79,0x1C,0x45,0x73,0xB2,0x8B,0xD9,0xF2,0xC0,0x0B,0x83,0x68};
 BMD_CONST REFIID IID_IBMDSwitcherTalkback                         = /* 92220740-F63B-43A8-8D51-5B85901B4847 */ {0x92,0x22,0x07,0x40,0xF6,0x3B,0x43,0xA8,0x8D,0x51,0x5B,0x85,0x90,0x1B,0x48,0x47};
 BMD_CONST REFIID IID_IBMDSwitcherAudioHeadphoneOutput             = /* A2836B54-B3A0-4C6B-8BC8-16DC81213C60 */ {0xA2,0x83,0x6B,0x54,0xB3,0xA0,0x4C,0x6B,0x8B,0xC8,0x16,0xDC,0x81,0x21,0x3C,0x60};
@@ -419,7 +419,8 @@ typedef uint32_t BMDSwitcherAudioMixerEventType;
 enum _BMDSwitcherAudioMixerEventType {
     bmdSwitcherAudioMixerEventTypeProgramOutGainChanged          = 'pgnC',
     bmdSwitcherAudioMixerEventTypeProgramOutBalanceChanged       = 'balC',
-    bmdSwitcherAudioMixerEventTypeProgramOutFollowFadeToBlackChanged = 'ffbC'
+    bmdSwitcherAudioMixerEventTypeProgramOutFollowFadeToBlackChanged = 'ffbC',
+    bmdSwitcherAudioMixerEventTypeAudioFollowVideoCrossfadeTransitionChanged = 'aftC'
 };
 
 /* Enum BMDSwitcherAudioInputType - Audio Input Type */
@@ -1210,6 +1211,8 @@ public:
     virtual HRESULT SetProgramOutBalance (/* in */ double balance /* [-1.00, 1.00] */) = 0;
     virtual HRESULT GetProgramOutFollowFadeToBlack (/* out */ bool* follow) = 0;
     virtual HRESULT SetProgramOutFollowFadeToBlack (/* in */ bool follow) = 0;
+    virtual HRESULT GetAudioFollowVideoCrossfadeTransition (/* out */ bool* transition) = 0;
+    virtual HRESULT SetAudioFollowVideoCrossfadeTransition (/* in */ bool transition) = 0;
     virtual HRESULT SetAllLevelNotificationsEnable (/* in */ bool enable) = 0;
     virtual HRESULT ResetProgramOutLevelNotificationPeaks (void) = 0;
     virtual HRESULT ResetAllLevelNotificationPeaks (void) = 0;
