@@ -468,6 +468,22 @@ private:
                     key->IsTransitioning(&isTransitioning);
                     if (!isTransitioning) key->SetOnAir(value);
                 }
+			} else if ([[address objectAtIndex:3] isEqualToString:@"set-next"])
+            {
+                int t = [[address objectAtIndex:4] intValue];
+                bool value = [[m value] floatValue] != 0.0;
+                
+                if (t<=dsk.size()) {
+                    
+                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
+                    std::advance(iter, t-1);
+                    IBMDSwitcherDownstreamKey * key = *iter;
+                    
+                    bool isTransitioning, isOnAir;
+                    key->IsTransitioning(&isTransitioning);
+					key->GetOnAir(&isOnAir);
+                    if (!isTransitioning) key->SetTie(value != isOnAir);
+                }
             } else {
                 int t = [[address objectAtIndex:3] intValue];
                 
