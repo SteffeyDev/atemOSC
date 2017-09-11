@@ -117,12 +117,18 @@ Additional options.
    - (up to `/atem/aux/6 $x`, depends on your ATEM switcher)
  - **Toggle Upstream Keyer 1** `/atem/usk/1` (up to `/atem/usk/4`, depends on your ATEM switcher)
  - **Prepare Upstream Keyer 1** `/atem/nextusk/1`  (up to `/atem/nextusk/4`, depends on your ATEM switcher)
+ - **Set Upstream Keyer 1 for Next Scene** `/atem/set-nextusk/1 <0|1>` (up to `/atem/set-nextusk/4`, depends on your ATEM switcher)
+     - Where `<0|1>` is an int-value of 0 (don't show USK after next transition) or 1 (show USK after next transition)
+     - e.g. If USK1 is on air, `/atem/set-nextusk/1 1` will untie USK1 so that it remains on, while `/atem/set-nextusk/1 0` will tie USK1 so that it will go off air after the next transition.
  - **Auto Toggle On Air Downstreamkeyer 1** `/atem/dsk/1` (up to `/atem/dsk/4`, depends on your ATEM switcher)
  - **Force On Air Downstreamkeyer 1** `/atem/dsk/on-air/1	<0|1>` (up to `/atem/dsk/4`, depends on your ATEM switcher)
      - Where `<0|1>` is an int-value of 0 (disabled) or 1 (enabled)
  - **Toggle Tie Downstreamkeyer 1** `/atem/dsk/tie/1` (up to `/atem/dsk/tie/4`, depends on your ATEM switcher)
  - **Force Tie Downstreamkeyer 1** `/atem/dsk/set-tie/1	<0|1>` (up to `/atem/dsk/4`, depends on your ATEM switcher)
      - Where `<0|1>` is an int-value of 0 (disabled) or 1 (enabled)
+ - **Set Downstreamkeyer 1 for Next Scene** `/atem/dsk/set-next/1 <0|1>` (up to `/atem/dsk/set-next/4`, depends on your ATEM switcher)
+     - Where `<0|1>` is an int-value of 0 (don't show DSK after next transition) or 1 (show DSK after next transition)
+     - e.g. If DSK1 is on air, `/atem/dsk/set-next/1 1` will untie DSK1 so that it remains on, while `/atem/dsk/set-next/1 0` will tie DSK1 so that it will go off air after the next transition.
  - **Cut Toggle Downstreamkeyer 1** `/atem/dsk/toggle/1` (up to `/atem/dsk/toggle/4`, depends on your ATEM switcher)
  - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip/$x`
    - e.g. `/atem/mplayer/1/clip/1` (up to `/atem/mplayer/1/clip/2`, depends on your ATEM switcher)
