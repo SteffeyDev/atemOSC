@@ -373,6 +373,32 @@ private:
                 }
             }
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"set-nextusk"]) {
+            int t = [[address objectAtIndex:3] intValue];
+            bool value = [[m value] floatValue] != 0.0;
+            uint32_t currentTransitionSelection;
+            switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
+            
+            uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+            uint32_t requestedTransitionSelection = transitionSelections[t];
+            
+            std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
+            std::advance(iter, t-1);
+            IBMDSwitcherKey * key = *iter;
+            bool isOnAir;
+            key->GetOnAir(&isOnAir);
+            
+            if (value != isOnAir) {
+                switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
+            } else {
+                
+                // If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
+                if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
+                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
+                else
+                    switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
+            }
+		} else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"nextusk"]) {
             switch ([[address objectAtIndex:3] intValue]) {
                 case 0:
