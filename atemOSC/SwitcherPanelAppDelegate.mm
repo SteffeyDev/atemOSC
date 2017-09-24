@@ -409,7 +409,7 @@ private:
             if ([[address objectAtIndex:3] isEqualToString:@"set-tie"])
             {
                 int t = [[address objectAtIndex:4] intValue];
-                bool value = [[m value] boolValue];
+                bool value = [[m value] floatValue] != 0.0;
                 
                 if (t<=dsk.size()) {
                     
@@ -456,7 +456,7 @@ private:
             } else if ([[address objectAtIndex:3] isEqualToString:@"on-air"])
             {
                 int t = [[address objectAtIndex:4] intValue];
-                bool value = [[m value] boolValue];
+                bool value = [[m value] floatValue] != 0.0;
                 
                 if (t<=dsk.size()) {
                     
@@ -639,7 +639,7 @@ private:
     box = box-1;
     
     if ([[address objectAtIndex:5] isEqualToString:@"enabled"]) {
-        bool value = [[m value] boolValue];
+        bool value = [[m value] floatValue] != 0.0;
         mSuperSourceBoxes[box]->SetEnabled(value);
     } else if ([[address objectAtIndex:5] isEqualToString:@"source"]) {
         int value = [[m value] intValue];
@@ -655,7 +655,7 @@ private:
         float value = [[m value] floatValue];
         mSuperSourceBoxes[box]->SetSize(value);
     } else if ([[address objectAtIndex:5] isEqualToString:@"cropped"]) {
-        bool value = [[m value] boolValue];
+        bool value = [[m value] floatValue] != 0.0;
         mSuperSourceBoxes[box]->SetCropped(value);
     } else if ([[address objectAtIndex:5] isEqualToString:@"crop-top"]) {
         float value = [[m value] floatValue];
