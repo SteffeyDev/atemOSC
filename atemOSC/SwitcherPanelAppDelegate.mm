@@ -36,14 +36,15 @@ static inline bool	operator== (const REFIID& iid1, const REFIID& iid2)
 	return CFEqual(&iid1, &iid2);
 }
 
-// Callback class for monitoring property changes on a mix effect block.
-class MixEffectBlockMonitor : public IBMDSwitcherMixEffectBlockCallback
+template <class T=IUnknown>
+class GenericMonitor : public T
 {
 public:
-    MixEffectBlockMonitor(SwitcherPanelAppDelegate* uiDelegate) : mUiDelegate(uiDelegate), mRefCount(1) { }
+    GenericMonitor(SwitcherPanelAppDelegate* uiDelegate) : mUiDelegate(uiDelegate), mRefCount(1) { }
     
 protected:
-    virtual ~MixEffectBlockMonitor() { }
+    virtual ~GenericMonitor() { }
+    SwitcherPanelAppDelegate*        mUiDelegate;
     
 public:
     HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
@@ -53,14 +54,14 @@ public:
         
         if (iid == IID_IBMDSwitcherMixEffectBlockCallback)
         {
-            *ppv = static_cast<IBMDSwitcherMixEffectBlockCallback*>(this);
+            *ppv = static_cast<T*>(this);
             AddRef();
             return S_OK;
         }
         
         if (CFEqual(&iid, IUnknownUUID))
         {
-            *ppv = static_cast<IUnknown*>(this);
+            *ppv = static_cast<T*>(this);
             AddRef();
             return S_OK;
         }
@@ -82,6 +83,20 @@ public:
         return newCount;
     }
     
+private:
+    int                                mRefCount;
+};
+
+// Callback class for monitoring property changes on a mix effect block.
+class MixEffectBlockMonitor : public GenericMonitor<IBMDSwitcherMixEffectBlockCallback>
+{
+public:
+    MixEffectBlockMonitor(SwitcherPanelAppDelegate* uiDelegate) : GenericMonitor(uiDelegate) { }
+    
+protected:
+    virtual ~MixEffectBlockMonitor() { }
+    
+public:
     HRESULT PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId)
     {
         switch (propertyId)
@@ -109,18 +124,75 @@ public:
         }
         return S_OK;
     }
+};
+
+class DownstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherDownstreamKeyCallback>
+{
+public:
+    DownstreamKeyerMonitor(SwitcherPanelAppDelegate* uiDelegate) : GenericMonitor(uiDelegate) { }
     
-private:
-    SwitcherPanelAppDelegate*		mUiDelegate;
-    int								mRefCount;
+protected:
+    virtual ~DownstreamKeyerMonitor() { }
+    
+public:
+    HRESULT Notify (BMDSwitcherDownstreamKeyEventType eventType)
+    {
+        switch (eventType)
+        {
+            case bmdSwitcherDownstreamKeyEventTypeTieChanged:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateDSKTie) withObject:nil waitUntilDone:YES];
+                break;
+            case bmdSwitcherDownstreamKeyEventTypeOnAirChanged:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateDSKOnAir) withObject:nil waitUntilDone:YES];
+                break;
+            case bmdSwitcherDownstreamKeyEventTypeIsTransitioningChanged:
+                // Might want to do something with this down the road
+                break;
+            case bmdSwitcherDownstreamKeyEventTypeIsAutoTransitioningChanged:
+                // Might want to do something with this down the road
+                break;
+            default:
+                // ignore other property changes not used for this app
+                break;
+        }
+        return S_OK;
+    }
+};
+
+class TransitionParametersMonitor : public GenericMonitor<IBMDSwitcherTransitionParametersCallback>
+{
+public:
+    TransitionParametersMonitor(SwitcherPanelAppDelegate* uiDelegate) : GenericMonitor(uiDelegate) { }
+    
+protected:
+    virtual ~TransitionParametersMonitor() { }
+    
+public:
+    HRESULT Notify (BMDSwitcherTransitionParametersEventType eventType)
+    {
+        
+        switch (eventType)
+        {
+            case bmdSwitcherTransitionParametersEventTypeNextTransitionSelectionChanged:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateUSKTie) withObject:nil waitUntilDone:YES];
+                break;
+            case bmdSwitcherTransitionParametersEventTypeTransitionSelectionChanged:
+                [mUiDelegate performSelectorOnMainThread:@selector(updateUSKTie) withObject:nil waitUntilDone:YES];
+                break;
+            default:
+                // ignore other property changes not used for this app
+                break;
+        }
+        return S_OK;
+    }
 };
 
 // Monitor the properties on Switcher Inputs.
 // In this sample app we're only interested in changes to the Long Name property to update the PopupButton list
-class InputMonitor : public IBMDSwitcherInputCallback
+class InputMonitor : public GenericMonitor<IBMDSwitcherInputCallback>
 {
 public:
-    InputMonitor(IBMDSwitcherInput* input, SwitcherPanelAppDelegate* uiDelegate) : mInput(input), mUiDelegate(uiDelegate), mRefCount(1)
+    InputMonitor(IBMDSwitcherInput* input, SwitcherPanelAppDelegate* uiDelegate) : mInput(input), GenericMonitor(uiDelegate)
     {
         mInput->AddRef();
         mInput->AddCallback(this);
@@ -134,43 +206,6 @@ protected:
     }
     
 public:
-    // IBMDSwitcherInputCallback interface
-    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
-    {
-        if (!ppv)
-            return E_POINTER;
-        
-        if (iid == IID_IBMDSwitcherInputCallback)
-        {
-            *ppv = static_cast<IBMDSwitcherInputCallback*>(this);
-            AddRef();
-            return S_OK;
-        }
-        
-        if (CFEqual(&iid, IUnknownUUID))
-        {
-            *ppv = static_cast<IUnknown*>(this);
-            AddRef();
-            return S_OK;
-        }
-        
-        *ppv = NULL;
-        return E_NOINTERFACE;
-    }
-    
-    ULONG STDMETHODCALLTYPE AddRef(void)
-    {
-        return ::OSAtomicIncrement32(&mRefCount);
-    }
-    
-    ULONG STDMETHODCALLTYPE Release(void)
-    {
-        int newCount = ::OSAtomicDecrement32(&mRefCount);
-        if (newCount == 0)
-            delete this;
-        return newCount;
-    }
-    
     HRESULT Notify(BMDSwitcherInputEventType eventType)
     {
         switch (eventType)
@@ -187,57 +222,18 @@ public:
     
 private:
     IBMDSwitcherInput*			mInput;
-    SwitcherPanelAppDelegate*	mUiDelegate;
-    int							mRefCount;
 };
 
 // Callback class to monitor switcher disconnection
-class SwitcherMonitor : public IBMDSwitcherCallback
+class SwitcherMonitor : public GenericMonitor<IBMDSwitcherCallback>
 {
 public:
-    SwitcherMonitor(SwitcherPanelAppDelegate* uiDelegate) :	mUiDelegate(uiDelegate), mRefCount(1) { }
+    SwitcherMonitor(SwitcherPanelAppDelegate* uiDelegate) :	GenericMonitor(uiDelegate) { }
     
 protected:
     virtual ~SwitcherMonitor() { }
     
 public:
-    // IBMDSwitcherCallback interface
-    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
-    {
-        if (!ppv)
-            return E_POINTER;
-        
-        if (iid == IID_IBMDSwitcherCallback)
-        {
-            *ppv = static_cast<IBMDSwitcherCallback*>(this);
-            AddRef();
-            return S_OK;
-        }
-        
-        if (CFEqual(&iid, IUnknownUUID))
-        {
-            *ppv = static_cast<IUnknown*>(this);
-            AddRef();
-            return S_OK;
-        }
-        
-        *ppv = NULL;
-        return E_NOINTERFACE;
-    }
-    
-    ULONG STDMETHODCALLTYPE AddRef(void)
-    {
-        return ::OSAtomicIncrement32(&mRefCount);
-    }
-    
-    ULONG STDMETHODCALLTYPE Release(void)
-    {
-        int newCount = ::OSAtomicDecrement32(&mRefCount);
-        if (newCount == 0)
-            delete this;
-        return newCount;
-    }
-    
     // Switcher events ignored by this sample app
     HRESULT STDMETHODCALLTYPE	Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)
     {
@@ -247,10 +243,6 @@ public:
         }
         return S_OK;
     }
-    
-private:
-    SwitcherPanelAppDelegate*	mUiDelegate;
-    int							mRefCount;
 };
 
 @implementation SwitcherPanelAppDelegate
@@ -275,6 +267,8 @@ private:
     isConnectedToATEM = NO;
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
+    mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
+    mTransitionParametersMonitor = new TransitionParametersMonitor(self);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
 	
 	mMoveSliderDownwards = false;
@@ -1139,6 +1133,7 @@ private:
     {
         while (S_OK == dskIterator->Next(&downstreamKey)) {
             dsk.push_back(downstreamKey);
+            downstreamKey->AddCallback(mDownstreamKeyerMonitor);
         }
     }
     dskIterator->Release();
@@ -1202,6 +1197,7 @@ private:
     
     switcherTransitionParameters = NULL;
     mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
+    switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
     
     
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
@@ -1295,6 +1291,7 @@ finish:
     while (dsk.size())
     {
         dsk.back()->Release();
+        dsk.back()->RemoveCallback(mDownstreamKeyerMonitor);
         dsk.pop_back();
     }
     
@@ -1311,6 +1308,11 @@ finish:
         mSwitcher->RemoveCallback(mSwitcherMonitor);
         mSwitcher->Release();
         mSwitcher = NULL;
+    }
+    
+    if (switcherTransitionParameters)
+    {
+        switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
     }
 }
 
@@ -1542,6 +1544,53 @@ finish:
 
     
     [self activateChannel:previewId isProgram:NO];
+}
+
+// Send OSC messages out when DSK Tie is changed on switcher
+- (void)updateDSKTie
+{
+    int i = 1;
+    for(std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin(); iter != dsk.end(); iter++) {
+        IBMDSwitcherDownstreamKey * key = *iter;
+        bool isTied;
+        key->GetTie(&isTied);
+        
+        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d",i++]];
+        [newMsg addInt: isTied];
+        [outPort sendThisMessage:newMsg];
+    }
+}
+
+// Send OSC messages out when DSK On Air is changed on switcher
+- (void)updateDSKOnAir
+{
+    int i = 1;
+    for(std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin(); iter != dsk.end(); i++, iter++) {
+        IBMDSwitcherDownstreamKey * key = *iter;
+        bool isOnAir;
+        key->GetOnAir(&isOnAir);
+        
+        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i]];
+        [newMsg addInt: isOnAir];
+        [outPort sendThisMessage:newMsg];
+    }
+}
+
+// Send OSC messages out when USK Tie is changed on switcher
+- (void)updateUSKTie
+{
+    uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+    
+    uint32_t currentTransitionSelection;
+    switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
+    
+    for (int i = 0; i <= ((int) keyers.size()); i++) {
+        uint32_t requestedTransitionSelection = transitionSelections[i];
+        
+        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i]];
+        [newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
+        [outPort sendThisMessage:newMsg];
+    }
 }
 
 - (void)updateInTransitionState

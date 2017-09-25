@@ -35,6 +35,8 @@
 
 class MixEffectBlockMonitor;
 class SwitcherMonitor;
+class DownstreamKeyerMonitor;
+class TransitionParametersMonitor;
 class InputMonitor;
 
 @interface SwitcherPanelAppDelegate : NSObject <NSApplicationDelegate, OSCDelegateProtocol, NSTextFieldDelegate>
@@ -52,6 +54,8 @@ class InputMonitor;
     IBMDSwitcherTransitionParameters* switcherTransitionParameters;
     IBMDSwitcherKeyFlyParameters*	mDVEControl;
 	SwitcherMonitor*			mSwitcherMonitor;
+    DownstreamKeyerMonitor*     mDownstreamKeyerMonitor;
+    TransitionParametersMonitor*    mTransitionParametersMonitor;
 	IBMDSwitcherMediaPool*		mMediaPool;
     IBMDSwitcherStills*			mStills;
     IBMDSwitcherInputSuperSource*   mSuperSource;
@@ -118,6 +122,9 @@ class InputMonitor;
 - (void)updateTransitionFramesTextField;
 - (void)updateFTBFramesTextField;
 - (void)mixEffectBlockBoxSetEnabled:(bool)enabled;
+- (void)updateUSKTie;
+- (void)updateDSKOnAir;
+- (void)updateDSKTie;
 
 
 // Serial Port Methods
