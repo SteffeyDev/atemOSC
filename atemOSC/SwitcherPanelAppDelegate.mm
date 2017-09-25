@@ -1485,7 +1485,9 @@ finish:
 - (void)logMessage:(NSString *)message
 {
     if (message) {
-        [self appendMessage:message];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self appendMessage:message];
+        });
         NSLog(@"%@", message);
     }
 }
