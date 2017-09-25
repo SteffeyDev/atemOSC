@@ -367,6 +367,32 @@ public:
                 }
             }
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
+                   [[address objectAtIndex:2] isEqualToString:@"set-nextusk"]) {
+            int t = [[address objectAtIndex:3] intValue];
+            bool value = [[m value] floatValue] != 0.0;
+            uint32_t currentTransitionSelection;
+            switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
+            
+            uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+            uint32_t requestedTransitionSelection = transitionSelections[t];
+            
+            std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
+            std::advance(iter, t-1);
+            IBMDSwitcherKey * key = *iter;
+            bool isOnAir;
+            key->GetOnAir(&isOnAir);
+            
+            if (value != isOnAir) {
+                switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
+            } else {
+                
+                // If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
+                if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
+                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
+                else
+                    switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
+            }
+		} else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"nextusk"]) {
             switch ([[address objectAtIndex:3] intValue]) {
                 case 0:
@@ -461,6 +487,22 @@ public:
                     bool isTransitioning;
                     key->IsTransitioning(&isTransitioning);
                     if (!isTransitioning) key->SetOnAir(value);
+                }
+			} else if ([[address objectAtIndex:3] isEqualToString:@"set-next"])
+            {
+                int t = [[address objectAtIndex:4] intValue];
+                bool value = [[m value] floatValue] != 0.0;
+                
+                if (t<=dsk.size()) {
+                    
+                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
+                    std::advance(iter, t-1);
+                    IBMDSwitcherDownstreamKey * key = *iter;
+                    
+                    bool isTransitioning, isOnAir;
+                    key->IsTransitioning(&isTransitioning);
+					key->GetOnAir(&isOnAir);
+                    if (!isTransitioning) key->SetTie(value != isOnAir);
                 }
             } else {
                 int t = [[address objectAtIndex:3] intValue];
