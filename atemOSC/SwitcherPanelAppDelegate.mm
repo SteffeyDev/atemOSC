@@ -845,7 +845,7 @@ public:
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/usk/%d\n",i+1] attributes:infoAttribute]];
             }
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tBKGD: "] attributes:addressAttribute]];
-            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem//0\n"] attributes:infoAttribute]];
+            [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/nextusk/0\n"] attributes:infoAttribute]];
             for (int i = 0; i<keyers.size();i++) {
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tKEY %d: ",i+1] attributes:addressAttribute]];
                 [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/nextusk/%d\n",i+1] attributes:infoAttribute]];
