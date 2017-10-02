@@ -394,19 +394,24 @@ public:
             }
 		} else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"nextusk"]) {
-            switch ([[address objectAtIndex:3] intValue]) {
-                case 0:
-                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground); break;
-                case 1:
-                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey1); break;
-                case 2:
-                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey2); break;
-                case 3:
-                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey3); break;
-                case 4:
-                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionKey4); break;
-                default:
-                    break;
+            int t = [[address objectAtIndex:3] intValue];
+            bool value = [[m value] floatValue] != 0.0;
+            
+            uint32_t currentTransitionSelection;
+            switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
+            
+            uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+            uint32_t requestedTransitionSelection = transitionSelections[t];
+            
+            if (value) {
+                switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
+            } else {
+                
+                // If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
+                if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
+                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
+                else
+                    switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
             }
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"usk"]) {
