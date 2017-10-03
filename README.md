@@ -1,17 +1,20 @@
 # AtemOSC v2.4.7
 
 ## Features
-This is a Mac OS X application, providing an interface to control an ATEM video switcher via OSC. 
-The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blackmagic. 	Additionally the control of a tally-light interface via Arduino is provided.
+This is a macOS application, providing an interface to control an ATEM video switcher via OSC. Additionally, the control of a tally-light interface via Arduino is provided.
 
 ![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
 
-- [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
-- [AMSerialPort](https://github.com/smokyonion/AMSerialPort) is used for Arduino-connection
+The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compiled and runnable version of the atemOSC is included. Caution: This software lacks of many usability features (like input validation).
 
-The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compiled and runnable version of the atemOSC is included. Caution: The software lacks of many usability features (like input validation).
+----------
 
-Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).
+## Download the App
+
+1. Go to the [releases page](https://github.com/danielbuechele/atemOSC/releases)
+2. For the latest version, use the first release.  For a version that supports older versions of the Atem SDK, scroll down until you find the release for the version you want.
+2. Under `Downloads`, select `Source code (zip)`
+3. You will find the atemOSC app inside the downloaded folder.  You can run the app by double-clicking it, or you could move it to your `/Applications` folder and then launch it from the Launchpad.
 
 ----------
 
@@ -140,66 +143,9 @@ This software has been used successfuly with [ControllerMate](http://www.ordered
 
 -----------
 
-## Change Log
+## Acknowledgements
 
-### v2.4.7
-- updated to ATEM SDK v7.2
-
-### v2.4.6
-- updated to ATEM SDK v7.0.3
-- better handling of AUX outputs
-
-### v2.4.5
-- updated to ATEM SDK v6.9 to fix mediaPlayer issue
-
-### v2.4.4
-- updated to ATEM SDK v6.6
-- added support for running ATEM Macros 
-
-### v2.4.3
-- updated to ATEM SDK v6.4
-
-### v2.4.2
-- updated to ATEM SDK v6.0
-- re-added Edit menu to allow for Copy/Paste
-- added Log window to show debug messages
-
-### v2.4.1
-- updated support for controlling DSKs
-
-### v2.4.0
-- added support for controlling SuperSource
-
-### v2.3.5
-- added support for setting Aux output source
-
-### v2.3.4
-- added support for specifying transition style
-- added more control over downstream keyer states
-
-### v2.3.3
-- added support for controlling Media Players
-- updated OSC-addresses help menu to display correct addresses for ATEM 2M/E and above switchers
-
-### v2.3.2
-- update to Blackmagic SDK 5.1
-
-### v2.3.1
-- prevent AppNap on Mavericks (thanks to @thetzel)
-
-### v2.3.0
- - bugfixes
- - using Blackmagic SDK 4.2
- - enhancements for Mac OS 10.9
-
-### v2.2.2
- - fixed numbering of upstream keyers
- - added toggle functionality for keyers
- 
-### v2.2.1
- - support for Mac OS 10.7 (updated binary)
-
-### v2.2
- - added support for controlling Upstream Keyers
- - supports all available input-sources, depending on your switcher
- - added help-menu with all OSC-addresses available
+- The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blackmagic.
+- [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
+- [AMSerialPort](https://github.com/smokyonion/AMSerialPort) is used for Arduino-connection
+- Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).
