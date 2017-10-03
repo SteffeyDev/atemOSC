@@ -397,7 +397,7 @@
                 <animations/>
             </view>
         </window>
-        <customObject id="494" customClass="SwitcherPanelAppDelegate">
+        <customObject id="494" customClass="AppDelegate">
             <connections>
                 <outlet property="connectButton" destination="644" id="646"/>
                 <outlet property="greenLight" destination="733" id="735"/>

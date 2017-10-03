@@ -33,13 +33,15 @@
 #import "VVOSC/VVOSC.h"
 #import "AMSerialPort.h"
 
+#import "FeedbackMonitors.h"
+
 class MixEffectBlockMonitor;
 class SwitcherMonitor;
 class DownstreamKeyerMonitor;
 class TransitionParametersMonitor;
 class InputMonitor;
 
-@interface SwitcherPanelAppDelegate : NSObject <NSApplicationDelegate, OSCDelegateProtocol, NSTextFieldDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, OSCDelegateProtocol, NSTextFieldDelegate>
 {
 	NSWindow *window;
 	
@@ -47,29 +49,27 @@ class InputMonitor;
 	IBOutlet NSButton*			mConnectButton;
 	IBOutlet NSTextField*		mSwitcherNameLabel;
 
-	IBMDSwitcherDiscovery*		mSwitcherDiscovery;
-	IBMDSwitcher*				mSwitcher;
-	IBMDSwitcherMixEffectBlock*	mMixEffectBlock;
-	MixEffectBlockMonitor*		mMixEffectBlockMonitor;
-    IBMDSwitcherTransitionParameters* switcherTransitionParameters;
-    IBMDSwitcherKeyFlyParameters*	mDVEControl;
-	SwitcherMonitor*			mSwitcherMonitor;
-    DownstreamKeyerMonitor*     mDownstreamKeyerMonitor;
-    TransitionParametersMonitor*    mTransitionParametersMonitor;
-	IBMDSwitcherMediaPool*		mMediaPool;
-    IBMDSwitcherStills*			mStills;
-    IBMDSwitcherInputSuperSource*   mSuperSource;
-    IBMDSwitcherMacroPool*      mMacroPool;
-    IBMDSwitcherMacroControl*   mMacroControl;
-	std::vector<IBMDSwitcherMediaPlayer*>	mMediaPlayers;
+	IBMDSwitcherDiscovery*		        mSwitcherDiscovery;
+	IBMDSwitcher*				        mSwitcher;
+	IBMDSwitcherMixEffectBlock*	        mMixEffectBlock;
+	MixEffectBlockMonitor*		        mMixEffectBlockMonitor;
+    IBMDSwitcherTransitionParameters*   switcherTransitionParameters;
+    IBMDSwitcherKeyFlyParameters*	    mDVEControl;
+	SwitcherMonitor*			        mSwitcherMonitor;
+    DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
+    TransitionParametersMonitor*        mTransitionParametersMonitor;
+	IBMDSwitcherMediaPool*		        mMediaPool;
+    IBMDSwitcherStills*			        mStills;
+    IBMDSwitcherInputSuperSource*       mSuperSource;
+    IBMDSwitcherMacroPool*              mMacroPool;
+    IBMDSwitcherMacroControl*           mMacroControl;
+	std::vector<IBMDSwitcherMediaPlayer*>	    mMediaPlayers;
 	std::vector<IBMDSwitcherSuperSourceBox*>	mSuperSourceBoxes;
 	std::vector<IBMDSwitcherInputAux*>	mSwitcherInputAuxList;
-	std::list<InputMonitor*>	mInputMonitors;
-    std::list<IBMDSwitcherKey*>	keyers;
-    std::list<IBMDSwitcherDownstreamKey*>	dsk;
+	std::list<InputMonitor*>	        mInputMonitors;
+    std::list<IBMDSwitcherKey*>	        keyers;
+    std::list<IBMDSwitcherDownstreamKey*>	    dsk;
 
-	bool						mMoveSliderDownwards;
-	bool						mCurrentTransitionReachedHalfway;
     bool                        isConnectedToATEM;
     
     OSCManager					*manager;
@@ -115,16 +115,6 @@ class InputMonitor;
 - (void)switcherDisconnected;
 
 - (void)updatePopupButtonItems;
-- (void)updateProgramButtonSelection;
-- (void)updatePreviewButtonSelection;
-- (void)updateInTransitionState;
-- (void)updateSliderPosition;
-- (void)updateTransitionFramesTextField;
-- (void)updateFTBFramesTextField;
-- (void)mixEffectBlockBoxSetEnabled:(bool)enabled;
-- (void)updateUSKTie;
-- (void)updateDSKOnAir;
-- (void)updateDSKTie;
 
 
 // Serial Port Methods

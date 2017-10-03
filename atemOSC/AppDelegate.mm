@@ -25,227 +25,13 @@
 ** -LICENSE-END-
 */
 
-#import "SwitcherPanelAppDelegate.h"
+#import "AppDelegate.h"
 #include <libkern/OSAtomic.h>
 #include <string>
 #import "AMSerialPortList.h"
 #import "AMSerialPortAdditions.h"
 
-static inline bool	operator== (const REFIID& iid1, const REFIID& iid2)
-{
-	return CFEqual(&iid1, &iid2);
-}
-
-template <class T=IUnknown>
-class GenericMonitor : public T
-{
-public:
-    GenericMonitor(SwitcherPanelAppDelegate* uiDelegate) : mUiDelegate(uiDelegate), mRefCount(1) { }
-    
-protected:
-    virtual ~GenericMonitor() { }
-    SwitcherPanelAppDelegate*        mUiDelegate;
-    
-public:
-    HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv)
-    {
-        if (!ppv)
-            return E_POINTER;
-        
-        if (iid == IID_IBMDSwitcherMixEffectBlockCallback)
-        {
-            *ppv = static_cast<T*>(this);
-            AddRef();
-            return S_OK;
-        }
-        
-        if (CFEqual(&iid, IUnknownUUID))
-        {
-            *ppv = static_cast<T*>(this);
-            AddRef();
-            return S_OK;
-        }
-        
-        *ppv = NULL;
-        return E_NOINTERFACE;
-    }
-    
-    ULONG STDMETHODCALLTYPE AddRef(void)
-    {
-        return ::OSAtomicIncrement32(&mRefCount);
-    }
-    
-    ULONG STDMETHODCALLTYPE Release(void)
-    {
-        int newCount = ::OSAtomicDecrement32(&mRefCount);
-        if (newCount == 0)
-            delete this;
-        return newCount;
-    }
-    
-private:
-    int                                mRefCount;
-};
-
-// Callback class for monitoring property changes on a mix effect block.
-class MixEffectBlockMonitor : public GenericMonitor<IBMDSwitcherMixEffectBlockCallback>
-{
-public:
-    MixEffectBlockMonitor(SwitcherPanelAppDelegate* uiDelegate) : GenericMonitor(uiDelegate) { }
-    
-protected:
-    virtual ~MixEffectBlockMonitor() { }
-    
-public:
-    HRESULT PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId)
-    {
-        switch (propertyId)
-        {
-            case bmdSwitcherMixEffectBlockPropertyIdProgramInput:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateProgramButtonSelection) withObject:nil waitUntilDone:YES];
-                break;
-            case bmdSwitcherMixEffectBlockPropertyIdPreviewInput:
-                [mUiDelegate performSelectorOnMainThread:@selector(updatePreviewButtonSelection) withObject:nil waitUntilDone:YES];
-                break;
-            case bmdSwitcherMixEffectBlockPropertyIdInTransition:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateInTransitionState) withObject:nil waitUntilDone:YES];
-                break;
-            case bmdSwitcherMixEffectBlockPropertyIdTransitionPosition:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateSliderPosition) withObject:nil waitUntilDone:YES];
-                break;
-            case bmdSwitcherMixEffectBlockPropertyIdTransitionFramesRemaining:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateTransitionFramesTextField) withObject:nil waitUntilDone:YES];
-                break;
-            case bmdSwitcherMixEffectBlockPropertyIdFadeToBlackFramesRemaining:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateFTBFramesTextField) withObject:nil waitUntilDone:YES];
-                break;
-            default:	// ignore other property changes not used for this sample app
-                break;
-        }
-        return S_OK;
-    }
-};
-
-class DownstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherDownstreamKeyCallback>
-{
-public:
-    DownstreamKeyerMonitor(SwitcherPanelAppDelegate* uiDelegate) : GenericMonitor(uiDelegate) { }
-    
-protected:
-    virtual ~DownstreamKeyerMonitor() { }
-    
-public:
-    HRESULT Notify (BMDSwitcherDownstreamKeyEventType eventType)
-    {
-        switch (eventType)
-        {
-            case bmdSwitcherDownstreamKeyEventTypeTieChanged:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateDSKTie) withObject:nil waitUntilDone:YES];
-                break;
-            case bmdSwitcherDownstreamKeyEventTypeOnAirChanged:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateDSKOnAir) withObject:nil waitUntilDone:YES];
-                break;
-            case bmdSwitcherDownstreamKeyEventTypeIsTransitioningChanged:
-                // Might want to do something with this down the road
-                break;
-            case bmdSwitcherDownstreamKeyEventTypeIsAutoTransitioningChanged:
-                // Might want to do something with this down the road
-                break;
-            default:
-                // ignore other property changes not used for this app
-                break;
-        }
-        return S_OK;
-    }
-};
-
-class TransitionParametersMonitor : public GenericMonitor<IBMDSwitcherTransitionParametersCallback>
-{
-public:
-    TransitionParametersMonitor(SwitcherPanelAppDelegate* uiDelegate) : GenericMonitor(uiDelegate) { }
-    
-protected:
-    virtual ~TransitionParametersMonitor() { }
-    
-public:
-    HRESULT Notify (BMDSwitcherTransitionParametersEventType eventType)
-    {
-        
-        switch (eventType)
-        {
-            case bmdSwitcherTransitionParametersEventTypeNextTransitionSelectionChanged:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateUSKTie) withObject:nil waitUntilDone:YES];
-                break;
-            case bmdSwitcherTransitionParametersEventTypeTransitionSelectionChanged:
-                [mUiDelegate performSelectorOnMainThread:@selector(updateUSKTie) withObject:nil waitUntilDone:YES];
-                break;
-            default:
-                // ignore other property changes not used for this app
-                break;
-        }
-        return S_OK;
-    }
-};
-
-// Monitor the properties on Switcher Inputs.
-// In this sample app we're only interested in changes to the Long Name property to update the PopupButton list
-class InputMonitor : public GenericMonitor<IBMDSwitcherInputCallback>
-{
-public:
-    InputMonitor(IBMDSwitcherInput* input, SwitcherPanelAppDelegate* uiDelegate) : mInput(input), GenericMonitor(uiDelegate)
-    {
-        mInput->AddRef();
-        mInput->AddCallback(this);
-    }
-    
-protected:
-    ~InputMonitor()
-    {
-        mInput->RemoveCallback(this);
-        mInput->Release();
-    }
-    
-public:
-    HRESULT Notify(BMDSwitcherInputEventType eventType)
-    {
-        switch (eventType)
-        {
-            case bmdSwitcherInputEventTypeLongNameChanged:
-                [mUiDelegate performSelectorOnMainThread:@selector(updatePopupButtonItems) withObject:nil waitUntilDone:YES];
-            default:	// ignore other property changes not used for this sample app
-                break;
-        }
-        
-        return S_OK;
-    }
-    IBMDSwitcherInput* input() { return mInput; }
-    
-private:
-    IBMDSwitcherInput*			mInput;
-};
-
-// Callback class to monitor switcher disconnection
-class SwitcherMonitor : public GenericMonitor<IBMDSwitcherCallback>
-{
-public:
-    SwitcherMonitor(SwitcherPanelAppDelegate* uiDelegate) :	GenericMonitor(uiDelegate) { }
-    
-protected:
-    virtual ~SwitcherMonitor() { }
-    
-public:
-    // Switcher events ignored by this sample app
-    HRESULT STDMETHODCALLTYPE	Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)
-    {
-        if (eventType == bmdSwitcherEventTypeDisconnected)
-        {
-            [mUiDelegate performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
-        }
-        return S_OK;
-    }
-};
-
-@implementation SwitcherPanelAppDelegate
+@implementation AppDelegate
 
 @synthesize window;
 
@@ -266,13 +52,10 @@ public:
     mMacroPool = NULL;
     isConnectedToATEM = NO;
 	
-	mSwitcherMonitor = new SwitcherMonitor(self);
-    mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
-    mTransitionParametersMonitor = new TransitionParametersMonitor(self);
-	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
-	
-	mMoveSliderDownwards = false;
-	mCurrentTransitionReachedHalfway = false;
+	mSwitcherMonitor = new SwitcherMonitor(outPort, self);
+    mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(outPort, dsk);
+    mTransitionParametersMonitor = new TransitionParametersMonitor(outPort, switcherTransitionParameters, keyers);
+	mMixEffectBlockMonitor = new MixEffectBlockMonitor(outPort, mMixEffectBlock);
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
 	if (! mSwitcherDiscovery) {
@@ -323,7 +106,7 @@ public:
         } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
                    [[address objectAtIndex:2] isEqualToString:@"transition"] &&
                    [[address objectAtIndex:3] isEqualToString:@"bar"]) {
-            if (mMoveSliderDownwards)
+            if (self->mMixEffectBlockMonitor->mMoveSliderDownwards)
                 mMixEffectBlock->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, [[m valueAtIndex:0] floatValue]);
             else
                 mMixEffectBlock->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, 1.0-[[m valueAtIndex:0] floatValue]);
@@ -717,22 +500,6 @@ public:
 
 
 - (void) activateChannel:(int)channel isProgram:(BOOL)program {
-    NSString *strip;
-
-    if (program) {
-        strip = @"program";
-        [self send:self Channel:channel];
-    } else {
-        strip = @"preview";
-    }
-    
-    
-    for (int i = 0;i<=12;i++) {
-        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/%@/%d",strip,i]];
-        if (channel==i) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
-        [outPort sendThisMessage:newMsg];
-    }
-
     BMDSwitcherInputId InputId = channel;
     if (program) {
         @try {
@@ -755,8 +522,6 @@ public:
             [alert setMessageText:exception.name];
             [alert runModal];
         }
-
-        
     }
 }
 
@@ -1114,7 +879,7 @@ public:
 		// For every input, install a callback to monitor property changes on the input
 		while (S_OK == inputIterator->Next(&input))
 		{
-			InputMonitor* inputMonitor = new InputMonitor(input, self);
+			InputMonitor* inputMonitor = new InputMonitor(input, outPort, self);
 			IBMDSwitcherInputAux* auxObj;
 			result = input->QueryInterface(IID_IBMDSwitcherInputAux, (void**)&auxObj);
 			if (SUCCEEDED(result))
@@ -1249,11 +1014,8 @@ public:
     
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
 	
-	[self mixEffectBlockBoxSetEnabled:YES];
 	[self updatePopupButtonItems];
-	[self updateSliderPosition];
-	[self updateTransitionFramesTextField];
-	[self updateFTBFramesTextField];
+    self->mMixEffectBlockMonitor->updateSliderPosition();
 	
 finish:
 	if (iterator)
@@ -1282,9 +1044,6 @@ finish:
     [greenLight setHidden:YES];
     [redLight setHidden:NO];
 	
-    
-    [self mixEffectBlockBoxSetEnabled:NO];
-    
     [self cleanUpConnection];
 
     [self connectBMD];
@@ -1531,14 +1290,10 @@ finish:
 		return;
 	}
 	
-
-
 	while (S_OK == inputIterator->Next(&input))
 	{
 		NSString* name;
 		BMDSwitcherInputId id;
-        
-        
         
 		input->GetInputId(&id);
 		input->GetLongName((CFStringRef*)&name);
@@ -1568,139 +1323,9 @@ finish:
     [tallyC selectItemAtIndex:[[prefs objectForKey:@"tally2"] intValue]];
     [tallyD selectItemAtIndex:[[prefs objectForKey:@"tally3"] intValue]];
     
-    
-    
-    
-	[self updateProgramButtonSelection];
-	[self updatePreviewButtonSelection];
+	[self->mMixEffectBlockMonitor  updateProgramButtonSelection];
+	[self->mMixEffectBlockMonitor updatePreviewButtonSelection];
 }
-
-- (void)updateProgramButtonSelection
-{
-    
-    
-	BMDSwitcherInputId	programId;
-	mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, &programId);
-
-    
-    [self activateChannel:programId isProgram:YES];
-}
-
-- (void)updatePreviewButtonSelection
-{
-	BMDSwitcherInputId	previewId;
-	mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, &previewId);
-
-    
-    [self activateChannel:previewId isProgram:NO];
-}
-
-// Send OSC messages out when DSK Tie is changed on switcher
-- (void)updateDSKTie
-{
-    int i = 1;
-    for(std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin(); iter != dsk.end(); iter++) {
-        IBMDSwitcherDownstreamKey * key = *iter;
-        bool isTied;
-        key->GetTie(&isTied);
-        
-        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d",i++]];
-        [newMsg addInt: isTied];
-        [outPort sendThisMessage:newMsg];
-    }
-}
-
-// Send OSC messages out when DSK On Air is changed on switcher
-- (void)updateDSKOnAir
-{
-    int i = 1;
-    for(std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin(); iter != dsk.end(); i++, iter++) {
-        IBMDSwitcherDownstreamKey * key = *iter;
-        bool isOnAir;
-        key->GetOnAir(&isOnAir);
-        
-        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i]];
-        [newMsg addInt: isOnAir];
-        [outPort sendThisMessage:newMsg];
-    }
-}
-
-// Send OSC messages out when USK Tie is changed on switcher
-- (void)updateUSKTie
-{
-    uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-    
-    uint32_t currentTransitionSelection;
-    switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
-    
-    for (int i = 0; i <= ((int) keyers.size()); i++) {
-        uint32_t requestedTransitionSelection = transitionSelections[i];
-        
-        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i]];
-        [newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
-        [outPort sendThisMessage:newMsg];
-    }
-}
-
-- (void)updateInTransitionState
-{
-	bool inTransition;
-	mMixEffectBlock->GetFlag(bmdSwitcherMixEffectBlockPropertyIdInTransition, &inTransition);
-	
-	if (inTransition == false)
-	{
-		// Toggle the starting orientation of slider handle if a transition has passed through halfway
-		if (mCurrentTransitionReachedHalfway)
-		{
-			mMoveSliderDownwards = ! mMoveSliderDownwards;
-			[self updateSliderPosition];
-		}
-		
-		mCurrentTransitionReachedHalfway = false;
-	}
-}
-
-- (void)updateSliderPosition
-{
-	double position;
-	mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
-	
-	// Record when transition passes halfway so we can flip orientation of slider handle at the end of transition
-	mCurrentTransitionReachedHalfway = (position >= 0.50);
-
-	double sliderPosition = position * 100;
-	if (mMoveSliderDownwards)
-		sliderPosition = 100 - position * 100;		// slider handle moving in opposite direction
-	
-
-    
-    OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
-    [newMsg addFloat:1.0-sliderPosition/100];
-    [outPort sendThisMessage:newMsg];
-}
-
-- (void)updateTransitionFramesTextField
-{
-	int64_t framesRemaining;
-	mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdTransitionFramesRemaining, &framesRemaining);
-
-}
-
-- (void)updateFTBFramesTextField
-{
-	int64_t framesRemaining;
-	mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdFadeToBlackFramesRemaining, &framesRemaining);
-
-}
-
-- (void)mixEffectBlockBoxSetEnabled:(bool)enabled
-{
-
-
-}
-
-
-
 
 
 
