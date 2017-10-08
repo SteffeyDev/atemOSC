@@ -27,7 +27,6 @@
 
 #import "AppDelegate.h"
 #include <libkern/OSAtomic.h>
-#include <string>
 
 @implementation AppDelegate
 
@@ -81,7 +80,7 @@
 	}
     else
     {
-        //[self switcherDisconnected];		// start with switcher disconnected
+        [self switcherDisconnected];		// start with switcher disconnected
     
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         [mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
@@ -348,51 +347,55 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString* address = [mAddressTextField stringValue];
         
-        BMDSwitcherConnectToFailure            failReason;
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
+        dispatch_async(queue, ^{
         
-        // Note that ConnectTo() can take several seconds to return, both for success or failure,
-        // depending upon hostname resolution and network response times, so it may be best to
-        // do this in a separate thread to prevent the main GUI thread blocking.
-        HRESULT hr = mSwitcherDiscovery->ConnectTo((CFStringRef)address, &mSwitcher, &failReason);
-        if (SUCCEEDED(hr))
-        {
-            [self switcherConnected];
-        }
-        else
-        {
-            NSString* reason;
-            switch (failReason)
+            BMDSwitcherConnectToFailure            failReason;
+            
+            // Note that ConnectTo() can take several seconds to return, both for success or failure,
+            // depending upon hostname resolution and network response times, so it may be best to
+            // do this in a separate thread to prevent the main GUI thread blocking.
+            HRESULT hr = mSwitcherDiscovery->ConnectTo((CFStringRef)address, &mSwitcher, &failReason);
+            if (SUCCEEDED(hr))
             {
-                case bmdSwitcherConnectToFailureNoResponse:
-                    reason = @"No response from Switcher";
-                    break;
-                case bmdSwitcherConnectToFailureIncompatibleFirmware:
-                    reason = @"Switcher has incompatible firmware";
-                    break;
-                case bmdSwitcherConnectToFailureCorruptData:
-                    reason = @"Corrupt data was received during connection attempt";
-                    break;
-                case bmdSwitcherConnectToFailureStateSync:
-                    reason = @"State synchronisation failed during connection attempt";
-                    break;
-                case bmdSwitcherConnectToFailureStateSyncTimedOut:
-                    reason = @"State synchronisation timed out during connection attempt";
-                    break;
-                default:
-                    reason = @"Connection failed for unknown reason";
+                [self switcherConnected];
             }
-            //Delay 2 seconds before everytime connect/reconnect
-            //Because the session ID from ATEM switcher will alive not more then 2 seconds
-            //After 2 second of idle, the session will be reset then reconnect won't cause error
-            double delayInSeconds = 2.0;
-            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-            dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
-                           ^(void){
-                               //To run in background thread
-                               [self switcherDisconnected];
-                           });
-            [self logMessage:[NSString stringWithFormat:@"%@", reason]];
-        }
+            else
+            {
+                NSString* reason;
+                switch (failReason)
+                {
+                    case bmdSwitcherConnectToFailureNoResponse:
+                        reason = @"No response from Switcher";
+                        break;
+                    case bmdSwitcherConnectToFailureIncompatibleFirmware:
+                        reason = @"Switcher has incompatible firmware";
+                        break;
+                    case bmdSwitcherConnectToFailureCorruptData:
+                        reason = @"Corrupt data was received during connection attempt";
+                        break;
+                    case bmdSwitcherConnectToFailureStateSync:
+                        reason = @"State synchronisation failed during connection attempt";
+                        break;
+                    case bmdSwitcherConnectToFailureStateSyncTimedOut:
+                        reason = @"State synchronisation timed out during connection attempt";
+                        break;
+                    default:
+                        reason = @"Connection failed for unknown reason";
+                }
+                //Delay 2 seconds before everytime connect/reconnect
+                //Because the session ID from ATEM switcher will alive not more then 2 seconds
+                //After 2 second of idle, the session will be reset then reconnect won't cause error
+                double delayInSeconds = 2.0;
+                dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+                               ^(void){
+                                   //To run in background thread
+                                   [self switcherDisconnected];
+                               });
+                [self logMessage:[NSString stringWithFormat:@"%@", reason]];
+            }
+        });
     });
 }
 
@@ -417,8 +420,10 @@
     [outPort sendThisMessage:newMsg];
 	
 	//[mConnectButton setEnabled:NO];			// disable Connect button while connected
-    [greenLight setHidden:NO];
-    [redLight setHidden:YES];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [greenLight setHidden:NO];
+        [redLight setHidden:YES];
+    });
 	
 	NSString* productName;
 	if (FAILED(mSwitcher->GetProductName((CFStringRef*)&productName)))
@@ -427,9 +432,11 @@
 		return;
 	}
 	
-	[mSwitcherNameLabel setStringValue:productName];
-	[productName release];
-	
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [mSwitcherNameLabel setStringValue:productName];
+        [productName release];
+    });
+    
 	mSwitcher->AddCallback(mSwitcherMonitor);
     
 	// Get the mix effect block iterator
@@ -461,7 +468,6 @@
     }
     keyIterator->Release();
     keyIterator = NULL;
-    
     
     //Downstream Keyer
     IBMDSwitcherDownstreamKeyIterator* dskIterator = NULL;

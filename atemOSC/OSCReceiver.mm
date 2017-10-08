@@ -1,10 +1,3 @@
-//
-//  OSCReceiver.m
-//  AtemOSC
-//
-//  Created by Peter Steffey on 10/7/17.
-//
-
 #import "OSCReceiver.h"
 #import "AppDelegate.h"
 
@@ -19,7 +12,6 @@
 
 - (void) receivedOSCMessage:(OSCMessage *)m
 {
-    NSLog(@"Got Data");
     [appDel logMessage:[NSString stringWithFormat:@"Received OSC message: %@\tValue: %@", [m address], [m value]]];
     if ([appDel isConnectedToATEM]) { //Do nothing if not connected
         NSArray *address = [[m address] componentsSeparatedByString:@"/"];
@@ -80,30 +72,13 @@
             {
                 int t = [[address objectAtIndex:3] intValue];
                 bool value = [[m value] floatValue] != 0.0;
-                uint32_t currentTransitionSelection;
-                [appDel switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
                 
-                uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-                uint32_t requestedTransitionSelection = transitionSelections[t];
-                
-                std::list<IBMDSwitcherKey*>::iterator iter = [appDel keyers].begin();
-                std::advance(iter, t-1);
-                IBMDSwitcherKey * key = *iter;
-                bool isOnAir;
-                key->GetOnAir(&isOnAir);
-                
-                if (value != isOnAir)
+                if (IBMDSwitcherKey* key = [self getUSK:t])
                 {
-                    [appDel switcherTransitionParameters]->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
-                }
-                else
-                {
+                    bool isOnAir;
+                    key->GetOnAir(&isOnAir);
                     
-                    // If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
-                    if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
-                        [appDel switcherTransitionParameters]->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
-                    else
-                        [appDel switcherTransitionParameters]->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
+                    [self changeTransitionSelection:t select:(value != isOnAir)];
                 }
             }
             
@@ -111,43 +86,18 @@
             {
                 int t = [[address objectAtIndex:3] intValue];
                 bool value = [[m value] floatValue] != 0.0;
-                
-                uint32_t currentTransitionSelection;
-                [appDel switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
-                
-                uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-                uint32_t requestedTransitionSelection = transitionSelections[t];
-                
-                if (value)
-                {
-                    [appDel switcherTransitionParameters]->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
-                }
-                else
-                {
-                    
-                    // If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
-                    if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
-                        [appDel switcherTransitionParameters]->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
-                    else
-                        [appDel switcherTransitionParameters]->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
-                }
+                [self changeTransitionSelection:t select:value];
             }
             
             else if ([[address objectAtIndex:2] isEqualToString:@"usk"])
             {
-                int t = [[address objectAtIndex:3] intValue];
-                
-                if (t<=[appDel keyers].size()) {
-                    
-                    if ([[m value] floatValue] != 0.0) {
-                        std::list<IBMDSwitcherKey*>::iterator iter = [appDel keyers].begin();
-                        std::advance(iter, t-1);
-                        IBMDSwitcherKey * key = *iter;
-                        bool onAir;
-                        key->GetOnAir(&onAir);
-                        key->SetOnAir(!onAir);
-                        [appDel logMessage:[NSString stringWithFormat:@"dsk on %@", m]];
-                    }
+                IBMDSwitcherKey* key = [self getUSK:[[address objectAtIndex:3] intValue]];
+                if (key && [[m value] floatValue] != 0.0)
+                {
+                    bool onAir;
+                    key->GetOnAir(&onAir);
+                    key->SetOnAir(!onAir);
+                    [appDel logMessage:[NSString stringWithFormat:@"dsk on %@", m]];
                 }
             }
             
@@ -155,15 +105,9 @@
             {
                 if ([[address objectAtIndex:3] isEqualToString:@"set-tie"])
                 {
-                    int t = [[address objectAtIndex:4] intValue];
-                    bool value = [[m value] floatValue] != 0.0;
-                    
-                    if (t<=[appDel dsk].size())
+                    if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
                     {
-                        std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
-                        std::advance(iter, t-1);
-                        IBMDSwitcherDownstreamKey * key = *iter;
-                        
+                        bool value = [[m value] floatValue] != 0.0;
                         bool isTransitioning;
                         key->IsTransitioning(&isTransitioning);
                         if (!isTransitioning) key->SetTie(value);
@@ -172,14 +116,8 @@
                 
                 else if ([[address objectAtIndex:3] isEqualToString:@"tie"])
                 {
-                    int t = [[address objectAtIndex:4] intValue];
-                    
-                    if (t<=[appDel dsk].size())
+                    if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
                     {
-                        std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
-                        std::advance(iter, t-1);
-                        IBMDSwitcherDownstreamKey * key = *iter;
-                        
                         bool isTied;
                         key->GetTie(&isTied);
                         bool isTransitioning;
@@ -190,14 +128,8 @@
                 
                 else if ([[address objectAtIndex:3] isEqualToString:@"toggle"])
                 {
-                    int t = [[address objectAtIndex:4] intValue];
-                    
-                    if (t<=[appDel dsk].size())
+                    if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
                     {
-                        std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
-                        std::advance(iter, t-1);
-                        IBMDSwitcherDownstreamKey * key = *iter;
-                        
                         bool isLive;
                         key->GetOnAir(&isLive);
                         bool isTransitioning;
@@ -208,15 +140,9 @@
                 
                 else if ([[address objectAtIndex:3] isEqualToString:@"on-air"])
                 {
-                    int t = [[address objectAtIndex:4] intValue];
-                    bool value = [[m value] floatValue] != 0.0;
-                    
-                    if (t<=[appDel dsk].size())
+                    if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
                     {
-                        std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
-                        std::advance(iter, t-1);
-                        IBMDSwitcherDownstreamKey * key = *iter;
-                        
+                        bool value = [[m value] floatValue] != 0.0;
                         bool isTransitioning;
                         key->IsTransitioning(&isTransitioning);
                         if (!isTransitioning) key->SetOnAir(value);
@@ -225,15 +151,9 @@
                 
                 else if ([[address objectAtIndex:3] isEqualToString:@"set-next"])
                 {
-                    int t = [[address objectAtIndex:4] intValue];
-                    bool value = [[m value] floatValue] != 0.0;
-                    
-                    if (t<=[appDel dsk].size())
+                    if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
                     {
-                        std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
-                        std::advance(iter, t-1);
-                        IBMDSwitcherDownstreamKey * key = *iter;
-                        
+                        bool value = [[m value] floatValue] != 0.0;
                         bool isTransitioning, isOnAir;
                         key->IsTransitioning(&isTransitioning);
                         key->GetOnAir(&isOnAir);
@@ -243,14 +163,8 @@
                 
                 else
                 {
-                    int t = [[address objectAtIndex:3] intValue];
-                    
-                    if (t<=[appDel dsk].size())
+                    if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:3] intValue]])
                     {
-                        std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
-                        std::advance(iter, t-1);
-                        IBMDSwitcherDownstreamKey * key = *iter;
-                        
                         bool isTransitioning;
                         key->IsAutoTransitioning(&isTransitioning);
                         if (!isTransitioning) key->PerformAutoTransition();
@@ -266,7 +180,7 @@
                 BMDSwitcherMediaPlayerSourceType sourceType;
                 
                 // check we have the media pool
-                if (! [appDel mMediaPool])
+                if (![appDel mMediaPool])
                 {
                     [appDel logMessage:@"No media pool\n"];
                     return;
@@ -318,6 +232,46 @@
                 [self handleAuxSource:auxToChange channel:source];
             }
         }
+    }
+}
+
+- (IBMDSwitcherDownstreamKey *) getDSK:(int)t
+{
+    if (t<=[appDel dsk].size())
+    {
+        return [appDel dsk][t-1];
+    }
+    return nullptr;
+}
+
+- (IBMDSwitcherKey *) getUSK:(int)t
+{
+    if (t<=[appDel keyers].size())
+    {
+        return [appDel keyers][t-1];
+    }
+    return nullptr;
+}
+
+- (void) changeTransitionSelection:(int)t select:(bool) select
+{
+    uint32_t currentTransitionSelection;
+    [appDel switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
+    
+    uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+    uint32_t requestedTransitionSelection = transitionSelections[t];
+    
+    if (select)
+    {
+        [appDel switcherTransitionParameters]->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
+    }
+    else
+    {
+        // If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
+        if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
+            [appDel switcherTransitionParameters]->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
+        else
+            [appDel switcherTransitionParameters]->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
     }
 }
 
@@ -457,7 +411,7 @@
     }
     
     // convert to value required for arrays
-    box = box-1;
+    box--;
     
     if ([[address objectAtIndex:5] isEqualToString:@"enabled"])
     {
@@ -552,7 +506,6 @@
 - (BOOL)runMacroAtIndex:(uint32_t)index
 {
     HRESULT result;
-    bool isValid;
     if ([appDel mMacroControl])
     {
         if (![self isMacroValid:index])
@@ -565,7 +518,7 @@
         switch (result)
         {
             case S_OK:
-                return isValid;
+                return true;
             case E_INVALIDARG:
                 [appDel logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because the index is invalid.", index]];
                 break;

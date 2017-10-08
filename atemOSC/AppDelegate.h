@@ -27,7 +27,6 @@
 
 #import "BMDSwitcherAPI.h"
 #import "VVOSC/VVOSC.h"
-#import <list>
 #import <vector>
 
 #import <Cocoa/Cocoa.h>
@@ -58,8 +57,8 @@
     IBOutlet NSTextField*       outgoing;
     IBOutlet NSTextField*       oscdevice;
     
-    IBOutlet NSLevelIndicator *redLight;
-    IBOutlet NSLevelIndicator *greenLight;
+    IBOutlet NSLevelIndicator*  redLight;
+    IBOutlet NSLevelIndicator*  greenLight;
     
     IBOutlet NSButton *helpButton;
     IBOutlet NSPanel *helpPanel;
@@ -67,7 +66,6 @@
     
     IBOutlet NSPanel *logPanel;
     IBOutlet NSTextView *logTextView;
-    
 }
 
 @property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
@@ -76,12 +74,12 @@
 @property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;
 @property (readonly)       IBMDSwitcherMacroPool*                   mMacroPool;
 @property (readonly)       IBMDSwitcherMacroControl*                mMacroControl;
-@property (assign, readonly) OSCInPort*                               inPort;
-@property (assign, readonly) OSCOutPort*                              outPort;
+@property (assign, readonly) OSCInPort*                             inPort;
+@property (assign, readonly) OSCOutPort*                            outPort;
 @property (readonly)       std::vector<IBMDSwitcherMediaPlayer*>    mMediaPlayers;
 @property (readonly)       IBMDSwitcherMediaPool*                   mMediaPool;
-@property (readonly)       std::list<IBMDSwitcherKey*>              keyers;
-@property (readonly)       std::list<IBMDSwitcherDownstreamKey*>    dsk;
+@property (readonly)       std::vector<IBMDSwitcherKey*>            keyers;
+@property (readonly)       std::vector<IBMDSwitcherDownstreamKey*>  dsk;
 @property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
 @property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
 @property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
@@ -89,7 +87,7 @@
 @property (strong)         IBOutlet NSWindow*                       window;
 @property (strong)         id                                       activity;
 
--(void)connectBMD;
+- (void)connectBMD;
 - (IBAction)portChanged:(id)sender;
 - (IBAction)helpButtonPressed:(id)sender;
 - (IBAction)logButtonPressed:(id)sender;

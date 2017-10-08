@@ -1,15 +1,5 @@
-//
-//  SwitcherMonitor.cpp
-//  AtemOSC
-//
-//  Created by Peter Steffey on 10/2/17.
-//
-
 #include "FeedbackMonitors.h"
-
 #import "AppDelegate.h"
-
-//class AppDelegate;
 
 static inline bool    operator== (const REFIID& iid1, const REFIID& iid2)
 {
@@ -54,7 +44,6 @@ ULONG STDMETHODCALLTYPE GenericMonitor<T>::Release(void)
         delete this;
     return newCount;
 }
-
 
 HRESULT MixEffectBlockMonitor::PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId)
 {
@@ -141,18 +130,12 @@ void MixEffectBlockMonitor::updateSliderPosition()
     [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 }
 
-DownstreamKeyerMonitor::DownstreamKeyerMonitor(void *delegate) :
-    GenericMonitor(delegate)
-{
-}
-
 // Send OSC messages out when DSK Tie is changed on switcher
 void DownstreamKeyerMonitor::updateDSKTie() const
 {
     int i = 1;
-    std::list<IBMDSwitcherDownstreamKey*> dsk = static_cast<AppDelegate *>(appDel).dsk;
-    for(std::list<IBMDSwitcherDownstreamKey*>::const_iterator iter = dsk.begin(); iter != dsk.end(); iter++) {
-        IBMDSwitcherDownstreamKey * key = *iter;
+    for(auto& key : [(AppDelegate *)appDel dsk])
+    {
         bool isTied;
         key->GetTie(&isTied);
         
@@ -166,13 +149,12 @@ void DownstreamKeyerMonitor::updateDSKTie() const
 void DownstreamKeyerMonitor::updateDSKOnAir() const
 {
     int i = 1;
-    std::list<IBMDSwitcherDownstreamKey*> dsk = static_cast<AppDelegate *>(appDel).dsk;
-    for(std::list<IBMDSwitcherDownstreamKey*>::const_iterator iter = dsk.begin(); iter != dsk.end(); i++, iter++) {
-        IBMDSwitcherDownstreamKey * key = *iter;
+    for(auto& key : [(AppDelegate *)appDel dsk])
+    {
         bool isOnAir;
         key->GetOnAir(&isOnAir);
         
-        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i]];
+        OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i++]];
         [newMsg addInt: isOnAir];
         [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
     }
@@ -234,11 +216,6 @@ void TransitionParametersMonitor::updateTransitionParameters() const
         [newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
         [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
     }
-}
-
-SwitcherMonitor::SwitcherMonitor(void *delegate) :
-    GenericMonitor(delegate)
-{
 }
 
 HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)

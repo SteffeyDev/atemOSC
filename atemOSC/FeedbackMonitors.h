@@ -1,10 +1,3 @@
-//
-//  SwitcherMonitor.h
-//  atemOSC
-//
-//  Created by Peter Steffey on 10/2/17.
-//
-
 #import "BMDSwitcherAPI.h"
 #import "VVOSC/VVOSC.h"
 #import <list>
@@ -53,7 +46,7 @@ private:
 class DownstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherDownstreamKeyCallback>
 {
 public:
-    DownstreamKeyerMonitor(void *delegate);
+    DownstreamKeyerMonitor(void *delegate) : GenericMonitor(delegate) { }
     HRESULT Notify (BMDSwitcherDownstreamKeyEventType eventType);
     
 protected:
@@ -81,7 +74,7 @@ private:
 class SwitcherMonitor : public GenericMonitor<IBMDSwitcherCallback>
 {
 public:
-    SwitcherMonitor(void *delegate);
+    SwitcherMonitor(void *delegate) : GenericMonitor(delegate) { }
     HRESULT STDMETHODCALLTYPE Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode);
     
 protected:
