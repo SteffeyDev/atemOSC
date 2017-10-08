@@ -1,7 +1,7 @@
 # AtemOSC v2.4.7
 
 ## Features
-This is a macOS application, providing an interface to control an ATEM video switcher via OSC. Additionally, the control of a tally-light interface via Arduino is provided.
+This is a macOS application, providing an interface to control an ATEM video switcher via OSC. 
 
 ![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
 
@@ -147,5 +147,4 @@ This software has been used successfuly with [ControllerMate](http://www.ordered
 
 - The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blackmagic.
 - [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
-- [AMSerialPort](https://github.com/smokyonion/AMSerialPort) is used for Arduino-connection
 - Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).

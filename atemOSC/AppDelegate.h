@@ -31,7 +31,6 @@
 
 #import <Cocoa/Cocoa.h>
 #import "VVOSC/VVOSC.h"
-#import "AMSerialPort.h"
 
 #import "FeedbackMonitors.h"
 
@@ -82,14 +81,6 @@ class InputMonitor;
     IBOutlet NSLevelIndicator *redLight;
     IBOutlet NSLevelIndicator *greenLight;
     
-    IBOutlet NSLevelIndicator *tallyRedLight;
-    IBOutlet NSLevelIndicator *tallyGreenLight;
-    
-    IBOutlet NSPopUpButton *tallyA;
-    IBOutlet NSPopUpButton *tallyB;
-    IBOutlet NSPopUpButton *tallyC;
-    IBOutlet NSPopUpButton *tallyD;
-    
     IBOutlet NSButton *helpButton;
     IBOutlet NSPanel *helpPanel;
     IBOutlet NSTextView *heltTextView;
@@ -97,9 +88,6 @@ class InputMonitor;
     IBOutlet NSPanel *logPanel;
     IBOutlet NSTextView *logTextView;
     
-    AMSerialPort *port;
-    IBOutlet NSPopUpButton	*serialSelectMenu;
-    IBOutlet NSButton		*connectButton;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -113,14 +101,6 @@ class InputMonitor;
 
 - (void)switcherConnected;
 - (void)switcherDisconnected;
-
-- (void)updatePopupButtonItems;
-
-
-// Serial Port Methods
-- (AMSerialPort *)port;
-- (void)setPort:(AMSerialPort *)newPort;
-- (void)listDevices;
 
 - (IBAction)initPort:(id)sender;
 

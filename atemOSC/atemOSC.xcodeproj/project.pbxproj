@@ -17,11 +17,6 @@
 		335AB1C315703EFA003EA2D2 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		335AB1C415703EFA003EA2D2 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */; };
-		33F328ED1573A29900D4722A /* AMSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E31573A29900D4722A /* AMSerialPort.m */; };
-		33F328EE1573A29900D4722A /* AMSerialPortAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E51573A29900D4722A /* AMSerialPortAdditions.m */; };
-		33F328EF1573A29900D4722A /* AMSerialPortList.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E71573A29900D4722A /* AMSerialPortList.m */; };
-		33F328F01573A29900D4722A /* AMSerialPortList_Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */; };
-		33F328F11573A29900D4722A /* AMStandardEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328EB1573A29900D4722A /* AMStandardEnumerator.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -59,19 +54,6 @@
 		335AB1BD15703EF4003EA2D2 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVBasics.framework; sourceTree = "<group>"; };
 		335B268B1573A16300F72574 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDSwitcherAPI.h; sourceTree = "<group>"; };
 		335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BMDSwitcherAPIDispatch.cpp; sourceTree = "<group>"; };
-		33F328E01573A29900D4722A /* AMSDKCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSDKCompatibility.h; sourceTree = "<group>"; };
-		33F328E11573A29900D4722A /* AMSerialErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialErrors.h; sourceTree = "<group>"; };
-		33F328E21573A29900D4722A /* AMSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPort.h; sourceTree = "<group>"; };
-		33F328E31573A29900D4722A /* AMSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPort.m; sourceTree = "<group>"; };
-		33F328E41573A29900D4722A /* AMSerialPortAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortAdditions.h; sourceTree = "<group>"; };
-		33F328E51573A29900D4722A /* AMSerialPortAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortAdditions.m; sourceTree = "<group>"; };
-		33F328E61573A29900D4722A /* AMSerialPortList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList.h; sourceTree = "<group>"; };
-		33F328E71573A29900D4722A /* AMSerialPortList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList.m; sourceTree = "<group>"; };
-		33F328E81573A29900D4722A /* AMSerialPortList_Deprecated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList_Deprecated.h; sourceTree = "<group>"; };
-		33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList_Deprecated.m; sourceTree = "<group>"; };
-		33F328EA1573A29900D4722A /* AMStandardEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMStandardEnumerator.h; sourceTree = "<group>"; };
-		33F328EB1573A29900D4722A /* AMStandardEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMStandardEnumerator.m; sourceTree = "<group>"; };
-		33F328EC1573A29900D4722A /* ArduinoSerial_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArduinoSerial_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* atemOSC-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "atemOSC-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* atemOSC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atemOSC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeedbackMonitors.h; sourceTree = "<group>"; };
@@ -148,7 +130,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				33F328DF1573A29900D4722A /* arduino */,
 				335B268B1573A16300F72574 /* BMDSwitcherAPI.h */,
 				335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -175,26 +156,6 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		33F328DF1573A29900D4722A /* arduino */ = {
-			isa = PBXGroup;
-			children = (
-				33F328E01573A29900D4722A /* AMSDKCompatibility.h */,
-				33F328E11573A29900D4722A /* AMSerialErrors.h */,
-				33F328E21573A29900D4722A /* AMSerialPort.h */,
-				33F328E31573A29900D4722A /* AMSerialPort.m */,
-				33F328E41573A29900D4722A /* AMSerialPortAdditions.h */,
-				33F328E51573A29900D4722A /* AMSerialPortAdditions.m */,
-				33F328E61573A29900D4722A /* AMSerialPortList.h */,
-				33F328E71573A29900D4722A /* AMSerialPortList.m */,
-				33F328E81573A29900D4722A /* AMSerialPortList_Deprecated.h */,
-				33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */,
-				33F328EA1573A29900D4722A /* AMStandardEnumerator.h */,
-				33F328EB1573A29900D4722A /* AMStandardEnumerator.m */,
-				33F328EC1573A29900D4722A /* ArduinoSerial_Prefix.pch */,
-			);
-			path = arduino;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -274,11 +235,6 @@
 				256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */,
 				A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */,
 				335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */,
-				33F328ED1573A29900D4722A /* AMSerialPort.m in Sources */,
-				33F328EE1573A29900D4722A /* AMSerialPortAdditions.m in Sources */,
-				33F328EF1573A29900D4722A /* AMSerialPortList.m in Sources */,
-				33F328F01573A29900D4722A /* AMSerialPortList_Deprecated.m in Sources */,
-				33F328F11573A29900D4722A /* AMStandardEnumerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
