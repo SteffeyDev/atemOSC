@@ -32,6 +32,22 @@
 @implementation AppDelegate
 
 @synthesize window;
+@synthesize isConnectedToATEM;
+@synthesize mMixEffectBlock;
+@synthesize mMixEffectBlockMonitor;
+@synthesize keyers;
+@synthesize dsk;
+@synthesize switcherTransitionParameters;
+@synthesize mMediaPool;
+@synthesize mMediaPlayers;
+@synthesize mStills;
+@synthesize mMacroPool;
+@synthesize mSuperSource;
+@synthesize mMacroControl;
+@synthesize mSuperSourceBoxes;
+@synthesize mSwitcherInputAuxList;
+@synthesize outPort;
+@synthesize inPort;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -49,6 +65,8 @@
 	mMediaPool = NULL;
     mMacroPool = NULL;
     isConnectedToATEM = NO;
+    
+    mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
 	mSwitcherMonitor = new SwitcherMonitor(outPort, self);
     mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(outPort, dsk);
@@ -56,463 +74,28 @@
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(outPort, mMixEffectBlock);
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
-	if (! mSwitcherDiscovery) {
+	if (!mSwitcherDiscovery) {
 		NSBeginAlertSheet(@"Could not create Switcher Discovery Instance.\nATEM Switcher Software may not be installed.\n",
 							@"OK", nil, nil, window, self, @selector(sheetDidEndShouldTerminate:returnCode:contextInfo:), NULL, window, @"");
 	} else {
-        [self switcherDisconnected];		// start with switcher disconnected
-    
+        //[self switcherDisconnected];		// start with switcher disconnected
     
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        mAddressTextField.stringValue = [prefs stringForKey:@"atem"];
-    
-        outgoing.intValue = [prefs integerForKey:@"outgoing"];
-        incoming.intValue = [prefs integerForKey:@"incoming"];
-        oscdevice.stringValue = [prefs objectForKey:@"oscdevice"];
+        [mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
+        
+        [outgoing setIntValue:[prefs integerForKey:@"outgoing"]];
+        [incoming setIntValue:[prefs integerForKey:@"incoming"]];
+        [oscdevice setStringValue:[prefs objectForKey:@"oscdevice"]];
     
         //	make an osc manager- i'm using a custom in-port to record a bunch of extra conversion for the display, but you can just make a "normal" manager
         manager = [[OSCManager alloc] init];
     
         [self portChanged:self];
     }
-    
 }
-
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification {
     [self portChanged:self];
-}
-
-- (void) receivedOSCMessage:(OSCMessage *)m	{
-    [self logMessage:[NSString stringWithFormat:@"Received OSC message: %@\tValue: %@", [m address], [m value]]];
-    if (isConnectedToATEM) { //Do nothing if not connected
-        NSArray *address = [[m address] componentsSeparatedByString:@"/"];
-    
-        if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-            ([[address objectAtIndex:2] isEqualToString:@"preview"] || [[address objectAtIndex:2]     isEqualToString:@"program"])) {
-        
-            [self activateChannel:[[address objectAtIndex:3] intValue] isProgram:[[address objectAtIndex:2] isEqualToString:@"program"]];
-        
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-                   [[address objectAtIndex:3] isEqualToString:@"bar"]) {
-            if (self->mMixEffectBlockMonitor->mMoveSliderDownwards)
-                mMixEffectBlock->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, [[m valueAtIndex:0] floatValue]);
-            else
-                mMixEffectBlock->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, 1.0-[[m valueAtIndex:0] floatValue]);
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-                   [[address objectAtIndex:3] isEqualToString:@"cut"]) {
-            if ([[m valueAtIndex:0] floatValue]==1.0)  mMixEffectBlock->PerformCut();
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-                   [[address objectAtIndex:3] isEqualToString:@"auto"]) {
-            if ([[m valueAtIndex:0] floatValue]==1.0)  mMixEffectBlock->PerformAutoTransition();
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-                   [[address objectAtIndex:3] isEqualToString:@"ftb"]) {
-            mMixEffectBlock->PerformFadeToBlack();
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"transition"] &&
-                   [[address objectAtIndex:3] isEqualToString:@"set-type"]) {
-            
-            HRESULT result;
-            NSString *style = [address objectAtIndex:4];
-            REFIID transitionStyleID = IID_IBMDSwitcherTransitionParameters;
-            IBMDSwitcherTransitionParameters* mTransitionStyleParameters=NULL;
-            result = mMixEffectBlock->QueryInterface(transitionStyleID, (void**)&mTransitionStyleParameters);
-            if (SUCCEEDED(result))
-            {
-                if ([style isEqualToString:@"mix"]){
-                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
-                }
-                if ([style isEqualToString:@"dip"]){
-                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDip);
-                }
-                if ([style isEqualToString:@"wipe"]){
-                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleWipe);
-                }
-                if ([style isEqualToString:@"sting"]){
-                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleStinger);
-                }
-                if ([style isEqualToString:@"dve"]){
-                    mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
-                }
-            }
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"set-nextusk"]) {
-            int t = [[address objectAtIndex:3] intValue];
-            bool value = [[m value] floatValue] != 0.0;
-            uint32_t currentTransitionSelection;
-            switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
-            
-            uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-            uint32_t requestedTransitionSelection = transitionSelections[t];
-            
-            std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
-            std::advance(iter, t-1);
-            IBMDSwitcherKey * key = *iter;
-            bool isOnAir;
-            key->GetOnAir(&isOnAir);
-            
-            if (value != isOnAir) {
-                switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
-            } else {
-                
-                // If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
-                if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
-                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
-                else
-                    switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
-            }
-		} else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"nextusk"]) {
-            int t = [[address objectAtIndex:3] intValue];
-            bool value = [[m value] floatValue] != 0.0;
-            
-            uint32_t currentTransitionSelection;
-            switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
-            
-            uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-            uint32_t requestedTransitionSelection = transitionSelections[t];
-            
-            if (value) {
-                switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
-            } else {
-                
-                // If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
-                if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
-                    switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
-                else
-                    switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
-            }
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"usk"]) {
-            int t = [[address objectAtIndex:3] intValue];
-        
-            if (t<=keyers.size()) {
-            
-                if ([[m value] floatValue] != 0.0) {
-                    std::list<IBMDSwitcherKey*>::iterator iter = keyers.begin();
-                    std::advance(iter, t-1);
-                    IBMDSwitcherKey * key = *iter;
-                    bool onAir;
-                    key->GetOnAir(&onAir);
-                    key->SetOnAir(!onAir);
-                    [self logMessage:[NSString stringWithFormat:@"dsk on %@", m]];
-                }
-            }
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"dsk"]) {
-            if ([[address objectAtIndex:3] isEqualToString:@"set-tie"])
-            {
-                int t = [[address objectAtIndex:4] intValue];
-                bool value = [[m value] floatValue] != 0.0;
-                
-                if (t<=dsk.size()) {
-                    
-                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                    std::advance(iter, t-1);
-                    IBMDSwitcherDownstreamKey * key = *iter;
-                    
-                    bool isTransitioning;
-                    key->IsTransitioning(&isTransitioning);
-                    if (!isTransitioning) key->SetTie(value);
-                }
-            } else if ([[address objectAtIndex:3] isEqualToString:@"tie"])
-            {
-                int t = [[address objectAtIndex:4] intValue];
-                
-                if (t<=dsk.size()) {
-                    
-                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                    std::advance(iter, t-1);
-                    IBMDSwitcherDownstreamKey * key = *iter;
-                    
-                    bool isTied;
-                    key->GetTie(&isTied);
-                    bool isTransitioning;
-                    key->IsTransitioning(&isTransitioning);
-                    if (!isTransitioning) key->SetTie(!isTied);
-                }
-            } else if ([[address objectAtIndex:3] isEqualToString:@"toggle"])
-            {
-                int t = [[address objectAtIndex:4] intValue];
-                
-                if (t<=dsk.size()) {
-                    
-                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                    std::advance(iter, t-1);
-                    IBMDSwitcherDownstreamKey * key = *iter;
-                    
-                    bool isLive;
-                    key->GetOnAir(&isLive);
-                    bool isTransitioning;
-                    key->IsTransitioning(&isTransitioning);
-                    if (!isTransitioning) key->SetOnAir(!isLive);
-                }
-            } else if ([[address objectAtIndex:3] isEqualToString:@"on-air"])
-            {
-                int t = [[address objectAtIndex:4] intValue];
-                bool value = [[m value] floatValue] != 0.0;
-                
-                if (t<=dsk.size()) {
-                    
-                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                    std::advance(iter, t-1);
-                    IBMDSwitcherDownstreamKey * key = *iter;
-                    
-                    bool isTransitioning;
-                    key->IsTransitioning(&isTransitioning);
-                    if (!isTransitioning) key->SetOnAir(value);
-                }
-			} else if ([[address objectAtIndex:3] isEqualToString:@"set-next"])
-            {
-                int t = [[address objectAtIndex:4] intValue];
-                bool value = [[m value] floatValue] != 0.0;
-                
-                if (t<=dsk.size()) {
-                    
-                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                    std::advance(iter, t-1);
-                    IBMDSwitcherDownstreamKey * key = *iter;
-                    
-                    bool isTransitioning, isOnAir;
-                    key->IsTransitioning(&isTransitioning);
-					key->GetOnAir(&isOnAir);
-                    if (!isTransitioning) key->SetTie(value != isOnAir);
-                }
-            } else {
-                int t = [[address objectAtIndex:3] intValue];
-                
-                if (t<=dsk.size()) {
-                    
-                    std::list<IBMDSwitcherDownstreamKey*>::iterator iter = dsk.begin();
-                    std::advance(iter, t-1);
-                    IBMDSwitcherDownstreamKey * key = *iter;
-                    
-                    bool isTransitioning;
-                    key->IsAutoTransitioning(&isTransitioning);
-                    if (!isTransitioning) key->PerformAutoTransition();
-                }
-            }
-        } else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                   [[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
-            int mplayer = [[address objectAtIndex:3] intValue];
-            NSString *type = [address objectAtIndex:4];
-            int requestedValue = [[address objectAtIndex:5] intValue];
-            BMDSwitcherMediaPlayerSourceType sourceType;
-
-            // check we have the media pool
-            if (! mMediaPool)
-            {
-                [self logMessage:@"No media pool\n"];
-                return;
-            }
-    
-            if (mMediaPlayers.size() < mplayer || mplayer < 0)
-            {
-                [self logMessage:[NSString stringWithFormat:@"No media player %d", mplayer]];
-                return;
-            }
-            
-            if ([type isEqualToString:@"clip"])
-            {
-                sourceType = bmdSwitcherMediaPlayerSourceTypeClip;
-            }
-            else if ([type isEqualToString:@"still"])
-            {
-                sourceType = bmdSwitcherMediaPlayerSourceTypeStill;
-            }
-            else
-            {
-                [self logMessage:@"You must specify the Media type 'clip' or 'still'"];
-                return;
-            }
-            // set media player source
-            HRESULT result;
-            result = mMediaPlayers[mplayer-1]->SetSource(sourceType, requestedValue-1);
-            if (FAILED(result))
-            {
-                [self logMessage:[NSString stringWithFormat:@"Could not set media player %d source\n", mplayer]];
-                return;
-            }
-        }else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                  [[address objectAtIndex:2] isEqualToString:@"supersource"]) {
-            [self handleSuperSource:m address:address];
-        }else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                  [[address objectAtIndex:2] isEqualToString:@"macros"]) {
-            [self handleMacros:m address:address];
-        }else if ([[address objectAtIndex:1] isEqualToString:@"atem"] &&
-                  [[address objectAtIndex:2] isEqualToString:@"aux"]) {
-            int auxToChange = [[address objectAtIndex:3] intValue];
-            int source = [[m value] intValue];
-            [self handleAuxSource:auxToChange channel:source];
-        }
-    }
-}
-
-- (void) handleAuxSource:(int)auxToChange channel:(int)channel {
-    BMDSwitcherInputId inputId = channel;
-    mSwitcherInputAuxList[auxToChange-1]->SetInputSource(inputId);
-}
-
-- (void) handleMacros:(OSCMessage *)m address:(NSArray*)address {
-    if (!mMacroPool || !mMacroControl)
-    {
-        // No Macro support
-        OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-        [newMsg addInt:(int)0];
-        [outPort sendThisMessage:newMsg];
-        return;
-    }
-    if ([[address objectAtIndex:3] isEqualToString:@"get-max-number"]) {
-        uint32_t value = [self getMaxNumberOfMacros];
-        
-        OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-        [newMsg addInt:(int)value];
-        [outPort sendThisMessage:newMsg];
-    } else if ([[address objectAtIndex:3] isEqualToString:@"stop"]) {
-        [self stopRunningMacro];
-    } else {
-        int macroIndex = [[address objectAtIndex:3] intValue];
-        if ([[address objectAtIndex:4] isEqualToString:@"name"]) {
-            NSString *value = [self getNameOfMacro:macroIndex];
-            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-            [newMsg addString:(NSString *)value];
-            [outPort sendThisMessage:newMsg];
-        } else if ([[address objectAtIndex:4] isEqualToString:@"description"]) {
-            NSString *value = [self getDescriptionOfMacro:macroIndex];
-            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-            [newMsg addString:(NSString *)value];
-            [outPort sendThisMessage:newMsg];
-        } else if ([[address objectAtIndex:4] isEqualToString:@"is-valid"]) {
-            int value = 0;
-            if ([self isMacroValid:macroIndex])
-            {
-                value = 1;
-            }
-            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-            [newMsg addInt:(int)value];
-            [outPort sendThisMessage:newMsg];
-        } else if ([[address objectAtIndex:4] isEqualToString:@"run"]) {
-            int value = 0;
-            if ([self isMacroValid:macroIndex])
-            {
-                // Try to run the valid Macro
-                value = [self runMacroAtIndex:macroIndex];
-            }
-            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-            [newMsg addInt:(int)value];
-            [outPort sendThisMessage:newMsg];
-        }
-    }
-}
-
-- (void) handleSuperSource:(OSCMessage *)m address:(NSArray*)address {
-    if ([[address objectAtIndex:3] isEqualToString:@"border-enabled"]) {
-        bool value = [[address objectAtIndex:4] boolValue];
-        mSuperSource->SetBorderEnabled(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-outer"]) {
-        float value = [[m value] floatValue];
-        mSuperSource->SetBorderWidthOut(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-inner"]) {
-        float value = [[m value] floatValue];
-        mSuperSource->SetBorderWidthIn(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-hue"]) {
-        float value = [[m value] floatValue];
-        mSuperSource->SetBorderHue(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-saturations"]) {
-        float value = [[m value] floatValue];
-        mSuperSource->SetBorderSaturation(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-luminescence"]) {
-        float value = [[m value] floatValue];
-        mSuperSource->SetBorderLuma(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"box"]) {
-        [self handleSuperSourceBox:m address:address];
-    }
-}
-
-- (void) handleSuperSourceBox:(OSCMessage *)m address:(NSArray*)address {
-    int box = [[address objectAtIndex:4] intValue];
-    
-    // check we have the super source
-    if (!mSuperSource)
-    {
-        [self logMessage:@"No super source"];
-        return;
-    }
-    
-    if (mSuperSourceBoxes.size() < box)
-    {
-        [self logMessage:[NSString stringWithFormat:@"No super source box %d", box]];
-        return;
-    }
-    
-    // convert to value required for arrays
-    box = box-1;
-    
-    if ([[address objectAtIndex:5] isEqualToString:@"enabled"]) {
-        bool value = [[m value] floatValue] != 0.0;
-        mSuperSourceBoxes[box]->SetEnabled(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"source"]) {
-        int value = [[m value] intValue];
-        BMDSwitcherInputId InputId = value;
-        mSuperSourceBoxes[box]->SetInputSource(InputId);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"x"]) {
-        float value = [[m value] floatValue];
-        mSuperSourceBoxes[box]->SetPositionX(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"y"]) {
-        float value = [[m value] floatValue];
-        mSuperSourceBoxes[box]->SetPositionY(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"size"]) {
-        float value = [[m value] floatValue];
-        mSuperSourceBoxes[box]->SetSize(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"cropped"]) {
-        bool value = [[m value] floatValue] != 0.0;
-        mSuperSourceBoxes[box]->SetCropped(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-top"]) {
-        float value = [[m value] floatValue];
-        mSuperSourceBoxes[box]->SetCropTop(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-bottom"]) {
-        float value = [[m value] floatValue];
-        mSuperSourceBoxes[box]->SetCropBottom(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-left"]) {
-        float value = [[m value] floatValue];
-        mSuperSourceBoxes[box]->SetCropLeft(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-right"]) {
-        float value = [[m value] floatValue];
-        mSuperSourceBoxes[box]->SetCropRight(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-reset"]) {
-        mSuperSourceBoxes[box]->ResetCrop();
-    }
-}
-
-
-- (void) activateChannel:(int)channel isProgram:(BOOL)program {
-    BMDSwitcherInputId InputId = channel;
-    if (program) {
-        @try {
-            mMixEffectBlock->SetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, InputId);
-            
-        }
-        @catch (NSException *exception) {
-            NSAlert *alert = [[NSAlert alloc] init];
-            [alert setMessageText:exception.name];
-            [alert runModal];
-        }
-
-        
-    } else {
-        @try {
-            mMixEffectBlock->SetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, InputId);
-        }
-        @catch (NSException *exception) {
-            NSAlert *alert = [[NSAlert alloc] init];
-            [alert setMessageText:exception.name];
-            [alert runModal];
-        }
-    }
 }
 
 - (IBAction)portChanged:(id)sender {
@@ -526,12 +109,10 @@
     [manager removeInput:inPort];
     [manager removeOutput:outPort];
     
-        
     outPort = [manager createNewOutputToAddress:[oscdevice stringValue] atPort:[outgoing intValue] withLabel:@"atemOSC"];
     inPort = [manager createNewInputForPort:[incoming intValue] withLabel:@"atemOSC"];
     
-    [manager setDelegate:self];
-
+    [manager setDelegate:mOscReceiver];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
@@ -549,11 +130,6 @@
 	[NSApp terminate:self];
 }
 
-//
-// Actions
-//
-
-
 - (IBAction)helpButtonPressed:(id)sender {
     
     if ([sender tag] == 1) {
@@ -562,7 +138,6 @@
         [heltTextView setAlignment:NSLeftTextAlignment];
         
         NSMutableAttributedString * helpString = [[NSMutableAttributedString alloc] initWithString:@""];
-        int i = 0;
         NSDictionary *infoAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Monaco" traits:NSUnboldFontMask|NSUnitalicFontMask weight:5 size:12]};
         NSDictionary *addressAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:5 size:12]};
         
@@ -753,62 +328,58 @@
     [prefs synchronize];
 }
 
-
-
 - (void)connectBMD
 {
-    NSString* address = [mAddressTextField stringValue];
-	
-	BMDSwitcherConnectToFailure			failReason;
-
-	// Note that ConnectTo() can take several seconds to return, both for success or failure,
-	// depending upon hostname resolution and network response times, so it may be best to
-	// do this in a separate thread to prevent the main GUI thread blocking.
-	HRESULT hr = mSwitcherDiscovery->ConnectTo((CFStringRef)address, &mSwitcher, &failReason);
-	if (SUCCEEDED(hr))
-	{
-		[self switcherConnected];
-	}
-	else
-	{
-		NSString* reason;
-		switch (failReason)
-		{
-			case bmdSwitcherConnectToFailureNoResponse:
-				reason = @"No response from Switcher";
-				break;
-			case bmdSwitcherConnectToFailureIncompatibleFirmware:
-				reason = @"Switcher has incompatible firmware";
-				break;
-			case bmdSwitcherConnectToFailureCorruptData:
-				reason = @"Corrupt data was received during connection attempt";
-				break;
-			case bmdSwitcherConnectToFailureStateSync:
-				reason = @"State synchronisation failed during connection attempt";
-				break;
-			case bmdSwitcherConnectToFailureStateSyncTimedOut:
-				reason = @"State synchronisation timed out during connection attempt";
-				break;
-			default:
-				reason = @"Connection failed for unknown reason";
-		}
-        //Delay 2 seconds before everytime connect/reconnect
-        //Because the session ID from ATEM switcher will alive not more then 2 seconds
-        //After 2 second of idle, the session will be reset then reconnect won't cause error
-        double delayInSeconds = 2.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
-                       ^(void){
-                           //To run in background thread
-                           [self switcherDisconnected];
-                       });
-		[self logMessage:[NSString stringWithFormat:@"%@", reason]];
-	}
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSString* address = [mAddressTextField stringValue];
+        
+        BMDSwitcherConnectToFailure            failReason;
+        
+        // Note that ConnectTo() can take several seconds to return, both for success or failure,
+        // depending upon hostname resolution and network response times, so it may be best to
+        // do this in a separate thread to prevent the main GUI thread blocking.
+        HRESULT hr = mSwitcherDiscovery->ConnectTo((CFStringRef)address, &mSwitcher, &failReason);
+        if (SUCCEEDED(hr))
+        {
+            [self switcherConnected];
+        }
+        else
+        {
+            NSString* reason;
+            switch (failReason)
+            {
+                case bmdSwitcherConnectToFailureNoResponse:
+                    reason = @"No response from Switcher";
+                    break;
+                case bmdSwitcherConnectToFailureIncompatibleFirmware:
+                    reason = @"Switcher has incompatible firmware";
+                    break;
+                case bmdSwitcherConnectToFailureCorruptData:
+                    reason = @"Corrupt data was received during connection attempt";
+                    break;
+                case bmdSwitcherConnectToFailureStateSync:
+                    reason = @"State synchronisation failed during connection attempt";
+                    break;
+                case bmdSwitcherConnectToFailureStateSyncTimedOut:
+                    reason = @"State synchronisation timed out during connection attempt";
+                    break;
+                default:
+                    reason = @"Connection failed for unknown reason";
+            }
+            //Delay 2 seconds before everytime connect/reconnect
+            //Because the session ID from ATEM switcher will alive not more then 2 seconds
+            //After 2 second of idle, the session will be reset then reconnect won't cause error
+            double delayInSeconds = 2.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+                           ^(void){
+                               //To run in background thread
+                               [self switcherDisconnected];
+                           });
+            [self logMessage:[NSString stringWithFormat:@"%@", reason]];
+        }
+    });
 }
-
-
-
-
 
 - (void)switcherConnected
 {
@@ -990,7 +561,6 @@
     
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
 	
-	[self updatePopupButtonItems];
     self->mMixEffectBlockMonitor->updateSliderPosition();
 	
 finish:
@@ -1015,10 +585,11 @@ finish:
     [newMsg addFloat:1.0];
     [outPort sendThisMessage:newMsg];
     
-    //[mConnectButton setEnabled:YES];			// enable connect button so user can re-connect
-	[mSwitcherNameLabel setStringValue:@""];
-    [greenLight setHidden:YES];
-    [redLight setHidden:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [mSwitcherNameLabel setStringValue:@""];
+        [greenLight setHidden:YES];
+        [redLight setHidden:NO];
+    });
 	
     [self cleanUpConnection];
 
@@ -1096,130 +667,6 @@ finish:
     {
         switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
     }
-}
-
-- (BOOL)isMacroValid:(uint32_t)index
-{
-    HRESULT result;
-    bool isValid;
-    if (mMacroPool) {
-        result = mMacroPool->IsValid(index, &isValid);
-        switch (result) {
-            case S_OK:
-                return isValid;
-            case E_INVALIDARG:
-                [self logMessage:[NSString stringWithFormat:@"Could not check whether the Macro at index %d is valid because the index is invalid.", index]];
-                break;
-            default:
-                [self logMessage:[NSString stringWithFormat:@"Could not check whether the Macro at index %d is valid.", index]];
-                break;
-        }
-        return NO;
-    }
-    return NO;
-}
-
-- (BOOL)runMacroAtIndex:(uint32_t)index
-{
-    HRESULT result;
-    bool isValid;
-    if (mMacroControl) {
-        if (![self isMacroValid:index])
-        {
-            [self logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because it is not valid.", index]];
-            return NO;
-        }
-        
-        result = mMacroControl->Run(index);
-        switch (result) {
-            case S_OK:
-                return isValid;
-            case E_INVALIDARG:
-                [self logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because the index is invalid.", index]];
-                break;
-            case E_FAIL:
-                [self logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d.", index]];
-                break;
-            default:
-                [self logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d.", index]];
-                break;
-        }
-        return NO;
-    }
-    return NO;
-}
-
-- (BOOL)stopRunningMacro
-{
-    HRESULT result;
-    if (mMacroControl) {
-        result = mMacroControl->StopRunning();
-        switch (result) {
-            case S_OK:
-                return YES;
-            default:
-                [self logMessage:@"Could not stop the current Macro."];
-                break;
-        }
-        return NO;
-    }
-    return NO;
-}
-
-- (uint32_t)getMaxNumberOfMacros
-{
-    uint32_t maxNumberOfMacros = 0;
-    if (mMacroPool)
-    {
-        if (S_OK == mMacroPool->GetMaxCount(&maxNumberOfMacros)) {
-            return maxNumberOfMacros;
-        } else {
-            [self logMessage:@"Could not get max the number of Macros available."];
-        }
-    }
-    return maxNumberOfMacros;
-}
-
-- (NSString*)getNameOfMacro:(uint32_t)index
-{
-    HRESULT result;
-    NSString *name = @"";
-    result = mMacroPool->GetName(index, (CFStringRef*)&name);
-    switch (result)
-    {
-        case S_OK:
-            return name;
-        case E_INVALIDARG:
-            [self logMessage:[NSString stringWithFormat:@"Could not get the name of the Macro at index %d because the index is invalid.", index]];
-            break;
-        case E_OUTOFMEMORY:
-            [self logMessage:[NSString stringWithFormat:@"Insufficient memory to get the name of the Macro at index %d.", index]];
-            break;
-        default:
-            [self logMessage:[NSString stringWithFormat:@"Could not get the name of the Macro at index %d.", index]];
-    }
-    return name;
-}
-
-- (NSString*)getDescriptionOfMacro:(uint32_t)index
-{
-    HRESULT result;
-    NSString *description = @"";
-    result = mMacroPool->GetDescription(index, (CFStringRef*)&description);
-    switch (result)
-    {
-        case S_OK:
-            return description;
-        case E_INVALIDARG:
-            [self logMessage:[NSString stringWithFormat:@"Could not get the description of the Macro at index %d because the index is invalid.", index]];
-            break;
-        case E_OUTOFMEMORY:
-            [self logMessage:[NSString stringWithFormat:@"Insufficient memory to get the description of the Macro at index %d.", index]];
-            break;
-        default:
-            [self logMessage:[NSString stringWithFormat:@"Could not get the description of the Macro at index %d.", index]];
-    }
-    return description;
 }
 
 - (void)logMessage:(NSString *)message

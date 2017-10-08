@@ -7,6 +7,8 @@
 
 #include "FeedbackMonitors.h"
 
+class AppDelegate;
+
 static inline bool    operator== (const REFIID& iid1, const REFIID& iid2)
 {
     return CFEqual(&iid1, &iid2);

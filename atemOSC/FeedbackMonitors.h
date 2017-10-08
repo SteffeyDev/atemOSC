@@ -5,9 +5,10 @@
 //  Created by Peter Steffey on 10/2/17.
 //
 
-#import "AppDelegate.h"
 #import "BMDSwitcherAPI.h"
 #import "VVOSC/VVOSC.h"
+#import <list>
+#import <vector>
 
 #ifndef SwitcherMonitor_h
 #define SwitcherMonitor_h

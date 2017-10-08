@@ -26,21 +26,16 @@
 */
 
 #import "BMDSwitcherAPI.h"
+#import "VVOSC/VVOSC.h"
 #import <list>
-#include <vector>
+#import <vector>
 
 #import <Cocoa/Cocoa.h>
-#import "VVOSC/VVOSC.h"
 
 #import "FeedbackMonitors.h"
+#import "OSCReceiver.h"
 
-class MixEffectBlockMonitor;
-class SwitcherMonitor;
-class DownstreamKeyerMonitor;
-class TransitionParametersMonitor;
-class InputMonitor;
-
-@interface AppDelegate : NSObject <NSApplicationDelegate, OSCDelegateProtocol, NSTextFieldDelegate>
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSTextFieldDelegate>
 {
 	NSWindow *window;
 	
@@ -50,30 +45,16 @@ class InputMonitor;
 
 	IBMDSwitcherDiscovery*		        mSwitcherDiscovery;
 	IBMDSwitcher*				        mSwitcher;
-	IBMDSwitcherMixEffectBlock*	        mMixEffectBlock;
-	MixEffectBlockMonitor*		        mMixEffectBlockMonitor;
-    IBMDSwitcherTransitionParameters*   switcherTransitionParameters;
+    
     IBMDSwitcherKeyFlyParameters*	    mDVEControl;
 	SwitcherMonitor*			        mSwitcherMonitor;
     DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
     TransitionParametersMonitor*        mTransitionParametersMonitor;
-	IBMDSwitcherMediaPool*		        mMediaPool;
-    IBMDSwitcherStills*			        mStills;
-    IBMDSwitcherInputSuperSource*       mSuperSource;
-    IBMDSwitcherMacroPool*              mMacroPool;
-    IBMDSwitcherMacroControl*           mMacroControl;
-	std::vector<IBMDSwitcherMediaPlayer*>	    mMediaPlayers;
-	std::vector<IBMDSwitcherSuperSourceBox*>	mSuperSourceBoxes;
-	std::vector<IBMDSwitcherInputAux*>	mSwitcherInputAuxList;
 	std::list<InputMonitor*>	        mInputMonitors;
-    std::list<IBMDSwitcherKey*>	        keyers;
-    std::list<IBMDSwitcherDownstreamKey*>	    dsk;
-
-    bool                        isConnectedToATEM;
     
-    OSCManager					*manager;
-	OSCInPort					*inPort;
-	OSCOutPort					*outPort;
+    OSCReceiver*                mOscReceiver;
+    OSCManager*					manager;
+	
     IBOutlet NSTextField*       incoming;
     IBOutlet NSTextField*       outgoing;
     IBOutlet NSTextField*       oscdevice;
@@ -90,8 +71,24 @@ class InputMonitor;
     
 }
 
-@property (assign) IBOutlet NSWindow *window;
-@property (strong) id activity;
+@property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
+@property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
+@property (readonly)       IBMDSwitcherStills*                      mStills;
+@property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;
+@property (readonly)       IBMDSwitcherMacroPool*                   mMacroPool;
+@property (readonly)       IBMDSwitcherMacroControl*                mMacroControl;
+@property (assign, readonly) OSCInPort*                               inPort;
+@property (assign, readonly) OSCOutPort*                              outPort;
+@property (readonly)       std::vector<IBMDSwitcherMediaPlayer*>    mMediaPlayers;
+@property (readonly)       IBMDSwitcherMediaPool*                   mMediaPool;
+@property (readonly)       std::list<IBMDSwitcherKey*>              keyers;
+@property (readonly)       std::list<IBMDSwitcherDownstreamKey*>    dsk;
+@property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
+@property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
+@property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
+@property (readonly)       bool                                     isConnectedToATEM;
+@property (strong)         IBOutlet NSWindow*                       window;
+@property (strong)         id                                       activity;
 
 -(void)connectBMD;
 - (IBAction)portChanged:(id)sender;
@@ -102,6 +99,6 @@ class InputMonitor;
 - (void)switcherConnected;
 - (void)switcherDisconnected;
 
-- (IBAction)initPort:(id)sender;
+- (void)logMessage:(NSString *)message;
 
 @end

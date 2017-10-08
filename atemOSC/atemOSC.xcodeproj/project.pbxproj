@@ -21,6 +21,7 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */ = {isa = PBXBuildFile; fileRef = A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */; };
+		A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F790691F89B83C003ACBCF /* OSCReceiver.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -58,6 +59,8 @@
 		8D1107320486CEB800E47090 /* atemOSC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atemOSC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeedbackMonitors.h; sourceTree = "<group>"; };
 		A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FeedbackMonitors.mm; sourceTree = "<group>"; };
+		A9F790691F89B83C003ACBCF /* OSCReceiver.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCReceiver.mm; sourceTree = "<group>"; };
+		A9F7906B1F89B857003ACBCF /* OSCReceiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCReceiver.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +85,8 @@
 				256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */,
 				A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */,
 				A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */,
+				A9F7906B1F89B857003ACBCF /* OSCReceiver.h */,
+				A9F790691F89B83C003ACBCF /* OSCReceiver.mm */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -232,6 +237,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */,
 				A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */,
 				335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */,
