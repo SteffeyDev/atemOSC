@@ -68,16 +68,19 @@
     
     mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
-	mSwitcherMonitor = new SwitcherMonitor(outPort, self);
-    mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(outPort, dsk);
-    mTransitionParametersMonitor = new TransitionParametersMonitor(outPort, switcherTransitionParameters, keyers);
-	mMixEffectBlockMonitor = new MixEffectBlockMonitor(outPort, mMixEffectBlock);
+	mSwitcherMonitor = new SwitcherMonitor(self);
+    mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
+    mTransitionParametersMonitor = new TransitionParametersMonitor(self);
+	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
-	if (!mSwitcherDiscovery) {
+	if (!mSwitcherDiscovery)
+    {
 		NSBeginAlertSheet(@"Could not create Switcher Discovery Instance.\nATEM Switcher Software may not be installed.\n",
 							@"OK", nil, nil, window, self, @selector(sheetDidEndShouldTerminate:returnCode:contextInfo:), NULL, window, @"");
-	} else {
+	}
+    else
+    {
         //[self switcherDisconnected];		// start with switcher disconnected
     
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -94,11 +97,13 @@
     }
 }
 
-- (void)controlTextDidEndEditing:(NSNotification *)aNotification {
+- (void)controlTextDidEndEditing:(NSNotification *)aNotification
+{
     [self portChanged:self];
 }
 
-- (IBAction)portChanged:(id)sender {
+- (IBAction)portChanged:(id)sender
+{
     
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
     [prefs setObject:[oscdevice stringValue] forKey:@"oscdevice"];
@@ -130,10 +135,11 @@
 	[NSApp terminate:self];
 }
 
-- (IBAction)helpButtonPressed:(id)sender {
+- (IBAction)helpButtonPressed:(id)sender
+{
     
-    if ([sender tag] == 1) {
-        
+    if ([sender tag] == 1)
+    {
         //set helptext
         [heltTextView setAlignment:NSLeftTextAlignment];
         
@@ -168,20 +174,24 @@
         [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/dve\n" attributes:infoAttribute]];
         
         [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nUpstream Keyers:\n" attributes:addressAttribute]];
-        for (int i = 0; i<keyers.size();i++) {
+        for (int i = 0; i<keyers.size();i++)
+        {
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tOn Air KEY %d toggle: ",i+1] attributes:addressAttribute]];
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/usk/%d\n",i+1] attributes:infoAttribute]];
         }
+        
         [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tBKGD: "] attributes:addressAttribute]];
         [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/nextusk/0\n"] attributes:infoAttribute]];
-        for (int i = 0; i<keyers.size();i++) {
+        for (int i = 0; i<keyers.size();i++)
+        {
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tKEY %d: ",i+1] attributes:addressAttribute]];
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/nextusk/%d\n",i+1] attributes:infoAttribute]];
         }
         
         
         [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nDownstream Keyers:\n" attributes:addressAttribute]];
-        for (int i = 0; i<dsk.size();i++) {
+        for (int i = 0; i<dsk.size();i++)
+        {
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAuto-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/%d\n",i+1] attributes:infoAttribute]];
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet DSK On Ait%d: ",i+1] attributes:addressAttribute]];
@@ -199,7 +209,8 @@
         [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSources:\n" attributes:addressAttribute]];
         
         [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAux Outputs:\n" attributes:addressAttribute]];
-        for (int i = 0; i<mSwitcherInputAuxList.size();i++) {
+        for (int i = 0; i<mSwitcherInputAuxList.size();i++)
+        {
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Aux %d to Source: ",i+1] attributes:addressAttribute]];
             [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/aux/%d\t<valid_program_source>\n",i+1] attributes:infoAttribute]];
         }
@@ -309,18 +320,22 @@
         [[heltTextView textStorage] setAttributedString:helpString];
         
         helpPanel.isVisible = YES;
-    } else if ([sender tag]==2) {
+    }
+    else if ([sender tag]==2)
+    {
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/danielbuechele/atemOSC/"]];
     }
     
 }
 
-- (IBAction)logButtonPressed:(id)sender {
+- (IBAction)logButtonPressed:(id)sender
+{
     [logTextView setTextColor:[NSColor whiteColor]];
     logPanel.isVisible = YES;
 }
 
-- (IBAction)mAddressTextFieldUpdated:(id)sender {
+- (IBAction)mAddressTextFieldUpdated:(id)sender
+{
     //Updated: save state everytime text field changed
     NSString* address = [mAddressTextField stringValue];
     NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
@@ -385,12 +400,12 @@
 {
 	HRESULT result;
 	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
-	IBMDSwitcherInputIterator* inputIterator = NULL;
 	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
 	IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
     isConnectedToATEM = YES;
     
-    if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)]) {
+    if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
+    {
         self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
     }
     
@@ -416,43 +431,6 @@
 	[productName release];
 	
 	mSwitcher->AddCallback(mSwitcherMonitor);
-	
-	// Create an InputMonitor for each input so we can catch any changes to input names
-	result = mSwitcher->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator);
-	if (SUCCEEDED(result))
-	{
-		IBMDSwitcherInput* input = NULL;
-		
-		// For every input, install a callback to monitor property changes on the input
-		while (S_OK == inputIterator->Next(&input))
-		{
-			InputMonitor* inputMonitor = new InputMonitor(input, outPort, self);
-			IBMDSwitcherInputAux* auxObj;
-			result = input->QueryInterface(IID_IBMDSwitcherInputAux, (void**)&auxObj);
-			if (SUCCEEDED(result))
-			{
-				BMDSwitcherInputId auxId;
-				result = auxObj->GetInputSource(&auxId);
-                if (SUCCEEDED(result))
-                {
-                    mSwitcherInputAuxList.push_back(auxObj);
-                }
-			}
-			BMDSwitcherInputId id;
-            		input->GetInputId(&id);
-            		NSString* name;
-         		   input->GetLongName((CFStringRef*)&name);
-         		   if ([name isEqual: @"SuperSource"])
-         		   {
-         		       input->QueryInterface(IID_IBMDSwitcherInputSuperSource, (void**)&mSuperSource);
-         		   }
-			input->Release();
-            [name release];
-			mInputMonitors.push_back(inputMonitor);
-		}
-		inputIterator->Release();
-		inputIterator = NULL;
-	}
     
 	// Get the mix effect block iterator
 	result = mSwitcher->CreateIterator(IID_IBMDSwitcherMixEffectBlockIterator, (void**)&iterator);
@@ -476,7 +454,8 @@
     IBMDSwitcherKey* key = NULL;
     if (SUCCEEDED(result))
     {
-        while (S_OK == keyIterator->Next(&key)) {
+        while (S_OK == keyIterator->Next(&key))
+        {
             keyers.push_back(key);
         }
     }
@@ -490,7 +469,8 @@
     IBMDSwitcherDownstreamKey* downstreamKey = NULL;
     if (SUCCEEDED(result))
     {
-        while (S_OK == dskIterator->Next(&downstreamKey)) {
+        while (S_OK == dskIterator->Next(&downstreamKey))
+        {
             dsk.push_back(downstreamKey);
             downstreamKey->AddCallback(mDownstreamKeyerMonitor);
         }
@@ -508,7 +488,8 @@
     }
     
 	IBMDSwitcherMediaPlayer* mediaPlayer = NULL;
-    while (S_OK == mediaPlayerIterator->Next(&mediaPlayer)) {
+    while (S_OK == mediaPlayerIterator->Next(&mediaPlayer))
+    {
         mMediaPlayers.push_back(mediaPlayer);
     }
     mediaPlayerIterator->Release();
@@ -547,7 +528,8 @@
             return;
         }
         IBMDSwitcherSuperSourceBox* superSourceBox = NULL;
-        while (S_OK == superSourceIterator->Next(&superSourceBox)) {
+        while (S_OK == superSourceIterator->Next(&superSourceBox))
+        {
             mSuperSourceBoxes.push_back(superSourceBox);
         }
         superSourceIterator->Release();
@@ -572,9 +554,8 @@ finish:
 {
 
     isConnectedToATEM = NO;
-	if (self.activity) {
+	if (self.activity)
         [[NSProcessInfo processInfo] endActivity:self.activity];
-    }
     
     self.activity = nil;
     
@@ -598,13 +579,6 @@ finish:
 
 - (void)cleanUpConnection
 {
-    // cleanup resources created when switcher was connected
-    for (std::list<InputMonitor*>::iterator it = mInputMonitors.begin(); it != mInputMonitors.end(); ++it)
-    {
-        (*it)->Release();
-    }
-    mInputMonitors.clear();
-    
     while (mSwitcherInputAuxList.size())
     {
         mSwitcherInputAuxList.back()->Release();

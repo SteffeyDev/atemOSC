@@ -7,7 +7,9 @@
 
 #include "FeedbackMonitors.h"
 
-class AppDelegate;
+#import "AppDelegate.h"
+
+//class AppDelegate;
 
 static inline bool    operator== (const REFIID& iid1, const REFIID& iid2)
 {
@@ -83,31 +85,31 @@ HRESULT MixEffectBlockMonitor::PropertyChanged(BMDSwitcherMixEffectBlockProperty
 void MixEffectBlockMonitor::updateProgramButtonSelection() const
 {
     BMDSwitcherInputId    programId;
-    mMixEffectBlock_->GetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, &programId);
+    static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, &programId);
     
     for (int i = 0;i<=12;i++) {
         OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program/%d",i]];
         if (programId==i) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
-        [outPort_ sendThisMessage:newMsg];
+        [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
     }
 }
 
 void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 {
     BMDSwitcherInputId    previewId;
-    mMixEffectBlock_->GetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, &previewId);
+    static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, &previewId);
     
     for (int i = 0;i<=12;i++) {
         OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview/%d",i]];
         if (previewId==i) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
-        [outPort_ sendThisMessage:newMsg];
+        [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
     }
 }
 
 void MixEffectBlockMonitor::updateInTransitionState()
 {
     bool inTransition;
-    mMixEffectBlock_->GetFlag(bmdSwitcherMixEffectBlockPropertyIdInTransition, &inTransition);
+    static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFlag(bmdSwitcherMixEffectBlockPropertyIdInTransition, &inTransition);
     
     if (inTransition == false)
     {
@@ -125,7 +127,7 @@ void MixEffectBlockMonitor::updateInTransitionState()
 void MixEffectBlockMonitor::updateSliderPosition()
 {
     double position;
-    mMixEffectBlock_->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
+    static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
     
     // Record when transition passes halfway so we can flip orientation of slider handle at the end of transition
     mCurrentTransitionReachedHalfway_ = (position >= 0.50);
@@ -136,12 +138,11 @@ void MixEffectBlockMonitor::updateSliderPosition()
         
         OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
         [newMsg addFloat:1.0-sliderPosition/100];
-    [outPort_ sendThisMessage:newMsg];
+    [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 }
 
-DownstreamKeyerMonitor::DownstreamKeyerMonitor(OSCOutPort *outPort, std::list<IBMDSwitcherDownstreamKey*> dskList) :
-    GenericMonitor(outPort),
-    dsk_(dskList)
+DownstreamKeyerMonitor::DownstreamKeyerMonitor(void *delegate) :
+    GenericMonitor(delegate)
 {
 }
 
@@ -149,14 +150,15 @@ DownstreamKeyerMonitor::DownstreamKeyerMonitor(OSCOutPort *outPort, std::list<IB
 void DownstreamKeyerMonitor::updateDSKTie() const
 {
     int i = 1;
-    for(std::list<IBMDSwitcherDownstreamKey*>::const_iterator iter = dsk_.begin(); iter != dsk_.end(); iter++) {
+    std::list<IBMDSwitcherDownstreamKey*> dsk = static_cast<AppDelegate *>(appDel).dsk;
+    for(std::list<IBMDSwitcherDownstreamKey*>::const_iterator iter = dsk.begin(); iter != dsk.end(); iter++) {
         IBMDSwitcherDownstreamKey * key = *iter;
         bool isTied;
         key->GetTie(&isTied);
         
         OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d",i++]];
         [newMsg addInt: isTied];
-        [outPort_ sendThisMessage:newMsg];
+        [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
     }
 }
 
@@ -164,14 +166,15 @@ void DownstreamKeyerMonitor::updateDSKTie() const
 void DownstreamKeyerMonitor::updateDSKOnAir() const
 {
     int i = 1;
-    for(std::list<IBMDSwitcherDownstreamKey*>::const_iterator iter = dsk_.begin(); iter != dsk_.end(); i++, iter++) {
+    std::list<IBMDSwitcherDownstreamKey*> dsk = static_cast<AppDelegate *>(appDel).dsk;
+    for(std::list<IBMDSwitcherDownstreamKey*>::const_iterator iter = dsk.begin(); iter != dsk.end(); i++, iter++) {
         IBMDSwitcherDownstreamKey * key = *iter;
         bool isOnAir;
         key->GetOnAir(&isOnAir);
         
         OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i]];
         [newMsg addInt: isOnAir];
-        [outPort_ sendThisMessage:newMsg];
+        [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
     }
 }
 
@@ -222,61 +225,27 @@ void TransitionParametersMonitor::updateTransitionParameters() const
     uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
     
     uint32_t currentTransitionSelection;
-    switcherTransitionParameters_->GetNextTransitionSelection(&currentTransitionSelection);
+    static_cast<AppDelegate *>(appDel).switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
     
-    for (int i = 0; i <= ((int) keyers_.size()); i++) {
+    for (int i = 0; i <= ((int) reinterpret_cast<AppDelegate *>(appDel).keyers.size()); i++) {
         uint32_t requestedTransitionSelection = transitionSelections[i];
         
         OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i]];
         [newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
-        [outPort_ sendThisMessage:newMsg];
+        [static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
     }
 }
 
-
-InputMonitor::InputMonitor(IBMDSwitcherInput* input, OSCOutPort *outPort, void *mUiDelegate) :
-    mInput(input),
-    GenericMonitor(outPort)
+SwitcherMonitor::SwitcherMonitor(void *delegate) :
+    GenericMonitor(delegate)
 {
-    AppDelegate *obj = (__bridge AppDelegate *) mUiDelegate;
-    mUiDelegate_ = obj;
-    mInput->AddRef();
-    mInput->AddCallback(this);
-}
-
-InputMonitor::~InputMonitor()
-{
-    mInput->RemoveCallback(this);
-    mInput->Release();
-}
-
-HRESULT InputMonitor::Notify(BMDSwitcherInputEventType eventType)
-{
-    switch (eventType)
-    {
-        case bmdSwitcherInputEventTypeLongNameChanged:
-            [mUiDelegate_ performSelectorOnMainThread:@selector(updatePopupButtonItems) withObject:nil waitUntilDone:YES];
-        default:    // ignore other property changes not used for this sample app
-            break;
-    }
-    
-    return S_OK;
-}
-
-IBMDSwitcherInput* InputMonitor::input() { return mInput; }
-
-SwitcherMonitor::SwitcherMonitor(OSCOutPort *outPort, void *mUiDelegate) :
-    GenericMonitor(outPort)
-{
-    AppDelegate *obj = (__bridge AppDelegate *) mUiDelegate;
-    mUiDelegate_ = obj;
 }
 
 HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)
 {
     if (eventType == bmdSwitcherEventTypeDisconnected)
     {
-        [mUiDelegate_ performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
+        [(AppDelegate *)appDel performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
     }
     return S_OK;
 }

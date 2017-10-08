@@ -50,7 +50,6 @@
 	SwitcherMonitor*			        mSwitcherMonitor;
     DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
     TransitionParametersMonitor*        mTransitionParametersMonitor;
-	std::list<InputMonitor*>	        mInputMonitors;
     
     OSCReceiver*                mOscReceiver;
     OSCManager*					manager;

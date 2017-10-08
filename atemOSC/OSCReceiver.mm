@@ -149,14 +149,17 @@
                         [appDel logMessage:[NSString stringWithFormat:@"dsk on %@", m]];
                     }
                 }
-            } else if ([[address objectAtIndex:2] isEqualToString:@"dsk"]) {
+            }
+            
+            else if ([[address objectAtIndex:2] isEqualToString:@"dsk"])
+            {
                 if ([[address objectAtIndex:3] isEqualToString:@"set-tie"])
                 {
                     int t = [[address objectAtIndex:4] intValue];
                     bool value = [[m value] floatValue] != 0.0;
                     
-                    if (t<=[appDel dsk].size()) {
-                        
+                    if (t<=[appDel dsk].size())
+                    {
                         std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
                         std::advance(iter, t-1);
                         IBMDSwitcherDownstreamKey * key = *iter;
@@ -165,12 +168,14 @@
                         key->IsTransitioning(&isTransitioning);
                         if (!isTransitioning) key->SetTie(value);
                     }
-                } else if ([[address objectAtIndex:3] isEqualToString:@"tie"])
+                }
+                
+                else if ([[address objectAtIndex:3] isEqualToString:@"tie"])
                 {
                     int t = [[address objectAtIndex:4] intValue];
                     
-                    if (t<=[appDel dsk].size()) {
-                        
+                    if (t<=[appDel dsk].size())
+                    {
                         std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
                         std::advance(iter, t-1);
                         IBMDSwitcherDownstreamKey * key = *iter;
@@ -181,12 +186,14 @@
                         key->IsTransitioning(&isTransitioning);
                         if (!isTransitioning) key->SetTie(!isTied);
                     }
-                } else if ([[address objectAtIndex:3] isEqualToString:@"toggle"])
+                }
+                
+                else if ([[address objectAtIndex:3] isEqualToString:@"toggle"])
                 {
                     int t = [[address objectAtIndex:4] intValue];
                     
-                    if (t<=[appDel dsk].size()) {
-                        
+                    if (t<=[appDel dsk].size())
+                    {
                         std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
                         std::advance(iter, t-1);
                         IBMDSwitcherDownstreamKey * key = *iter;
@@ -197,13 +204,15 @@
                         key->IsTransitioning(&isTransitioning);
                         if (!isTransitioning) key->SetOnAir(!isLive);
                     }
-                } else if ([[address objectAtIndex:3] isEqualToString:@"on-air"])
+                }
+                
+                else if ([[address objectAtIndex:3] isEqualToString:@"on-air"])
                 {
                     int t = [[address objectAtIndex:4] intValue];
                     bool value = [[m value] floatValue] != 0.0;
                     
-                    if (t<=[appDel dsk].size()) {
-                        
+                    if (t<=[appDel dsk].size())
+                    {
                         std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
                         std::advance(iter, t-1);
                         IBMDSwitcherDownstreamKey * key = *iter;
@@ -212,13 +221,15 @@
                         key->IsTransitioning(&isTransitioning);
                         if (!isTransitioning) key->SetOnAir(value);
                     }
-                } else if ([[address objectAtIndex:3] isEqualToString:@"set-next"])
+                }
+                
+                else if ([[address objectAtIndex:3] isEqualToString:@"set-next"])
                 {
                     int t = [[address objectAtIndex:4] intValue];
                     bool value = [[m value] floatValue] != 0.0;
                     
-                    if (t<=[appDel dsk].size()) {
-                        
+                    if (t<=[appDel dsk].size())
+                    {
                         std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
                         std::advance(iter, t-1);
                         IBMDSwitcherDownstreamKey * key = *iter;
@@ -228,11 +239,14 @@
                         key->GetOnAir(&isOnAir);
                         if (!isTransitioning) key->SetTie(value != isOnAir);
                     }
-                } else {
+                }
+                
+                else
+                {
                     int t = [[address objectAtIndex:3] intValue];
                     
-                    if (t<=[appDel dsk].size()) {
-                        
+                    if (t<=[appDel dsk].size())
+                    {
                         std::list<IBMDSwitcherDownstreamKey*>::iterator iter = [appDel dsk].begin();
                         std::advance(iter, t-1);
                         IBMDSwitcherDownstreamKey * key = *iter;
@@ -242,7 +256,10 @@
                         if (!isTransitioning) key->PerformAutoTransition();
                     }
                 }
-            } else if ([[address objectAtIndex:2] isEqualToString:@"mplayer"]) {
+            }
+            
+            else if ([[address objectAtIndex:2] isEqualToString:@"mplayer"])
+            {
                 int mplayer = [[address objectAtIndex:3] intValue];
                 NSString *type = [address objectAtIndex:4];
                 int requestedValue = [[address objectAtIndex:5] intValue];
@@ -282,11 +299,20 @@
                     [appDel logMessage:[NSString stringWithFormat:@"Could not set media player %d source\n", mplayer]];
                     return;
                 }
-            }else if ([[address objectAtIndex:2] isEqualToString:@"supersource"]) {
+            }
+            
+            else if ([[address objectAtIndex:2] isEqualToString:@"supersource"])
+            {
                 [self handleSuperSource:m address:address];
-            }else if ([[address objectAtIndex:2] isEqualToString:@"macros"]) {
+            }
+            
+            else if ([[address objectAtIndex:2] isEqualToString:@"macros"])
+            {
                 [self handleMacros:m address:address];
-            }else if ([[address objectAtIndex:2] isEqualToString:@"aux"]) {
+            }
+            
+            else if ([[address objectAtIndex:2] isEqualToString:@"aux"])
+            {
                 int auxToChange = [[address objectAtIndex:3] intValue];
                 int source = [[m value] intValue];
                 [self handleAuxSource:auxToChange channel:source];
@@ -295,12 +321,14 @@
     }
 }
 
-- (void) handleAuxSource:(int)auxToChange channel:(int)channel {
+- (void) handleAuxSource:(int)auxToChange channel:(int)channel
+{
     BMDSwitcherInputId inputId = channel;
     [appDel mSwitcherInputAuxList][auxToChange-1]->SetInputSource(inputId);
 }
 
-- (void) handleMacros:(OSCMessage *)m address:(NSArray*)address {
+- (void) handleMacros:(OSCMessage *)m address:(NSArray*)address
+{
     if (![appDel mMacroPool] || ![appDel mMacroControl])
     {
         // No Macro support
@@ -309,27 +337,39 @@
         [[appDel outPort] sendThisMessage:newMsg];
         return;
     }
-    if ([[address objectAtIndex:3] isEqualToString:@"get-max-number"]) {
+    if ([[address objectAtIndex:3] isEqualToString:@"get-max-number"])
+    {
         uint32_t value = [self getMaxNumberOfMacros];
         
         OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
         [newMsg addInt:(int)value];
         [[appDel outPort] sendThisMessage:newMsg];
-    } else if ([[address objectAtIndex:3] isEqualToString:@"stop"]) {
+    }
+    else if ([[address objectAtIndex:3] isEqualToString:@"stop"])
+    {
         [self stopRunningMacro];
-    } else {
+    }
+    else
+    {
         int macroIndex = [[address objectAtIndex:3] intValue];
-        if ([[address objectAtIndex:4] isEqualToString:@"name"]) {
+        if ([[address objectAtIndex:4] isEqualToString:@"name"])
+        {
             NSString *value = [self getNameOfMacro:macroIndex];
             OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
             [newMsg addString:(NSString *)value];
             [[appDel outPort] sendThisMessage:newMsg];
-        } else if ([[address objectAtIndex:4] isEqualToString:@"description"]) {
+        }
+        
+        else if ([[address objectAtIndex:4] isEqualToString:@"description"])
+        {
             NSString *value = [self getDescriptionOfMacro:macroIndex];
             OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
             [newMsg addString:(NSString *)value];
             [[appDel outPort] sendThisMessage:newMsg];
-        } else if ([[address objectAtIndex:4] isEqualToString:@"is-valid"]) {
+        }
+        
+        else if ([[address objectAtIndex:4] isEqualToString:@"is-valid"])
+        {
             int value = 0;
             if ([self isMacroValid:macroIndex])
             {
@@ -338,7 +378,10 @@
             OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
             [newMsg addInt:(int)value];
             [[appDel outPort] sendThisMessage:newMsg];
-        } else if ([[address objectAtIndex:4] isEqualToString:@"run"]) {
+        }
+        
+        else if ([[address objectAtIndex:4] isEqualToString:@"run"])
+        {
             int value = 0;
             if ([self isMacroValid:macroIndex])
             {
@@ -352,31 +395,52 @@
     }
 }
 
-- (void) handleSuperSource:(OSCMessage *)m address:(NSArray*)address {
-    if ([[address objectAtIndex:3] isEqualToString:@"border-enabled"]) {
+- (void) handleSuperSource:(OSCMessage *)m address:(NSArray*)address
+{
+    if ([[address objectAtIndex:3] isEqualToString:@"border-enabled"])
+    {
         bool value = [[address objectAtIndex:4] boolValue];
         [appDel mSuperSource]->SetBorderEnabled(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-outer"]) {
+    }
+    
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-outer"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSource]->SetBorderWidthOut(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-inner"]) {
+    }
+    
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-inner"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSource]->SetBorderWidthIn(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-hue"]) {
+    }
+    
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-hue"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSource]->SetBorderHue(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-saturations"]) {
+    }
+    
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-saturations"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSource]->SetBorderSaturation(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"border-luminescence"]) {
+    }
+    
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-luminescence"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSource]->SetBorderLuma(value);
-    } else if ([[address objectAtIndex:3] isEqualToString:@"box"]) {
+    }
+    
+    else if ([[address objectAtIndex:3] isEqualToString:@"box"])
+    {
         [self handleSuperSourceBox:m address:address];
     }
 }
 
-- (void) handleSuperSourceBox:(OSCMessage *)m address:(NSArray*)address {
+- (void) handleSuperSourceBox:(OSCMessage *)m address:(NSArray*)address
+{
     int box = [[address objectAtIndex:4] intValue];
     
     // check we have the super source
@@ -395,38 +459,69 @@
     // convert to value required for arrays
     box = box-1;
     
-    if ([[address objectAtIndex:5] isEqualToString:@"enabled"]) {
+    if ([[address objectAtIndex:5] isEqualToString:@"enabled"])
+    {
         bool value = [[m value] floatValue] != 0.0;
         [appDel mSuperSourceBoxes][box]->SetEnabled(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"source"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"source"])
+    {
         int value = [[m value] intValue];
         BMDSwitcherInputId InputId = value;
         [appDel mSuperSourceBoxes][box]->SetInputSource(InputId);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"x"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"x"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSourceBoxes][box]->SetPositionX(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"y"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"y"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSourceBoxes][box]->SetPositionY(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"size"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"size"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSourceBoxes][box]->SetSize(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"cropped"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"cropped"])
+    {
         bool value = [[m value] floatValue] != 0.0;
         [appDel mSuperSourceBoxes][box]->SetCropped(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-top"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"crop-top"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSourceBoxes][box]->SetCropTop(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-bottom"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"crop-bottom"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSourceBoxes][box]->SetCropBottom(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-left"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"crop-left"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSourceBoxes][box]->SetCropLeft(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-right"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"crop-right"])
+    {
         float value = [[m value] floatValue];
         [appDel mSuperSourceBoxes][box]->SetCropRight(value);
-    } else if ([[address objectAtIndex:5] isEqualToString:@"crop-reset"]) {
+    }
+    
+    else if ([[address objectAtIndex:5] isEqualToString:@"crop-reset"])
+    {
         [appDel mSuperSourceBoxes][box]->ResetCrop();
     }
 }
@@ -435,9 +530,11 @@
 {
     HRESULT result;
     bool isValid;
-    if ([appDel mMacroPool]) {
+    if ([appDel mMacroPool])
+    {
         result = [appDel mMacroPool]->IsValid(index, &isValid);
-        switch (result) {
+        switch (result)
+        {
             case S_OK:
                 return isValid;
             case E_INVALIDARG:
@@ -456,7 +553,8 @@
 {
     HRESULT result;
     bool isValid;
-    if ([appDel mMacroControl]) {
+    if ([appDel mMacroControl])
+    {
         if (![self isMacroValid:index])
         {
             [appDel logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because it is not valid.", index]];
@@ -464,7 +562,8 @@
         }
         
         result = [appDel mMacroControl]->Run(index);
-        switch (result) {
+        switch (result)
+        {
             case S_OK:
                 return isValid;
             case E_INVALIDARG:
@@ -485,9 +584,11 @@
 - (BOOL)stopRunningMacro
 {
     HRESULT result;
-    if ([appDel mMacroControl]) {
+    if ([appDel mMacroControl])
+    {
         result = [appDel mMacroControl]->StopRunning();
-        switch (result) {
+        switch (result)
+        {
             case S_OK:
                 return YES;
             default:
@@ -504,11 +605,10 @@
     uint32_t maxNumberOfMacros = 0;
     if ([appDel mMacroPool])
     {
-        if (S_OK == [appDel mMacroPool]->GetMaxCount(&maxNumberOfMacros)) {
+        if (S_OK == [appDel mMacroPool]->GetMaxCount(&maxNumberOfMacros))
             return maxNumberOfMacros;
-        } else {
+        else
             [appDel logMessage:@"Could not get max the number of Macros available."];
-        }
     }
     return maxNumberOfMacros;
 }
@@ -556,25 +656,29 @@
 }
 
 
-- (void) activateChannel:(int)channel isProgram:(BOOL)program {
+- (void) activateChannel:(int)channel isProgram:(BOOL)program
+{
     BMDSwitcherInputId InputId = channel;
     if (program) {
-        @try {
+        @try
+        {
             [appDel mMixEffectBlock]->SetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, InputId);
-            
         }
-        @catch (NSException *exception) {
+        @catch (NSException *exception)
+        {
             NSAlert *alert = [[NSAlert alloc] init];
             [alert setMessageText:exception.name];
             [alert runModal];
         }
-        
-        
-    } else {
-        @try {
+    }
+    else
+    {
+        @try
+        {
             [appDel mMixEffectBlock]->SetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, InputId);
         }
-        @catch (NSException *exception) {
+        @catch (NSException *exception)
+        {
             NSAlert *alert = [[NSAlert alloc] init];
             [alert setMessageText:exception.name];
             [alert runModal];
