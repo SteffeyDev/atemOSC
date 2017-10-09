@@ -84,6 +84,7 @@
     
         NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
         [mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
+        NSLog(@"Value: %@", [prefs stringForKey:@"atem"]);
         
         [outgoing setIntValue:[prefs integerForKey:@"outgoing"]];
         [incoming setIntValue:[prefs integerForKey:@"incoming"]];
@@ -98,18 +99,47 @@
 
 - (void)controlTextDidEndEditing:(NSNotification *)aNotification
 {
+    NSTextField* textField = (NSTextField *)[aNotification object];
+    bool validInput = true;
+    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+    
+    if (textField == oscdevice && ![[oscdevice stringValue] isEqualToString:@""])
+    {
+        if ([self isValidIPAddress:[oscdevice stringValue]])
+            [prefs setObject:[oscdevice stringValue] forKey:@"oscdevice"];
+        else
+        {
+            validInput = false;
+            NSAlert *alert = [[NSAlert alloc] init];
+            [alert setMessageText:@"Invalid IP Adress"];
+            [alert setInformativeText:@"Please enter a valid IP Address for 'OSC Out IP Adress'"];
+            [alert beginSheetModalForWindow:window completionHandler:nil];
+        }
+    }
+    
+    else if (textField == mAddressTextField && ![[mAddressTextField stringValue] isEqualToString:@""])
+    {
+        if ([self isValidIPAddress:[mAddressTextField stringValue]])
+            [prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
+        else
+        {
+            validInput = false;
+            NSAlert *alert = [[NSAlert alloc] init];
+            [alert setMessageText:@"Invalid IP Adress"];
+            [alert setInformativeText:@"Please enter a valid IP Address for 'Switcher IP Adress'"];
+            [alert beginSheetModalForWindow:window completionHandler:nil];
+        }
+    }
+    
+    [prefs setInteger:[outgoing intValue] forKey:@"outgoing"];
+    [prefs setInteger:[incoming intValue] forKey:@"incoming"];
+    [prefs synchronize];
+    
     [self portChanged:self];
 }
 
 - (IBAction)portChanged:(id)sender
 {
-    
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    [prefs setObject:[oscdevice stringValue] forKey:@"oscdevice"];
-    [prefs setInteger:[outgoing intValue] forKey:@"outgoing"];
-    [prefs setInteger:[incoming intValue] forKey:@"incoming"];    
-    [prefs synchronize];
-    
     [manager removeInput:inPort];
     [manager removeOutput:outPort];
     
@@ -324,7 +354,6 @@
     {
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/danielbuechele/atemOSC/"]];
     }
-    
 }
 
 - (IBAction)logButtonPressed:(id)sender
@@ -333,13 +362,19 @@
     logPanel.isVisible = YES;
 }
 
-- (IBAction)mAddressTextFieldUpdated:(id)sender
+- (BOOL)isValidIPAddress:(NSString*) str
 {
-    //Updated: save state everytime text field changed
-    NSString* address = [mAddressTextField stringValue];
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    [prefs setObject:address forKey:@"atem"];
-    [prefs synchronize];
+    const char *utf8 = [str UTF8String];
+    int success;
+    
+    struct in_addr dst;
+    success = inet_pton(AF_INET, utf8, &dst);
+    if (success != 1) {
+        struct in6_addr dst6;
+        success = inet_pton(AF_INET6, utf8, &dst6);
+    }
+    
+    return success == 1;
 }
 
 - (void)connectBMD

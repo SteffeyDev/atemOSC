@@ -39,12 +39,10 @@
 	NSWindow *window;
 	
 	IBOutlet NSTextField*		mAddressTextField;
-	IBOutlet NSButton*			mConnectButton;
 	IBOutlet NSTextField*		mSwitcherNameLabel;
 
 	IBMDSwitcherDiscovery*		        mSwitcherDiscovery;
 	IBMDSwitcher*				        mSwitcher;
-    
     IBMDSwitcherKeyFlyParameters*	    mDVEControl;
 	SwitcherMonitor*			        mSwitcherMonitor;
     DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
@@ -60,12 +58,12 @@
     IBOutlet NSLevelIndicator*  redLight;
     IBOutlet NSLevelIndicator*  greenLight;
     
-    IBOutlet NSButton *helpButton;
-    IBOutlet NSPanel *helpPanel;
-    IBOutlet NSTextView *heltTextView;
+    IBOutlet NSButton*          helpButton;
+    IBOutlet NSPanel*           helpPanel;
+    IBOutlet NSTextView*        heltTextView;
     
-    IBOutlet NSPanel *logPanel;
-    IBOutlet NSTextView *logTextView;
+    IBOutlet NSPanel*           logPanel;
+    IBOutlet NSTextView*        logTextView;
 }
 
 @property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
@@ -91,7 +89,6 @@
 - (IBAction)portChanged:(id)sender;
 - (IBAction)helpButtonPressed:(id)sender;
 - (IBAction)logButtonPressed:(id)sender;
-- (IBAction)mAddressTextFieldUpdated:(id)sender;
 
 - (void)switcherConnected;
 - (void)switcherDisconnected;
