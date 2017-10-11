@@ -59,10 +59,7 @@
     IBOutlet NSLevelIndicator*  greenLight;
     
     IBOutlet NSButton*          helpButton;
-    IBOutlet NSPanel*           helpPanel;
-    IBOutlet NSTextView*        heltTextView;
     
-    IBOutlet NSPanel*           logPanel;
     IBOutlet NSTextView*        logTextView;
 }
 

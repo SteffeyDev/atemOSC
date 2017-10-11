@@ -98,19 +98,19 @@
                             <menuItem title="OSC addresses" tag="1" id="786">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="helpButtonPressed:" target="494" id="790"/>
+                                    <action selector="orderFront:" target="770" id="OvV-so-oZa"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Log" id="hsp-RM-dO4">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="logButtonPressed:" target="494" id="TUF-rx-krJ"/>
+                                    <action selector="orderFront:" target="0qs-BG-ADh" id="kEL-Dd-Rz1"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Github page" tag="2" id="788">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="helpButtonPressed:" target="494" id="791"/>
+                                    <action selector="githubPageButtonPressed:" target="494" id="87G-5z-fkX"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -243,13 +243,12 @@
                     </levelIndicator>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="195" y="338.5"/>
+            <point key="canvasLocation" x="90" y="407"/>
         </window>
         <customObject id="494" customClass="AppDelegate">
             <connections>
                 <outlet property="greenLight" destination="733" id="735"/>
                 <outlet property="helpPanel" destination="770" id="777"/>
-                <outlet property="heltTextView" destination="773" id="778"/>
                 <outlet property="incoming" destination="615" id="621"/>
                 <outlet property="logPanel" destination="0qs-BG-ADh" id="atc-oV-mmX"/>
                 <outlet property="logTextView" destination="yea-mf-8MA" id="Hc0-Hb-WQr"/>
@@ -266,11 +265,11 @@
             <integer key="minimum" value="1024"/>
             <real key="maximum" value="65535"/>
         </numberFormatter>
-        <window title="OSC addresses" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="770" customClass="NSPanel">
+        <window title="OSC addresses" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="770" customClass="OSCAddressPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="283" y="305" width="389" height="286"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1680" height="1050"/>
             <view key="contentView" id="771">
                 <rect key="frame" x="0.0" y="0.0" width="389" height="286"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -279,15 +278,15 @@
                         <rect key="frame" x="8" y="7" width="373" height="272"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="lkx-iR-wZf">
-                            <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" drawsBackground="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" id="773">
                                     <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="373" height="272"/>
+                                    <size key="minSize" width="358" height="272"/>
                                     <size key="maxSize" width="463" height="10000000"/>
                                     <attributedString key="textStorage">
                                         <fragment content="Switcher needs to be connected to show OSC addresses.">
@@ -308,12 +307,16 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="775">
-                            <rect key="frame" x="357" y="0.0" width="16" height="272"/>
+                            <rect key="frame" x="358" y="0.0" width="15" height="272"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
                 </subviews>
             </view>
+            <connections>
+                <outlet property="heltTextView" destination="773" id="Hhm-qy-iPp"/>
+            </connections>
+            <point key="canvasLocation" x="-224" y="27"/>
         </window>
         <window title="Log" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="0qs-BG-ADh" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES" HUD="YES"/>
@@ -328,15 +331,15 @@
                         <rect key="frame" x="8" y="7" width="373" height="272"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Ehi-52-hIa">
-                            <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
-                            <autoresizingMask key="autoresizingMask"/>
+                            <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" drawsBackground="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" id="yea-mf-8MA">
                                     <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="373" height="272"/>
+                                    <size key="minSize" width="358" height="272"/>
                                     <size key="maxSize" width="463" height="10000000"/>
                                     <color key="insertionPointColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </textView>
