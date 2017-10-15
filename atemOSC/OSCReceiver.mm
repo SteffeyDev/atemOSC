@@ -53,19 +53,25 @@
                         if ([style isEqualToString:@"mix"])
                             mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
 
-                        if ([style isEqualToString:@"dip"])
+                        else if ([style isEqualToString:@"dip"])
                             mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDip);
 
-                        if ([style isEqualToString:@"wipe"])
+                        else if ([style isEqualToString:@"wipe"])
                             mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleWipe);
 
-                        if ([style isEqualToString:@"sting"])
+                        else if ([style isEqualToString:@"sting"])
                             mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleStinger);
 
-                        if ([style isEqualToString:@"dve"])
+                        else if ([style isEqualToString:@"dve"])
                             mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
+                        
+                        else
+                            [appDel logMessage:@"You must specify a transition type of 'mix', 'dip', 'wipe', 'sting', or 'dve'"];
                     }
                 }
+                
+                else
+                    [appDel logMessage:@"You must specify a transition action of 'bar', 'cut', 'auto', 'ftb', or 'set-type"];
             }
             
             else if ([[address objectAtIndex:2] isEqualToString:@"set-nextusk"])
@@ -161,7 +167,7 @@
                     }
                 }
                 
-                else
+                else if ([self stringIsNumber:[address objectAtIndex:3]])
                 {
                     if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:3] intValue]])
                     {
@@ -170,6 +176,9 @@
                         if (!isTransitioning) key->PerformAutoTransition();
                     }
                 }
+                
+                else
+                    [appDel logMessage:@"You must specify a dsk command of 'set-tie', 'tie', 'toggle', 'on-air', 'set-next', or send an integer value to toggle auto on-air"];
             }
             
             else if ([[address objectAtIndex:2] isEqualToString:@"mplayer"])
@@ -231,8 +240,15 @@
                 int source = [[m value] intValue];
                 [self handleAuxSource:auxToChange channel:source];
             }
+            
+            else
+                [appDel logMessage:[NSString stringWithFormat:@"Cannot handle command: %@\nYou can find a list of valid commands in the help menu", [m address]]];
         }
+        else
+            [appDel logMessage:[NSString stringWithFormat:@"Cannot handle command: %@\nYou can find a list of valid commands in the help menu", [m address]]];
     }
+    else
+        [appDel logMessage:[NSString stringWithFormat:@"Cannot process command %@ because no switcher connected", [m address]]];
 }
 
 - (IBMDSwitcherDownstreamKey *) getDSK:(int)t
@@ -305,47 +321,55 @@
     }
     else
     {
-        int macroIndex = [[address objectAtIndex:3] intValue];
-        if ([[address objectAtIndex:4] isEqualToString:@"name"])
+        if ([self stringIsNumber:[address objectAtIndex:3]])
         {
-            NSString *value = [self getNameOfMacro:macroIndex];
-            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-            [newMsg addString:(NSString *)value];
-            [[appDel outPort] sendThisMessage:newMsg];
-        }
-        
-        else if ([[address objectAtIndex:4] isEqualToString:@"description"])
-        {
-            NSString *value = [self getDescriptionOfMacro:macroIndex];
-            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-            [newMsg addString:(NSString *)value];
-            [[appDel outPort] sendThisMessage:newMsg];
-        }
-        
-        else if ([[address objectAtIndex:4] isEqualToString:@"is-valid"])
-        {
-            int value = 0;
-            if ([self isMacroValid:macroIndex])
+            int macroIndex = [[address objectAtIndex:3] intValue];
+            if ([[address objectAtIndex:4] isEqualToString:@"name"])
             {
-                value = 1;
+                NSString *value = [self getNameOfMacro:macroIndex];
+                OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+                [newMsg addString:(NSString *)value];
+                [[appDel outPort] sendThisMessage:newMsg];
             }
-            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-            [newMsg addInt:(int)value];
-            [[appDel outPort] sendThisMessage:newMsg];
-        }
-        
-        else if ([[address objectAtIndex:4] isEqualToString:@"run"])
-        {
-            int value = 0;
-            if ([self isMacroValid:macroIndex])
+            
+            else if ([[address objectAtIndex:4] isEqualToString:@"description"])
             {
-                // Try to run the valid Macro
-                value = [self runMacroAtIndex:macroIndex];
+                NSString *value = [self getDescriptionOfMacro:macroIndex];
+                OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+                [newMsg addString:(NSString *)value];
+                [[appDel outPort] sendThisMessage:newMsg];
             }
-            OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-            [newMsg addInt:(int)value];
-            [[appDel outPort] sendThisMessage:newMsg];
+            
+            else if ([[address objectAtIndex:4] isEqualToString:@"is-valid"])
+            {
+                int value = 0;
+                if ([self isMacroValid:macroIndex])
+                {
+                    value = 1;
+                }
+                OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+                [newMsg addInt:(int)value];
+                [[appDel outPort] sendThisMessage:newMsg];
+            }
+            
+            else if ([[address objectAtIndex:4] isEqualToString:@"run"])
+            {
+                int value = 0;
+                if ([self isMacroValid:macroIndex])
+                {
+                    // Try to run the valid Macro
+                    value = [self runMacroAtIndex:macroIndex];
+                }
+                OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
+                [newMsg addInt:(int)value];
+                [[appDel outPort] sendThisMessage:newMsg];
+            }
+            
+            else
+                [appDel logMessage:[NSString stringWithFormat:@"You must specify a macro command of 'run', 'name', 'description', or 'is-valid' for the macro at index %d", macroIndex]];
         }
+        else
+            [appDel logMessage:@"You must specify a macro command of 'get-max-number', 'stop', or send the macro number you want to control as an integer"];
     }
 }
 
@@ -391,6 +415,9 @@
     {
         [self handleSuperSourceBox:m address:address];
     }
+    
+    else
+        [appDel logMessage:@"You must specify a super-source command of 'border-enabled', 'border-outer', 'border-inner', 'border-hue', 'border-saturations', 'border-luminescence', or 'box'"];
 }
 
 - (void) handleSuperSourceBox:(OSCMessage *)m address:(NSArray*)address
@@ -478,6 +505,9 @@
     {
         [appDel mSuperSourceBoxes][box]->ResetCrop();
     }
+    
+    else
+        [appDel logMessage:@"You must specify a super-source box command of 'enabled', 'source', 'x', 'y', 'size', 'cropped', 'crop-top', 'crop-bottom', 'crop-left', 'crop-right', or 'crop-reset'"];
 }
 
 - (BOOL)isMacroValid:(uint32_t)index
@@ -637,6 +667,12 @@
             [alert runModal];
         }
     }
+}
+
+- (BOOL)stringIsNumber:(NSString *)str
+{
+    NSCharacterSet* notDigits = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+    return [str rangeOfCharacterFromSet:notDigits].location == NSNotFound;
 }
 
 @end
