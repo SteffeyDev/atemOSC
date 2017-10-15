@@ -1,0 +1,7 @@
+language: objective-c
+deploy:
+  provider: pages
+  local_dir: website
+  github_token: $GITHUB_TOKEN
+  on:
+    branch: master
