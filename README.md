@@ -5,7 +5,7 @@ This is a macOS application, providing an interface to control an ATEM video swi
 
 ![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
 
-The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compiled and runnable version of the atemOSC is included. Caution: This software lacks of many usability features (like input validation).
+The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compiled and runnable version of the atemOSC is included. 
 
 ----------
 
@@ -42,6 +42,7 @@ The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compi
  - **Media 2** `/atem/program/12`
 
 For preview selection `/atem/preview/$i` can be used.
+Feedback: Enabled for all values
 
 
 ### Transition Control
@@ -59,13 +60,15 @@ To set the transition type of the Auto transition:
  - **Stinger** `/atem/transition/set-type/sting`
  - **DVE** `/atem/transition/set-type/dve`
  
+ Feedback: None
  
 ### Auxiliary Source Selection
 
  - **Set Aux $i source to $x** `/atem/aux/$i $x`
-   - Where `$x` is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
+   - Where `$x` is an integer value that is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
    - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
    
+Feedback: None
 
 ### Upstream Keyers
 
@@ -76,7 +79,7 @@ To set the transition type of the Auto transition:
      - e.g. If USK 1 is on air, `/atem/set-nextusk/1 1` will untie USK 1 so that it remains on, while `/atem/set-nextusk/1 0` will tie USK 1 so that it will go off air after the next transition.
 
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
-     
+Feedback: Enabled for '/atem/nextusk' only
      
 ### Downstream Keyers
 
@@ -92,6 +95,7 @@ Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switche
      - e.g. If DSK1 is on air, `/atem/dsk/set-next/1 1` will untie DSK1 so that it remains on, while `/atem/dsk/set-next/1 0` will tie DSK1 so that it will go off air after the next transition.
  
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
+Feedback: Enabled for '/atem/dsk/on-air' and '/atem/dsk/tie' only
  
 
 ### Media Players
@@ -103,6 +107,7 @@ Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switche
      - Where `$i` can be 1 or 2, and `$x` can be 1-20 depending on the capability of your ATEM switcher
      - e.g. `/atem/mplayer/1/still/5`
      
+Feedback: None
    
 ### SuperSource (when available)
 
@@ -112,6 +117,7 @@ Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switche
      - Where `$x` is a valid program source. Check the Help Menu for the correct values.
    - Other options are available. Check the Help Menu in the app for the full list.
    
+Feedback: None
 
 ### Macros
 
@@ -130,6 +136,8 @@ Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switche
      - Returns an `int` of `0|1` to indicate whether the requested Macro is valid
    - Run the Macro at index $i: `/atem/macros/$i/run`
      - Returns an `int` of `0|1` to indicate whether the requested Macro was executed. A `0` will be returned if the Macro is invalid, or does not exist
+
+Feedback: On-Request (you must send command to get feedback)
 
 ----------
 
