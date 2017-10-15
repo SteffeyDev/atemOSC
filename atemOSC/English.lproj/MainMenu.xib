@@ -118,7 +118,7 @@
                 </menuItem>
             </items>
         </menu>
-        <window title="atemOSC" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
+        <window title="atemOSC" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" customClass="SettingsWindow">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="426" width="394" height="143"/>
@@ -139,13 +139,13 @@
                     <textField verticalHuggingPriority="750" id="535">
                         <rect key="frame" x="152" y="104" width="222" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="536">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="536">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <outlet property="delegate" destination="494" id="hZM-Bc-ozU"/>
+                            <outlet property="delegate" destination="371" id="fGT-2t-DbP"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="543">
@@ -193,20 +193,20 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <outlet property="delegate" destination="494" id="759"/>
+                            <outlet property="delegate" destination="371" id="q8z-FO-ZvQ"/>
                             <outlet property="formatter" destination="754" id="755"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="633">
                         <rect key="frame" x="152" y="46" width="222" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="634">
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="634">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <outlet property="delegate" destination="494" id="761"/>
+                            <outlet property="delegate" destination="371" id="lnd-Xw-brb"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="617">
@@ -218,7 +218,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <outlet property="delegate" destination="494" id="760"/>
+                            <outlet property="delegate" destination="371" id="ZDs-6e-Wsf"/>
                             <outlet property="formatter" destination="754" id="756"/>
                         </connections>
                     </textField>
@@ -231,32 +231,33 @@
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <levelIndicator verticalHuggingPriority="750" id="731">
+                    <levelIndicator verticalHuggingPriority="750" id="731" userLabel="Red Led">
                         <rect key="frame" x="358" y="75" width="16" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <levelIndicatorCell key="cell" alignment="left" doubleValue="1" maxValue="1" criticalValue="1" id="732"/>
                     </levelIndicator>
-                    <levelIndicator hidden="YES" verticalHuggingPriority="750" id="733">
+                    <levelIndicator hidden="YES" verticalHuggingPriority="750" id="733" userLabel="Green Led">
                         <rect key="frame" x="358" y="75" width="16" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <levelIndicatorCell key="cell" alignment="left" doubleValue="1" maxValue="1" id="734"/>
                     </levelIndicator>
                 </subviews>
             </view>
+            <connections>
+                <outlet property="mAddressTextField" destination="535" id="gDl-gI-478"/>
+                <outlet property="mGreenLed" destination="733" id="fqm-UP-vM1"/>
+                <outlet property="mIncomingPortTextField" destination="615" id="cKW-Yc-3DT"/>
+                <outlet property="mOscDeviceTextField" destination="633" id="9cp-R4-Uon"/>
+                <outlet property="mOutgoingPortTextField" destination="617" id="Xyw-Zc-M6M"/>
+                <outlet property="mRedLed" destination="731" id="QRf-Uy-43L"/>
+                <outlet property="mSwitcherNameLabel" destination="607" id="Jp6-WZ-Igu"/>
+            </connections>
             <point key="canvasLocation" x="90" y="407"/>
         </window>
         <customObject id="494" customClass="AppDelegate">
             <connections>
-                <outlet property="greenLight" destination="733" id="735"/>
-                <outlet property="helpPanel" destination="770" id="777"/>
-                <outlet property="incoming" destination="615" id="621"/>
-                <outlet property="logPanel" destination="0qs-BG-ADh" id="atc-oV-mmX"/>
+                <outlet property="helpPanel" destination="770" id="Lcf-dA-98K"/>
                 <outlet property="logTextView" destination="yea-mf-8MA" id="Hc0-Hb-WQr"/>
-                <outlet property="mAddressTextField" destination="535" id="542"/>
-                <outlet property="mSwitcherNameLabel" destination="607" id="609"/>
-                <outlet property="oscdevice" destination="633" id="636"/>
-                <outlet property="outgoing" destination="617" id="622"/>
-                <outlet property="redLight" destination="731" id="736"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>
@@ -278,15 +279,15 @@
                         <rect key="frame" x="8" y="7" width="373" height="272"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="lkx-iR-wZf">
-                            <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
+                            <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" drawsBackground="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" id="773">
-                                    <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="358" height="272"/>
+                                    <size key="minSize" width="373" height="272"/>
                                     <size key="maxSize" width="463" height="10000000"/>
                                     <attributedString key="textStorage">
                                         <fragment content="Switcher needs to be connected to show OSC addresses.">
@@ -307,14 +308,14 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="775">
-                            <rect key="frame" x="358" y="0.0" width="15" height="272"/>
+                            <rect key="frame" x="357" y="0.0" width="16" height="272"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
                 </subviews>
             </view>
             <connections>
-                <outlet property="heltTextView" destination="773" id="Hhm-qy-iPp"/>
+                <outlet property="helpTextView" destination="773" id="iLy-rZ-3cl"/>
             </connections>
             <point key="canvasLocation" x="-224" y="27"/>
         </window>
@@ -331,15 +332,15 @@
                         <rect key="frame" x="8" y="7" width="373" height="272"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" drawsBackground="NO" copiesOnScroll="NO" id="Ehi-52-hIa">
-                            <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
+                            <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" drawsBackground="NO" importsGraphics="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" usesRuler="YES" allowsNonContiguousLayout="YES" spellingCorrection="YES" id="yea-mf-8MA">
-                                    <rect key="frame" x="0.0" y="0.0" width="358" height="272"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="373" height="272"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                    <size key="minSize" width="358" height="272"/>
+                                    <size key="minSize" width="373" height="272"/>
                                     <size key="maxSize" width="463" height="10000000"/>
                                     <color key="insertionPointColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </textView>
@@ -351,12 +352,13 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="ZBP-Oa-hwz">
-                            <rect key="frame" x="358" y="0.0" width="15" height="272"/>
+                            <rect key="frame" x="357" y="0.0" width="16" height="272"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="-134" y="711"/>
         </window>
     </objects>
 </document>

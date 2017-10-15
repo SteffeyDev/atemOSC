@@ -22,6 +22,7 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */ = {isa = PBXBuildFile; fileRef = A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */; };
 		A98839421F8D913800F91789 /* OSCAddressPanel.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839411F8D913800F91789 /* OSCAddressPanel.mm */; };
+		A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839471F8E307100F91789 /* SettingsWindow.mm */; };
 		A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F790691F89B83C003ACBCF /* OSCReceiver.mm */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,8 @@
 		A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FeedbackMonitors.mm; sourceTree = "<group>"; };
 		A98839401F8D913800F91789 /* OSCAddressPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCAddressPanel.h; sourceTree = "<group>"; };
 		A98839411F8D913800F91789 /* OSCAddressPanel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCAddressPanel.mm; sourceTree = "<group>"; };
+		A98839461F8E307100F91789 /* SettingsWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsWindow.h; sourceTree = "<group>"; };
+		A98839471F8E307100F91789 /* SettingsWindow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsWindow.mm; sourceTree = "<group>"; };
 		A9F790691F89B83C003ACBCF /* OSCReceiver.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCReceiver.mm; sourceTree = "<group>"; };
 		A9F7906B1F89B857003ACBCF /* OSCReceiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCReceiver.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -86,6 +89,8 @@
 			children = (
 				256AC3D80F4B6AC300CF3369 /* AppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */,
+				A98839461F8E307100F91789 /* SettingsWindow.h */,
+				A98839471F8E307100F91789 /* SettingsWindow.mm */,
 				A98839401F8D913800F91789 /* OSCAddressPanel.h */,
 				A98839411F8D913800F91789 /* OSCAddressPanel.mm */,
 				A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */,
@@ -241,6 +246,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				A98839421F8D913800F91789 /* OSCAddressPanel.mm in Sources */,
 				A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */,

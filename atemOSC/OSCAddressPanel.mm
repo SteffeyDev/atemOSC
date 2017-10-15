@@ -10,12 +10,10 @@
 
 @implementation OSCAddressPanel
 
-- (id)initWithDelegate:(AppDelegate *)appDel
+- (void)setupWithDelegate:(AppDelegate *)appDel
 {
-    self = [super init];
-    
     //set helptext
-    [heltTextView setAlignment:NSLeftTextAlignment];
+    [helpTextView setAlignment:NSLeftTextAlignment];
     
     NSMutableAttributedString * helpString = [[NSMutableAttributedString alloc] initWithString:@""];
     NSDictionary *infoAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Monaco" traits:NSUnboldFontMask|NSUnitalicFontMask weight:5 size:12]};
@@ -193,11 +191,7 @@
     [helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/run\n" attributes:infoAttribute]];
     
     [helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
-    [[heltTextView textStorage] setAttributedString:helpString];
-    
-    self.isVisible = YES;
-    
-    return self;
+    [[helpTextView textStorage] setAttributedString:helpString];
 }
 
 @end

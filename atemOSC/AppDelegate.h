@@ -32,14 +32,13 @@
 #import <Cocoa/Cocoa.h>
 
 #import "FeedbackMonitors.h"
-#import "OSCReceiver.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, NSTextFieldDelegate>
+@class OSCAddressPanel;
+@class OSCReceiver;
+
+@interface AppDelegate : NSObject <NSApplicationDelegate>
 {
 	NSWindow *window;
-	
-	IBOutlet NSTextField*		mAddressTextField;
-	IBOutlet NSTextField*		mSwitcherNameLabel;
 
 	IBMDSwitcherDiscovery*		        mSwitcherDiscovery;
 	IBMDSwitcher*				        mSwitcher;
@@ -50,16 +49,8 @@
     
     OSCReceiver*                mOscReceiver;
     OSCManager*					manager;
-	
-    IBOutlet NSTextField*       incoming;
-    IBOutlet NSTextField*       outgoing;
-    IBOutlet NSTextField*       oscdevice;
     
-    IBOutlet NSLevelIndicator*  redLight;
-    IBOutlet NSLevelIndicator*  greenLight;
-    
-    IBOutlet NSButton*          helpButton;
-    
+    IBOutlet OSCAddressPanel*   helpPanel;
     IBOutlet NSTextView*        logTextView;
 }
 
@@ -83,9 +74,8 @@
 @property (strong)         id                                       activity;
 
 - (void)connectBMD;
-- (IBAction)portChanged:(id)sender;
-- (IBAction)helpButtonPressed:(id)sender;
-- (IBAction)logButtonPressed:(id)sender;
+- (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr;
+- (IBAction)githubPageButtonPressed:(id)sender;
 
 - (void)switcherConnected;
 - (void)switcherDisconnected;

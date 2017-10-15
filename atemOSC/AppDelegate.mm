@@ -27,6 +27,8 @@
 
 #import "AppDelegate.h"
 #include <libkern/OSAtomic.h>
+#import "OSCAddressPanel.h"
+#import "SettingsWindow.h"
 
 @implementation AppDelegate
 
@@ -73,6 +75,9 @@
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
     
     [logTextView setTextColor:[NSColor whiteColor]];
+    
+    [helpPanel setupWithDelegate: self];
+    [(SettingsWindow *)window loadSettingsFromPreferences];
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
 	if (!mSwitcherDiscovery)
@@ -84,69 +89,21 @@
     {
         [self switcherDisconnected];		// start with switcher disconnected
     
-        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-        [mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
-        NSLog(@"Value: %@", [prefs stringForKey:@"atem"]);
-        
-        [outgoing setIntValue:[prefs integerForKey:@"outgoing"]];
-        [incoming setIntValue:[prefs integerForKey:@"incoming"]];
-        [oscdevice setStringValue:[prefs objectForKey:@"oscdevice"]];
-    
         //	make an osc manager- i'm using a custom in-port to record a bunch of extra conversion for the display, but you can just make a "normal" manager
         manager = [[OSCManager alloc] init];
     
-        [self portChanged:self];
+        NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+        [self portChanged:[prefs integerForKey:@"incoming"] out:[prefs integerForKey:@"outgoing"] ip:[prefs stringForKey:@"oscdevice"]];
     }
 }
 
-- (void)controlTextDidEndEditing:(NSNotification *)aNotification
-{
-    NSTextField* textField = (NSTextField *)[aNotification object];
-    bool validInput = true;
-    NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-    
-    if (textField == oscdevice && ![[oscdevice stringValue] isEqualToString:@""])
-    {
-        if ([self isValidIPAddress:[oscdevice stringValue]])
-            [prefs setObject:[oscdevice stringValue] forKey:@"oscdevice"];
-        else
-        {
-            validInput = false;
-            NSAlert *alert = [[NSAlert alloc] init];
-            [alert setMessageText:@"Invalid IP Adress"];
-            [alert setInformativeText:@"Please enter a valid IP Address for 'OSC Out IP Adress'"];
-            [alert beginSheetModalForWindow:window completionHandler:nil];
-        }
-    }
-    
-    else if (textField == mAddressTextField && ![[mAddressTextField stringValue] isEqualToString:@""])
-    {
-        if ([self isValidIPAddress:[mAddressTextField stringValue]])
-            [prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
-        else
-        {
-            validInput = false;
-            NSAlert *alert = [[NSAlert alloc] init];
-            [alert setMessageText:@"Invalid IP Adress"];
-            [alert setInformativeText:@"Please enter a valid IP Address for 'Switcher IP Adress'"];
-            [alert beginSheetModalForWindow:window completionHandler:nil];
-        }
-    }
-    
-    [prefs setInteger:[outgoing intValue] forKey:@"outgoing"];
-    [prefs setInteger:[incoming intValue] forKey:@"incoming"];
-    [prefs synchronize];
-    
-    [self portChanged:self];
-}
-
-- (IBAction)portChanged:(id)sender
+- (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr
 {
     [manager removeInput:inPort];
     [manager removeOutput:outPort];
     
-    outPort = [manager createNewOutputToAddress:[oscdevice stringValue] atPort:[outgoing intValue] withLabel:@"atemOSC"];
-    inPort = [manager createNewInputForPort:[incoming intValue] withLabel:@"atemOSC"];
+    outPort = [manager createNewOutputToAddress:outIpStr atPort:outPortValue withLabel:@"atemOSC"];
+    inPort = [manager createNewInputForPort:inPortValue withLabel:@"atemOSC"];
     
     [manager setDelegate:mOscReceiver];
 }
@@ -171,25 +128,10 @@
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/danielbuechele/atemOSC/"]];
 }
 
-- (BOOL)isValidIPAddress:(NSString*) str
-{
-    const char *utf8 = [str UTF8String];
-    int success;
-    
-    struct in_addr dst;
-    success = inet_pton(AF_INET, utf8, &dst);
-    if (success != 1) {
-        struct in6_addr dst6;
-        success = inet_pton(AF_INET6, utf8, &dst6);
-    }
-    
-    return success == 1;
-}
-
 - (void)connectBMD
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSString* address = [mAddressTextField stringValue];
+        NSString* address = [(SettingsWindow *)window switcherAddress];
         
         dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
         dispatch_async(queue, ^{
@@ -263,23 +205,14 @@
     [newMsg addFloat:0.0];
     [outPort sendThisMessage:newMsg];
 	
-	//[mConnectButton setEnabled:NO];			// disable Connect button while connected
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [greenLight setHidden:NO];
-        [redLight setHidden:YES];
-    });
-	
 	NSString* productName;
 	if (FAILED(mSwitcher->GetProductName((CFStringRef*)&productName)))
 	{
 		[self logMessage:@"Could not get switcher product name"];
 		return;
 	}
-	
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [mSwitcherNameLabel setStringValue:productName];
-        [productName release];
-    });
+    
+    [(SettingsWindow *)window showSwitcherConnected:productName];
     
 	mSwitcher->AddCallback(mSwitcherMonitor);
     
@@ -416,11 +349,7 @@ finish:
     [newMsg addFloat:1.0];
     [outPort sendThisMessage:newMsg];
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [mSwitcherNameLabel setStringValue:@""];
-        [greenLight setHidden:YES];
-        [redLight setHidden:NO];
-    });
+    [(SettingsWindow *)window showSwitcherDisconnected];
 	
     [self cleanUpConnection];
 
