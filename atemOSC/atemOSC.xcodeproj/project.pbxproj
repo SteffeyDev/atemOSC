@@ -10,21 +10,20 @@
 		1857BF46194D41240053631F /* atemOSC.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1857BF45194D41240053631F /* atemOSC.icns */; };
 		18E8D87D1EA8DC6400F69290 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18E8D87C1EA8DC6400F69290 /* Images.xcassets */; };
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
-		256AC3DA0F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm */; };
+		256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */; };
 		333E3045161395CF0002287B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333E3044161395CF0002287B /* IOKit.framework */; };
 		335AB1BF15703EF4003EA2D2 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; };
 		335AB1C115703EF4003EA2D2 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; };
 		335AB1C315703EFA003EA2D2 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		335AB1C415703EFA003EA2D2 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */; };
-		33F328ED1573A29900D4722A /* AMSerialPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E31573A29900D4722A /* AMSerialPort.m */; };
-		33F328EE1573A29900D4722A /* AMSerialPortAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E51573A29900D4722A /* AMSerialPortAdditions.m */; };
-		33F328EF1573A29900D4722A /* AMSerialPortList.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E71573A29900D4722A /* AMSerialPortList.m */; };
-		33F328F01573A29900D4722A /* AMSerialPortList_Deprecated.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */; };
-		33F328F11573A29900D4722A /* AMStandardEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 33F328EB1573A29900D4722A /* AMStandardEnumerator.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */ = {isa = PBXBuildFile; fileRef = A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */; };
+		A98839421F8D913800F91789 /* OSCAddressPanel.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839411F8D913800F91789 /* OSCAddressPanel.mm */; };
+		A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839471F8E307100F91789 /* SettingsWindow.mm */; };
+		A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F790691F89B83C003ACBCF /* OSCReceiver.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,8 +47,8 @@
 		1857BF45194D41240053631F /* atemOSC.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = atemOSC.icns; sourceTree = "<group>"; };
 		18E8D87C1EA8DC6400F69290 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = AtemOSC/Images.xcassets; sourceTree = "<group>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		256AC3D80F4B6AC300CF3369 /* SwitcherPanelAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitcherPanelAppDelegate.h; sourceTree = "<group>"; };
-		256AC3D90F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SwitcherPanelAppDelegate.mm; sourceTree = "<group>"; };
+		256AC3D80F4B6AC300CF3369 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -58,21 +57,16 @@
 		335AB1BD15703EF4003EA2D2 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVBasics.framework; sourceTree = "<group>"; };
 		335B268B1573A16300F72574 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDSwitcherAPI.h; sourceTree = "<group>"; };
 		335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BMDSwitcherAPIDispatch.cpp; sourceTree = "<group>"; };
-		33F328E01573A29900D4722A /* AMSDKCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSDKCompatibility.h; sourceTree = "<group>"; };
-		33F328E11573A29900D4722A /* AMSerialErrors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialErrors.h; sourceTree = "<group>"; };
-		33F328E21573A29900D4722A /* AMSerialPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPort.h; sourceTree = "<group>"; };
-		33F328E31573A29900D4722A /* AMSerialPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPort.m; sourceTree = "<group>"; };
-		33F328E41573A29900D4722A /* AMSerialPortAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortAdditions.h; sourceTree = "<group>"; };
-		33F328E51573A29900D4722A /* AMSerialPortAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortAdditions.m; sourceTree = "<group>"; };
-		33F328E61573A29900D4722A /* AMSerialPortList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList.h; sourceTree = "<group>"; };
-		33F328E71573A29900D4722A /* AMSerialPortList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList.m; sourceTree = "<group>"; };
-		33F328E81573A29900D4722A /* AMSerialPortList_Deprecated.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMSerialPortList_Deprecated.h; sourceTree = "<group>"; };
-		33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMSerialPortList_Deprecated.m; sourceTree = "<group>"; };
-		33F328EA1573A29900D4722A /* AMStandardEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AMStandardEnumerator.h; sourceTree = "<group>"; };
-		33F328EB1573A29900D4722A /* AMStandardEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AMStandardEnumerator.m; sourceTree = "<group>"; };
-		33F328EC1573A29900D4722A /* ArduinoSerial_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArduinoSerial_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* atemOSC-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "atemOSC-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* atemOSC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atemOSC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeedbackMonitors.h; sourceTree = "<group>"; };
+		A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FeedbackMonitors.mm; sourceTree = "<group>"; };
+		A98839401F8D913800F91789 /* OSCAddressPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCAddressPanel.h; sourceTree = "<group>"; };
+		A98839411F8D913800F91789 /* OSCAddressPanel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCAddressPanel.mm; sourceTree = "<group>"; };
+		A98839461F8E307100F91789 /* SettingsWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsWindow.h; sourceTree = "<group>"; };
+		A98839471F8E307100F91789 /* SettingsWindow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsWindow.mm; sourceTree = "<group>"; };
+		A9F790691F89B83C003ACBCF /* OSCReceiver.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCReceiver.mm; sourceTree = "<group>"; };
+		A9F7906B1F89B857003ACBCF /* OSCReceiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCReceiver.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,8 +87,16 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				256AC3D80F4B6AC300CF3369 /* SwitcherPanelAppDelegate.h */,
-				256AC3D90F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm */,
+				256AC3D80F4B6AC300CF3369 /* AppDelegate.h */,
+				256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */,
+				A98839461F8E307100F91789 /* SettingsWindow.h */,
+				A98839471F8E307100F91789 /* SettingsWindow.mm */,
+				A98839401F8D913800F91789 /* OSCAddressPanel.h */,
+				A98839411F8D913800F91789 /* OSCAddressPanel.mm */,
+				A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */,
+				A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */,
+				A9F7906B1F89B857003ACBCF /* OSCReceiver.h */,
+				A9F790691F89B83C003ACBCF /* OSCReceiver.mm */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -143,7 +145,6 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				33F328DF1573A29900D4722A /* arduino */,
 				335B268B1573A16300F72574 /* BMDSwitcherAPI.h */,
 				335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -170,26 +171,6 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		33F328DF1573A29900D4722A /* arduino */ = {
-			isa = PBXGroup;
-			children = (
-				33F328E01573A29900D4722A /* AMSDKCompatibility.h */,
-				33F328E11573A29900D4722A /* AMSerialErrors.h */,
-				33F328E21573A29900D4722A /* AMSerialPort.h */,
-				33F328E31573A29900D4722A /* AMSerialPort.m */,
-				33F328E41573A29900D4722A /* AMSerialPortAdditions.h */,
-				33F328E51573A29900D4722A /* AMSerialPortAdditions.m */,
-				33F328E61573A29900D4722A /* AMSerialPortList.h */,
-				33F328E71573A29900D4722A /* AMSerialPortList.m */,
-				33F328E81573A29900D4722A /* AMSerialPortList_Deprecated.h */,
-				33F328E91573A29900D4722A /* AMSerialPortList_Deprecated.m */,
-				33F328EA1573A29900D4722A /* AMStandardEnumerator.h */,
-				33F328EB1573A29900D4722A /* AMStandardEnumerator.m */,
-				33F328EC1573A29900D4722A /* ArduinoSerial_Prefix.pch */,
-			);
-			path = arduino;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -265,14 +246,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				256AC3DA0F4B6AC300CF3369 /* SwitcherPanelAppDelegate.mm in Sources */,
+				A98839421F8D913800F91789 /* OSCAddressPanel.mm in Sources */,
+				A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */,
+				256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */,
+				A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */,
 				335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */,
-				33F328ED1573A29900D4722A /* AMSerialPort.m in Sources */,
-				33F328EE1573A29900D4722A /* AMSerialPortAdditions.m in Sources */,
-				33F328EF1573A29900D4722A /* AMSerialPortList.m in Sources */,
-				33F328F01573A29900D4722A /* AMSerialPortList_Deprecated.m in Sources */,
-				33F328F11573A29900D4722A /* AMStandardEnumerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
