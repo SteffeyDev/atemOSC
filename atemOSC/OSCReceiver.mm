@@ -237,7 +237,7 @@
             else if ([[address objectAtIndex:2] isEqualToString:@"aux"])
             {
                 int auxToChange = [[address objectAtIndex:3] intValue];
-                int source = [[m value] intValue];
+                int source = [[m value] floatValue];
                 [self handleAuxSource:auxToChange channel:source];
             }
             
@@ -294,7 +294,10 @@
 - (void) handleAuxSource:(int)auxToChange channel:(int)channel
 {
     BMDSwitcherInputId inputId = channel;
-    [appDel mSwitcherInputAuxList][auxToChange-1]->SetInputSource(inputId);
+    if (auxToChange-1 < [appDel mSwitcherInputAuxList].size())
+        [appDel mSwitcherInputAuxList][auxToChange-1]->SetInputSource(inputId);
+    else
+        [appDel logMessage:[NSString stringWithFormat:@"Aux number %d not available on your switcher", channel]];
 }
 
 - (void) handleMacros:(OSCMessage *)m address:(NSArray*)address

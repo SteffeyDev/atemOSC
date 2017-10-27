@@ -191,6 +191,7 @@
 	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
 	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
 	IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
+    IBMDSwitcherInputIterator* inputIterator = NULL;
     isConnectedToATEM = YES;
     
     if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
@@ -230,6 +231,30 @@
 		[self logMessage:@"Could not get the first IBMDSwitcherMixEffectBlock"];
 		return;
 	}
+    // Create an InputMonitor for each input so we can catch any changes to input names
+    result = mSwitcher->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator);
+    if (SUCCEEDED(result))
+    {
+        IBMDSwitcherInput* input = NULL;
+        
+        // For every input, install a callback to monitor property changes on the input
+        while (S_OK == inputIterator->Next(&input))
+        {
+            IBMDSwitcherInputAux* auxObj;
+            result = input->QueryInterface(IID_IBMDSwitcherInputAux, (void**)&auxObj);
+            if (SUCCEEDED(result))
+            {
+                BMDSwitcherInputId auxId;
+                result = auxObj->GetInputSource(&auxId);
+                if (SUCCEEDED(result))
+                {
+                    mSwitcherInputAuxList.push_back(auxObj);
+                }
+            }
+        }
+        inputIterator->Release();
+        inputIterator = NULL;
+    }
     
     
     //Upstream Keyer
