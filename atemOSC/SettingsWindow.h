@@ -11,17 +11,17 @@
 
 @interface SettingsWindow : NSWindow<NSTextFieldDelegate>
 {
-    IBOutlet NSTextField*       mIncomingPortTextField;
-    IBOutlet NSTextField*       mOutgoingPortTextField;
-    IBOutlet NSTextField*       mOscDeviceTextField;
-    
-    IBOutlet NSLevelIndicator*  mRedLed;
-    IBOutlet NSLevelIndicator*  mGreenLed;
-    
-    IBOutlet NSTextField*        mAddressTextField;
-    IBOutlet NSTextField*        mSwitcherNameLabel;
-    
-    AppDelegate*                appDel;
+	IBOutlet NSTextField*       mIncomingPortTextField;
+	IBOutlet NSTextField*       mOutgoingPortTextField;
+	IBOutlet NSTextField*       mOscDeviceTextField;
+	
+	IBOutlet NSLevelIndicator*  mRedLed;
+	IBOutlet NSLevelIndicator*  mGreenLed;
+	
+	IBOutlet NSTextField*        mAddressTextField;
+	IBOutlet NSTextField*        mSwitcherNameLabel;
+	
+	AppDelegate*                appDel;
 }
 
 - (void)loadSettingsFromPreferences;
