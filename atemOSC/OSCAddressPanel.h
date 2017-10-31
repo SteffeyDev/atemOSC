@@ -10,7 +10,7 @@
 @class AppDelegate;
 
 @interface OSCAddressPanel : NSPanel {
-    IBOutlet NSTextView*        helpTextView;
+	IBOutlet NSTextView*        helpTextView;
 }
 
 - (void)setupWithDelegate:(AppDelegate *)appDel;
