@@ -447,6 +447,13 @@ finish:
 	}
 }
 
+- (void)sendStatus
+{
+	mDownstreamKeyerMonitor->sendStatus();
+	mMixEffectBlockMonitor->sendStatus();
+	mTransitionParametersMonitor->sendStatus();
+}
+
 - (void)logMessage:(NSString *)message
 {
 	if (message) {

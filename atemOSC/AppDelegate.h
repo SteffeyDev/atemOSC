@@ -80,6 +80,8 @@
 - (void)switcherConnected;
 - (void)switcherDisconnected;
 
+- (void)sendStatus;
+
 - (void)logMessage:(NSString *)message;
 
 @end

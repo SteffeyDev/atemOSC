@@ -130,6 +130,25 @@ void MixEffectBlockMonitor::updateSliderPosition()
 	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 }
 
+void MixEffectBlockMonitor::sendStatus() const
+{
+	updatePreviewButtonSelection();
+	
+	// Sending both program and preview at the same time causes a race condition, TouchOSC can't handle
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		updateProgramButtonSelection();
+	});
+	
+	double position;
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
+	double sliderPosition = position * 100;
+	if (mMoveSliderDownwards)
+		sliderPosition = 100 - position * 100;
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
+	[newMsg addFloat:1.0-sliderPosition/100];
+	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+}
+
 // Send OSC messages out when DSK Tie is changed on switcher
 void DownstreamKeyerMonitor::updateDSKTie() const
 {
@@ -183,6 +202,12 @@ HRESULT DownstreamKeyerMonitor::Notify(BMDSwitcherDownstreamKeyEventType eventTy
 	return S_OK;
 }
 
+void DownstreamKeyerMonitor::sendStatus() const
+{
+	updateDSKTie();
+	updateDSKOnAir();
+}
+
 HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEventType eventType)
 {
 	
@@ -216,6 +241,11 @@ void TransitionParametersMonitor::updateTransitionParameters() const
 		[newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 	}
+}
+
+void TransitionParametersMonitor::sendStatus() const
+{
+	updateTransitionParameters();
 }
 
 HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)

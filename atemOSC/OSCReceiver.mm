@@ -18,7 +18,10 @@
 		
 		if ([[address objectAtIndex:1] isEqualToString:@"atem"])
 		{
-			if ([[address objectAtIndex:2] isEqualToString:@"preview"] || [[address objectAtIndex:2] isEqualToString:@"program"])
+			if ([[address objectAtIndex:2] isEqualToString:@"send-status"])
+				[appDel sendStatus];
+			
+			else if ([[address objectAtIndex:2] isEqualToString:@"preview"] || [[address objectAtIndex:2] isEqualToString:@"program"])
 				[self activateChannel:[[address objectAtIndex:3] intValue] isProgram:[[address objectAtIndex:2] isEqualToString:@"program"]];
 			
 			else if ([[address objectAtIndex:2] isEqualToString:@"transition"])
