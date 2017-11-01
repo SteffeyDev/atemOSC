@@ -28,9 +28,7 @@
 #import "BMDSwitcherAPI.h"
 #import "VVOSC/VVOSC.h"
 #import <vector>
-
 #import <Cocoa/Cocoa.h>
-
 #import "FeedbackMonitors.h"
 
 @class OSCAddressPanel;
@@ -38,40 +36,39 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {
-	NSWindow *window;
-	
-	IBMDSwitcherDiscovery*		        mSwitcherDiscovery;
-	IBMDSwitcher*				        mSwitcher;
-	IBMDSwitcherKeyFlyParameters*	    mDVEControl;
-	SwitcherMonitor*			        mSwitcherMonitor;
+	NSWindow*                           window;
+	IBMDSwitcherDiscovery*              mSwitcherDiscovery;
+	IBMDSwitcher*                       mSwitcher;
+	IBMDSwitcherKeyFlyParameters*       mDVEControl;
+	SwitcherMonitor*                    mSwitcherMonitor;
 	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
 	TransitionParametersMonitor*        mTransitionParametersMonitor;
-	
-	OSCReceiver*                mOscReceiver;
-	OSCManager*					manager;
-	
-	IBOutlet OSCAddressPanel*   helpPanel;
-	IBOutlet NSTextView*        logTextView;
+	OSCReceiver*                        mOscReceiver;
+	OSCManager*                         manager;
+	IBOutlet OSCAddressPanel*           helpPanel;
+	IBOutlet NSPanel*                   logPanel;
+	IBOutlet NSTextView*                logTextView;
+	NSStatusItem*                       statusItem;
 }
 
-@property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
-@property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
-@property (readonly)       IBMDSwitcherStills*                      mStills;
-@property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;
-@property (readonly)       IBMDSwitcherMacroPool*                   mMacroPool;
-@property (readonly)       IBMDSwitcherMacroControl*                mMacroControl;
-@property (assign, readonly) OSCInPort*                             inPort;
-@property (assign, readonly) OSCOutPort*                            outPort;
-@property (readonly)       std::vector<IBMDSwitcherMediaPlayer*>    mMediaPlayers;
-@property (readonly)       IBMDSwitcherMediaPool*                   mMediaPool;
-@property (readonly)       std::vector<IBMDSwitcherKey*>            keyers;
-@property (readonly)       std::vector<IBMDSwitcherDownstreamKey*>  dsk;
-@property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
-@property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
-@property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
-@property (readonly)       bool                                     isConnectedToATEM;
-@property (strong)         IBOutlet NSWindow*                       window;
-@property (strong)         id                                       activity;
+@property (readonly)         std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
+@property (readonly)         std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
+@property (readonly)         IBMDSwitcherStills*                      mStills;
+@property (readonly)         IBMDSwitcherInputSuperSource*            mSuperSource;
+@property (readonly)         IBMDSwitcherMacroPool*                   mMacroPool;
+@property (readonly)         IBMDSwitcherMacroControl*                mMacroControl;
+@property (assign, readonly) OSCInPort*                               inPort;
+@property (assign, readonly) OSCOutPort*                              outPort;
+@property (readonly)         std::vector<IBMDSwitcherMediaPlayer*>    mMediaPlayers;
+@property (readonly)         IBMDSwitcherMediaPool*                   mMediaPool;
+@property (readonly)         std::vector<IBMDSwitcherKey*>            keyers;
+@property (readonly)         std::vector<IBMDSwitcherDownstreamKey*>  dsk;
+@property (readonly)         IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
+@property (readonly)         MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
+@property (readonly)         IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
+@property (readonly)         bool                                     isConnectedToATEM;
+@property (strong)           IBOutlet NSWindow*                       window;
+@property (strong)           id                                       activity;
 
 - (void)connectBMD;
 - (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr;

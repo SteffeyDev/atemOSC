@@ -118,8 +118,8 @@
                 </menuItem>
             </items>
         </menu>
-        <window title="atemOSC" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" customClass="SettingsWindow">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+        <window title="atemOSC" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="371" customClass="SettingsWindow">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="335" y="426" width="394" height="143"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1418"/>
@@ -257,6 +257,7 @@
         <customObject id="494" customClass="AppDelegate">
             <connections>
                 <outlet property="helpPanel" destination="770" id="Lcf-dA-98K"/>
+                <outlet property="logPanel" destination="0qs-BG-ADh" id="Yae-dU-2gt"/>
                 <outlet property="logTextView" destination="yea-mf-8MA" id="Hc0-Hb-WQr"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>

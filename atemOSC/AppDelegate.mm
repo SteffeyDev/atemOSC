@@ -67,6 +67,24 @@
 	mMacroPool = NULL;
 	isConnectedToATEM = NO;
 	
+	statusItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+	statusItem.title = @"";
+	NSImage* statusImage = [NSImage imageNamed:@"StatusItemDisconnected"];
+	[statusImage setTemplate:YES];
+	statusItem.image = statusImage;
+	[statusItem.view setAlphaValue:0.5];
+
+	NSMenu *menu = [[NSMenu alloc] init];
+	[menu addItemWithTitle:@"Status: Not connected" action:nil keyEquivalent:@""];
+	[menu addItem:[NSMenuItem separatorItem]];
+	[menu addItemWithTitle:@"Preferences..." action:@selector(showPreferences) keyEquivalent:@","];
+	[menu addItemWithTitle:@"Show OSC Addresses" action:@selector(showOSCAddresses) keyEquivalent:@""];
+	[menu addItemWithTitle:@"Show Log Messages" action:@selector(showLogMessages) keyEquivalent:@""];
+	[menu addItem:[NSMenuItem separatorItem]];
+	[menu addItemWithTitle:@"Quit atemOSC" action:@selector(terminate:) keyEquivalent:@""];
+	statusItem.menu = menu;
+	[statusItem retain];
+	
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
@@ -97,6 +115,21 @@
 	}
 }
 
+- (void)showPreferences
+{
+	[window makeKeyAndOrderFront:self];
+}
+
+- (void)showOSCAddresses
+{
+	[helpPanel makeKeyAndOrderFront:self];
+}
+
+- (void)showLogMessages
+{
+    [logPanel makeKeyAndOrderFront:self];
+}
+
 - (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr
 {
 	[manager removeInput:inPort];
@@ -115,7 +148,7 @@
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)sender
 {
-	return YES;
+	return NO;
 }
 
 - (void)sheetDidEndShouldTerminate:(NSWindow *)sheet returnCode:(NSInteger)returnCode contextInfo:(void *)contextInfo
@@ -136,7 +169,7 @@
 		dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
 		dispatch_async(queue, ^{
 			
-			BMDSwitcherConnectToFailure            failReason;
+			BMDSwitcherConnectToFailure failReason;
 			
 			// Note that ConnectTo() can take several seconds to return, both for success or failure,
 			// depending upon hostname resolution and network response times, so it may be best to
@@ -212,7 +245,8 @@
 		[self logMessage:@"Could not get switcher product name"];
 		return;
 	}
-	
+	[[[statusItem menu] itemAtIndex:0] setTitle:[NSString stringWithFormat:@"Status: Connected to %@", productName]];
+	[statusItem setImage:[NSImage imageNamed:@"StatusItem"]];
 	[(SettingsWindow *)window showSwitcherConnected:productName];
 	
 	mSwitcher->AddCallback(mSwitcherMonitor);
@@ -364,6 +398,9 @@ finish:
 	isConnectedToATEM = NO;
 	if (self.activity)
 		[[NSProcessInfo processInfo] endActivity:self.activity];
+
+	[[[statusItem menu] itemAtIndex:0] setTitle:@"Status: Not connected"];
+	[statusItem setImage:[NSImage imageNamed:@"StatusItemDisconnected"]];
 	
 	self.activity = nil;
 	
