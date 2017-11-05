@@ -73,6 +73,23 @@ private:
 	void updateTransitionParameters() const;
 };
 
+class MacroPoolMonitor : public GenericMonitor<IBMDSwitcherMacroPoolCallback>
+{
+public:
+	MacroPoolMonitor(void *delegate) : GenericMonitor(delegate) { }
+	HRESULT Notify (BMDSwitcherMacroPoolEventType eventType, uint32_t index, IBMDSwitcherTransferMacro* macroTransfer);
+	void sendStatus() const;
+	
+protected:
+	virtual ~MacroPoolMonitor() { }
+	
+private:
+	void updateMacroName(int index) const;
+	void updateMacroDescription(int index) const;
+	void updateNumberOfMacros() const;
+	void updateMacroValidity(int index) const;
+};
+
 // Callback class to monitor switcher disconnection
 class SwitcherMonitor : public GenericMonitor<IBMDSwitcherCallback>
 {

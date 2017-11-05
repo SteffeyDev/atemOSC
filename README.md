@@ -124,7 +124,7 @@ Feedback: None
    - Macros should be recorded within the ATEM Control Panel software.
    - Macros are stored within the ATEM in a 0-index array
      - This means that to access the first recorded Macro, you should use an index `$i` of `0`, to access the second recorded Macro, you should use an index of `1` etc.
-   - Get the Maximum Number of Macros: `/atem/macros/get-max-number`
+   - Get the Maximum Number of Macros: `/atem/macros/max-number`
      - Returns an `int` of the maximum number of Macros supported by your ATEM
      - Access to these Macros should be used via an index of `n-1`
    - Stop the currently active Macro (if any): `/atem/macros/stop`

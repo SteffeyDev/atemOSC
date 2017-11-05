@@ -1,5 +1,6 @@
 #include "FeedbackMonitors.h"
 #import "AppDelegate.h"
+#import "Utilities.h"
 
 static inline bool    operator== (const REFIID& iid1, const REFIID& iid2)
 {
@@ -246,6 +247,76 @@ void TransitionParametersMonitor::updateTransitionParameters() const
 void TransitionParametersMonitor::sendStatus() const
 {
 	updateTransitionParameters();
+}
+
+HRESULT MacroPoolMonitor::Notify (BMDSwitcherMacroPoolEventType eventType, uint32_t index, IBMDSwitcherTransferMacro* macroTransfer)
+{
+	
+	switch (eventType)
+	{
+		case bmdSwitcherMacroPoolEventTypeNameChanged:
+			updateMacroName(index);
+			break;
+		case bmdSwitcherMacroPoolEventTypeDescriptionChanged:
+			updateMacroDescription(index);
+			break;
+		case bmdSwitcherMacroPoolEventTypeValidChanged:
+			updateMacroValidity(index);
+			updateNumberOfMacros();
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void MacroPoolMonitor::updateMacroName(int index) const
+{
+	NSString *name = getNameOfMacro(index);
+	if (![name isEqualToString:@""]) {
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/name", index]];
+		[newMsg addString:name];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+void MacroPoolMonitor::updateMacroDescription(int index) const
+{
+	NSString *description = getDescriptionOfMacro(index);
+	if (![description isEqualToString:@""]) {
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/description", index]];
+		[newMsg addString:description];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+void MacroPoolMonitor::updateNumberOfMacros() const
+{
+	uint32_t maxNumberOfMacros = getMaxNumberOfMacros();
+	if (maxNumberOfMacros > 0)
+	{
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/max-number"];
+		[newMsg addInt:(int)maxNumberOfMacros];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+void MacroPoolMonitor::updateMacroValidity(int index) const
+{
+	int value = isMacroValid(index);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/is-valid", index]];
+	[newMsg addInt:(int)value];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void MacroPoolMonitor::sendStatus() const
+{
+	uint32_t maxNumberOfMacros = getMaxNumberOfMacros();
+	for (int i = 0; i < maxNumberOfMacros; i++) {
+		updateMacroValidity(i);
+		updateMacroName(i);
+		updateMacroDescription(i);
+	}
 }
 
 HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)

@@ -46,6 +46,7 @@
 	SwitcherMonitor*			        mSwitcherMonitor;
 	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
 	TransitionParametersMonitor*        mTransitionParametersMonitor;
+	MacroPoolMonitor*       			mMacroPoolMonitor;
 	
 	OSCReceiver*                mOscReceiver;
 	OSCManager*					manager;

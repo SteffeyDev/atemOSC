@@ -73,6 +73,7 @@
 	mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
 	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
+	mMacroPoolMonitor = new MacroPoolMonitor(self);
 	
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
@@ -318,6 +319,7 @@
 		[self logMessage:@"Could not get IID_IBMDSwitcherMacroPool interface"];
 		return;
 	}
+	mMacroPool->AddCallback(mMacroPoolMonitor);
 	
 	// get macro controller
 	result = mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl);
@@ -433,12 +435,18 @@ finish:
 		mMixEffectBlock = NULL;
 	}
 	
-	// disconnect monitors
 	if (mSwitcher)
 	{
 		mSwitcher->RemoveCallback(mSwitcherMonitor);
 		mSwitcher->Release();
 		mSwitcher = NULL;
+	}
+	
+	if (mMacroPool)
+	{
+		mMacroPool->RemoveCallback(mMacroPoolMonitor);
+		mMacroPool->Release();
+		mMacroPool = NULL;
 	}
 	
 	if (switcherTransitionParameters)
@@ -452,6 +460,7 @@ finish:
 	mDownstreamKeyerMonitor->sendStatus();
 	mMixEffectBlockMonitor->sendStatus();
 	mTransitionParametersMonitor->sendStatus();
+	mMacroPoolMonitor->sendStatus();
 }
 
 - (void)logMessage:(NSString *)message

@@ -1,5 +1,6 @@
 #import "OSCReceiver.h"
 #import "AppDelegate.h"
+#import "Utilities.h"
 
 @implementation OSCReceiver
 
@@ -22,7 +23,7 @@
 				[appDel sendStatus];
 			
 			else if ([[address objectAtIndex:2] isEqualToString:@"preview"] || [[address objectAtIndex:2] isEqualToString:@"program"])
-				[self activateChannel:[[address objectAtIndex:3] intValue] isProgram:[[address objectAtIndex:2] isEqualToString:@"program"]];
+				activateChannel([[address objectAtIndex:3] intValue], [[address objectAtIndex:2] isEqualToString:@"program"]);
 			
 			else if ([[address objectAtIndex:2] isEqualToString:@"transition"])
 			{
@@ -170,7 +171,7 @@
 					}
 				}
 				
-				else if ([self stringIsNumber:[address objectAtIndex:3]])
+				else if (stringIsNumber([address objectAtIndex:3]))
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:3] intValue]])
 					{
@@ -313,9 +314,9 @@
 		[[appDel outPort] sendThisMessage:newMsg];
 		return;
 	}
-	if ([[address objectAtIndex:3] isEqualToString:@"get-max-number"])
+	if ([[address objectAtIndex:3] isEqualToString:@"get-max-number"] || [[address objectAtIndex:3] isEqualToString:@"max-number"])
 	{
-		uint32_t value = [self getMaxNumberOfMacros];
+		uint32_t value = getMaxNumberOfMacros();
 		
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
 		[newMsg addInt:(int)value];
@@ -323,16 +324,16 @@
 	}
 	else if ([[address objectAtIndex:3] isEqualToString:@"stop"])
 	{
-		[self stopRunningMacro];
+		stopRunningMacro();
 	}
 	else
 	{
-		if ([self stringIsNumber:[address objectAtIndex:3]])
+		if (stringIsNumber([address objectAtIndex:3]))
 		{
 			int macroIndex = [[address objectAtIndex:3] intValue];
 			if ([[address objectAtIndex:4] isEqualToString:@"name"])
 			{
-				NSString *value = [self getNameOfMacro:macroIndex];
+				NSString *value = getNameOfMacro(macroIndex);
 				OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
 				[newMsg addString:(NSString *)value];
 				[[appDel outPort] sendThisMessage:newMsg];
@@ -340,7 +341,7 @@
 			
 			else if ([[address objectAtIndex:4] isEqualToString:@"description"])
 			{
-				NSString *value = [self getDescriptionOfMacro:macroIndex];
+				NSString *value = getDescriptionOfMacro(macroIndex);
 				OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
 				[newMsg addString:(NSString *)value];
 				[[appDel outPort] sendThisMessage:newMsg];
@@ -349,7 +350,7 @@
 			else if ([[address objectAtIndex:4] isEqualToString:@"is-valid"])
 			{
 				int value = 0;
-				if ([self isMacroValid:macroIndex])
+				if (isMacroValid(macroIndex))
 				{
 					value = 1;
 				}
@@ -361,10 +362,10 @@
 			else if ([[address objectAtIndex:4] isEqualToString:@"run"])
 			{
 				int value = 0;
-				if ([self isMacroValid:macroIndex])
+				if (isMacroValid(macroIndex))
 				{
 					// Try to run the valid Macro
-					value = [self runMacroAtIndex:macroIndex];
+					value = runMacroAtIndex(macroIndex);
 				}
 				OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
 				[newMsg addInt:(int)value];
@@ -375,7 +376,7 @@
 				[appDel logMessage:[NSString stringWithFormat:@"You must specify a macro command of 'run', 'name', 'description', or 'is-valid' for the macro at index %d", macroIndex]];
 		}
 		else
-			[appDel logMessage:@"You must specify a macro command of 'get-max-number', 'stop', or send the macro number you want to control as an integer"];
+			[appDel logMessage:@"You must specify a macro command of 'max-number', 'stop', or send the macro number you want to control as an integer"];
 	}
 }
 
@@ -514,171 +515,6 @@
 	
 	else
 		[appDel logMessage:@"You must specify a super-source box command of 'enabled', 'source', 'x', 'y', 'size', 'cropped', 'crop-top', 'crop-bottom', 'crop-left', 'crop-right', or 'crop-reset'"];
-}
-
-- (BOOL)isMacroValid:(uint32_t)index
-{
-	HRESULT result;
-	bool isValid;
-	if ([appDel mMacroPool])
-	{
-		result = [appDel mMacroPool]->IsValid(index, &isValid);
-		switch (result)
-		{
-			case S_OK:
-				return isValid;
-			case E_INVALIDARG:
-				[appDel logMessage:[NSString stringWithFormat:@"Could not check whether the Macro at index %d is valid because the index is invalid.", index]];
-				break;
-			default:
-				[appDel logMessage:[NSString stringWithFormat:@"Could not check whether the Macro at index %d is valid.", index]];
-				break;
-		}
-		return NO;
-	}
-	return NO;
-}
-
-- (BOOL)runMacroAtIndex:(uint32_t)index
-{
-	HRESULT result;
-	if ([appDel mMacroControl])
-	{
-		if (![self isMacroValid:index])
-		{
-			[appDel logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because it is not valid.", index]];
-			return NO;
-		}
-		
-		result = [appDel mMacroControl]->Run(index);
-		switch (result)
-		{
-			case S_OK:
-				return true;
-			case E_INVALIDARG:
-				[appDel logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because the index is invalid.", index]];
-				break;
-			case E_FAIL:
-				[appDel logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d.", index]];
-				break;
-			default:
-				[appDel logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d.", index]];
-				break;
-		}
-		return NO;
-	}
-	return NO;
-}
-
-- (BOOL)stopRunningMacro
-{
-	HRESULT result;
-	if ([appDel mMacroControl])
-	{
-		result = [appDel mMacroControl]->StopRunning();
-		switch (result)
-		{
-			case S_OK:
-				return YES;
-			default:
-				[appDel logMessage:@"Could not stop the current Macro."];
-				break;
-		}
-		return NO;
-	}
-	return NO;
-}
-
-- (uint32_t)getMaxNumberOfMacros
-{
-	uint32_t maxNumberOfMacros = 0;
-	if ([appDel mMacroPool])
-	{
-		if (S_OK == [appDel mMacroPool]->GetMaxCount(&maxNumberOfMacros))
-			return maxNumberOfMacros;
-		else
-			[appDel logMessage:@"Could not get max the number of Macros available."];
-	}
-	return maxNumberOfMacros;
-}
-
-- (NSString*)getNameOfMacro:(uint32_t)index
-{
-	HRESULT result;
-	NSString *name = @"";
-	result = [appDel mMacroPool]->GetName(index, (CFStringRef*)&name);
-	switch (result)
-	{
-		case S_OK:
-			return name;
-		case E_INVALIDARG:
-			[appDel logMessage:[NSString stringWithFormat:@"Could not get the name of the Macro at index %d because the index is invalid.", index]];
-			break;
-		case E_OUTOFMEMORY:
-			[appDel logMessage:[NSString stringWithFormat:@"Insufficient memory to get the name of the Macro at index %d.", index]];
-			break;
-		default:
-			[appDel logMessage:[NSString stringWithFormat:@"Could not get the name of the Macro at index %d.", index]];
-	}
-	return name;
-}
-
-- (NSString*)getDescriptionOfMacro:(uint32_t)index
-{
-	HRESULT result;
-	NSString *description = @"";
-	result = [appDel mMacroPool]->GetDescription(index, (CFStringRef*)&description);
-	switch (result)
-	{
-		case S_OK:
-			return description;
-		case E_INVALIDARG:
-			[appDel logMessage:[NSString stringWithFormat:@"Could not get the description of the Macro at index %d because the index is invalid.", index]];
-			break;
-		case E_OUTOFMEMORY:
-			[appDel logMessage:[NSString stringWithFormat:@"Insufficient memory to get the description of the Macro at index %d.", index]];
-			break;
-		default:
-			[appDel logMessage:[NSString stringWithFormat:@"Could not get the description of the Macro at index %d.", index]];
-	}
-	return description;
-}
-
-
-- (void) activateChannel:(int)channel isProgram:(BOOL)program
-{
-	BMDSwitcherInputId InputId = channel;
-	if (program) {
-		@try
-		{
-			[appDel mMixEffectBlock]->SetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, InputId);
-		}
-		@catch (NSException *exception)
-		{
-			NSAlert *alert = [[NSAlert alloc] init];
-			[alert setMessageText:exception.name];
-			[alert runModal];
-		}
-	}
-	else
-	{
-		@try
-		{
-			[appDel mMixEffectBlock]->SetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, InputId);
-		}
-		@catch (NSException *exception)
-		{
-			NSAlert *alert = [[NSAlert alloc] init];
-			[alert setMessageText:exception.name];
-			[alert runModal];
-		}
-	}
-}
-
-- (BOOL)stringIsNumber:(NSString *)str
-{
-	NSCharacterSet* notDigits = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
-	return [str rangeOfCharacterFromSet:notDigits].location == NSNotFound;
 }
 
 @end
