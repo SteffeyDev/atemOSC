@@ -178,7 +178,7 @@
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nMacros:\n" attributes:addressAttribute]];
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet the Maximum Number of Macros: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/get-max-number\n" attributes:infoAttribute]];
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/max-number\n" attributes:infoAttribute]];
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tStop the currently active Macro (if any): " attributes:addressAttribute]];
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/stop\n" attributes:infoAttribute]];
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet the Name of a Macro: " attributes:addressAttribute]];
