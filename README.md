@@ -124,7 +124,7 @@ Feedback: None
    - Macros should be recorded within the ATEM Control Panel software.
    - Macros are stored within the ATEM in a 0-index array
      - This means that to access the first recorded Macro, you should use an index `$i` of `0`, to access the second recorded Macro, you should use an index of `1` etc.
-   - Get the Maximum Number of Macros: `/atem/macros/get-max-number`
+   - Get the Maximum Number of Macros: `/atem/macros/max-number`
      - Returns an `int` of the maximum number of Macros supported by your ATEM
      - Access to these Macros should be used via an index of `n-1`
    - Stop the currently active Macro (if any): `/atem/macros/stop`
@@ -137,7 +137,13 @@ Feedback: None
    - Run the Macro at index $i: `/atem/macros/$i/run`
      - Returns an `int` of `0|1` to indicate whether the requested Macro was executed. A `0` will be returned if the Macro is invalid, or does not exist
 
-Feedback: On-Request (you must send command to get feedback)
+Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/macros/$i/description`, and `/atem/macros/$i/is-valid`. Also available On-Request (you can send the command to get the value in a return message)
+
+### Other
+
+  - **Request all feedback available** `/atem/send-status`
+  	- This will query the switcher and send back the status for the program/preview, transition control, keyers, and macros
+	- e.g. This can be used when a new OSC client device is brought online, so that it gets the current status of the system
 
 ----------
 

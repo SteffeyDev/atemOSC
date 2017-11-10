@@ -46,6 +46,7 @@
 	SwitcherMonitor*			        mSwitcherMonitor;
 	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
 	TransitionParametersMonitor*        mTransitionParametersMonitor;
+	MacroPoolMonitor*       			mMacroPoolMonitor;
 	
 	OSCReceiver*                mOscReceiver;
 	OSCManager*					manager;
@@ -79,6 +80,8 @@
 
 - (void)switcherConnected;
 - (void)switcherDisconnected;
+
+- (void)sendStatus;
 
 - (void)logMessage:(NSString *)message;
 

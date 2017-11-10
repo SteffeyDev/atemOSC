@@ -1,5 +1,6 @@
 #include "FeedbackMonitors.h"
 #import "AppDelegate.h"
+#import "Utilities.h"
 
 static inline bool    operator== (const REFIID& iid1, const REFIID& iid2)
 {
@@ -130,6 +131,25 @@ void MixEffectBlockMonitor::updateSliderPosition()
 	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 }
 
+void MixEffectBlockMonitor::sendStatus() const
+{
+	updatePreviewButtonSelection();
+	
+	// Sending both program and preview at the same time causes a race condition, TouchOSC can't handle
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		updateProgramButtonSelection();
+	});
+	
+	double position;
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
+	double sliderPosition = position * 100;
+	if (mMoveSliderDownwards)
+		sliderPosition = 100 - position * 100;
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
+	[newMsg addFloat:1.0-sliderPosition/100];
+	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+}
+
 // Send OSC messages out when DSK Tie is changed on switcher
 void DownstreamKeyerMonitor::updateDSKTie() const
 {
@@ -183,6 +203,12 @@ HRESULT DownstreamKeyerMonitor::Notify(BMDSwitcherDownstreamKeyEventType eventTy
 	return S_OK;
 }
 
+void DownstreamKeyerMonitor::sendStatus() const
+{
+	updateDSKTie();
+	updateDSKOnAir();
+}
+
 HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEventType eventType)
 {
 	
@@ -215,6 +241,81 @@ void TransitionParametersMonitor::updateTransitionParameters() const
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i]];
 		[newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+
+void TransitionParametersMonitor::sendStatus() const
+{
+	updateTransitionParameters();
+}
+
+HRESULT MacroPoolMonitor::Notify (BMDSwitcherMacroPoolEventType eventType, uint32_t index, IBMDSwitcherTransferMacro* macroTransfer)
+{
+	
+	switch (eventType)
+	{
+		case bmdSwitcherMacroPoolEventTypeNameChanged:
+			updateMacroName(index);
+			break;
+		case bmdSwitcherMacroPoolEventTypeDescriptionChanged:
+			updateMacroDescription(index);
+			break;
+		case bmdSwitcherMacroPoolEventTypeValidChanged:
+			updateMacroValidity(index);
+			updateNumberOfMacros();
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void MacroPoolMonitor::updateMacroName(int index) const
+{
+	NSString *name = getNameOfMacro(index);
+	if (![name isEqualToString:@""]) {
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/name", index]];
+		[newMsg addString:name];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+void MacroPoolMonitor::updateMacroDescription(int index) const
+{
+	NSString *description = getDescriptionOfMacro(index);
+	if (![description isEqualToString:@""]) {
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/description", index]];
+		[newMsg addString:description];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+void MacroPoolMonitor::updateNumberOfMacros() const
+{
+	uint32_t maxNumberOfMacros = getMaxNumberOfMacros();
+	if (maxNumberOfMacros > 0)
+	{
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/max-number"];
+		[newMsg addInt:(int)maxNumberOfMacros];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+void MacroPoolMonitor::updateMacroValidity(int index) const
+{
+	int value = isMacroValid(index);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/is-valid", index]];
+	[newMsg addInt:(int)value];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void MacroPoolMonitor::sendStatus() const
+{
+	uint32_t maxNumberOfMacros = getMaxNumberOfMacros();
+	for (int i = 0; i < maxNumberOfMacros; i++) {
+		updateMacroValidity(i);
+		updateMacroName(i);
+		updateMacroDescription(i);
 	}
 }
 
