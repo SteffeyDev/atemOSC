@@ -137,7 +137,13 @@ Feedback: None
    - Run the Macro at index $i: `/atem/macros/$i/run`
      - Returns an `int` of `0|1` to indicate whether the requested Macro was executed. A `0` will be returned if the Macro is invalid, or does not exist
 
-Feedback: On-Request (you must send command to get feedback)
+Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/macros/$i/description`, and `/atem/macros/$i/is-valid`. Also available On-Request (you can send the command to get the value in a return message)
+
+### Other
+
+  - **Request all feedback available** `/atem/send-status`
+  	- This will query the switcher and send back the status for the program/preview, transition control, keyers, and macros
+	- e.g. This can be used when a new OSC client device is brought online, so that it gets the current status of the system
 
 ----------
 
