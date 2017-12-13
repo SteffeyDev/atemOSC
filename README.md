@@ -13,8 +13,8 @@ The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compi
 
 1. Go to the [releases page](https://github.com/danielbuechele/atemOSC/releases)
 2. For the latest version, use the first release.  For a version that supports older versions of the Atem SDK, scroll down until you find the release for the version you want.
-2. Under `Downloads`, select `Source code (zip)`
-3. You will find the atemOSC app inside the downloaded folder.  You can run the app by double-clicking it, or you could move it to your `/Applications` folder and then launch it from the Launchpad.
+2. Under `Assets`, select `atemOSC.dmg`
+3. Double-click the downloaded DMG, drag the application to your Applications folder, then launch it from the Launchpad.
 
 ----------
 
