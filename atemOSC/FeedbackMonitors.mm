@@ -330,5 +330,54 @@ HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType
 	return S_OK;
 }
 
+HRESULT STDMETHODCALLTYPE AudioInputMonitor::Notify (BMDSwitcherAudioInputEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherAudioInputEventTypeGainChanged:
+			updateGain();
+			break;
+		case bmdSwitcherAudioInputEventTypeBalanceChanged:
+			updateBalance();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE AudioInputMonitor::LevelNotification (double left, double right, double peakLeft, double peakRight)
+{
+	return S_OK;
+}
+
+void AudioInputMonitor::updateGain() const
+{
+	double gain;
+	static_cast<AppDelegate *>(appDel).mAudioInputs[index_]->GetGain(&gain);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%d/gain", index_]];
+	[newMsg addFloat:(float)gain];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void AudioInputMonitor::updateBalance() const
+{
+	double balance;
+	static_cast<AppDelegate *>(appDel).mAudioInputs[index_]->GetBalance(&balance);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%d/balance", index_]];
+	[newMsg addFloat:(float)balance];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void AudioInputMonitor::sendStatus() const
+{
+	updateGain();
+	updateBalance();
+}
+	
+}
+
 
 

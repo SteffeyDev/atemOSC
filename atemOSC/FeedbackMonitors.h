@@ -102,4 +102,22 @@ protected:
 	virtual ~SwitcherMonitor() { }
 };
 
+// Callback class to monitor audio inputs
+class AudioInputMonitor : public GenericMonitor<IBMDSwitcherAudioInputCallback>
+{
+public:
+	AudioInputMonitor(void *delegate, int index) : GenericMonitor(delegate), index_(index) { }
+	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherAudioInputEventType eventType);
+	HRESULT STDMETHODCALLTYPE LevelNotification (double left, double right, double peakLeft, double peakRight);
+	void sendStatus() const;
+	
+protected:
+	virtual ~AudioInputMonitor() { }
+	
+private:
+	void updateGain() const;
+	void updateBalance() const;
+	int  index_;
+};
+
 #endif /* SwitcherMonitor_h */

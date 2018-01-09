@@ -70,6 +70,8 @@
 @property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
 @property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
 @property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
+@property (readonly)       std::vector<IBMDSwitcherAudioInput*>     mAudioInputs;
+@property (readonly)       std::vector<AudioInputMonitor*>          mAudioInputMonitors;
 @property (readonly)       bool                                     isConnectedToATEM;
 @property (strong)         IBOutlet NSWindow*                       window;
 @property (strong)         id                                       activity;

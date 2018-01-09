@@ -47,6 +47,8 @@
 @synthesize mMacroControl;
 @synthesize mSuperSourceBoxes;
 @synthesize mSwitcherInputAuxList;
+@synthesize mAudioInputs;
+@synthesize mAudioInputMonitors;
 @synthesize outPort;
 @synthesize inPort;
 @synthesize mSwitcher;
@@ -193,6 +195,7 @@
 	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
 	IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
 	IBMDSwitcherInputIterator* inputIterator = NULL;
+	IBMDSwitcherAudioInputIterator* audioInputIterator = NULL;
 	isConnectedToATEM = YES;
 	
 	if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
@@ -346,10 +349,29 @@
 		superSourceIterator = NULL;
 	}
 	
+	// Audio Inputs
+	result = mSwitcher->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator);
+	if (FAILED(result))
+	{
+		[self logMessage:@"Could not create IBMDSwitcherMediaPlayerIterator iterator"];
+		return;
+	}
+	
+	IBMDSwitcherAudioInput* audioInput = NULL;
+	while (S_OK == audioInputIterator->Next(&audioInput))
+	{
+		mAudioInputs.push_back(audioInput);
+		AudioInputMonitor *monitor = new AudioInputMonitor(self, mAudioInputs.size() - 1);
+		audioInput->AddCallback(monitor);
+		mAudioInputMonitors.push_back(monitor);
+	}
+	audioInputIterator->Release();
+	audioInputIterator = NULL;
+	
+	
 	switcherTransitionParameters = NULL;
 	mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
 	switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
-	
 	
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
 	
@@ -453,6 +475,13 @@ finish:
 		mMacroPool = NULL;
 	}
 	
+	while (mAudioInputs.size())
+	{
+		mAudioInputs.back()->RemoveCallback(mAudioInputMonitors[mAudioInputs.size() - 1]);
+		mAudioInputs.back()->Release();
+		mAudioInputs.pop_back();
+	}
+	
 	if (switcherTransitionParameters)
 	{
 		switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
@@ -479,6 +508,10 @@ finish:
 	});
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 		mMixEffectBlockMonitor->sendStatus();
+	});
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		for (int i = 0; i < mAudioInputMonitors.size(); i++)
+			mAudioInputMonitors[i]->sendStatus();
 	});
 }
 

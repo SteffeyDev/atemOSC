@@ -245,6 +245,37 @@
 				[self handleAuxSource:auxToChange channel:source];
 			}
 			
+			else if ([[address objectAtIndex:2] isEqualToString:@"audio"] && [address count] > 3)
+			{
+				if ([[address objectAtIndex:3] isEqualToString:@"output"])
+				{
+					
+				}
+				
+				else if ([[address objectAtIndex:3] isEqualToString:@"input"])
+				{
+					if (stringIsNumber([address objectAtIndex:4]) && [[address objectAtIndex:4] intValue] < [appDel mAudioInputs].size())
+					{
+						if ([[address objectAtIndex:5] isEqualToString:@"gain"])
+							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetGain([[m value] doubleValue]);
+
+						else if ([[address objectAtIndex:5] isEqualToString:@"balance"])
+							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetBalance([[m value] doubleValue]);
+					}
+
+					else
+						[appDel logMessage:[NSString stringWithFormat:@"Please choose an audio input between 0 and %lu", [appDel mAudioInputs].size() - 1]];
+				}
+				
+				else if ([[address objectAtIndex:3] isEqualToString:@"mixer"])
+				{
+					
+				}
+				
+				else
+					[appDel logMessage:@"You must specify an audio command of 'input', 'output', or 'mixer'"];
+			}
+			
 			else
 				[appDel logMessage:[NSString stringWithFormat:@"Cannot handle command: %@\nYou can find a list of valid commands in the help menu", [m address]]];
 		}
