@@ -133,10 +133,12 @@ void MixEffectBlockMonitor::updateSliderPosition()
 
 void MixEffectBlockMonitor::sendStatus() const
 {
-	updatePreviewButtonSelection();
-	
 	// Sending both program and preview at the same time causes a race condition, TouchOSC can't handle
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		updatePreviewButtonSelection();
+	});
+
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 		updateProgramButtonSelection();
 	});
 	
