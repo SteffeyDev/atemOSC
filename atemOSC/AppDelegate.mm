@@ -75,11 +75,17 @@
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
+	mMonitors.push_back(mSwitcherMonitor);
 	mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
+	mMonitors.push_back(mDownstreamKeyerMonitor);
 	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
+	mMonitors.push_back(mTransitionParametersMonitor);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
+	mMonitors.push_back(mMixEffectBlockMonitor);
 	mMacroPoolMonitor = new MacroPoolMonitor(self);
+	mMonitors.push_back(mMacroPoolMonitor);
 	mAudioMixerMonitor = new AudioMixerMonitor(self);
+	mMonitors.push_back(mAudioMixerMonitor);
 	
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
@@ -366,6 +372,7 @@
 		mAudioInputs.push_back(audioInput);
 		AudioInputMonitor *monitor = new AudioInputMonitor(self, mAudioInputs.size() - 1);
 		audioInput->AddCallback(monitor);
+		mMonitors.push_back(monitor);
 		mAudioInputMonitors.push_back(monitor);
 	}
 	audioInputIterator->Release();
@@ -503,30 +510,19 @@ finish:
 	}
 }
 
+// We run this recursively so that we can get the
+// delay from each command, and allow for variable
+// wait times between sends
 - (void)sendStatus
 {
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
-	[newMsg addFloat:isConnectedToATEM ? 1.0 : 0.0];
-	[outPort sendThisMessage:newMsg];
-	newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
-	[newMsg addFloat:isConnectedToATEM ? 0.0 : 1.0];
-	[outPort sendThisMessage:newMsg];
+	[self sendEachStatus:0];
+}
 
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		mDownstreamKeyerMonitor->sendStatus();
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		mTransitionParametersMonitor->sendStatus();
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		mMacroPoolMonitor->sendStatus();
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		mMixEffectBlockMonitor->sendStatus();
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		for (int i = 0; i < mAudioInputMonitors.size(); i++)
-			mAudioInputMonitors[i]->sendStatus();
+- (void)sendEachStatus:(int)nextMonitor
+{
+	int delay = mMonitors[nextMonitor]->sendStatus();
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		[self sendEachStatus:nextMonitor+1];
 	});
 }
 

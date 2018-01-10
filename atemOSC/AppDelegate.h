@@ -46,6 +46,7 @@
 	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
 	TransitionParametersMonitor*        mTransitionParametersMonitor;
 	MacroPoolMonitor*       			mMacroPoolMonitor;
+	std::vector<SendStatusInterface*>   mMonitors;
 	
 	OSCReceiver*                mOscReceiver;
 	OSCManager*					manager;
@@ -86,6 +87,7 @@
 - (void)switcherDisconnected;
 
 - (void)sendStatus;
+- (void)sendEachStatus:(int)nextMonitor;
 
 - (void)logMessage:(NSString *)message;
 
