@@ -457,10 +457,25 @@ finish:
 
 - (void)sendStatus
 {
-	mDownstreamKeyerMonitor->sendStatus();
-	mMixEffectBlockMonitor->sendStatus();
-	mTransitionParametersMonitor->sendStatus();
-	mMacroPoolMonitor->sendStatus();
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
+	[newMsg addFloat:isConnectedToATEM ? 1.0 : 0.0];
+	[outPort sendThisMessage:newMsg];
+	newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
+	[newMsg addFloat:isConnectedToATEM ? 0.0 : 1.0];
+	[outPort sendThisMessage:newMsg];
+
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		mDownstreamKeyerMonitor->sendStatus();
+	});
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		mTransitionParametersMonitor->sendStatus();
+	});
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		mMacroPoolMonitor->sendStatus();
+	});
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		mMixEffectBlockMonitor->sendStatus();
+	});
 }
 
 - (void)logMessage:(NSString *)message
