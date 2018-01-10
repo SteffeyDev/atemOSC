@@ -376,7 +376,53 @@ void AudioInputMonitor::sendStatus() const
 	updateGain();
 	updateBalance();
 }
+
+
+HRESULT STDMETHODCALLTYPE AudioMixerMonitor::Notify (BMDSwitcherAudioMixerEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherAudioMixerEventTypeProgramOutGainChanged:
+			updateGain();
+			break;
+		case bmdSwitcherAudioMixerEventTypeProgramOutBalanceChanged:
+			updateBalance();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
 	
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE AudioMixerMonitor::ProgramOutLevelNotification (double left, double right, double peakLeft, double peakRight)
+{
+	return S_OK;
+}
+
+void AudioMixerMonitor::updateGain() const
+{
+	double gain;
+	static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutGain(&gain);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/gain"];
+	[newMsg addFloat:(float)gain];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void AudioMixerMonitor::updateBalance() const
+{
+	double balance;
+	static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutBalance(&balance);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/balance"];
+	[newMsg addFloat:(float)balance];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void AudioMixerMonitor::sendStatus() const
+{
+	updateGain();
+	updateBalance();
 }
 
 

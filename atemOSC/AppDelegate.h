@@ -72,6 +72,8 @@
 @property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
 @property (readonly)       std::vector<IBMDSwitcherAudioInput*>     mAudioInputs;
 @property (readonly)       std::vector<AudioInputMonitor*>          mAudioInputMonitors;
+@property (readonly)       IBMDSwitcherAudioMixer*                  mAudioMixer;
+@property (readonly)       AudioMixerMonitor*                       mAudioMixerMonitor;
 @property (readonly)       bool                                     isConnectedToATEM;
 @property (strong)         IBOutlet NSWindow*                       window;
 @property (strong)         id                                       activity;

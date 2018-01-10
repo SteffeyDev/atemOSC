@@ -120,4 +120,21 @@ private:
 	int  index_;
 };
 
+// Callback class to monitor audio mixer
+class AudioMixerMonitor : public GenericMonitor<IBMDSwitcherAudioMixerCallback>
+{
+public:
+	AudioMixerMonitor(void *delegate) : GenericMonitor(delegate) { }
+	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherAudioMixerEventType eventType);
+	HRESULT STDMETHODCALLTYPE ProgramOutLevelNotification (double left, double right, double peakLeft, double peakRight);
+	void sendStatus() const;
+	
+protected:
+	virtual ~AudioMixerMonitor() { }
+	
+private:
+	void updateGain() const;
+	void updateBalance() const;
+};
+
 #endif /* SwitcherMonitor_h */

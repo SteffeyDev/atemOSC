@@ -49,6 +49,8 @@
 @synthesize mSwitcherInputAuxList;
 @synthesize mAudioInputs;
 @synthesize mAudioInputMonitors;
+@synthesize mAudioMixer;
+@synthesize mAudioMixerMonitor;
 @synthesize outPort;
 @synthesize inPort;
 @synthesize mSwitcher;
@@ -77,6 +79,7 @@
 	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
 	mMacroPoolMonitor = new MacroPoolMonitor(self);
+	mAudioMixerMonitor = new AudioMixerMonitor(self);
 	
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
@@ -369,6 +372,11 @@
 	audioInputIterator = NULL;
 	
 	
+	// Audio Mixer (Output)
+	mAudioMixer = NULL;
+	mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer);
+	mAudioMixer->AddCallback(mAudioMixerMonitor);
+	
 	switcherTransitionParameters = NULL;
 	mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
 	switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
@@ -480,6 +488,13 @@ finish:
 		mAudioInputs.back()->RemoveCallback(mAudioInputMonitors[mAudioInputs.size() - 1]);
 		mAudioInputs.back()->Release();
 		mAudioInputs.pop_back();
+	}
+	
+	if (mAudioMixer)
+	{
+		mAudioMixer->RemoveCallback(mAudioMixerMonitor);
+		mAudioMixer->Release();
+		mAudioMixer = NULL;
 	}
 	
 	if (switcherTransitionParameters)

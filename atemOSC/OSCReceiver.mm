@@ -261,15 +261,25 @@
 
 						else if ([[address objectAtIndex:5] isEqualToString:@"balance"])
 							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetBalance([[m value] doubleValue]);
+						
+						else
+							[appDel logMessage:@"You must specify an audio input option of 'gain' or 'balance'"];
 					}
 
 					else
 						[appDel logMessage:[NSString stringWithFormat:@"Please choose an audio input between 0 and %lu", [appDel mAudioInputs].size() - 1]];
 				}
 				
-				else if ([[address objectAtIndex:3] isEqualToString:@"mixer"])
+				else if ([[address objectAtIndex:3] isEqualToString:@"output"])
 				{
+					if ([[address objectAtIndex:4] isEqualToString:@"gain"])
+						[appDel mAudioMixer]->SetProgramOutGain([[m value] doubleValue]);
 					
+					else if ([[address objectAtIndex:4] isEqualToString:@"balance"])
+						[appDel mAudioMixer]->SetProgramOutBalance([[m value] doubleValue]);
+					
+					else
+						[appDel logMessage:@"You must specify an audio output option of 'gain' or 'balance'"];
 				}
 				
 				else
