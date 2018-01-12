@@ -354,6 +354,8 @@
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
 	
 	self->mMixEffectBlockMonitor->updateSliderPosition();
+
+	[helpPanel setupWithDelegate: self];
 	
 finish:
 	if (iterator)
