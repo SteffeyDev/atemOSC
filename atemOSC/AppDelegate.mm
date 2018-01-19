@@ -362,10 +362,10 @@
 	result = mSwitcher->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator);
 	if (FAILED(result))
 	{
-		[self logMessage:@"Could not create IBMDSwitcherMediaPlayerIterator iterator"];
+		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
 		return;
 	}
-	
+
 	IBMDSwitcherAudioInput* audioInput = NULL;
 	while (S_OK == audioInputIterator->Next(&audioInput))
 	{
@@ -381,7 +381,12 @@
 	
 	// Audio Mixer (Output)
 	mAudioMixer = NULL;
-	mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer);
+	result = mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer);
+	if (FAILED(result))
+	{
+		[self logMessage:@"Could not get IBMDSwitcherAudioMixer interface"];
+		return;
+	}
 	mAudioMixer->AddCallback(mAudioMixerMonitor);
 	
 	switcherTransitionParameters = NULL;

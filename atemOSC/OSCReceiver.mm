@@ -247,20 +247,15 @@
 			
 			else if ([[address objectAtIndex:2] isEqualToString:@"audio"] && [address count] > 3)
 			{
-				if ([[address objectAtIndex:3] isEqualToString:@"output"])
-				{
-					
-				}
-				
-				else if ([[address objectAtIndex:3] isEqualToString:@"input"])
+				if ([[address objectAtIndex:3] isEqualToString:@"input"])
 				{
 					if (stringIsNumber([address objectAtIndex:4]) && [[address objectAtIndex:4] intValue] < [appDel mAudioInputs].size())
 					{
 						if ([[address objectAtIndex:5] isEqualToString:@"gain"])
-							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetGain([[m value] doubleValue]);
+							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetGain([[m value] floatValue]);
 
 						else if ([[address objectAtIndex:5] isEqualToString:@"balance"])
-							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetBalance([[m value] doubleValue]);
+							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetBalance([[m value] floatValue]);
 						
 						else
 							[appDel logMessage:@"You must specify an audio input option of 'gain' or 'balance'"];
@@ -273,10 +268,10 @@
 				else if ([[address objectAtIndex:3] isEqualToString:@"output"])
 				{
 					if ([[address objectAtIndex:4] isEqualToString:@"gain"])
-						[appDel mAudioMixer]->SetProgramOutGain([[m value] doubleValue]);
+						[appDel mAudioMixer]->SetProgramOutGain([[m value] floatValue]);
 					
 					else if ([[address objectAtIndex:4] isEqualToString:@"balance"])
-						[appDel mAudioMixer]->SetProgramOutBalance([[m value] doubleValue]);
+						[appDel mAudioMixer]->SetProgramOutBalance([[m value] floatValue]);
 					
 					else
 						[appDel logMessage:@"You must specify an audio output option of 'gain' or 'balance'"];
