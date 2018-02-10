@@ -358,8 +358,18 @@
 		superSourceIterator = NULL;
 	}
 	
+	// Audio Mixer (Output)
+	mAudioMixer = NULL;
+	result = mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer);
+	if (FAILED(result))
+	{
+		[self logMessage:@"Could not get IBMDSwitcherAudioMixer interface"];
+		return;
+	}
+	mAudioMixer->AddCallback(mAudioMixerMonitor);
+
 	// Audio Inputs
-	result = mSwitcher->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator);
+	result = mAudioMixer->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator);
 	if (FAILED(result))
 	{
 		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
@@ -370,24 +380,13 @@
 	while (S_OK == audioInputIterator->Next(&audioInput))
 	{
 		mAudioInputs.push_back(audioInput);
-		AudioInputMonitor *monitor = new AudioInputMonitor(self, mAudioInputs.size() - 1);
+		AudioInputMonitor *monitor = new AudioInputMonitor(self, static_cast<int>(mAudioInputs.size()) - 1);
 		audioInput->AddCallback(monitor);
 		mMonitors.push_back(monitor);
 		mAudioInputMonitors.push_back(monitor);
 	}
 	audioInputIterator->Release();
 	audioInputIterator = NULL;
-	
-	
-	// Audio Mixer (Output)
-	mAudioMixer = NULL;
-	result = mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer);
-	if (FAILED(result))
-	{
-		[self logMessage:@"Could not get IBMDSwitcherAudioMixer interface"];
-		return;
-	}
-	mAudioMixer->AddCallback(mAudioMixerMonitor);
 	
 	switcherTransitionParameters = NULL;
 	mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
@@ -525,10 +524,12 @@ finish:
 
 - (void)sendEachStatus:(int)nextMonitor
 {
-	int delay = mMonitors[nextMonitor]->sendStatus();
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		[self sendEachStatus:nextMonitor+1];
-	});
+	if (nextMonitor < mMonitors.size()) {
+		int delay = mMonitors[nextMonitor]->sendStatus();
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			[self sendEachStatus:nextMonitor+1];
+		});
+	}
 }
 
 - (void)logMessage:(NSString *)message
