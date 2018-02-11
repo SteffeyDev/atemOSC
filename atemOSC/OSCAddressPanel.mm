@@ -76,8 +76,6 @@
 		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/toggle/%d\n",i+1] attributes:infoAttribute]];
 	}
 	
-	
-	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSources:\n" attributes:addressAttribute]];
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAux Outputs:\n" attributes:addressAttribute]];
@@ -99,7 +97,7 @@
 			clipCount = 2;
 		}
 		
-		IBMDSwitcherStills* mStills = [appDel mStills];
+		IBMDSwitcherStills* mStills;
 		result = [appDel mMediaPool]->GetStills(&mStills);
 		if (FAILED(result))
 		{
@@ -108,7 +106,7 @@
 		}
 		else
 		{
-			result = [appDel mStills]->GetCount(&stillCount);
+			result = mStills->GetCount(&stillCount);
 			if (FAILED(result))
 			{
 				// ATEM TVS only supports 20 stills, the others are 32

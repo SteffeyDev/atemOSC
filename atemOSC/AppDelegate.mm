@@ -78,6 +78,7 @@
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
 	[helpPanel setupWithDelegate: self];
+
 	[(SettingsWindow *)window loadSettingsFromPreferences];
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
@@ -355,7 +356,9 @@
 	
 	self->mMixEffectBlockMonitor->updateSliderPosition();
 
-	[helpPanel setupWithDelegate: self];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[helpPanel setupWithDelegate: self];
+	});
 	
 finish:
 	if (iterator)
