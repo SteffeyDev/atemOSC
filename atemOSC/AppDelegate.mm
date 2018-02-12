@@ -49,6 +49,7 @@
 @synthesize mSwitcherInputAuxList;
 @synthesize outPort;
 @synthesize inPort;
+@synthesize mSwitcher;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -77,8 +78,6 @@
 	
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
-	[helpPanel setupWithDelegate: self];
-
 	[(SettingsWindow *)window loadSettingsFromPreferences];
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();

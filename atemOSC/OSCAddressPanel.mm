@@ -6,6 +6,7 @@
 //
 
 #import "OSCAddressPanel.h"
+#import "BMDSwitcherAPI.h"
 #import "AppDelegate.h"
 
 @implementation OSCAddressPanel
@@ -77,6 +78,34 @@
 	}
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSources:\n" attributes:addressAttribute]];
+	
+	HRESULT result;
+	IBMDSwitcherInputIterator* inputIterator = NULL;
+	IBMDSwitcherInput* input = NULL;
+	
+	result = [appDel mSwitcher]->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator);
+	if (FAILED(result))
+	{
+		NSLog(@"Could not create IBMDSwitcherInputIterator iterator");
+		return;
+	}
+	
+	while (S_OK == inputIterator->Next(&input))
+	{
+		NSString* name;
+		BMDSwitcherInputId id;
+		
+		input->GetInputId(&id);
+		input->GetLongName((CFStringRef*)&name);
+		
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ",name] attributes:addressAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%ld\n",(long)id] attributes:infoAttribute]];
+		
+		input->Release();
+		[name release];
+	}
+	inputIterator->Release();
+	
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAux Outputs:\n" attributes:addressAttribute]];
 	for (int i = 0; i<[appDel mSwitcherInputAuxList].size();i++)
