@@ -249,20 +249,21 @@
 			{
 				if ([[address objectAtIndex:3] isEqualToString:@"input"])
 				{
-					if (stringIsNumber([address objectAtIndex:4]) && [[address objectAtIndex:4] intValue] < [appDel mAudioInputs].size())
+					int inputNumber = [[address objectAtIndex:4] intValue] - 1;
+					if (stringIsNumber([address objectAtIndex:4]) && inputNumber < [appDel mAudioInputs].size() && inputNumber >= 0)
 					{
 						if ([[address objectAtIndex:5] isEqualToString:@"gain"])
-							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetGain([[m value] floatValue]);
+							[appDel mAudioInputs][inputNumber]->SetGain([[m value] floatValue]);
 
 						else if ([[address objectAtIndex:5] isEqualToString:@"balance"])
-							[appDel mAudioInputs][[[address objectAtIndex:4] intValue]]->SetBalance([[m value] floatValue]);
+							[appDel mAudioInputs][inputNumber]->SetBalance([[m value] floatValue]);
 						
 						else
 							[appDel logMessage:@"You must specify an audio input option of 'gain' or 'balance'"];
 					}
 
 					else
-						[appDel logMessage:[NSString stringWithFormat:@"Please choose an audio input between 0 and %lu", [appDel mAudioInputs].size() - 1]];
+						[appDel logMessage:[NSString stringWithFormat:@"Please choose an audio input between 1 and %lu", [appDel mAudioInputs].size()]];
 				}
 				
 				else if ([[address objectAtIndex:3] isEqualToString:@"output"])
