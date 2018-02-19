@@ -41,7 +41,6 @@
 	NSWindow *window;
 	
 	IBMDSwitcherDiscovery*		        mSwitcherDiscovery;
-	IBMDSwitcher*				        mSwitcher;
 	IBMDSwitcherKeyFlyParameters*	    mDVEControl;
 	SwitcherMonitor*			        mSwitcherMonitor;
 	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
@@ -55,6 +54,7 @@
 	IBOutlet NSTextView*        logTextView;
 }
 
+@property (readonly)       IBMDSwitcher*				        	mSwitcher;
 @property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
 @property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
 @property (readonly)       IBMDSwitcherStills*                      mStills;

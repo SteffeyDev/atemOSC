@@ -49,6 +49,7 @@
 @synthesize mSwitcherInputAuxList;
 @synthesize outPort;
 @synthesize inPort;
+@synthesize mSwitcher;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -77,7 +78,6 @@
 	
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
-	[helpPanel setupWithDelegate: self];
 	[(SettingsWindow *)window loadSettingsFromPreferences];
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
@@ -354,6 +354,10 @@
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
 	
 	self->mMixEffectBlockMonitor->updateSliderPosition();
+
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[helpPanel setupWithDelegate: self];
+	});
 	
 finish:
 	if (iterator)

@@ -6,6 +6,7 @@
 //
 
 #import "OSCAddressPanel.h"
+#import "BMDSwitcherAPI.h"
 #import "AppDelegate.h"
 
 @implementation OSCAddressPanel
@@ -76,9 +77,35 @@
 		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/toggle/%d\n",i+1] attributes:infoAttribute]];
 	}
 	
-	
-	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSources:\n" attributes:addressAttribute]];
+	
+	HRESULT result;
+	IBMDSwitcherInputIterator* inputIterator = NULL;
+	IBMDSwitcherInput* input = NULL;
+	
+	result = [appDel mSwitcher]->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator);
+	if (FAILED(result))
+	{
+		NSLog(@"Could not create IBMDSwitcherInputIterator iterator");
+		return;
+	}
+	
+	while (S_OK == inputIterator->Next(&input))
+	{
+		NSString* name;
+		BMDSwitcherInputId id;
+		
+		input->GetInputId(&id);
+		input->GetLongName((CFStringRef*)&name);
+		
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ",name] attributes:addressAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%ld\n",(long)id] attributes:infoAttribute]];
+		
+		input->Release();
+		[name release];
+	}
+	inputIterator->Release();
+	
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAux Outputs:\n" attributes:addressAttribute]];
 	for (int i = 0; i<[appDel mSwitcherInputAuxList].size();i++)
@@ -99,7 +126,7 @@
 			clipCount = 2;
 		}
 		
-		IBMDSwitcherStills* mStills = [appDel mStills];
+		IBMDSwitcherStills* mStills;
 		result = [appDel mMediaPool]->GetStills(&mStills);
 		if (FAILED(result))
 		{
@@ -108,7 +135,7 @@
 		}
 		else
 		{
-			result = [appDel mStills]->GetCount(&stillCount);
+			result = mStills->GetCount(&stillCount);
 			if (FAILED(result))
 			{
 				// ATEM TVS only supports 20 stills, the others are 32
