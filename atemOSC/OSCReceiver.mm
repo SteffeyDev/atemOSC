@@ -279,7 +279,7 @@
 				}
 				
 				else
-					[appDel logMessage:@"You must specify an audio command of 'input', 'output', or 'mixer'"];
+					[appDel logMessage:@"You must specify an audio command of 'input' or 'output'"];
 			}
 			
 			else
