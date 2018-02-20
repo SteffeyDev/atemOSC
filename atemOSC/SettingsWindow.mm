@@ -59,7 +59,36 @@
 	if (![[mAddressTextField stringValue] isEqualToString:@""])
 	{
 		if ([self isValidIPAddress:[mAddressTextField stringValue]])
-			[prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
+		{
+			// If we are already connected, and they want to connect to a different one, we need to make sure they didn't just accidently bump the keyboard
+			NSTextField* textField = (NSTextField *)[aNotification object];
+			if (textField == mAddressTextField && [appDel isConnectedToATEM] && ![[textField stringValue] isEqualToString:[prefs stringForKey:@"atem"]])
+			{
+				NSAlert *alert = [[NSAlert alloc] init];
+				[alert setMessageText:@"Switcher Currently Connected"];
+				[alert setInformativeText:[NSString stringWithFormat: @"Are you sure you want to disconnect from %@ and attempt to connect to %@?", [prefs stringForKey:@"atem"], [textField stringValue]]];
+				[alert addButtonWithTitle:@"Yes (Connect to New)"];
+				[alert addButtonWithTitle:@"No (Stay Connected)"];
+				[alert beginSheetModalForWindow:[(AppDelegate *)[[NSApplication sharedApplication] delegate] window] completionHandler:^(NSInteger returnCode)
+				 {
+					 if ( returnCode == NSAlertFirstButtonReturn )
+					 {
+						 [prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
+						 [appDel switcherDisconnected];
+						 [appDel connectBMD];
+					 }
+					 else if ( returnCode == NSAlertSecondButtonReturn )
+					 {
+						 NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+						 [mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
+					 }
+				 }];
+			}
+			else
+			{
+				[prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
+			}
+		}
 		else
 		{
 			validInput = NO;
