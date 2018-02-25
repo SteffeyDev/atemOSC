@@ -118,7 +118,7 @@ protected:
 class AudioInputMonitor : public GenericMonitor<IBMDSwitcherAudioInputCallback>, public SendStatusInterface
 {
 public:
-	AudioInputMonitor(void *delegate, int index) : GenericMonitor(delegate), index_(index) { }
+	AudioInputMonitor(void *delegate, BMDSwitcherAudioInputId inputId) : GenericMonitor(delegate), inputId_(inputId) { }
 	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherAudioInputEventType eventType);
 	HRESULT STDMETHODCALLTYPE LevelNotification (double left, double right, double peakLeft, double peakRight);
 	float sendStatus() const;
@@ -129,7 +129,7 @@ protected:
 private:
 	void updateGain() const;
 	void updateBalance() const;
-	int  index_;
+	BMDSwitcherAudioInputId  inputId_;
 };
 
 // Callback class to monitor audio mixer

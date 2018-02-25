@@ -376,8 +376,8 @@ HRESULT STDMETHODCALLTYPE AudioInputMonitor::LevelNotification (double left, dou
 void AudioInputMonitor::updateGain() const
 {
 	double gain;
-	static_cast<AppDelegate *>(appDel).mAudioInputs[index_]->GetGain(&gain);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%d/gain", index_+1]];
+	static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetGain(&gain);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain", inputId_]];
 	[newMsg addFloat:(float)gain];
 	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
 }
@@ -385,8 +385,8 @@ void AudioInputMonitor::updateGain() const
 void AudioInputMonitor::updateBalance() const
 {
 	double balance;
-	static_cast<AppDelegate *>(appDel).mAudioInputs[index_]->GetBalance(&balance);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%d/balance", index_+1]];
+	static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetBalance(&balance);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance", inputId_]];
 	[newMsg addFloat:(float)balance];
 	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
 }

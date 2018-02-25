@@ -249,23 +249,29 @@
 			{
 				if ([[address objectAtIndex:3] isEqualToString:@"input"])
 				{
-					int inputNumber = [[address objectAtIndex:4] intValue] - 1;
-					if (stringIsNumber([address objectAtIndex:4]) && inputNumber < [appDel mAudioInputs].size() && inputNumber >= 0)
+					if (stringIsNumber([address objectAtIndex:4]))
 					{
-						if ([[address objectAtIndex:5] isEqualToString:@"gain"])
-							[appDel mAudioInputs][inputNumber]->SetGain([[m value] floatValue]);
+						BMDSwitcherAudioInputId inputNumber = [[address objectAtIndex:4] intValue];
+						if ([appDel mAudioInputs].count(inputNumber) > 0)
+						{
+							if ([[address objectAtIndex:5] isEqualToString:@"gain"])
+								[appDel mAudioInputs][inputNumber]->SetGain([[m value] floatValue]);
 
-						else if ([[address objectAtIndex:5] isEqualToString:@"balance"])
-							[appDel mAudioInputs][inputNumber]->SetBalance([[m value] floatValue]);
-						
+							else if ([[address objectAtIndex:5] isEqualToString:@"balance"])
+								[appDel mAudioInputs][inputNumber]->SetBalance([[m value] floatValue]);
+
+							else
+								[appDel logMessage:[NSString stringWithFormat:@"Invalid option '%@'. You must specify an audio input option of 'gain' or 'balance'", [address objectAtIndex:5]]];
+						}
+
 						else
-							[appDel logMessage:@"You must specify an audio input option of 'gain' or 'balance'"];
+							[appDel logMessage:[NSString stringWithFormat:@"Invalid input %lld. Please choose a valid audio input number from the list in Help > OSC addresses.", inputNumber]];
 					}
 
 					else
-						[appDel logMessage:[NSString stringWithFormat:@"Please choose an audio input between 1 and %lu", [appDel mAudioInputs].size()]];
+						[appDel logMessage:[NSString stringWithFormat:@"Invalid input %@. The address following input/ must be a number", [address objectAtIndex:4]]];
 				}
-				
+
 				else if ([[address objectAtIndex:3] isEqualToString:@"output"])
 				{
 					if ([[address objectAtIndex:4] isEqualToString:@"gain"])
@@ -275,11 +281,11 @@
 						[appDel mAudioMixer]->SetProgramOutBalance([[m value] floatValue]);
 					
 					else
-						[appDel logMessage:@"You must specify an audio output option of 'gain' or 'balance'"];
+						[appDel logMessage:[NSString stringWithFormat:@"Invalid option '%@'. You must specify an audio output option of 'gain' or 'balance'", [address objectAtIndex:4]]];
 				}
 				
 				else
-					[appDel logMessage:@"You must specify an audio command of 'input' or 'output'"];
+					[appDel logMessage:[NSString stringWithFormat:@"Invalid command '%@'. You must specify an audio command of 'input' or 'output'", [address objectAtIndex:3]]];
 			}
 			
 			else

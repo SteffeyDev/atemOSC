@@ -379,11 +379,13 @@
 	IBMDSwitcherAudioInput* audioInput = NULL;
 	while (S_OK == audioInputIterator->Next(&audioInput))
 	{
-		mAudioInputs.push_back(audioInput);
-		AudioInputMonitor *monitor = new AudioInputMonitor(self, static_cast<int>(mAudioInputs.size()) - 1);
+		BMDSwitcherAudioInputId inputId;
+		audioInput->GetAudioInputId(&inputId);
+		mAudioInputs.insert(std::make_pair(inputId, audioInput));
+		AudioInputMonitor *monitor = new AudioInputMonitor(self, inputId);
 		audioInput->AddCallback(monitor);
 		mMonitors.push_back(monitor);
-		mAudioInputMonitors.push_back(monitor);
+		mAudioInputMonitors.insert(std::make_pair(inputId, monitor));
 	}
 	audioInputIterator->Release();
 	audioInputIterator = NULL;
@@ -494,11 +496,10 @@ finish:
 		mMacroPool = NULL;
 	}
 	
-	while (mAudioInputs.size())
+	for (auto const& it : mAudioInputs)
 	{
-		mAudioInputs.back()->RemoveCallback(mAudioInputMonitors[mAudioInputs.size() - 1]);
-		mAudioInputs.back()->Release();
-		mAudioInputs.pop_back();
+		it.second->RemoveCallback(mAudioInputMonitors.at(it.first));
+		it.second->Release();
 	}
 	
 	if (mAudioMixer)

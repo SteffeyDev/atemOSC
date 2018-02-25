@@ -108,19 +108,16 @@
 	
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAudio Inputs:\n" attributes:addressAttribute]];
-	for (int i = 0; i<[appDel mAudioInputs].size();i++)
+	for (auto const& it : [appDel mAudioInputs])
 	{
-		BMDSwitcherAudioInputId inputId;
 		BMDSwitcherAudioInputType inputType;
-		[appDel mAudioInputs][i]->GetAudioInputId(&inputId);
-		[appDel mAudioInputs][i]->GetType(&inputType);
+		[appDel mAudioInputs].at(it.first)->GetType(&inputType);
 		const char *inputTypeString = inputType == bmdSwitcherAudioInputTypeEmbeddedWithVideo ? "camera audio" : (inputType == bmdSwitcherAudioInputTypeMediaPlayer ? "media player" : "external audio-in");
 
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Input %lld (%s) Gain: ", inputId, inputTypeString] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/input/%d/gain\n",i+1] attributes:infoAttribute]];
-
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Input %lld (%s) Balance: ", inputId, inputTypeString] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/input/%d/balance\n",i+1] attributes:infoAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Input %lld (%s) Gain: ", it.first, inputTypeString] attributes:addressAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain\n", it.first] attributes:infoAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Input %lld (%s) Balance: ", it.first, inputTypeString] attributes:addressAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance\n", it.first] attributes:infoAttribute]];
 	}
 
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAudio Output (Mix):\n" attributes:addressAttribute]];

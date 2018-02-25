@@ -28,6 +28,7 @@
 #import "BMDSwitcherAPI.h"
 #import "VVOSC/VVOSC.h"
 #import <vector>
+#import <map>
 
 #import <Cocoa/Cocoa.h>
 
@@ -71,8 +72,8 @@
 @property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
 @property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
 @property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
-@property (readonly)       std::vector<IBMDSwitcherAudioInput*>     mAudioInputs;
-@property (readonly)       std::vector<AudioInputMonitor*>          mAudioInputMonitors;
+@property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherAudioInput*> mAudioInputs;
+@property (readonly)       std::map<BMDSwitcherAudioInputId, AudioInputMonitor*> mAudioInputMonitors;
 @property (readonly)       IBMDSwitcherAudioMixer*                  mAudioMixer;
 @property (readonly)       AudioMixerMonitor*                       mAudioMixerMonitor;
 @property (readonly)       bool                                     isConnectedToATEM;
