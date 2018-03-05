@@ -50,7 +50,7 @@
 			validInput = NO;
 			NSAlert *alert = [[NSAlert alloc] init];
 			[alert setMessageText:@"Invalid IP Adress"];
-			[alert setInformativeText:@"Please enter a valid IP Address for 'OSC Out IP Adress'"];
+			[alert setInformativeText:@"Please enter a valid IPv4 Address for 'OSC Out IP Address'"];
 			[alert beginSheetModalForWindow:[(AppDelegate *)[[NSApplication sharedApplication] delegate] window] completionHandler:nil];
 		}
 	}
@@ -73,7 +73,6 @@
 					 {
 						 [prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
 						 [appDel switcherDisconnected];
-						 [appDel connectBMD];
 					 }
 					 else if ( returnCode == NSAlertSecondButtonReturn )
 					 {
@@ -91,7 +90,7 @@
 			validInput = NO;
 			NSAlert *alert = [[NSAlert alloc] init];
 			[alert setMessageText:@"Invalid IP Adress"];
-			[alert setInformativeText:@"Please enter a valid IP Address for 'Switcher IP Adress'"];
+			[alert setInformativeText:@"Please enter a valid IPv4 Address for 'Switcher IP Address'"];
 			[alert beginSheetModalForWindow:[(AppDelegate *)[[NSApplication sharedApplication] delegate] window] completionHandler:nil];
 			
 			if ([appDel isConnectedToATEM])
