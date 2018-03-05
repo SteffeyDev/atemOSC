@@ -107,13 +107,35 @@
 	inputIterator->Release();
 	
 	
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAudio Inputs:\n" attributes:addressAttribute]];
+	for (auto const& it : [appDel mAudioInputs])
+	{
+		BMDSwitcherAudioInputType inputType;
+		[appDel mAudioInputs].at(it.first)->GetType(&inputType);
+		const char *inputTypeString = inputType == bmdSwitcherAudioInputTypeEmbeddedWithVideo ? "camera audio" : (inputType == bmdSwitcherAudioInputTypeMediaPlayer ? "media player" : "external audio-in");
+
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Input %lld (%s) Gain: ", it.first, inputTypeString] attributes:addressAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain\n", it.first] attributes:infoAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Input %lld (%s) Balance: ", it.first, inputTypeString] attributes:addressAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance\n", it.first] attributes:infoAttribute]];
+	}
+
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAudio Output (Mix):\n" attributes:addressAttribute]];
+
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Output Gain: "] attributes:addressAttribute]];
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/output/gain\n"] attributes:infoAttribute]];
+
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Output Balance: "] attributes:addressAttribute]];
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/output/balance\n"] attributes:infoAttribute]];
+
+
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAux Outputs:\n" attributes:addressAttribute]];
 	for (int i = 0; i<[appDel mSwitcherInputAuxList].size();i++)
 	{
 		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Aux %d to Source: ",i+1] attributes:addressAttribute]];
 		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/aux/%d\t<valid_program_source>\n",i+1] attributes:infoAttribute]];
 	}
-	
+
 	if ([appDel mMediaPlayers].size() > 0)
 	{
 		uint32_t clipCount;

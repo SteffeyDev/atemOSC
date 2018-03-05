@@ -131,14 +131,14 @@ void MixEffectBlockMonitor::updateSliderPosition()
 	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 }
 
-void MixEffectBlockMonitor::sendStatus() const
+float MixEffectBlockMonitor::sendStatus() const
 {
 	// Sending both program and preview at the same time causes a race condition, TouchOSC can't handle
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.05 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 		updatePreviewButtonSelection();
 	});
 
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.15 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 		updateProgramButtonSelection();
 	});
 	
@@ -150,6 +150,8 @@ void MixEffectBlockMonitor::sendStatus() const
 	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
 	[newMsg addFloat:1.0-sliderPosition/100];
 	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+
+	return 0.2;
 }
 
 // Send OSC messages out when DSK Tie is changed on switcher
@@ -205,10 +207,12 @@ HRESULT DownstreamKeyerMonitor::Notify(BMDSwitcherDownstreamKeyEventType eventTy
 	return S_OK;
 }
 
-void DownstreamKeyerMonitor::sendStatus() const
+float DownstreamKeyerMonitor::sendStatus() const
 {
 	updateDSKTie();
 	updateDSKOnAir();
+
+	return 0.1;
 }
 
 HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEventType eventType)
@@ -246,9 +250,11 @@ void TransitionParametersMonitor::updateTransitionParameters() const
 	}
 }
 
-void TransitionParametersMonitor::sendStatus() const
+float TransitionParametersMonitor::sendStatus() const
 {
 	updateTransitionParameters();
+
+	return 0.08;
 }
 
 HRESULT MacroPoolMonitor::Notify (BMDSwitcherMacroPoolEventType eventType, uint32_t index, IBMDSwitcherTransferMacro* macroTransfer)
@@ -311,7 +317,7 @@ void MacroPoolMonitor::updateMacroValidity(int index) const
 	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
 }
 
-void MacroPoolMonitor::sendStatus() const
+float MacroPoolMonitor::sendStatus() const
 {
 	uint32_t maxNumberOfMacros = getMaxNumberOfMacros();
 	for (int i = 0; i < maxNumberOfMacros; i++) {
@@ -319,6 +325,8 @@ void MacroPoolMonitor::sendStatus() const
 		updateMacroName(i);
 		updateMacroDescription(i);
 	}
+
+	return 0.1;
 }
 
 HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)
@@ -328,6 +336,117 @@ HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType
 		[(AppDelegate *)appDel performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
 	}
 	return S_OK;
+}
+
+float SwitcherMonitor::sendStatus() const
+{
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
+	[newMsg addFloat:[static_cast<AppDelegate *>(appDel) isConnectedToATEM] ? 1.0 : 0.0];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
+	[newMsg addFloat:[static_cast<AppDelegate *>(appDel) isConnectedToATEM] ? 0.0 : 1.0];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+
+	return 0.01;
+}
+
+HRESULT STDMETHODCALLTYPE AudioInputMonitor::Notify (BMDSwitcherAudioInputEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherAudioInputEventTypeGainChanged:
+			updateGain();
+			break;
+		case bmdSwitcherAudioInputEventTypeBalanceChanged:
+			updateBalance();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE AudioInputMonitor::LevelNotification (double left, double right, double peakLeft, double peakRight)
+{
+	return S_OK;
+}
+
+void AudioInputMonitor::updateGain() const
+{
+	double gain;
+	static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetGain(&gain);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain", inputId_]];
+	[newMsg addFloat:(float)gain];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void AudioInputMonitor::updateBalance() const
+{
+	double balance;
+	static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetBalance(&balance);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance", inputId_]];
+	[newMsg addFloat:(float)balance];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+float AudioInputMonitor::sendStatus() const
+{
+	updateGain();
+	updateBalance();
+
+	return 0.02;
+}
+
+
+HRESULT STDMETHODCALLTYPE AudioMixerMonitor::Notify (BMDSwitcherAudioMixerEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherAudioMixerEventTypeProgramOutGainChanged:
+			updateGain();
+			break;
+		case bmdSwitcherAudioMixerEventTypeProgramOutBalanceChanged:
+			updateBalance();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE AudioMixerMonitor::ProgramOutLevelNotification (double left, double right, double peakLeft, double peakRight)
+{
+	return S_OK;
+}
+
+void AudioMixerMonitor::updateGain() const
+{
+	double gain;
+	static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutGain(&gain);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/gain"];
+	[newMsg addFloat:(float)gain];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void AudioMixerMonitor::updateBalance() const
+{
+	double balance;
+	static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutBalance(&balance);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/balance"];
+	[newMsg addFloat:(float)balance];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+float AudioMixerMonitor::sendStatus() const
+{
+	updateGain();
+	updateBalance();
+
+	return 0.02;
 }
 
 

@@ -47,6 +47,10 @@
 @synthesize mMacroControl;
 @synthesize mSuperSourceBoxes;
 @synthesize mSwitcherInputAuxList;
+@synthesize mAudioInputs;
+@synthesize mAudioInputMonitors;
+@synthesize mAudioMixer;
+@synthesize mAudioMixerMonitor;
 @synthesize outPort;
 @synthesize inPort;
 @synthesize mSwitcher;
@@ -71,10 +75,17 @@
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
+	mMonitors.push_back(mSwitcherMonitor);
 	mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
+	mMonitors.push_back(mDownstreamKeyerMonitor);
 	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
+	mMonitors.push_back(mTransitionParametersMonitor);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
+	mMonitors.push_back(mMixEffectBlockMonitor);
 	mMacroPoolMonitor = new MacroPoolMonitor(self);
+	mMonitors.push_back(mMacroPoolMonitor);
+	mAudioMixerMonitor = new AudioMixerMonitor(self);
+	mMonitors.push_back(mAudioMixerMonitor);
 	
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
@@ -193,6 +204,7 @@
 	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
 	IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
 	IBMDSwitcherInputIterator* inputIterator = NULL;
+	IBMDSwitcherAudioInputIterator* audioInputIterator = NULL;
 	isConnectedToATEM = YES;
 	
 	if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
@@ -346,10 +358,41 @@
 		superSourceIterator = NULL;
 	}
 	
+	// Audio Mixer (Output)
+	mAudioMixer = NULL;
+	result = mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer);
+	if (FAILED(result))
+	{
+		[self logMessage:@"Could not get IBMDSwitcherAudioMixer interface"];
+		return;
+	}
+	mAudioMixer->AddCallback(mAudioMixerMonitor);
+
+	// Audio Inputs
+	result = mAudioMixer->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator);
+	if (FAILED(result))
+	{
+		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
+		return;
+	}
+
+	IBMDSwitcherAudioInput* audioInput = NULL;
+	while (S_OK == audioInputIterator->Next(&audioInput))
+	{
+		BMDSwitcherAudioInputId inputId;
+		audioInput->GetAudioInputId(&inputId);
+		mAudioInputs.insert(std::make_pair(inputId, audioInput));
+		AudioInputMonitor *monitor = new AudioInputMonitor(self, inputId);
+		audioInput->AddCallback(monitor);
+		mMonitors.push_back(monitor);
+		mAudioInputMonitors.insert(std::make_pair(inputId, monitor));
+	}
+	audioInputIterator->Release();
+	audioInputIterator = NULL;
+	
 	switcherTransitionParameters = NULL;
 	mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
 	switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
-	
 	
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
 	
@@ -453,33 +496,41 @@ finish:
 		mMacroPool = NULL;
 	}
 	
+	for (auto const& it : mAudioInputs)
+	{
+		it.second->RemoveCallback(mAudioInputMonitors.at(it.first));
+		it.second->Release();
+	}
+	
+	if (mAudioMixer)
+	{
+		mAudioMixer->RemoveCallback(mAudioMixerMonitor);
+		mAudioMixer->Release();
+		mAudioMixer = NULL;
+	}
+	
 	if (switcherTransitionParameters)
 	{
 		switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
 	}
 }
 
+// We run this recursively so that we can get the
+// delay from each command, and allow for variable
+// wait times between sends
 - (void)sendStatus
 {
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
-	[newMsg addFloat:isConnectedToATEM ? 1.0 : 0.0];
-	[outPort sendThisMessage:newMsg];
-	newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
-	[newMsg addFloat:isConnectedToATEM ? 0.0 : 1.0];
-	[outPort sendThisMessage:newMsg];
+	[self sendEachStatus:0];
+}
 
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		mDownstreamKeyerMonitor->sendStatus();
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		mTransitionParametersMonitor->sendStatus();
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		mMacroPoolMonitor->sendStatus();
-	});
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		mMixEffectBlockMonitor->sendStatus();
-	});
+- (void)sendEachStatus:(int)nextMonitor
+{
+	if (nextMonitor < mMonitors.size()) {
+		int delay = mMonitors[nextMonitor]->sendStatus();
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delay * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			[self sendEachStatus:nextMonitor+1];
+		});
+	}
 }
 
 - (void)logMessage:(NSString *)message

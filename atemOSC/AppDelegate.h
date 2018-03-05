@@ -28,6 +28,7 @@
 #import "BMDSwitcherAPI.h"
 #import "VVOSC/VVOSC.h"
 #import <vector>
+#import <map>
 
 #import <Cocoa/Cocoa.h>
 
@@ -46,6 +47,7 @@
 	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
 	TransitionParametersMonitor*        mTransitionParametersMonitor;
 	MacroPoolMonitor*       			mMacroPoolMonitor;
+	std::vector<SendStatusInterface*>   mMonitors;
 	
 	OSCReceiver*                mOscReceiver;
 	OSCManager*					manager;
@@ -70,6 +72,10 @@
 @property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
 @property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
 @property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
+@property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherAudioInput*> mAudioInputs;
+@property (readonly)       std::map<BMDSwitcherAudioInputId, AudioInputMonitor*> mAudioInputMonitors;
+@property (readonly)       IBMDSwitcherAudioMixer*                  mAudioMixer;
+@property (readonly)       AudioMixerMonitor*                       mAudioMixerMonitor;
 @property (readonly)       bool                                     isConnectedToATEM;
 @property (strong)         IBOutlet NSWindow*                       window;
 @property (strong)         id                                       activity;
@@ -82,6 +88,7 @@
 - (void)switcherDisconnected;
 
 - (void)sendStatus;
+- (void)sendEachStatus:(int)nextMonitor;
 
 - (void)logMessage:(NSString *)message;
 
