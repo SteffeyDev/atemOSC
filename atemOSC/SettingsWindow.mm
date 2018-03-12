@@ -14,8 +14,6 @@
 {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	[mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
-	NSLog(@"Value: %@", [prefs stringForKey:@"atem"]);
-	
 	[mOutgoingPortTextField setIntValue:[prefs integerForKey:@"outgoing"]];
 	[mIncomingPortTextField setIntValue:[prefs integerForKey:@"incoming"]];
 	[mOscDeviceTextField setStringValue:[prefs objectForKey:@"oscdevice"]];
@@ -41,8 +39,9 @@
 	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 	BOOL validInput = YES;
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
+	NSTextField* textField = (NSTextField *)[aNotification object];
 	
-	if (![[mOscDeviceTextField stringValue] isEqualToString:@""])
+	if (textField == mOscDeviceTextField)
 	{
 		if ([self isValidIPAddress:[mOscDeviceTextField stringValue]])
 			[prefs setObject:[mOscDeviceTextField stringValue] forKey:@"oscdevice"];
@@ -51,22 +50,51 @@
 			validInput = NO;
 			NSAlert *alert = [[NSAlert alloc] init];
 			[alert setMessageText:@"Invalid IP Adress"];
-			[alert setInformativeText:@"Please enter a valid IP Address for 'OSC Out IP Adress'"];
+			[alert setInformativeText:@"Please enter a valid IPv4 Address for 'OSC Out IP Address'"];
 			[alert beginSheetModalForWindow:[(AppDelegate *)[[NSApplication sharedApplication] delegate] window] completionHandler:nil];
 		}
 	}
 	
-	if (![[mAddressTextField stringValue] isEqualToString:@""])
+	if (textField == mAddressTextField)
 	{
 		if ([self isValidIPAddress:[mAddressTextField stringValue]])
-			[prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
-		else
+		{
+			// If we are already connected, and they want to connect to a different one, we need to make sure they didn't just accidently bump the keyboard
+			if ([appDel isConnectedToATEM] && ![[textField stringValue] isEqualToString:[prefs stringForKey:@"atem"]])
+			{
+				NSAlert *alert = [[NSAlert alloc] init];
+				[alert setMessageText:@"Switcher Currently Connected"];
+				[alert setInformativeText:[NSString stringWithFormat: @"Are you sure you want to disconnect from %@ and attempt to connect to %@?", [prefs stringForKey:@"atem"], [textField stringValue]]];
+				[alert addButtonWithTitle:@"Yes (Connect to New)"];
+				[alert addButtonWithTitle:@"No (Stay Connected)"];
+				[alert beginSheetModalForWindow:[(AppDelegate *)[[NSApplication sharedApplication] delegate] window] completionHandler:^(NSInteger returnCode)
+				 {
+					 if ( returnCode == NSAlertFirstButtonReturn )
+					 {
+						 [prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
+						 [appDel switcherDisconnected];
+					 }
+					 else if ( returnCode == NSAlertSecondButtonReturn )
+					 {
+						 [mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
+					 }
+				 }];
+			}
+			else
+			{
+				[prefs setObject:[mAddressTextField stringValue] forKey:@"atem"];
+			}
+		}
+		else if ([appDel isConnectedToATEM] || ![[mAddressTextField stringValue] isEqualToString:@""])
 		{
 			validInput = NO;
 			NSAlert *alert = [[NSAlert alloc] init];
 			[alert setMessageText:@"Invalid IP Adress"];
-			[alert setInformativeText:@"Please enter a valid IP Address for 'Switcher IP Adress'"];
+			[alert setInformativeText:@"Please enter a valid IPv4 Address for 'Switcher IP Address'"];
 			[alert beginSheetModalForWindow:[(AppDelegate *)[[NSApplication sharedApplication] delegate] window] completionHandler:nil];
+			
+			if ([appDel isConnectedToATEM])
+				[mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
 		}
 	}
 	
