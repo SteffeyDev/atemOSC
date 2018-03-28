@@ -65,6 +65,8 @@ BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParametersCallback        = /* AB31E347-
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParameters                = /* EE88B575-6044-4372-B1D6-9733AF342DCA */ {0xEE,0x88,0xB5,0x75,0x60,0x44,0x43,0x72,0xB1,0xD6,0x97,0x33,0xAF,0x34,0x2D,0xCA};
 BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParametersCallback      = /* FE3F97EC-5F2D-4E47-AA7A-38962F9CB3CE */ {0xFE,0x3F,0x97,0xEC,0x5F,0x2D,0x4E,0x47,0xAA,0x7A,0x38,0x96,0x2F,0x9C,0xB3,0xCE};
 BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParameters              = /* 07658026-6AE3-4694-B814-2AB7EBBE7D1C */ {0x07,0x65,0x80,0x26,0x6A,0xE3,0x46,0x94,0xB8,0x14,0x2A,0xB7,0xEB,0xBE,0x7D,0x1C};
+BMD_CONST REFIID IID_IBMDSwitcherKeyAdvancedChromaParametersCallback = /* 98AF2E4A-DCC5-4EEB-896F-CE2B78F213A4 */ {0x98,0xAF,0x2E,0x4A,0xDC,0xC5,0x4E,0xEB,0x89,0x6F,0xCE,0x2B,0x78,0xF2,0x13,0xA4};
+BMD_CONST REFIID IID_IBMDSwitcherKeyAdvancedChromaParameters      = /* 16CBDB44-C183-4110-AD6B-41C3398447E7 */ {0x16,0xCB,0xDB,0x44,0xC1,0x83,0x41,0x10,0xAD,0x6B,0x41,0xC3,0x39,0x84,0x47,0xE7};
 BMD_CONST REFIID IID_IBMDSwitcherKeyPatternParametersCallback     = /* FBF24499-06EB-4C54-BE92-21C403C1093C */ {0xFB,0xF2,0x44,0x99,0x06,0xEB,0x4C,0x54,0xBE,0x92,0x21,0xC4,0x03,0xC1,0x09,0x3C};
 BMD_CONST REFIID IID_IBMDSwitcherKeyPatternParameters             = /* 267EDB96-5921-4BA5-88BA-C83123E153D2 */ {0x26,0x7E,0xDB,0x96,0x59,0x21,0x4B,0xA5,0x88,0xBA,0xC8,0x31,0x23,0xE1,0x53,0xD2};
 BMD_CONST REFIID IID_IBMDSwitcherKeyFlyKeyFrameParametersCallback = /* 136BDD85-690B-4691-BA1D-AB8A61F97AE0 */ {0x13,0x6B,0xDD,0x85,0x69,0x0B,0x46,0x91,0xBA,0x1D,0xAB,0x8A,0x61,0xF9,0x7A,0xE0};
@@ -74,7 +76,7 @@ BMD_CONST REFIID IID_IBMDSwitcherKeyFlyParameters                 = /* 36CD0B7F-
 BMD_CONST REFIID IID_IBMDSwitcherKeyDVEParametersCallback         = /* E437655F-32BB-4652-BA77-4083B435566A */ {0xE4,0x37,0x65,0x5F,0x32,0xBB,0x46,0x52,0xBA,0x77,0x40,0x83,0xB4,0x35,0x56,0x6A};
 BMD_CONST REFIID IID_IBMDSwitcherKeyDVEParameters                 = /* 92AA5433-70FB-423D-9435-646D171C9D82 */ {0x92,0xAA,0x54,0x33,0x70,0xFB,0x42,0x3D,0x94,0x35,0x64,0x6D,0x17,0x1C,0x9D,0x82};
 BMD_CONST REFIID IID_IBMDSwitcherKeyCallback                      = /* 1972E4DF-1D5F-4C4E-A79B-E5A6E8CE1511 */ {0x19,0x72,0xE4,0xDF,0x1D,0x5F,0x4C,0x4E,0xA7,0x9B,0xE5,0xA6,0xE8,0xCE,0x15,0x11};
-BMD_CONST REFIID IID_IBMDSwitcherKey                              = /* A41B54B5-0D52-44D5-ACE5-9B94B0AF2A0B */ {0xA4,0x1B,0x54,0xB5,0x0D,0x52,0x44,0xD5,0xAC,0xE5,0x9B,0x94,0xB0,0xAF,0x2A,0x0B};
+BMD_CONST REFIID IID_IBMDSwitcherKey                              = /* 4D5D7497-26E1-4AEF-9276-14532BD611FD */ {0x4D,0x5D,0x74,0x97,0x26,0xE1,0x4A,0xEF,0x92,0x76,0x14,0x53,0x2B,0xD6,0x11,0xFD};
 BMD_CONST REFIID IID_IBMDSwitcherMediaPlayerCallback              = /* 3A82C121-18FA-469E-AE9A-73255356CA5B */ {0x3A,0x82,0xC1,0x21,0x18,0xFA,0x46,0x9E,0xAE,0x9A,0x73,0x25,0x53,0x56,0xCA,0x5B};
 BMD_CONST REFIID IID_IBMDSwitcherMediaPlayer                      = /* B5240E1F-CE0A-4C38-9FAB-D7FAC227205A */ {0xB5,0x24,0x0E,0x1F,0xCE,0x0A,0x4C,0x38,0x9F,0xAB,0xD7,0xFA,0xC2,0x27,0x20,0x5A};
 BMD_CONST REFIID IID_IBMDSwitcherTransitionMixParametersCallback  = /* FE9730BB-F60B-46DF-B182-2992FFC884DE */ {0xFE,0x97,0x30,0xBB,0xF6,0x0B,0x46,0xDF,0xB1,0x82,0x29,0x92,0xFF,0xC8,0x84,0xDE};
@@ -109,7 +111,7 @@ BMD_CONST REFIID IID_IBMDSwitcherInputIterator                    = /* 275E9888-
 BMD_CONST REFIID IID_IBMDSwitcherSuperSourceBoxIterator           = /* 96153CDA-C894-42EA-BA90-C387018CC334 */ {0x96,0x15,0x3C,0xDA,0xC8,0x94,0x42,0xEA,0xBA,0x90,0xC3,0x87,0x01,0x8C,0xC3,0x34};
 BMD_CONST REFIID IID_IBMDSwitcherMixEffectBlockIterator           = /* 930BDE3B-4A78-43D0-8FD3-6E82ABA0E117 */ {0x93,0x0B,0xDE,0x3B,0x4A,0x78,0x43,0xD0,0x8F,0xD3,0x6E,0x82,0xAB,0xA0,0xE1,0x17};
 BMD_CONST REFIID IID_IBMDSwitcherDownstreamKeyIterator            = /* F2968750-709B-42C8-B450-92CA2B065D14 */ {0xF2,0x96,0x87,0x50,0x70,0x9B,0x42,0xC8,0xB4,0x50,0x92,0xCA,0x2B,0x06,0x5D,0x14};
-BMD_CONST REFIID IID_IBMDSwitcherKeyIterator                      = /* ECC57473-0993-444F-B3CF-ED593CA25B09 */ {0xEC,0xC5,0x74,0x73,0x09,0x93,0x44,0x4F,0xB3,0xCF,0xED,0x59,0x3C,0xA2,0x5B,0x09};
+BMD_CONST REFIID IID_IBMDSwitcherKeyIterator                      = /* 63032A58-35FC-4AE3-86E3-49DFF879EA4A */ {0x63,0x03,0x2A,0x58,0x35,0xFC,0x4A,0xE3,0x86,0xE3,0x49,0xDF,0xF8,0x79,0xEA,0x4A};
 BMD_CONST REFIID IID_IBMDSwitcherMediaPlayerIterator              = /* E910816F-59CB-4224-A77F-06DE3D232275 */ {0xE9,0x10,0x81,0x6F,0x59,0xCB,0x42,0x24,0xA7,0x7F,0x06,0xDE,0x3D,0x23,0x22,0x75};
 BMD_CONST REFIID IID_IBMDSwitcherMultiViewIterator                = /* B7A0D98B-A286-4651-A9E7-5596F62D652E */ {0xB7,0xA0,0xD9,0x8B,0xA2,0x86,0x46,0x51,0xA9,0xE7,0x55,0x96,0xF6,0x2D,0x65,0x2E};
 BMD_CONST REFIID IID_IBMDSwitcherAudioMonitorOutputIterator       = /* C76BAC6A-DFEE-4F2F-B161-226B481D556A */ {0xC7,0x6B,0xAC,0x6A,0xDF,0xEE,0x4F,0x2F,0xB1,0x61,0x22,0x6B,0x48,0x1D,0x55,0x6A};
@@ -200,6 +202,8 @@ typedef uint32_t BMDSwitcherInputAvailability;
 enum _BMDSwitcherInputAvailability {
     bmdSwitcherInputAvailabilityMixEffectBlock0                  = 0x00000001,
     bmdSwitcherInputAvailabilityMixEffectBlock1                  = 0x00000002,
+    bmdSwitcherInputAvailabilityMixEffectBlock2                  = 0x00000080,
+    bmdSwitcherInputAvailabilityMixEffectBlock3                  = 0x00000100,
     bmdSwitcherInputAvailabilityAuxOutputs                       = 0x00000004,
     bmdSwitcherInputAvailabilityMultiView                        = 0x00000008,
     bmdSwitcherInputAvailabilitySuperSourceArt                   = 0x00000010,
@@ -501,6 +505,29 @@ enum _BMDSwitcherKeyChromaParametersEventType {
     bmdSwitcherKeyChromaParametersEventTypeYSuppressChanged      = 'yspC',
     bmdSwitcherKeyChromaParametersEventTypeLiftChanged           = 'lftC',
     bmdSwitcherKeyChromaParametersEventTypeNarrowChanged         = 'nrwC'
+};
+
+/* Enum BMDSwitcherKeyAdvancedChromaParametersEventType - Used in IBMDSwitcherKeyAdvancedChromaParametersCallback */
+
+typedef uint32_t BMDSwitcherKeyAdvancedChromaParametersEventType;
+enum _BMDSwitcherKeyAdvancedChromaParametersEventType {
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeForegroundLevelChanged = 'cflC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeBackgroundLevelChanged = 'cblC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeKeyEdgeChanged = 'ckeC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeSpillSuppressChanged = 'cssC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeFlareSuppressChanged = 'cfsC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeBrightnessChanged = 'cfiC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeContrastChanged = 'cfcC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeSaturationChanged = 'cfaC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeRedChanged    = 'cfrC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeGreenChanged  = 'cfgC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeBlueChanged   = 'cfbC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeSamplingModeEnabledChanged = 'ccoC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypePreviewEnabledChanged = 'cpoC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeCursorXPositionChanged = 'cpxC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeCursorYPositionChanged = 'cpyC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeCursorSizeChanged = 'ccsC',
+    bmdSwitcherKeyAdvancedChromaParametersEventTypeSampledColorChanged = 'cscC'
 };
 
 /* Enum BMDSwitcherKeyPatternParametersEventType - Used in IBMDSwitcherKeyPatternParametersCallback */
@@ -1030,6 +1057,8 @@ class IBMDSwitcherKeyLumaParametersCallback;
 class IBMDSwitcherKeyLumaParameters;
 class IBMDSwitcherKeyChromaParametersCallback;
 class IBMDSwitcherKeyChromaParameters;
+class IBMDSwitcherKeyAdvancedChromaParametersCallback;
+class IBMDSwitcherKeyAdvancedChromaParameters;
 class IBMDSwitcherKeyPatternParametersCallback;
 class IBMDSwitcherKeyPatternParameters;
 class IBMDSwitcherKeyFlyKeyFrameParametersCallback;
@@ -1348,6 +1377,66 @@ protected:
     virtual ~IBMDSwitcherKeyChromaParameters () {} // call Release method to drop reference count
 };
 
+/* Interface IBMDSwitcherKeyAdvancedChromaParametersCallback - Advanced Chroma Key Parameters Callback */
+
+class IBMDSwitcherKeyAdvancedChromaParametersCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherKeyAdvancedChromaParametersEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyAdvancedChromaParametersCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherKeyAdvancedChromaParameters - Advanced Chroma Key Parameters */
+
+class IBMDSwitcherKeyAdvancedChromaParameters : public IUnknown
+{
+public:
+    virtual HRESULT GetForegroundLevel (/* out */ double* level) = 0;
+    virtual HRESULT SetForegroundLevel (/* in */ double level) = 0;
+    virtual HRESULT GetBackgroundLevel (/* out */ double* level) = 0;
+    virtual HRESULT SetBackgroundLevel (/* in */ double level) = 0;
+    virtual HRESULT GetKeyEdge (/* out */ double* keyEdge) = 0;
+    virtual HRESULT SetKeyEdge (/* in */ double keyEdge) = 0;
+    virtual HRESULT GetSpillSuppress (/* out */ double* spillSuppress) = 0;
+    virtual HRESULT SetSpillSuppress (/* in */ double spillSuppress) = 0;
+    virtual HRESULT GetFlareSuppress (/* out */ double* flareSuppress) = 0;
+    virtual HRESULT SetFlareSuppress (/* in */ double flareSuppress) = 0;
+    virtual HRESULT GetBrightness (/* out */ double* brightness) = 0;
+    virtual HRESULT SetBrightness (/* in */ double brightness) = 0;
+    virtual HRESULT GetContrast (/* out */ double* contrast) = 0;
+    virtual HRESULT SetContrast (/* in */ double contrast) = 0;
+    virtual HRESULT GetSaturation (/* out */ double* saturation) = 0;
+    virtual HRESULT SetSaturation (/* in */ double saturation) = 0;
+    virtual HRESULT GetRed (/* out */ double* red) = 0;
+    virtual HRESULT SetRed (/* in */ double red) = 0;
+    virtual HRESULT GetGreen (/* out */ double* green) = 0;
+    virtual HRESULT SetGreen (/* in */ double green) = 0;
+    virtual HRESULT GetBlue (/* out */ double* blue) = 0;
+    virtual HRESULT SetBlue (/* in */ double blue) = 0;
+    virtual HRESULT GetSamplingModeEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetSamplingModeEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetPreviewEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetPreviewEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetCursorXPosition (/* out */ double* position) = 0;
+    virtual HRESULT SetCursorXPosition (/* in */ double position) = 0;
+    virtual HRESULT GetCursorYPosition (/* out */ double* position) = 0;
+    virtual HRESULT SetCursorYPosition (/* in */ double position) = 0;
+    virtual HRESULT GetCursorSize (/* out */ double* size) = 0;
+    virtual HRESULT SetCursorSize (/* in */ double size) = 0;
+    virtual HRESULT GetSampledColor (/* out */ double* y, /* out */ double* cb, /* out */ double* cr) = 0;
+    virtual HRESULT SetSampledColor (/* in */ double y, /* in */ double cb, /* in */ double cr) = 0;
+    virtual HRESULT ResetKeyAdjustments (void) = 0; // Resets Foreground Level, Background Level, and Key Edge
+    virtual HRESULT ResetChromaCorrection (void) = 0; // Resets Spill Suppress and Flare Suppress
+    virtual HRESULT ResetColorAdjustments (void) = 0; // Resets Brightness, Contrast, Saturation, Red, Green, and Blue
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherKeyAdvancedChromaParametersCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherKeyAdvancedChromaParametersCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherKeyAdvancedChromaParameters () {} // call Release method to drop reference count
+};
+
 /* Interface IBMDSwitcherKeyPatternParametersCallback - Pattern Key Parameters Callback */
 
 class IBMDSwitcherKeyPatternParametersCallback : public IUnknown
@@ -1582,6 +1671,7 @@ protected:
 class IBMDSwitcherKey : public IUnknown
 {
 public:
+    virtual HRESULT DoesSupportAdvancedChroma (/* out */ bool* supportsAdvancedChroma) = 0;
     virtual HRESULT GetType (/* out */ BMDSwitcherKeyType* type) = 0;
     virtual HRESULT SetType (/* in */ BMDSwitcherKeyType type) = 0;
     virtual HRESULT GetInputCut (/* out */ BMDSwitcherInputId* input) = 0;
