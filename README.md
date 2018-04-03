@@ -16,6 +16,16 @@ The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compi
 2. Under `Assets`, select `atemOSC.dmg`
 3. Double-click the downloaded DMG, drag the application to your Applications folder, then launch it from the Launchpad.
 
+---------
+
+## Setup and Usage
+
+AtemOSC acts as a sort of proxy or translator, taking requests in one form (OSC) and converting them to another (BMD SDK).  You just have to tell atemOSC where the switcher is and what port to listen on, and then send commands to the IP address of the computer running atemOSC on the specified port.  If you set an outgoing IP address and port, atemOSC will send status updates and confirmation OSC messages to the device and port you specified.
+
+**If you are sending atemOSC messages from a queueing software or translation software on the same computer that atemOSC is running on**, make sure to send messages to `127.0.0.1` (localhost) on the port that atemOSC is listening on, and then atemOSC will send the requests on to the switcher itself.
+
+**If you are sending atemOSC messages from another device**, you will need to send it to the IP address of the computer running atemOSC on the port that atemOSC is listening on.  You can find the IP address of a macOS computer by going to `System Preferences` > `Network` or by running `ifconfig` in a terminal window.
+
 ----------
 
 ## OSC API
@@ -33,7 +43,7 @@ The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compi
  - **Cam 5** `/atem/program/5`
  - **Cam 6** `/atem/program/6`
  - and so on...
-  
+
  - **Black** `/atem/program/0`
  - **Bars** `/atem/program/7`
  - **Color 1** `/atem/program/8`
@@ -67,7 +77,7 @@ To set the transition type of the Auto transition:
  - **Set Aux $i source to $x** `/atem/aux/$i $x`
    - Where `$x` is an integer value that is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
    - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
-   
+
 Feedback: None
 
 ### Upstream Keyers
@@ -80,7 +90,7 @@ Feedback: None
 
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 Feedback: Enabled for '/atem/nextusk' only
-     
+
 ### Downstream Keyers
 
  - **Auto Toggle On-Air Downstreamkeyer $i** `/atem/dsk/$i`
@@ -96,7 +106,24 @@ Feedback: Enabled for '/atem/nextusk' only
  
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 Feedback: Enabled for '/atem/dsk/on-air' and '/atem/dsk/tie' only
- 
+
+### Audio
+
+ - **Change Gain for Audio Input $i** `/atem/audio/input/$i/gain $x`
+     - Where $x is the gain in decibels (dB), ranging from `-60` to `6`
+     - e.g. `/atem/audio/input/2/gain -30.0`
+
+ - **Change Balance for Audio Input $i** `/atem/audio/input/$i/balance $x`
+     - Where $x is the balance, `-1.0` for full left up to `1.0` for full right
+     - e.g. `/atem/audio/input/2/balance 0.4`
+
+ - **Change Gain for Audio Output (Mix)** `/atem/audio/output/gain $x`
+     - Where $x is the gain in decibels (dB), ranging from `-60` to `6`
+     - e.g. `/atem/audio/output/gain -30.0`
+
+ - **Change Balance for Audio Output** `/atem/audio/output/balance $x`
+     - Where $x is the balance, `-1.0` for full left up to `1.0` for full right
+     - e.g. `/atem/audio/output/balance 0.4`
 
 ### Media Players
 
@@ -106,9 +133,9 @@ Feedback: Enabled for '/atem/dsk/on-air' and '/atem/dsk/tie' only
  - **Set Media Player $i source to Still $x** `/atem/mplayer/$i/still/$x`
      - Where `$i` can be 1 or 2, and `$x` can be 1-20 depending on the capability of your ATEM switcher
      - e.g. `/atem/mplayer/1/still/5`
-     
+
 Feedback: None
-   
+
 ### SuperSource (when available)
 
    - **Toggle SuperSource Box $i enabled** `/atem/supersource/$i/enabled <0|1>`
@@ -116,7 +143,7 @@ Feedback: None
    - **Set SuperSource Box $i source to input $x** `/atem/supersource/$i/source $x`
      - Where `$x` is a valid program source. Check the Help Menu for the correct values.
    - Other options are available. Check the Help Menu in the app for the full list.
-   
+
 Feedback: None
 
 ### Macros
