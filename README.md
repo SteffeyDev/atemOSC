@@ -5,9 +5,7 @@ This is a macOS application, providing an interface to control an ATEM video swi
 
 ![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
 
-The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 7.3 (as of version 2.5.2). 
-
-----------
+The current version is built for Mac OS 10.13 (as of version 2.5.2). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 7.3. 
 
 ## Download the App
 
@@ -16,13 +14,11 @@ The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compi
 2. Under `Assets`, select `atemOSC.dmg`
 3. Double-click the downloaded DMG, drag the application to your Applications folder, then launch it from the Launchpad.
 
----------
-
 ## Setup and Usage
 
-AtemOSC acts as a sort of proxy or translator, taking requests in one form (OSC) and converting them to another (BMD SDK).  You just have to tell atemOSC where the switcher is and what port to listen on, and then send commands to the IP address of the computer running atemOSC on the specified port.  If you set an outgoing IP address and port, atemOSC will send status updates and confirmation OSC messages to the device and port you specified.
+AtemOSC is a proxy, listening for commands following the [OSC protocol](http://opensoundcontrol.org/introduction-osc) and executing those commands on Blackmagic video switchers.  You just have to tell atemOSC where the switcher is and what port to listen on, and then send commands to the IP address of the computer running atemOSC on the specified port.  If you set an outgoing IP address and port, atemOSC will send status updates and confirmation OSC messages to the device and port you specified.
 
-**If you are sending atemOSC messages from a queueing software or translation software on the same computer that atemOSC is running on**, make sure to send messages to `127.0.0.1` (localhost) on the port that atemOSC is listening on, and then atemOSC will send the requests on to the switcher itself.
+**If you are sending atemOSC messages from a queueing software or translation software on the same computer that atemOSC is running on**, make sure to send messages to `127.0.0.1` (localhost) on the port that atemOSC is listening on.
 
 **If you are sending atemOSC messages from another device**, you will need to send it to the IP address of the computer running atemOSC on the port that atemOSC is listening on.  You can find the IP address of a macOS computer by going to `System Preferences` > `Network` or by running `ifconfig` in a terminal window.
 
