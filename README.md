@@ -16,7 +16,7 @@ The current version is built for Mac OS 10.13 (as of version 2.5.2). A compiled 
 
 ## Setup and Usage
 
-AtemOSC is a proxy, listening for commands following the [OSC protocol](http://opensoundcontrol.org/introduction-osc) and executing those commands on Blackmagic video switchers.  You just have to tell atemOSC where the switcher is and what port to listen on, and then send commands to the IP address of the computer running atemOSC on the specified port.  If you set an outgoing IP address and port, atemOSC will send status updates and confirmation OSC messages to the device and port you specified.
+AtemOSC is a proxy, listening for commands following the [OSC protocol](http://opensoundcontrol.org/introduction-osc) and executing those commands on Blackmagic video switchers.  You just have to tell atemOSC where the switcher is and what port to listen on, and then send commands to the IP address of the computer running atemOSC on the specified port.  If you set an outgoing IP address and port, atemOSC will send status updates and feedback OSC messages to the device and port you specified.
 
 **If you are sending atemOSC messages from a queueing software or translation software on the same computer that atemOSC is running on**, make sure to send messages to `127.0.0.1` (localhost) on the port that atemOSC is listening on.
 
@@ -48,6 +48,7 @@ AtemOSC is a proxy, listening for commands following the [OSC protocol](http://o
  - **Media 2** `/atem/program/12`
 
 For preview selection `/atem/preview/$i` can be used.
+
 Feedback: Enabled for all values
 
 
@@ -85,6 +86,7 @@ Feedback: None
      - e.g. If USK 1 is on air, `/atem/set-nextusk/1 1` will untie USK 1 so that it remains on, while `/atem/set-nextusk/1 0` will tie USK 1 so that it will go off air after the next transition.
 
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
+
 Feedback: Enabled for '/atem/nextusk' only
 
 ### Downstream Keyers
@@ -101,25 +103,25 @@ Feedback: Enabled for '/atem/nextusk' only
      - e.g. If DSK1 is on air, `/atem/dsk/set-next/1 1` will untie DSK1 so that it remains on, while `/atem/dsk/set-next/1 0` will tie DSK1 so that it will go off air after the next transition.
  
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
+
 Feedback: Enabled for '/atem/dsk/on-air' and '/atem/dsk/tie' only
 
 ### Audio
 
  - **Change Gain for Audio Input $i** `/atem/audio/input/$i/gain $x`
-     - Where $x is the gain in decibels (dB), ranging from `-60` to `6`
+     - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
      - e.g. `/atem/audio/input/2/gain -30.0`
-
  - **Change Balance for Audio Input $i** `/atem/audio/input/$i/balance $x`
-     - Where $x is the balance, `-1.0` for full left up to `1.0` for full right
+     - Where `$x` is the balance, `-1.0` for full left up to `1.0` for full right
      - e.g. `/atem/audio/input/2/balance 0.4`
-
  - **Change Gain for Audio Output (Mix)** `/atem/audio/output/gain $x`
-     - Where $x is the gain in decibels (dB), ranging from `-60` to `6`
+     - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
      - e.g. `/atem/audio/output/gain -30.0`
-
  - **Change Balance for Audio Output** `/atem/audio/output/balance $x`
-     - Where $x is the balance, `-1.0` for full left up to `1.0` for full right
+     - Where `$x` is the balance, `-1.0` for full left up to `1.0` for full right
      - e.g. `/atem/audio/output/balance 0.4`
+
+Feedback: Enabled for all values
 
 ### Media Players
 
