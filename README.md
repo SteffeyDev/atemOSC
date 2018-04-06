@@ -32,6 +32,8 @@ AtemOSC is a proxy, listening for commands following the [OSC protocol](http://o
 
 ### Program and Preview Selection
 
+ - **Black** `/atem/program/0`
+
  - **Cam 1** `/atem/program/1`
  - **Cam 2** `/atem/program/2`
  - **Cam 3** `/atem/program/3`
@@ -40,16 +42,24 @@ AtemOSC is a proxy, listening for commands following the [OSC protocol](http://o
  - **Cam 6** `/atem/program/6`
  - and so on...
 
- - **Black** `/atem/program/0`
- - **Bars** `/atem/program/7`
- - **Color 1** `/atem/program/8`
- - **Color 2** `/atem/program/9`
- - **Media 1** `/atem/program/10`
- - **Media 2** `/atem/program/12`
+ - **Color Bars** `/atem/program/1000`
+ - **Color 1** `/atem/program/2001`
+ - **Color 2** `/atem/program/2002`
+ - **Media 1** `/atem/program/3010`
+ - **Media 2** `/atem/program/3020`
+ - **Key 1 Mask** `/atem/program/4010`
+ - **DSK 1 Mask**: `/atem/program/5010`
+ - **DSK 2 Mask**: `/atem/program/5020`
+ - **Clean Feed 1** `/atem/program/7001`
+ - **Clean Feed 2** `/atem/program/7002`
+ - **Auxiliary 1** `/atem/program/8001`
+ - and so on...
 
 For preview selection `/atem/preview/$i` can be used.
 
 Feedback: Enabled for all values
+
+Note: The actual numbers vary greatly from device to device, be sure to check the in-app address menu
 
 
 ### Transition Control
