@@ -14,8 +14,17 @@
 {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	[mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
-	[mOutgoingPortTextField setIntValue:[prefs integerForKey:@"outgoing"]];
-	[mIncomingPortTextField setIntValue:[prefs integerForKey:@"incoming"]];
+	
+	if ([prefs integerForKey:@"outgoing"])
+		[mOutgoingPortTextField setIntValue:[prefs integerForKey:@"outgoing"]];
+	else
+		[mOutgoingPortTextField setIntValue:4444];
+	
+	if ([prefs integerForKey:@"incoming"])
+		[mIncomingPortTextField setIntValue:[prefs integerForKey:@"incoming"]];
+	else
+		[mIncomingPortTextField setIntValue:3333];
+	
 	[mOscDeviceTextField setStringValue:[prefs objectForKey:@"oscdevice"]];
 }
 
