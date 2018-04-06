@@ -5,9 +5,7 @@ This is a macOS application, providing an interface to control an ATEM video swi
 
 ![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
 
-The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 7.3 (as of version 2.5.2). 
-
-----------
+The current version is built for Mac OS 10.13 (as of version 2.5.2). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 7.3 (as of version 2.5.2). 
 
 ## Download the App
 
@@ -15,6 +13,14 @@ The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compi
 2. For the latest version, use the first release.  For a version that supports older versions of the Atem SDK, scroll down until you find the release for the version you want.
 2. Under `Assets`, select `atemOSC.dmg`
 3. Double-click the downloaded DMG, drag the application to your Applications folder, then launch it from the Launchpad.
+
+## Setup and Usage
+
+AtemOSC is a proxy, listening for commands following the [OSC protocol](http://opensoundcontrol.org/introduction-osc) and executing those commands on Blackmagic video switchers.  You just have to tell atemOSC where the switcher is and what local port to listen on, and then send commands to the IP address of the computer running atemOSC on port you specified.  If you set an outgoing IP address and port, atemOSC will send status updates and feedback OSC messages to the IP address and port you specified.
+
+**If you are sending atemOSC messages from a queueing software or translation software on the same computer that atemOSC is running on**, make sure to send messages to `127.0.0.1` (localhost) on the port that atemOSC is listening on.
+
+**If you are sending atemOSC messages from another device**, you will need to send it to the IP address of the computer running atemOSC on the port that atemOSC is listening on.  You can find the IP address of a macOS computer by going to `System Preferences` > `Network` or by running `ifconfig` in a terminal window.
 
 ----------
 
@@ -26,6 +32,8 @@ The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compi
 
 ### Program and Preview Selection
 
+ - **Black** `/atem/program/0`
+
  - **Cam 1** `/atem/program/1`
  - **Cam 2** `/atem/program/2`
  - **Cam 3** `/atem/program/3`
@@ -33,16 +41,25 @@ The current version is built for Mac OS 10.12 SDK (as of version 2.4.7). A compi
  - **Cam 5** `/atem/program/5`
  - **Cam 6** `/atem/program/6`
  - and so on...
-  
- - **Black** `/atem/program/0`
- - **Bars** `/atem/program/7`
- - **Color 1** `/atem/program/8`
- - **Color 2** `/atem/program/9`
- - **Media 1** `/atem/program/10`
- - **Media 2** `/atem/program/12`
+
+ - **Color Bars** `/atem/program/1000`
+ - **Color 1** `/atem/program/2001`
+ - **Color 2** `/atem/program/2002`
+ - **Media 1** `/atem/program/3010`
+ - **Media 2** `/atem/program/3020`
+ - **Key 1 Mask** `/atem/program/4010`
+ - **DSK 1 Mask**: `/atem/program/5010`
+ - **DSK 2 Mask**: `/atem/program/5020`
+ - **Clean Feed 1** `/atem/program/7001`
+ - **Clean Feed 2** `/atem/program/7002`
+ - **Auxiliary 1** `/atem/program/8001`
+ - and so on...
 
 For preview selection `/atem/preview/$i` can be used.
+
 Feedback: Enabled for all values
+
+Note: The actual numbers vary greatly from device to device, be sure to check the in-app address menu
 
 
 ### Transition Control
@@ -67,7 +84,7 @@ To set the transition type of the Auto transition:
  - **Set Aux $i source to $x** `/atem/aux/$i $x`
    - Where `$x` is an integer value that is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
    - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
-   
+
 Feedback: None
 
 ### Upstream Keyers
@@ -79,8 +96,9 @@ Feedback: None
      - e.g. If USK 1 is on air, `/atem/set-nextusk/1 1` will untie USK 1 so that it remains on, while `/atem/set-nextusk/1 0` will tie USK 1 so that it will go off air after the next transition.
 
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
+
 Feedback: Enabled for '/atem/nextusk' only
-     
+
 ### Downstream Keyers
 
  - **Auto Toggle On-Air Downstreamkeyer $i** `/atem/dsk/$i`
@@ -95,8 +113,25 @@ Feedback: Enabled for '/atem/nextusk' only
      - e.g. If DSK1 is on air, `/atem/dsk/set-next/1 1` will untie DSK1 so that it remains on, while `/atem/dsk/set-next/1 0` will tie DSK1 so that it will go off air after the next transition.
  
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
+
 Feedback: Enabled for '/atem/dsk/on-air' and '/atem/dsk/tie' only
- 
+
+### Audio
+
+ - **Change Gain for Audio Input $i** `/atem/audio/input/$i/gain $x`
+     - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
+     - e.g. `/atem/audio/input/2/gain -30.0`
+ - **Change Balance for Audio Input $i** `/atem/audio/input/$i/balance $x`
+     - Where `$x` is the balance, `-1.0` for full left up to `1.0` for full right
+     - e.g. `/atem/audio/input/2/balance 0.4`
+ - **Change Gain for Audio Output (Mix)** `/atem/audio/output/gain $x`
+     - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
+     - e.g. `/atem/audio/output/gain -30.0`
+ - **Change Balance for Audio Output** `/atem/audio/output/balance $x`
+     - Where `$x` is the balance, `-1.0` for full left up to `1.0` for full right
+     - e.g. `/atem/audio/output/balance 0.4`
+
+Feedback: Enabled for all values
 
 ### Media Players
 
@@ -106,9 +141,9 @@ Feedback: Enabled for '/atem/dsk/on-air' and '/atem/dsk/tie' only
  - **Set Media Player $i source to Still $x** `/atem/mplayer/$i/still/$x`
      - Where `$i` can be 1 or 2, and `$x` can be 1-20 depending on the capability of your ATEM switcher
      - e.g. `/atem/mplayer/1/still/5`
-     
+
 Feedback: None
-   
+
 ### SuperSource (when available)
 
    - **Toggle SuperSource Box $i enabled** `/atem/supersource/$i/enabled <0|1>`
@@ -116,7 +151,7 @@ Feedback: None
    - **Set SuperSource Box $i source to input $x** `/atem/supersource/$i/source $x`
      - Where `$x` is a valid program source. Check the Help Menu for the correct values.
    - Other options are available. Check the Help Menu in the app for the full list.
-   
+
 Feedback: None
 
 ### Macros
