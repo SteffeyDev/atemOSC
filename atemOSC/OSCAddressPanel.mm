@@ -61,7 +61,7 @@
 	for (int i = 0; i<[appDel dsk].size();i++)
 	{
 		[self addEntry:[NSString stringWithFormat:@"Auto-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set DSK On Ait%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d\t<0|1>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set DSK On Air%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d\t<0|1>",i+1] toString:helpString];
 		[self addEntry:[NSString stringWithFormat:@"Tie Next-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/tie/%d",i+1] toString:helpString];
 		[self addEntry:[NSString stringWithFormat:@"Set Tie Next-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d\t<0|1>",i+1] toString:helpString];
 		[self addEntry:[NSString stringWithFormat:@"Toggle DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/toggle/%d",i+1] toString:helpString];
@@ -89,7 +89,10 @@
 		input->GetInputId(&id);
 		input->GetLongName((CFStringRef*)&name);
 		
-		[self addEntry:name forAddress:[NSString stringWithFormat:@"/atem/program/%ld\n",(long)id] toString:helpString];
+		if ([name isEqual:@""])
+			name = @"Unnamed";
+		
+		[self addEntry:name forAddress:[NSString stringWithFormat:@"/atem/program/%ld",(long)id] toString:helpString];
 		
 		input->Release();
 		[name release];
@@ -106,17 +109,17 @@
 
 		[self
 		 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Gain", it.first, inputTypeString]
-		 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain", it.first]
+		 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain <float>", it.first]
 		 toString:helpString];
 		[self
 		 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Balance", it.first, inputTypeString]
-		 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance", it.first]
+		 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance <float>", it.first]
 		 toString:helpString];
 	}
 
 	[self addHeader:@"Audio Output (Mix)" toString:helpString];
-	[self addEntry:@"Audio Output Gain" forAddress:@"/atem/audio/output/gain" toString:helpString];
-	[self addEntry:@"Audio Output Balance" forAddress:@"/atem/audio/output/balance" toString:helpString];
+	[self addEntry:@"Audio Output Gain" forAddress:@"/atem/audio/output/gain <float>" toString:helpString];
+	[self addEntry:@"Audio Output Balance" forAddress:@"/atem/audio/output/balance <float>" toString:helpString];
 
 	[self addHeader:@"Aux Outputs" toString:helpString];
 	for (int i = 0; i<[appDel mSwitcherInputAuxList].size();i++)
@@ -159,13 +162,13 @@
 		{
 			for (int j = 0; j < clipCount; j++)
 				[self
-				 addEntry:[NSString stringWithFormat:@"\tSet MP %d to Clip %d: ",i+1,j+1]
+				 addEntry:[NSString stringWithFormat:@"Set MP %d to Clip %d",i+1,j+1]
 				 forAddress:[NSString stringWithFormat:@"/atem/mplayer/%d/clip/%d",i+1,j+1]
 				 toString:helpString];
 
 			for (int j = 0; j < stillCount; j++)
 				[self
-				 addEntry:[NSString stringWithFormat:@"\tSet MP %d to Still %d: ",i+1,j+1]
+				 addEntry:[NSString stringWithFormat:@"Set MP %d to Still %d",i+1,j+1]
 				 forAddress:[NSString stringWithFormat:@"/atem/mplayer/%d/still/%d",i+1,j+1]
 				 toString:helpString];
 		}
@@ -183,27 +186,27 @@
 
 		for (int i = 1; i <= [appDel mSuperSourceBoxes].size(); i++)
 		{
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d enabled: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/enabled\t<0|1>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Input source: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/source\t<see sources for valid options>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Position X: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/x\t<float>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Position Y: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/y\t<float>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Size: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/size\t<float>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Cropped Enabled: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/cropped\t<0|1>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Crop Top: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-top\t<float>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Crop Bottom: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-bottom\t<float>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Crop Left: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-left\t<float>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tSet Box %d Crop Right: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-right\t<float>\n",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"\tReset Box %d Crop: ",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-reset\t<1>\n",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d enabled",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/enabled\t<0|1>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Input source",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/source\t<see sources for valid options>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Position X",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/x\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Position Y",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/y\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Size",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/size\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Cropped Enabled",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/cropped\t<0|1>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Top",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-top\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Bottom",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-bottom\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Left",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-left\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Right",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-right\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Reset Box %d Crop",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-reset\t<1>",i] toString:helpString];
 		}
 	}
 
-	[self addHeader:@"\nMacros:\n" toString:helpString];
-	[self addEntry:@"\tGet the Maximum Number of Macros: " forAddress:@"/atem/macros/max-number\n" toString:helpString];
-	[self addEntry:@"\tStop the currently active Macro (if any): " forAddress:@"/atem/macros/stop\n" toString:helpString];
-	[self addEntry:@"\tGet the Name of a Macro: " forAddress:@"/atem/macros/<index>/name\n" toString:helpString];
-	[self addEntry:@"\tGet the Description of a Macro: " forAddress:@"/atem/macros/<index>/description\n" toString:helpString];
-	[self addEntry:@"\tGet whether the Macro at <index> is valid: " forAddress:@"/atem/macros/<index>/is-valid\n" toString:helpString];
-	[self addEntry:@"\tRun the Macro at <index>: " forAddress:@"/atem/macros/<index>/run\n" toString:helpString];
+	[self addHeader:@"Macros" toString:helpString];
+	[self addEntry:@"Get the Maximum Number of Macros" forAddress:@"/atem/macros/max-number" toString:helpString];
+	[self addEntry:@"Stop the currently active Macro (if any)" forAddress:@"/atem/macros/stop" toString:helpString];
+	[self addEntry:@"Get the Name of a Macro" forAddress:@"/atem/macros/<index>/name" toString:helpString];
+	[self addEntry:@"Get the Description of a Macro" forAddress:@"/atem/macros/<index>/description" toString:helpString];
+	[self addEntry:@"Get whether the Macro at <index> is valid" forAddress:@"/atem/macros/<index>/is-valid" toString:helpString];
+	[self addEntry:@"Run the Macro at <index>" forAddress:@"/atem/macros/<index>/run" toString:helpString];
 
 	[helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
 	[[helpTextView textStorage] setAttributedString:helpString];
