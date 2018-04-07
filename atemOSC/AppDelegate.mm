@@ -280,9 +280,10 @@
 		{
 			keyers.push_back(key);
 		}
+		keyIterator->Release();
+		keyIterator = NULL;
 	}
-	keyIterator->Release();
-	keyIterator = NULL;
+	
 	
 	//Downstream Keyer
 	IBMDSwitcherDownstreamKeyIterator* dskIterator = NULL;
