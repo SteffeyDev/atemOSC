@@ -11,85 +11,76 @@
 
 @implementation OSCAddressPanel
 
+- (void)addHeader:(NSString*)name toString:(NSMutableAttributedString*)helpString
+{
+	NSDictionary *addressAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:5 size:12]};
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\n%@:\n", name] attributes:addressAttribute]];
+}
+
+- (void)addEntry:(NSString*)name forAddress:(NSString*)address toString:(NSMutableAttributedString*)helpString
+{
+	NSDictionary *infoAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Monaco" traits:NSUnboldFontMask|NSUnitalicFontMask weight:5 size:12]};
+	NSDictionary *addressAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:5 size:12]};
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ", name] attributes:addressAttribute]];
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", address] attributes:infoAttribute]];
+}
+
 - (void)setupWithDelegate:(AppDelegate *)appDel
 {
 	//set helptext
 	[helpTextView setAlignment:NSLeftTextAlignment];
 	
 	NSMutableAttributedString * helpString = [[NSMutableAttributedString alloc] initWithString:@""];
-	NSDictionary *infoAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Monaco" traits:NSUnboldFontMask|NSUnitalicFontMask weight:5 size:12]};
-	NSDictionary *addressAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:5 size:12]};
 	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"Transitions:\n" attributes:addressAttribute]];
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tT-Bar: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/bar\n" attributes:infoAttribute]];
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tCut: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/cut\n" attributes:infoAttribute]];
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tAuto-Cut: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/auto\n" attributes:infoAttribute]];
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tFade-to-black: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/ftb\n" attributes:infoAttribute]];
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nTransition type:\n" attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Mix: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/mix\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Dip: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/dip\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Wipe: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/wipe\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to Stinger: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/sting\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet to DVE: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/transition/set-type/dve\n" attributes:infoAttribute]];
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nUpstream Keyers:\n" attributes:addressAttribute]];
+	[self addHeader:@"Polling" toString:helpString];
+	[self addEntry:@"Get Status" forAddress:@"/atem/send-status" toString:helpString];
+
+	[self addHeader:@"Transitions" toString:helpString];
+	[self addEntry:@"T-Bar" forAddress:@"/atem/transition/bar" toString:helpString];
+	[self addEntry:@"Cut" forAddress:@"/atem/transition/cut" toString:helpString];
+	[self addEntry:@"Auto-Cut" forAddress:@"/atem/transition/auto" toString:helpString];
+	[self addEntry:@"Fade-to-black" forAddress:@"/atem/transition/ftb" toString:helpString];
+
+	[self addHeader:@"Transition type" toString:helpString];
+	[self addEntry:@"Set to Mix" forAddress:@"/atem/transition/set-type/mix" toString:helpString];
+	[self addEntry:@"Set to Dip" forAddress:@"/atem/transition/set-type/dip" toString:helpString];
+	[self addEntry:@"Set to Wipe" forAddress:@"/atem/transition/set-type/wipe" toString:helpString];
+	[self addEntry:@"Set to Stinger" forAddress:@"/atem/transition/set-type/sting" toString:helpString];
+	[self addEntry:@"Set to DVE" forAddress:@"/atem/transition/set-type/dve" toString:helpString];
+
+	[self addHeader:@"Upstream Keyers" toString:helpString];
+	[self addEntry:@"BKGD" forAddress:@"/atem/nextusk/0" toString:helpString];
 	for (int i = 0; i<[appDel keyers].size();i++)
 	{
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tOn Air KEY %d toggle: ",i+1] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/usk/%d\n",i+1] attributes:infoAttribute]];
+		[self addEntry:[NSString stringWithFormat:@"On Air KEY %d toggle",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"KEY %d",i+1] forAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State KEY %d",i+1] forAddress:[NSString stringWithFormat:@"/atem/set-nextusk/%d",i+1] toString:helpString];
 	}
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tBKGD: "] attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/nextusk/0\n"] attributes:infoAttribute]];
-	for (int i = 0; i<[appDel keyers].size();i++)
-	{
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tKEY %d: ",i+1] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/nextusk/%d\n",i+1] attributes:infoAttribute]];
-	}
-	
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nDownstream Keyers:\n" attributes:addressAttribute]];
+
+	[self addHeader:@"Downstream Keyers" toString:helpString];
 	for (int i = 0; i<[appDel dsk].size();i++)
 	{
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAuto-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/%d\n",i+1] attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet DSK On Ait%d: ",i+1] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/on-air/%d\t<0|1>\n",i+1] attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tTie Next-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/tie/%d\n",i+1] attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Tie Next-Transistion DSK%d: ",i+1] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d\t<0|1>\n",i+1] attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tToggle DSK%d: ",i+1] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/dsk/toggle/%d\n",i+1] attributes:infoAttribute]];
+		[self addEntry:[NSString stringWithFormat:@"Auto-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set DSK On Air%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d\t<0|1>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Tie Next-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/tie/%d",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Tie Next-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d\t<0|1>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Toggle DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/toggle/%d",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/set-next/%d",i+1] toString:helpString];
 	}
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSources:\n" attributes:addressAttribute]];
-	
+
+	[self addHeader:@"Sources" toString:helpString];
+
 	HRESULT result;
 	IBMDSwitcherInputIterator* inputIterator = NULL;
 	IBMDSwitcherInput* input = NULL;
-	
+
 	result = [appDel mSwitcher]->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator);
 	if (FAILED(result))
 	{
 		NSLog(@"Could not create IBMDSwitcherInputIterator iterator");
 		return;
 	}
-	
+
 	while (S_OK == inputIterator->Next(&input))
 	{
 		NSString* name;
@@ -98,43 +89,44 @@
 		input->GetInputId(&id);
 		input->GetLongName((CFStringRef*)&name);
 		
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ",name] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/program/%ld\n",(long)id] attributes:infoAttribute]];
+		if ([name isEqual:@""])
+			name = @"Unnamed";
+		
+		[self addEntry:name forAddress:[NSString stringWithFormat:@"/atem/program/%ld",(long)id] toString:helpString];
 		
 		input->Release();
 		[name release];
 	}
 	inputIterator->Release();
-	
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAudio Inputs:\n" attributes:addressAttribute]];
+
+	[self addHeader:@"Audio Inputs" toString:helpString];
+
 	for (auto const& it : [appDel mAudioInputs])
 	{
 		BMDSwitcherAudioInputType inputType;
 		[appDel mAudioInputs].at(it.first)->GetType(&inputType);
 		const char *inputTypeString = inputType == bmdSwitcherAudioInputTypeEmbeddedWithVideo ? "camera audio" : (inputType == bmdSwitcherAudioInputTypeMediaPlayer ? "media player" : "external audio-in");
 
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Input %lld (%s) Gain: ", it.first, inputTypeString] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain\n", it.first] attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Input %lld (%s) Balance: ", it.first, inputTypeString] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance\n", it.first] attributes:infoAttribute]];
+		[self
+		 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Gain", it.first, inputTypeString]
+		 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain <float>", it.first]
+		 toString:helpString];
+		[self
+		 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Balance", it.first, inputTypeString]
+		 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance <float>", it.first]
+		 toString:helpString];
 	}
 
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAudio Output (Mix):\n" attributes:addressAttribute]];
+	[self addHeader:@"Audio Output (Mix)" toString:helpString];
+	[self addEntry:@"Audio Output Gain" forAddress:@"/atem/audio/output/gain <float>" toString:helpString];
+	[self addEntry:@"Audio Output Balance" forAddress:@"/atem/audio/output/balance <float>" toString:helpString];
 
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Output Gain: "] attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/output/gain\n"] attributes:infoAttribute]];
-
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tAudio Output Balance: "] attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/audio/output/balance\n"] attributes:infoAttribute]];
-
-
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nAux Outputs:\n" attributes:addressAttribute]];
+	[self addHeader:@"Aux Outputs" toString:helpString];
 	for (int i = 0; i<[appDel mSwitcherInputAuxList].size();i++)
-	{
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Aux %d to Source: ",i+1] attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/aux/%d\t<valid_program_source>\n",i+1] attributes:infoAttribute]];
-	}
+		[self
+		 addEntry:[NSString stringWithFormat:@"Set Aux %d to Source",i+1]
+		 forAddress:[NSString stringWithFormat:@"/atem/aux/%d\t<valid_program_source>",i+1]
+		 toString:helpString];
 
 	if ([appDel mMediaPlayers].size() > 0)
 	{
@@ -147,7 +139,7 @@
 			// the default number of clips
 			clipCount = 2;
 		}
-		
+
 		IBMDSwitcherStills* mStills;
 		result = [appDel mMediaPool]->GetStills(&mStills);
 		if (FAILED(result))
@@ -164,81 +156,58 @@
 				stillCount = 20;
 			}
 		}
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nMedia Players:\n" attributes:addressAttribute]];
+
+		[self addHeader:@"Media Players" toString:helpString];
 		for (int i = 0; i < [appDel mMediaPlayers].size(); i++)
 		{
 			for (int j = 0; j < clipCount; j++)
-			{
-				[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet MP %d to Clip %d: ",i+1,j+1] attributes:  addressAttribute]];
-				[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/mplayer/%d/clip/%d\n",i+1,j+1] attributes:infoAttribute]];
-			}
+				[self
+				 addEntry:[NSString stringWithFormat:@"Set MP %d to Clip %d",i+1,j+1]
+				 forAddress:[NSString stringWithFormat:@"/atem/mplayer/%d/clip/%d",i+1,j+1]
+				 toString:helpString];
+
 			for (int j = 0; j < stillCount; j++)
-			{
-				[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet MP %d to Still %d: ",i+1,j+1] attributes:  addressAttribute]];
-				[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/mplayer/%d/still/%d\n",i+1,j+1] attributes:infoAttribute]];
-			}
+				[self
+				 addEntry:[NSString stringWithFormat:@"Set MP %d to Still %d",i+1,j+1]
+				 forAddress:[NSString stringWithFormat:@"/atem/mplayer/%d/still/%d",i+1,j+1]
+				 toString:helpString];
 		}
 	}
-	
-	
+
 	if ([appDel mSuperSourceBoxes].size() > 0)
 	{
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nSuper Source:\n" attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tValid values specified in <>\n\n" attributes:addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border enabled flag: " attributes:  addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-enabled\t<0|1>\n" attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border outer width: " attributes:  addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-outer\t<float>\n" attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border inner width: " attributes:  addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-inner\t<float>\n" attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border hue: " attributes:  addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-hue\t<float>\n" attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border saturation: " attributes:  addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-saturation\t<float>\n" attributes:infoAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tSet the border luminescence: " attributes:  addressAttribute]];
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/supersource/border-luminescence\t<float>\n" attributes:infoAttribute]];
+		[self addHeader:@"Super Source" toString:helpString];
+		[self addEntry:@"Set the border enabled flag" forAddress:@"/atem/supersource/border-enabled\t<0|1>" toString:helpString];
+		[self addEntry:@"Set the border outer width" forAddress:@"/atem/supersource/border-outer\t<float>" toString:helpString];
+		[self addEntry:@"Set the border inner width" forAddress:@"/atem/supersource/border-inner\t<float>" toString:helpString];
+		[self addEntry:@"Set the border hue" forAddress:@"/atem/supersource/border-hue\t<float>" toString:helpString];
+		[self addEntry:@"Set the border saturation" forAddress:@"/atem/supersource/border-saturation\t<float>" toString:helpString];
+		[self addEntry:@"Set the border luminescence" forAddress:@"/atem/supersource/border-luminescence\t<float>" toString:helpString];
+
 		for (int i = 1; i <= [appDel mSuperSourceBoxes].size(); i++)
 		{
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d enabled: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/enabled\t<0|1>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Input source: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/source\t<see sources for valid options>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Position X: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/x\t<float>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Position Y: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/y\t<float>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Size: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/size\t<float>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Cropped Enabled: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/cropped\t<0|1>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Crop Top: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-top\t<float>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Crop Bottom: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-bottom\t<float>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Crop Left: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-left\t<float>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tSet Box %d Crop Right: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-right\t<float>\n",i] attributes:infoAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\tReset Box %d Crop: ",i] attributes:  addressAttribute]];
-			[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-reset\t<1>\n",i] attributes:infoAttribute]];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d enabled",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/enabled\t<0|1>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Input source",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/source\t<see sources for valid options>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Position X",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/x\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Position Y",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/y\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Size",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/size\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Cropped Enabled",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/cropped\t<0|1>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Top",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-top\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Bottom",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-bottom\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Left",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-left\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Right",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-right\t<float>",i] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Reset Box %d Crop",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-reset\t<1>",i] toString:helpString];
 		}
 	}
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nMacros:\n" attributes:addressAttribute]];
-	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet the Maximum Number of Macros: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/max-number\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tStop the currently active Macro (if any): " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/stop\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet the Name of a Macro: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/name\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet the Description of a Macro: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/description\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tGet whether the Macro at <index> is valid: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/is-valid\n" attributes:infoAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\tRun the Macro at <index>: " attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"/atem/macros/<index>/run\n" attributes:infoAttribute]];
-	
+
+	[self addHeader:@"Macros" toString:helpString];
+	[self addEntry:@"Get the Maximum Number of Macros" forAddress:@"/atem/macros/max-number" toString:helpString];
+	[self addEntry:@"Stop the currently active Macro (if any)" forAddress:@"/atem/macros/stop" toString:helpString];
+	[self addEntry:@"Get the Name of a Macro" forAddress:@"/atem/macros/<index>/name" toString:helpString];
+	[self addEntry:@"Get the Description of a Macro" forAddress:@"/atem/macros/<index>/description" toString:helpString];
+	[self addEntry:@"Get whether the Macro at <index> is valid" forAddress:@"/atem/macros/<index>/is-valid" toString:helpString];
+	[self addEntry:@"Run the Macro at <index>" forAddress:@"/atem/macros/<index>/run" toString:helpString];
+
 	[helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
 	[[helpTextView textStorage] setAttributedString:helpString];
 }
