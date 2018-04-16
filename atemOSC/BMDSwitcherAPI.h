@@ -1,5 +1,5 @@
 /* -LICENSE-START-
-** Copyright (c) 2017 Blackmagic Design
+** Copyright (c) 2018 Blackmagic Design
 **
 ** Permission is hereby granted, free of charge, to any person or organization
 ** obtaining a copy of the software and accompanying documentation covered by
@@ -46,6 +46,7 @@
 typedef int64_t BMDSwitcherInputId;
 typedef struct { uint8_t data[16]; } BMDSwitcherHash;
 typedef int64_t BMDSwitcherAudioInputId;
+typedef int64_t BMDSwitcherFairlightAudioSourceId;
 typedef int64_t BMDSwitcherHyperDeckClipId;
 typedef int64_t BMDSwitcherHyperDeckId;
 
@@ -61,6 +62,32 @@ BMD_CONST REFIID IID_IBMDSwitcherTalkbackCallback                 = /* 5F9A1C63-
 BMD_CONST REFIID IID_IBMDSwitcherTalkback                         = /* 92220740-F63B-43A8-8D51-5B85901B4847 */ {0x92,0x22,0x07,0x40,0xF6,0x3B,0x43,0xA8,0x8D,0x51,0x5B,0x85,0x90,0x1B,0x48,0x47};
 BMD_CONST REFIID IID_IBMDSwitcherAudioHeadphoneOutput             = /* A2836B54-B3A0-4C6B-8BC8-16DC81213C60 */ {0xA2,0x83,0x6B,0x54,0xB3,0xA0,0x4C,0x6B,0x8B,0xC8,0x16,0xDC,0x81,0x21,0x3C,0x60};
 BMD_CONST REFIID IID_IBMDSwitcherAudioHeadphoneOutputCallback     = /* C97CD29E-1871-42EE-9A51-DF34B6A5ACDB */ {0xC9,0x7C,0xD2,0x9E,0x18,0x71,0x42,0xEE,0x9A,0x51,0xDF,0x34,0xB6,0xA5,0xAC,0xDB};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioLimiterCallback    = /* 57F7BAD2-4245-43C8-B772-06FE98841AD8 */ {0x57,0xF7,0xBA,0xD2,0x42,0x45,0x43,0xC8,0xB7,0x72,0x06,0xFE,0x98,0x84,0x1A,0xD8};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioLimiter            = /* 88278FFF-4DB1-40A3-B4EF-01F329281411 */ {0x88,0x27,0x8F,0xFF,0x4D,0xB1,0x40,0xA3,0xB4,0xEF,0x01,0xF3,0x29,0x28,0x14,0x11};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioCompressorCallback = /* EF39CA99-2E98-4C77-9D75-39E05D12E98A */ {0xEF,0x39,0xCA,0x99,0x2E,0x98,0x4C,0x77,0x9D,0x75,0x39,0xE0,0x5D,0x12,0xE9,0x8A};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioCompressor         = /* 8E2A2B9A-B63A-4D9B-A88E-CF71CF64638F */ {0x8E,0x2A,0x2B,0x9A,0xB6,0x3A,0x4D,0x9B,0xA8,0x8E,0xCF,0x71,0xCF,0x64,0x63,0x8F};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioExpanderCallback   = /* CBE12618-C52F-4403-9372-51C9EBB0A00A */ {0xCB,0xE1,0x26,0x18,0xC5,0x2F,0x44,0x03,0x93,0x72,0x51,0xC9,0xEB,0xB0,0xA0,0x0A};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioExpander           = /* 23299B11-9A28-42B2-8467-21EF003F035B */ {0x23,0x29,0x9B,0x11,0x9A,0x28,0x42,0xB2,0x84,0x67,0x21,0xEF,0x00,0x3F,0x03,0x5B};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioDynamicsProcessorCallback = /* B27B3C93-7B9C-4867-B9D5-062D0AF434F1 */ {0xB2,0x7B,0x3C,0x93,0x7B,0x9C,0x48,0x67,0xB9,0xD5,0x06,0x2D,0x0A,0xF4,0x34,0xF1};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioDynamicsProcessor  = /* 8AB79F5B-79E6-46DC-BD05-12A1EF41E877 */ {0x8A,0xB7,0x9F,0x5B,0x79,0xE6,0x46,0xDC,0xBD,0x05,0x12,0xA1,0xEF,0x41,0xE8,0x77};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioEqualizerBandCallback = /* F1889F6C-9BAD-41A0-BC89-25158BA43B8A */ {0xF1,0x88,0x9F,0x6C,0x9B,0xAD,0x41,0xA0,0xBC,0x89,0x25,0x15,0x8B,0xA4,0x3B,0x8A};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioEqualizerBand      = /* 2E3EA367-C6F3-4396-A037-B28CED60D644 */ {0x2E,0x3E,0xA3,0x67,0xC6,0xF3,0x43,0x96,0xA0,0x37,0xB2,0x8C,0xED,0x60,0xD6,0x44};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioEqualizerBandIterator = /* 6A5FA2E1-49A3-4BC8-80D5-C8B668293854 */ {0x6A,0x5F,0xA2,0xE1,0x49,0xA3,0x4B,0xC8,0x80,0xD5,0xC8,0xB6,0x68,0x29,0x38,0x54};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioEqualizerCallback  = /* 75057AA9-15A1-4CA9-A143-3661764C887F */ {0x75,0x05,0x7A,0xA9,0x15,0xA1,0x4C,0xA9,0xA1,0x43,0x36,0x61,0x76,0x4C,0x88,0x7F};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioEqualizer          = /* 89E3453D-FA23-40C5-BB16-A19FEEBCF0DE */ {0x89,0xE3,0x45,0x3D,0xFA,0x23,0x40,0xC5,0xBB,0x16,0xA1,0x9F,0xEE,0xBC,0xF0,0xDE};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSourceCallback     = /* E9331BC4-6E0F-44DD-8F90-5FC159EFF8E5 */ {0xE9,0x33,0x1B,0xC4,0x6E,0x0F,0x44,0xDD,0x8F,0x90,0x5F,0xC1,0x59,0xEF,0xF8,0xE5};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSource             = /* D8D1D78D-0B9F-4300-9734-AE8DA35A8ECA */ {0xD8,0xD1,0xD7,0x8D,0x0B,0x9F,0x43,0x00,0x97,0x34,0xAE,0x8D,0xA3,0x5A,0x8E,0xCA};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSourceIterator     = /* 050233A3-3244-46B0-A7CD-EF37A869ACDD */ {0x05,0x02,0x33,0xA3,0x32,0x44,0x46,0xB0,0xA7,0xCD,0xEF,0x37,0xA8,0x69,0xAC,0xDD};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputXLRCallback   = /* 64F0DCA8-CEF4-4C72-AC24-D7BB7DF38737 */ {0x64,0xF0,0xDC,0xA8,0xCE,0xF4,0x4C,0x72,0xAC,0x24,0xD7,0xBB,0x7D,0xF3,0x87,0x37};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputXLR           = /* CD9FE826-776E-44F6-A508-EF7DFAA9E5F8 */ {0xCD,0x9F,0xE8,0x26,0x77,0x6E,0x44,0xF6,0xA5,0x08,0xEF,0x7D,0xFA,0xA9,0xE5,0xF8};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputCallback      = /* 25F66467-A6BB-4813-B214-158D0FF8653C */ {0x25,0xF6,0x64,0x67,0xA6,0xBB,0x48,0x13,0xB2,0x14,0x15,0x8D,0x0F,0xF8,0x65,0x3C};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInput              = /* 96748040-89C2-44F3-BCC0-124BDB9E378F */ {0x96,0x74,0x80,0x40,0x89,0xC2,0x44,0xF3,0xBC,0xC0,0x12,0x4B,0xDB,0x9E,0x37,0x8F};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputIterator      = /* 019DABB8-EF1A-4BB6-9460-6972C5AD2B07 */ {0x01,0x9D,0xAB,0xB8,0xEF,0x1A,0x4B,0xB6,0x94,0x60,0x69,0x72,0xC5,0xAD,0x2B,0x07};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioHeadphoneOutputCallback = /* 13492CC6-F496-4CDE-8355-3645DE38A6F1 */ {0x13,0x49,0x2C,0xC6,0xF4,0x96,0x4C,0xDE,0x83,0x55,0x36,0x45,0xDE,0x38,0xA6,0xF1};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioHeadphoneOutput    = /* A9E5FB7D-A436-4179-9F3F-FF2BD5580830 */ {0xA9,0xE5,0xFB,0x7D,0xA4,0x36,0x41,0x79,0x9F,0x3F,0xFF,0x2B,0xD5,0x58,0x08,0x30};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioHeadphoneOutputIterator = /* 63EED6B1-D574-4312-90B4-F6DEBC290701 */ {0x63,0xEE,0xD6,0xB1,0xD5,0x74,0x43,0x12,0x90,0xB4,0xF6,0xDE,0xBC,0x29,0x07,0x01};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioMixerCallback      = /* 071AFA58-5005-4BC9-A240-50656BFB2DFE */ {0x07,0x1A,0xFA,0x58,0x50,0x05,0x4B,0xC9,0xA2,0x40,0x50,0x65,0x6B,0xFB,0x2D,0xFE};
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioMixer              = /* BC625428-D969-4512-9462-8AF8B65F0B21 */ {0xBC,0x62,0x54,0x28,0xD9,0x69,0x45,0x12,0x94,0x62,0x8A,0xF8,0xB6,0x5F,0x0B,0x21};
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParametersCallback        = /* AB31E347-5177-4595-8E52-650BF9B08B7F */ {0xAB,0x31,0xE3,0x47,0x51,0x77,0x45,0x95,0x8E,0x52,0x65,0x0B,0xF9,0xB0,0x8B,0x7F};
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParameters                = /* EE88B575-6044-4372-B1D6-9733AF342DCA */ {0xEE,0x88,0xB5,0x75,0x60,0x44,0x43,0x72,0xB1,0xD6,0x97,0x33,0xAF,0x34,0x2D,0xCA};
 BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParametersCallback      = /* FE3F97EC-5F2D-4E47-AA7A-38962F9CB3CE */ {0xFE,0x3F,0x97,0xEC,0x5F,0x2D,0x4E,0x47,0xAA,0x7A,0x38,0x96,0x2F,0x9C,0xB3,0xCE};
@@ -150,6 +177,8 @@ BMD_CONST REFIID IID_IBMDSwitcherHyperDeckCallback                = /* F745EBDF-
 BMD_CONST REFIID IID_IBMDSwitcherHyperDeck                        = /* 6BB0F7E1-2013-4C8F-A4C0-1016B0C37D14 */ {0x6B,0xB0,0xF7,0xE1,0x20,0x13,0x4C,0x8F,0xA4,0xC0,0x10,0x16,0xB0,0xC3,0x7D,0x14};
 BMD_CONST REFIID IID_IBMDSwitcherMixMinusOutput                   = /* E787458F-FCF4-4A9B-83D9-E25188170742 */ {0xE7,0x87,0x45,0x8F,0xFC,0xF4,0x4A,0x9B,0x83,0xD9,0xE2,0x51,0x88,0x17,0x07,0x42};
 BMD_CONST REFIID IID_IBMDSwitcherMixMinusOutputCallback           = /* D1D2EDF8-D949-49D0-8501-F001D69AB44F */ {0xD1,0xD2,0xED,0xF8,0xD9,0x49,0x49,0xD0,0x85,0x01,0xF0,0x01,0xD6,0x9A,0xB4,0x4F};
+BMD_CONST REFIID IID_IBMDSwitcherAudioInputXLRCallback            = /* 829910AE-E91A-4F0B-9A58-9A5F6EBCD2AC */ {0x82,0x99,0x10,0xAE,0xE9,0x1A,0x4F,0x0B,0x9A,0x58,0x9A,0x5F,0x6E,0xBC,0xD2,0xAC};
+BMD_CONST REFIID IID_IBMDSwitcherAudioInputXLR                    = /* 5189057A-58CD-4251-A646-683874EC58C6 */ {0x51,0x89,0x05,0x7A,0x58,0xCD,0x42,0x51,0xA6,0x46,0x68,0x38,0x74,0xEC,0x58,0xC6};
 
 /* Enum BMDSwitcherInputEventType - Used in IBMDSwitcherInputCallback */
 
@@ -462,6 +491,176 @@ enum _BMDSwitcherAudioHeadphoneOutputEventType {
     bmdSwitcherAudioHeadphoneOutputEventTypeInputProgramOutGainChanged = 'hopC',
     bmdSwitcherAudioHeadphoneOutputEventTypeInputTalkbackGainChanged = 'hotC',
     bmdSwitcherAudioHeadphoneOutputEventTypeInputSidetoneGainChanged = 'hosC'
+};
+
+/* Enum BMDSwitcherFairlightAudioLimiterEventType - Used in IBMDSwitcherFairlightAudioLimiterCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioLimiterEventType;
+enum _BMDSwitcherFairlightAudioLimiterEventType {
+    bmdSwitcherFairlightAudioLimiterEventTypeEnabledChanged      = 'enbC',
+    bmdSwitcherFairlightAudioLimiterEventTypeThresholdChanged    = 'thrC',
+    bmdSwitcherFairlightAudioLimiterEventTypeAttackChanged       = 'atkC',
+    bmdSwitcherFairlightAudioLimiterEventTypeHoldChanged         = 'hldC',
+    bmdSwitcherFairlightAudioLimiterEventTypeReleaseChanged      = 'rlsC'
+};
+
+/* Enum BMDSwitcherFairlightAudioCompressorEventType - Used in IBMDSwitcherFairlightAudioCompressorCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioCompressorEventType;
+enum _BMDSwitcherFairlightAudioCompressorEventType {
+    bmdSwitcherFairlightAudioCompressorEventTypeEnabledChanged   = 'enbC',
+    bmdSwitcherFairlightAudioCompressorEventTypeThresholdChanged = 'thrC',
+    bmdSwitcherFairlightAudioCompressorEventTypeRatioChanged     = 'rtoC',
+    bmdSwitcherFairlightAudioCompressorEventTypeAttackChanged    = 'atkC',
+    bmdSwitcherFairlightAudioCompressorEventTypeHoldChanged      = 'hldC',
+    bmdSwitcherFairlightAudioCompressorEventTypeReleaseChanged   = 'rlsC'
+};
+
+/* Enum BMDSwitcherFairlightAudioExpanderEventType - Used in IBMDSwitcherFairlightAudioExpanderCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioExpanderEventType;
+enum _BMDSwitcherFairlightAudioExpanderEventType {
+    bmdSwitcherFairlightAudioExpanderEventTypeEnabledChanged     = 'enbC',
+    bmdSwitcherFairlightAudioExpanderEventTypeGateModeChanged    = 'gtmC',
+    bmdSwitcherFairlightAudioExpanderEventTypeThresholdChanged   = 'thrC',
+    bmdSwitcherFairlightAudioExpanderEventTypeRangeChanged       = 'rngC',
+    bmdSwitcherFairlightAudioExpanderEventTypeRatioChanged       = 'rtoC',
+    bmdSwitcherFairlightAudioExpanderEventTypeAttackChanged      = 'atkC',
+    bmdSwitcherFairlightAudioExpanderEventTypeHoldChanged        = 'hldC',
+    bmdSwitcherFairlightAudioExpanderEventTypeReleaseChanged     = 'rlsC'
+};
+
+/* Enum BMDSwitcherFairlightAudioDynamicsProcessorEventType - Used in IBMDSwitcherFairlightAudioDynamicsProcessorCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioDynamicsProcessorEventType;
+enum _BMDSwitcherFairlightAudioDynamicsProcessorEventType {
+    bmdSwitcherFairlightAudioDynamicsProcessorEventTypeMakeupGainChanged = 'mugC'
+};
+
+/* Enum BMDSwitcherFairlightAudioEqualizerBandEventType - Used in IBMDSwitcherFairlightAudioEqualizerBandCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioEqualizerBandEventType;
+enum _BMDSwitcherFairlightAudioEqualizerBandEventType {
+    bmdSwitcherFairlightAudioEqualizerBandEventTypeEnabledChanged = 'enbC',
+    bmdSwitcherFairlightAudioEqualizerBandEventTypeShapeChanged  = 'shpC',
+    bmdSwitcherFairlightAudioEqualizerBandEventTypeFrequencyRangeChanged = 'fqrC',
+    bmdSwitcherFairlightAudioEqualizerBandEventTypeFrequencyChanged = 'frqC',
+    bmdSwitcherFairlightAudioEqualizerBandEventTypeGainChanged   = 'ganC',
+    bmdSwitcherFairlightAudioEqualizerBandEventTypeQFactorChanged = 'qftC'
+};
+
+/* Enum BMDSwitcherFairlightAudioEqualizerBandShape - Fairlight Audio Equalizer Band Shape */
+
+typedef uint32_t BMDSwitcherFairlightAudioEqualizerBandShape;
+enum _BMDSwitcherFairlightAudioEqualizerBandShape {
+    bmdSwitcherFairlightAudioEqualizerBandShapeLowShelf          = 0x0001,
+    bmdSwitcherFairlightAudioEqualizerBandShapeLowPass           = 0x0002,
+    bmdSwitcherFairlightAudioEqualizerBandShapeBandPass          = 0x0004,
+    bmdSwitcherFairlightAudioEqualizerBandShapeNotch             = 0x0008,
+    bmdSwitcherFairlightAudioEqualizerBandShapeHighPass          = 0x0010,
+    bmdSwitcherFairlightAudioEqualizerBandShapeHighShelf         = 0x0020
+};
+
+/* Enum BMDSwitcherFairlightAudioEqualizerBandFrequencyRange - Fairlight Audio Equalizer Band Frequency Range */
+
+typedef uint32_t BMDSwitcherFairlightAudioEqualizerBandFrequencyRange;
+enum _BMDSwitcherFairlightAudioEqualizerBandFrequencyRange {
+    bmdSwitcherFairlightAudioEqualizerBandFrequencyRangeLow      = 0x0001,
+    bmdSwitcherFairlightAudioEqualizerBandFrequencyRangeMidLow   = 0x0002,
+    bmdSwitcherFairlightAudioEqualizerBandFrequencyRangeMidHigh  = 0x0004,
+    bmdSwitcherFairlightAudioEqualizerBandFrequencyRangeHigh     = 0x0008
+};
+
+/* Enum BMDSwitcherFairlightAudioEqualizerEventType - Used in IBMDSwitcherFairlightAudioEqualizerCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioEqualizerEventType;
+enum _BMDSwitcherFairlightAudioEqualizerEventType {
+    bmdSwitcherFairlightAudioEqualizerEventTypeEnabledChanged    = 'enbC',
+    bmdSwitcherFairlightAudioEqualizerEventTypeGainChanged       = 'ganC'
+};
+
+/* Enum BMDSwitcherFairlightAudioSourceEventType - Used in IBMDSwitcherFairlightAudioSourceCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioSourceEventType;
+enum _BMDSwitcherFairlightAudioSourceEventType {
+    bmdSwitcherFairlightAudioSourceEventTypeIsActiveChanged      = 'isaC',
+    bmdSwitcherFairlightAudioSourceEventTypeMaxDelayFramesChanged = 'mdfC',
+    bmdSwitcherFairlightAudioSourceEventTypeDelayFramesChanged   = 'dlfC',
+    bmdSwitcherFairlightAudioSourceEventTypeInputGainChanged     = 'ingC',
+    bmdSwitcherFairlightAudioSourceEventTypeStereoSimulationIntensityChanged = 'ssiC',
+    bmdSwitcherFairlightAudioSourceEventTypePanChanged           = 'panC',
+    bmdSwitcherFairlightAudioSourceEventTypeFaderGainChanged     = 'fdgC',
+    bmdSwitcherFairlightAudioSourceEventTypeMixOptionChanged     = 'mxoC',
+    bmdSwitcherFairlightAudioSourceEventTypeIsMixedInChanged     = 'imiC'
+};
+
+/* Enum BMDSwitcherFairlightAudioSourceType - Fairlight Audio Source Type */
+
+typedef uint32_t BMDSwitcherFairlightAudioSourceType;
+enum _BMDSwitcherFairlightAudioSourceType {
+    bmdSwitcherFairlightAudioSourceTypeMono                      = 'mono',
+    bmdSwitcherFairlightAudioSourceTypeStereo                    = 'ster'
+};
+
+/* Enum BMDSwitcherFairlightAudioMixOption - Fairlight Audio Mix Option */
+
+typedef uint32_t BMDSwitcherFairlightAudioMixOption;
+enum _BMDSwitcherFairlightAudioMixOption {
+    bmdSwitcherFairlightAudioMixOptionOff                        = 0x00000001,
+    bmdSwitcherFairlightAudioMixOptionOn                         = 0x00000002,
+    bmdSwitcherFairlightAudioMixOptionAudioFollowVideo           = 0x00000004
+};
+
+/* Enum BMDSwitcherFairlightAudioInputXLREventType - Used in IBMDSwitcherFairlightAudioInputXLRCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioInputXLREventType;
+enum _BMDSwitcherFairlightAudioInputXLREventType {
+    bmdSwitcherFairlightAudioInputXLREventTypeRCAToXLREnabledChanged = 'rtxC'
+};
+
+/* Enum BMDSwitcherFairlightAudioInputEventType - Used in IBMDSwitcherFairlightAudioInputCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioInputEventType;
+enum _BMDSwitcherFairlightAudioInputEventType {
+    bmdSwitcherFairlightAudioInputEventTypeCurrentExternalPortTypeChanged = 'eptC',
+    bmdSwitcherFairlightAudioInputEventTypeConfigurationChanged  = 'cfgC'
+};
+
+/* Enum BMDSwitcherFairlightAudioInputType - Fairlight Audio Input Type */
+
+typedef uint32_t BMDSwitcherFairlightAudioInputType;
+enum _BMDSwitcherFairlightAudioInputType {
+    bmdSwitcherFairlightAudioInputTypeEmbeddedWithVideo          = 'ewvd',
+    bmdSwitcherFairlightAudioInputTypeMediaPlayer                = 'mdpy',
+    bmdSwitcherFairlightAudioInputTypeAudioIn                    = 'adin'
+};
+
+/* Enum BMDSwitcherFairlightAudioInputConfiguration - Fairlight Audio Input Configuration */
+
+typedef uint32_t BMDSwitcherFairlightAudioInputConfiguration;
+enum _BMDSwitcherFairlightAudioInputConfiguration {
+    bmdSwitcherFairlightAudioInputConfigurationMono              = 0x00000001,
+    bmdSwitcherFairlightAudioInputConfigurationStereo            = 0x00000002,
+    bmdSwitcherFairlightAudioInputConfigurationDualMono          = 0x00000004
+};
+
+/* Enum BMDSwitcherFairlightAudioHeadphoneOutputEventType - Used in IBMDSwitcherFairlightAudioHeadphoneOutputCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioHeadphoneOutputEventType;
+enum _BMDSwitcherFairlightAudioHeadphoneOutputEventType {
+    bmdSwitcherFairlightAudioHeadphoneOutputEventTypeGainChanged = 'hogC',
+    bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputMasterOutGainChanged = 'homC',
+    bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputTalkbackGainChanged = 'hotC',
+    bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputSidetoneGainChanged = 'hosC'
+};
+
+/* Enum BMDSwitcherFairlightAudioMixerEventType - Used in IBMDSwitcherFairlightAudioMixerCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioMixerEventType;
+enum _BMDSwitcherFairlightAudioMixerEventType {
+    bmdSwitcherFairlightAudioMixerEventTypeMasterOutFaderGainChanged = 'fdgC',
+    bmdSwitcherFairlightAudioMixerEventTypeMasterOutFollowFadeToBlackChanged = 'ffbC',
+    bmdSwitcherFairlightAudioMixerEventTypeAudioFollowVideoCrossfadeTransitionChanged = 'aftC'
 };
 
 /* Enum BMDSwitcherTransitionStyle - Transition styles used in IBMDSwitcherTransitionParameters */
@@ -852,7 +1051,8 @@ enum _BMDSwitcherConnectToFailure {
     bmdSwitcherConnectToFailureIncompatibleFirmware              = 'cfif',
     bmdSwitcherConnectToFailureCorruptData                       = 'cfcd',
     bmdSwitcherConnectToFailureStateSync                         = 'cfss',
-    bmdSwitcherConnectToFailureStateSyncTimedOut                 = 'cfst'
+    bmdSwitcherConnectToFailureStateSyncTimedOut                 = 'cfst',
+    bmdSwitcherConnectToFailureDeprecatedAfter_v7_3              = 'cfd0'
 };
 
 /* Enum BMDSwitcherMediaPoolEventType - Used in IBMDSwitcherClipCallback, IBMDSwitcherStillsCallback */
@@ -1039,6 +1239,13 @@ enum _BMDSwitcherMixMinusOutputEventType {
     bmdSwitcherMixMinusOutputEventTypeAudioModeChanged           = 'mmmC'
 };
 
+/* Enum BMDSwitcherAudioInputXLREventType - Used in IBMDSwitcherAudioInputXLRCallback */
+
+typedef uint32_t BMDSwitcherAudioInputXLREventType;
+enum _BMDSwitcherAudioInputXLREventType {
+    bmdSwitcherAudioInputXLREventTypeRCAToXLREnabledChanged      = 'rtxC'
+};
+
 #if defined(__cplusplus)
 
 // Forward Declarations
@@ -1053,6 +1260,32 @@ class IBMDSwitcherTalkbackCallback;
 class IBMDSwitcherTalkback;
 class IBMDSwitcherAudioHeadphoneOutput;
 class IBMDSwitcherAudioHeadphoneOutputCallback;
+class IBMDSwitcherFairlightAudioLimiterCallback;
+class IBMDSwitcherFairlightAudioLimiter;
+class IBMDSwitcherFairlightAudioCompressorCallback;
+class IBMDSwitcherFairlightAudioCompressor;
+class IBMDSwitcherFairlightAudioExpanderCallback;
+class IBMDSwitcherFairlightAudioExpander;
+class IBMDSwitcherFairlightAudioDynamicsProcessorCallback;
+class IBMDSwitcherFairlightAudioDynamicsProcessor;
+class IBMDSwitcherFairlightAudioEqualizerBandCallback;
+class IBMDSwitcherFairlightAudioEqualizerBand;
+class IBMDSwitcherFairlightAudioEqualizerBandIterator;
+class IBMDSwitcherFairlightAudioEqualizerCallback;
+class IBMDSwitcherFairlightAudioEqualizer;
+class IBMDSwitcherFairlightAudioSourceCallback;
+class IBMDSwitcherFairlightAudioSource;
+class IBMDSwitcherFairlightAudioSourceIterator;
+class IBMDSwitcherFairlightAudioInputXLRCallback;
+class IBMDSwitcherFairlightAudioInputXLR;
+class IBMDSwitcherFairlightAudioInputCallback;
+class IBMDSwitcherFairlightAudioInput;
+class IBMDSwitcherFairlightAudioInputIterator;
+class IBMDSwitcherFairlightAudioHeadphoneOutputCallback;
+class IBMDSwitcherFairlightAudioHeadphoneOutput;
+class IBMDSwitcherFairlightAudioHeadphoneOutputIterator;
+class IBMDSwitcherFairlightAudioMixerCallback;
+class IBMDSwitcherFairlightAudioMixer;
 class IBMDSwitcherKeyLumaParametersCallback;
 class IBMDSwitcherKeyLumaParameters;
 class IBMDSwitcherKeyChromaParametersCallback;
@@ -1142,6 +1375,8 @@ class IBMDSwitcherHyperDeckCallback;
 class IBMDSwitcherHyperDeck;
 class IBMDSwitcherMixMinusOutput;
 class IBMDSwitcherMixMinusOutputCallback;
+class IBMDSwitcherAudioInputXLRCallback;
+class IBMDSwitcherAudioInputXLR;
 
 /* Interface IBMDSwitcherAudioMonitorOutputCallback - Audio Monitor Output Object Callback */
 
@@ -1311,6 +1546,431 @@ public:
 
 protected:
     virtual ~IBMDSwitcherAudioHeadphoneOutputCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioLimiterCallback - Fairlight Audio Limiter Object Callback */
+
+class IBMDSwitcherFairlightAudioLimiterCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioLimiterEventType eventType) = 0;
+    virtual HRESULT GainReductionLevelNotification (/* in */ uint32_t numLevels, /* in */ const double* levels /* in dB */) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioLimiterCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioLimiter - Fairlight Audio Limiter Object */
+
+class IBMDSwitcherFairlightAudioLimiter : public IUnknown
+{
+public:
+    virtual HRESULT GetEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetThreshold (/* out */ double* decibel) = 0;
+    virtual HRESULT SetThreshold (/* in */ double decibel) = 0;
+    virtual HRESULT GetAttack (/* out */ double* ms) = 0;
+    virtual HRESULT SetAttack (/* in */ double ms) = 0;
+    virtual HRESULT GetHold (/* out */ double* ms) = 0;
+    virtual HRESULT SetHold (/* in */ double ms) = 0;
+    virtual HRESULT GetRelease (/* out */ double* ms) = 0;
+    virtual HRESULT SetRelease (/* in */ double ms) = 0;
+    virtual HRESULT Reset (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioLimiterCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioLimiterCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioLimiter () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioCompressorCallback - Fairlight Audio Compressor Object Callback */
+
+class IBMDSwitcherFairlightAudioCompressorCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioCompressorEventType eventType) = 0;
+    virtual HRESULT GainReductionLevelNotification (/* in */ uint32_t numLevels, /* in */ const double* levels /* in dB */) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioCompressorCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioCompressor - Fairlight Audio Compressor Object */
+
+class IBMDSwitcherFairlightAudioCompressor : public IUnknown
+{
+public:
+    virtual HRESULT GetEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetThreshold (/* out */ double* decibel) = 0;
+    virtual HRESULT SetThreshold (/* in */ double decibel) = 0;
+    virtual HRESULT GetRatio (/* out */ double* ratio) = 0;
+    virtual HRESULT SetRatio (/* in */ double ratio) = 0;
+    virtual HRESULT GetAttack (/* out */ double* ms) = 0;
+    virtual HRESULT SetAttack (/* in */ double ms) = 0;
+    virtual HRESULT GetHold (/* out */ double* ms) = 0;
+    virtual HRESULT SetHold (/* in */ double ms) = 0;
+    virtual HRESULT GetRelease (/* out */ double* ms) = 0;
+    virtual HRESULT SetRelease (/* in */ double ms) = 0;
+    virtual HRESULT Reset (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioCompressorCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioCompressorCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioCompressor () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioExpanderCallback - Fairlight Audio Expander Object Callback */
+
+class IBMDSwitcherFairlightAudioExpanderCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioExpanderEventType eventType) = 0;
+    virtual HRESULT GainReductionLevelNotification (/* in */ uint32_t numLevels, /* in */ const double* levels /* in dB */) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioExpanderCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioExpander - Fairlight Audio Expander Object */
+
+class IBMDSwitcherFairlightAudioExpander : public IUnknown
+{
+public:
+    virtual HRESULT GetEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetGateMode (/* out */ bool* gateMode) = 0;
+    virtual HRESULT SetGateMode (/* in */ bool gateMode) = 0;
+    virtual HRESULT GetThreshold (/* out */ double* decibel) = 0;
+    virtual HRESULT SetThreshold (/* in */ double decibel) = 0;
+    virtual HRESULT GetRange (/* out */ double* range) = 0;
+    virtual HRESULT SetRange (/* in */ double range) = 0;
+    virtual HRESULT GetRatio (/* out */ double* ratio) = 0;
+    virtual HRESULT SetRatio (/* in */ double ratio) = 0;
+    virtual HRESULT GetAttack (/* out */ double* ms) = 0;
+    virtual HRESULT SetAttack (/* in */ double ms) = 0;
+    virtual HRESULT GetHold (/* out */ double* ms) = 0;
+    virtual HRESULT SetHold (/* in */ double ms) = 0;
+    virtual HRESULT GetRelease (/* out */ double* ms) = 0;
+    virtual HRESULT SetRelease (/* in */ double ms) = 0;
+    virtual HRESULT Reset (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioExpanderCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioExpanderCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioExpander () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioDynamicsProcessorCallback - Fairlight Audio Dynamics Processor Object Callback */
+
+class IBMDSwitcherFairlightAudioDynamicsProcessorCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioDynamicsProcessorEventType eventType) = 0;
+    virtual HRESULT InputLevelNotification (/* in */ uint32_t numLevels, /* in */ const double* levels /* in dBFS */, /* in */ uint32_t numPeakLevels, /* in */ const double* peakLevels /* in dBFS */) = 0;
+    virtual HRESULT OutputLevelNotification (/* in */ uint32_t numLevels, /* in */ const double* levels /* in dBFS */, /* in */ uint32_t numPeakLevels, /* in */ const double* peakLevels /* in dBFS */) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioDynamicsProcessorCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioDynamicsProcessor - Fairlight Audio Dynamics Processor Object */
+
+class IBMDSwitcherFairlightAudioDynamicsProcessor : public IUnknown
+{
+public:
+    virtual HRESULT GetProcessor (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+    virtual HRESULT GetMakeupGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetMakeupGain (/* in */ double gain) = 0;
+    virtual HRESULT Reset (void) = 0;
+    virtual HRESULT ResetInputPeakLevels (void) = 0;
+    virtual HRESULT ResetOutputPeakLevels (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioDynamicsProcessorCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioDynamicsProcessorCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioDynamicsProcessor () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioEqualizerBandCallback - Fairlight Audio Equalizer Band Object Callback */
+
+class IBMDSwitcherFairlightAudioEqualizerBandCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioEqualizerBandEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioEqualizerBandCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioEqualizerBand - Fairlight Audio Equalizer Band Object */
+
+class IBMDSwitcherFairlightAudioEqualizerBand : public IUnknown
+{
+public:
+    virtual HRESULT GetEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetSupportedShapes (/* out */ BMDSwitcherFairlightAudioEqualizerBandShape* shapes) = 0;
+    virtual HRESULT GetShape (/* out */ BMDSwitcherFairlightAudioEqualizerBandShape* shape) = 0;
+    virtual HRESULT SetShape (/* in */ BMDSwitcherFairlightAudioEqualizerBandShape shape) = 0;
+    virtual HRESULT GetSupportedFrequencyRanges (/* out */ BMDSwitcherFairlightAudioEqualizerBandFrequencyRange* ranges) = 0;
+    virtual HRESULT GetFrequencyRange (/* out */ BMDSwitcherFairlightAudioEqualizerBandFrequencyRange* range) = 0;
+    virtual HRESULT SetFrequencyRange (/* in */ BMDSwitcherFairlightAudioEqualizerBandFrequencyRange range) = 0;
+    virtual HRESULT GetFrequencyRangeMinMax (/* in */ BMDSwitcherFairlightAudioEqualizerBandFrequencyRange range, /* out */ uint32_t* minFreq, /* out */ uint32_t* maxFreq) = 0;
+    virtual HRESULT GetFrequency (/* out */ uint32_t* freq) = 0;
+    virtual HRESULT SetFrequency (/* in */ uint32_t freq) = 0;
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT GetQFactor (/* out */ double* value) = 0;
+    virtual HRESULT SetQFactor (/* in */ double value) = 0;
+    virtual HRESULT Reset (void) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioEqualizerBandCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioEqualizerBandCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioEqualizerBand () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioEqualizerBandIterator - Fairlight Audio Equalizer Band Iterator */
+
+class IBMDSwitcherFairlightAudioEqualizerBandIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherFairlightAudioEqualizerBand** audioEqualizerBand) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioEqualizerBandIterator () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioEqualizerCallback - Fairlight Audio Equalizer Object Callback */
+
+class IBMDSwitcherFairlightAudioEqualizerCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioEqualizerEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioEqualizerCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioEqualizer - Fairlight Audio Equalizer Object */
+
+class IBMDSwitcherFairlightAudioEqualizer : public IUnknown
+{
+public:
+    virtual HRESULT GetEnabled (/* out */ bool* enabled) = 0;
+    virtual HRESULT SetEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT GetGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetGain (/* in */ double gain) = 0;
+    virtual HRESULT Reset (void) = 0;
+    virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioEqualizerCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioEqualizerCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioEqualizer () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioSourceCallback - Fairlight Audio Source Object Callback */
+
+class IBMDSwitcherFairlightAudioSourceCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioSourceEventType eventType) = 0;
+    virtual HRESULT OutputLevelNotification (/* in */ uint32_t numLevels, /* in */ const double* levels /* in dBFS */, /* in */ uint32_t numPeakLevels, /* in */ const double* peakLevels /* in dBFS */) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioSourceCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioSource - Fairlight Audio Source Object */
+
+class IBMDSwitcherFairlightAudioSource : public IUnknown
+{
+public:
+    virtual HRESULT IsActive (/* out */ bool* active) = 0;
+    virtual HRESULT GetSourceType (/* out */ BMDSwitcherFairlightAudioSourceType* type) = 0;
+    virtual HRESULT GetMaxDelayFrames (/* out */ uint16_t* maxDelay) = 0;
+    virtual HRESULT GetDelayFrames (/* out */ uint16_t* delay) = 0;
+    virtual HRESULT SetDelayFrames (/* in */ uint16_t delay) = 0;
+    virtual HRESULT GetInputGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetInputGain (/* in */ double gain) = 0;
+    virtual HRESULT HasStereoSimulation (/* out */ bool* hasStereoSimulation) = 0;
+    virtual HRESULT GetStereoSimulationIntensity (/* out */ double* intensity) = 0;
+    virtual HRESULT SetStereoSimulationIntensity (/* in */ double intensity) = 0;
+    virtual HRESULT GetEffect (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+    virtual HRESULT GetPan (/* out */ double* pan) = 0;
+    virtual HRESULT SetPan (/* in */ double pan) = 0;
+    virtual HRESULT GetFaderGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetFaderGain (/* in */ double gain) = 0;
+    virtual HRESULT GetSupportedMixOptions (/* out */ BMDSwitcherFairlightAudioMixOption* mixOptions) = 0;
+    virtual HRESULT GetMixOption (/* out */ BMDSwitcherFairlightAudioMixOption* mixOption) = 0;
+    virtual HRESULT SetMixOption (/* in */ BMDSwitcherFairlightAudioMixOption mixOption) = 0;
+    virtual HRESULT IsMixedIn (/* out */ bool* mixedIn) = 0;
+    virtual HRESULT ResetOutputPeakLevels (void) = 0;
+    virtual HRESULT GetId (/* out */ BMDSwitcherFairlightAudioSourceId* sourceId) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioSourceCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioSourceCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioSource () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioSourceIterator - Fairlight Audio Source Iterator */
+
+class IBMDSwitcherFairlightAudioSourceIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherFairlightAudioSource** audioSource) = 0;
+    virtual HRESULT GetById (/* in */ BMDSwitcherFairlightAudioSourceId audioSourceId, /* out */ IBMDSwitcherFairlightAudioSource** audioSource) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioSourceIterator () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioInputXLRCallback - Fairlight Audio Input XLR Object Callback */
+
+class IBMDSwitcherFairlightAudioInputXLRCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioInputXLREventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioInputXLRCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioInputXLR - Fairlight Audio Input XLR Object */
+
+class IBMDSwitcherFairlightAudioInputXLR : public IUnknown
+{
+public:
+    virtual HRESULT HasRCAToXLR (/* out */ bool* hasRcaToXlr) = 0;
+    virtual HRESULT GetRCAToXLREnabled (/* out */ bool* rcaToXlrEnabled) = 0;
+    virtual HRESULT SetRCAToXLREnabled (/* in */ bool rcaToXlrEnabled) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioInputXLRCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioInputXLRCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioInputXLR () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioInputCallback - Fairlight Audio Input Object Callback */
+
+class IBMDSwitcherFairlightAudioInputCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioInputEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioInputCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioInput - Fairlight Audio Input Object */
+
+class IBMDSwitcherFairlightAudioInput : public IUnknown
+{
+public:
+    virtual HRESULT GetType (/* out */ BMDSwitcherFairlightAudioInputType* type) = 0;
+    virtual HRESULT GetCurrentExternalPortType (/* out */ BMDSwitcherExternalPortType* type) = 0;
+    virtual HRESULT GetSupportedConfigurations (/* out */ BMDSwitcherFairlightAudioInputConfiguration* supportedConfigurations) = 0;
+    virtual HRESULT GetConfiguration (/* out */ BMDSwitcherFairlightAudioInputConfiguration* configuration) = 0;
+    virtual HRESULT SetConfiguration (/* in */ BMDSwitcherFairlightAudioInputConfiguration configuration) = 0;
+    virtual HRESULT GetId (/* out */ BMDSwitcherAudioInputId* id) = 0;
+    virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioInputCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioInputCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioInput () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioInputIterator - Fairlight Audio Input Iterator */
+
+class IBMDSwitcherFairlightAudioInputIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherFairlightAudioInput** audioInput) = 0;
+    virtual HRESULT GetById (/* in */ BMDSwitcherAudioInputId audioInputId, /* out */ IBMDSwitcherFairlightAudioInput** audioInput) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioInputIterator () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioHeadphoneOutputCallback - Fairlight Headphone Output Object Callback */
+
+class IBMDSwitcherFairlightAudioHeadphoneOutputCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioHeadphoneOutputEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioHeadphoneOutputCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioHeadphoneOutput - Fairlight Headphone Output Object */
+
+class IBMDSwitcherFairlightAudioHeadphoneOutput : public IUnknown
+{
+public:
+    virtual HRESULT GetGain (/* out */ double* decibel) = 0;
+    virtual HRESULT SetGain (/* in */ double decibel) = 0;
+    virtual HRESULT GetInputMasterOutGain (/* out */ double* decibel) = 0;
+    virtual HRESULT SetInputMasterOutGain (/* in */ double decibel) = 0;
+    virtual HRESULT GetInputTalkbackGain (/* out */ double* decibel) = 0;
+    virtual HRESULT SetInputTalkbackGain (/* in */ double decibel) = 0;
+    virtual HRESULT GetInputSidetoneGain (/* out */ double* decibel) = 0;
+    virtual HRESULT SetInputSidetoneGain (/* in */ double decibel) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioHeadphoneOutputCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioHeadphoneOutputCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioHeadphoneOutput () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioHeadphoneOutputIterator - Fairlight Audio Headphone Output Iterator */
+
+class IBMDSwitcherFairlightAudioHeadphoneOutputIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherFairlightAudioHeadphoneOutput** audioHeadphoneOutput) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioHeadphoneOutputIterator () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioMixerCallback - Fairlight Audio Mixer Object Callback */
+
+class IBMDSwitcherFairlightAudioMixerCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioMixerEventType eventType) = 0;
+    virtual HRESULT MasterOutLevelNotification (/* in */ uint32_t numLevels, /* in */ const double* levels /* in dBFS */, /* in */ uint32_t numPeakLevels, /* in */ const double* peakLevels /* in dBFS */) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioMixerCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioMixer - Fairlight Audio Mixer Object */
+
+class IBMDSwitcherFairlightAudioMixer : public IUnknown
+{
+public:
+    virtual HRESULT GetMasterOutEffect (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+    virtual HRESULT GetMasterOutFaderGain (/* out */ double* gain) = 0;
+    virtual HRESULT SetMasterOutFaderGain (/* in */ double gain) = 0;
+    virtual HRESULT GetMasterOutFollowFadeToBlack (/* out */ bool* follow) = 0;
+    virtual HRESULT SetMasterOutFollowFadeToBlack (/* in */ bool follow) = 0;
+    virtual HRESULT GetAudioFollowVideoCrossfadeTransition (/* out */ bool* transition) = 0;
+    virtual HRESULT SetAudioFollowVideoCrossfadeTransition (/* in */ bool transition) = 0;
+    virtual HRESULT SetAllLevelNotificationsEnabled (/* in */ bool enabled) = 0;
+    virtual HRESULT ResetMasterOutPeakLevels (void) = 0;
+    virtual HRESULT ResetAllPeakLevels (void) = 0;
+    virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioMixerCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioMixerCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioMixer () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyLumaParametersCallback - Luma Key Parameters Callback */
@@ -2946,6 +3606,32 @@ public:
 
 protected:
     virtual ~IBMDSwitcherMixMinusOutputCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioInputXLRCallback - Audio Input XLR Object Callback */
+
+class IBMDSwitcherAudioInputXLRCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherAudioInputXLREventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioInputXLRCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherAudioInputXLR - Audio Input XLR Object */
+
+class IBMDSwitcherAudioInputXLR : public IUnknown
+{
+public:
+    virtual HRESULT HasRCAToXLR (/* out */ bool* hasRcaToXlr) = 0;
+    virtual HRESULT GetRCAToXLREnabled (/* out */ bool* rcaToXlrEnabled) = 0;
+    virtual HRESULT SetRCAToXLREnabled (/* in */ bool rcaToXlrEnabled) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherAudioInputXLRCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherAudioInputXLRCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherAudioInputXLR () {} // call Release method to drop reference count
 };
 
 /* Functions */
