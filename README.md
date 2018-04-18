@@ -1,11 +1,11 @@
-# AtemOSC v2.5.2
+# AtemOSC v2.5.3
 
 ## Features
 This is a macOS application, providing an interface to control an ATEM video switcher via OSC. 
 
 ![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
 
-The current version is built for Mac OS 10.13 (as of version 2.5.2). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 7.3 (as of version 2.5.2). 
+The current version is built for Mac OS 10.13 (as of version 2.5). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 7.4 (as of version 2.5.3). 
 
 ## Download the App
 
