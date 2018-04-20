@@ -1,7 +1,26 @@
-language: objective-c
-deploy:
-  provider: pages
-  local_dir: website
-  github_token: $GITHUB_TOKEN
-  on:
-    branch: master
+os: osx
+language: node_js
+node_js:
+  - "node"
+jobs:
+  include:
+    - stage: compile
+      install: npm install --global create-dmg
+      before_script: ./sign.sh
+      script: create-dmg 'atemOSC.app'
+      script: echo "$(find atemOSC-*.dmg)"
+      script: find atemOSC-*.dmg
+    - stage: deploy
+      deploy:
+        - provider: pages
+          local_dir: website
+          github_token: $GITHUB_TOKEN
+          on:
+            branch: master
+        - provider: releases
+          api_key: $GITHUB_TOKEN
+          file_glob: true
+          file: atemOSC-*.dmg
+          skip_cleanup: true
+          on:
+            tags: true
