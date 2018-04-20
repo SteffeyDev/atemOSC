@@ -30,15 +30,15 @@
 				if ([[address objectAtIndex:3] isEqualToString:@"bar"])
 				{
 					if ([appDel mMixEffectBlockMonitor]->mMoveSliderDownwards)
-						[appDel mMixEffectBlock]->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, [[m valueAtIndex:0] floatValue]);
+						[appDel mMixEffectBlock]->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, [m calculateFloatValue]);
 					else
-						[appDel mMixEffectBlock]->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, 1.0-[[m valueAtIndex:0] floatValue]);
+						[appDel mMixEffectBlock]->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, 1.0-[m calculateFloatValue]);
 				}
 				
-				else if ([[address objectAtIndex:3] isEqualToString:@"cut"] && [[m valueAtIndex:0] floatValue]==1.0)
+				else if ([[address objectAtIndex:3] isEqualToString:@"cut"] && [m calculateFloatValue]==1.0)
 					[appDel mMixEffectBlock]->PerformCut();
 				
-				else if ([[address objectAtIndex:3] isEqualToString:@"auto"] && [[m valueAtIndex:0] floatValue]==1.0)
+				else if ([[address objectAtIndex:3] isEqualToString:@"auto"] && [m calculateFloatValue]==1.0)
 					[appDel mMixEffectBlock]->PerformAutoTransition();
 				
 				else if ([[address objectAtIndex:3] isEqualToString:@"ftb"])
@@ -81,7 +81,7 @@
 			else if ([[address objectAtIndex:2] isEqualToString:@"set-nextusk"])
 			{
 				int t = [[address objectAtIndex:3] intValue];
-				bool value = [[m value] floatValue] != 0.0;
+				bool value = [m calculateFloatValue] != 0.0;
 				
 				if (IBMDSwitcherKey* key = [self getUSK:t])
 				{
@@ -95,14 +95,14 @@
 			else if ([[address objectAtIndex:2] isEqualToString:@"nextusk"])
 			{
 				int t = [[address objectAtIndex:3] intValue];
-				bool value = [[m value] floatValue] != 0.0;
+				bool value = [m calculateFloatValue] != 0.0;
 				[self changeTransitionSelection:t select:value];
 			}
 			
 			else if ([[address objectAtIndex:2] isEqualToString:@"usk"])
 			{
 				IBMDSwitcherKey* key = [self getUSK:[[address objectAtIndex:3] intValue]];
-				if (key && [[m value] floatValue] != 0.0)
+				if (key && [m calculateFloatValue] != 0.0)
 				{
 					bool onAir;
 					key->GetOnAir(&onAir);
@@ -117,7 +117,7 @@
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
 					{
-						bool value = [[m value] floatValue] != 0.0;
+						bool value = [m calculateFloatValue] != 0.0;
 						bool isTransitioning;
 						key->IsTransitioning(&isTransitioning);
 						if (!isTransitioning) key->SetTie(value);
@@ -152,7 +152,7 @@
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
 					{
-						bool value = [[m value] floatValue] != 0.0;
+						bool value = [m calculateFloatValue] != 0.0;
 						bool isTransitioning;
 						key->IsTransitioning(&isTransitioning);
 						if (!isTransitioning) key->SetOnAir(value);
@@ -163,7 +163,7 @@
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
 					{
-						bool value = [[m value] floatValue] != 0.0;
+						bool value = [m calculateFloatValue] != 0.0;
 						bool isTransitioning, isOnAir;
 						key->IsTransitioning(&isTransitioning);
 						key->GetOnAir(&isOnAir);
@@ -241,7 +241,7 @@
 			else if ([[address objectAtIndex:2] isEqualToString:@"aux"])
 			{
 				int auxToChange = [[address objectAtIndex:3] intValue];
-				int source = [[m value] floatValue];
+				int source = [m calculateFloatValue];
 				[self handleAuxSource:auxToChange channel:source];
 			}
 			
@@ -255,10 +255,10 @@
 						if ([appDel mAudioInputs].count(inputNumber) > 0)
 						{
 							if ([[address objectAtIndex:5] isEqualToString:@"gain"])
-								[appDel mAudioInputs][inputNumber]->SetGain([[m value] floatValue]);
+								[appDel mAudioInputs][inputNumber]->SetGain([m calculateFloatValue]);
 
 							else if ([[address objectAtIndex:5] isEqualToString:@"balance"])
-								[appDel mAudioInputs][inputNumber]->SetBalance([[m value] floatValue]);
+								[appDel mAudioInputs][inputNumber]->SetBalance([m calculateFloatValue]);
 
 							else
 								[appDel logMessage:[NSString stringWithFormat:@"Invalid option '%@'. You must specify an audio input option of 'gain' or 'balance'", [address objectAtIndex:5]]];
@@ -275,10 +275,10 @@
 				else if ([[address objectAtIndex:3] isEqualToString:@"output"])
 				{
 					if ([[address objectAtIndex:4] isEqualToString:@"gain"])
-						[appDel mAudioMixer]->SetProgramOutGain([[m value] floatValue]);
+						[appDel mAudioMixer]->SetProgramOutGain([m calculateFloatValue]);
 					
 					else if ([[address objectAtIndex:4] isEqualToString:@"balance"])
-						[appDel mAudioMixer]->SetProgramOutBalance([[m value] floatValue]);
+						[appDel mAudioMixer]->SetProgramOutBalance([m calculateFloatValue]);
 					
 					else
 						[appDel logMessage:[NSString stringWithFormat:@"Invalid option '%@'. You must specify an audio output option of 'gain' or 'balance'", [address objectAtIndex:4]]];
@@ -433,31 +433,31 @@
 	
 	else if ([[address objectAtIndex:3] isEqualToString:@"border-outer"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSource]->SetBorderWidthOut(value);
 	}
 	
 	else if ([[address objectAtIndex:3] isEqualToString:@"border-inner"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSource]->SetBorderWidthIn(value);
 	}
 	
 	else if ([[address objectAtIndex:3] isEqualToString:@"border-hue"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSource]->SetBorderHue(value);
 	}
 	
 	else if ([[address objectAtIndex:3] isEqualToString:@"border-saturations"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSource]->SetBorderSaturation(value);
 	}
 	
 	else if ([[address objectAtIndex:3] isEqualToString:@"border-luminescence"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSource]->SetBorderLuma(value);
 	}
 	
@@ -492,7 +492,7 @@
 	
 	if ([[address objectAtIndex:5] isEqualToString:@"enabled"])
 	{
-		bool value = [[m value] floatValue] != 0.0;
+		bool value = [m calculateFloatValue] != 0.0;
 		[appDel mSuperSourceBoxes][box]->SetEnabled(value);
 	}
 	
@@ -505,49 +505,49 @@
 	
 	else if ([[address objectAtIndex:5] isEqualToString:@"x"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSourceBoxes][box]->SetPositionX(value);
 	}
 	
 	else if ([[address objectAtIndex:5] isEqualToString:@"y"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSourceBoxes][box]->SetPositionY(value);
 	}
 	
 	else if ([[address objectAtIndex:5] isEqualToString:@"size"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSourceBoxes][box]->SetSize(value);
 	}
 	
 	else if ([[address objectAtIndex:5] isEqualToString:@"cropped"])
 	{
-		bool value = [[m value] floatValue] != 0.0;
+		bool value = [m calculateFloatValue] != 0.0;
 		[appDel mSuperSourceBoxes][box]->SetCropped(value);
 	}
 	
 	else if ([[address objectAtIndex:5] isEqualToString:@"crop-top"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSourceBoxes][box]->SetCropTop(value);
 	}
 	
 	else if ([[address objectAtIndex:5] isEqualToString:@"crop-bottom"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSourceBoxes][box]->SetCropBottom(value);
 	}
 	
 	else if ([[address objectAtIndex:5] isEqualToString:@"crop-left"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSourceBoxes][box]->SetCropLeft(value);
 	}
 	
 	else if ([[address objectAtIndex:5] isEqualToString:@"crop-right"])
 	{
-		float value = [[m value] floatValue];
+		float value = [m calculateFloatValue];
 		[appDel mSuperSourceBoxes][box]->SetCropRight(value);
 	}
 	
