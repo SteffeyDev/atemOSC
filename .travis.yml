@@ -1,7 +1,55 @@
-language: objective-c
-deploy:
-  provider: pages
-  local_dir: website
-  github_token: $GITHUB_TOKEN
-  on:
-    branch: master
+os: osx
+language: node_js
+node_js:
+  - "node"
+stages:
+  - compile
+  - name: deploy-dmg
+    if: tag IS present
+  - name: deploy-web
+    if: branch = master
+jobs:
+  include:
+    - stage: compile
+      script:
+        - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
+    - stage: deploy-dmg
+      env:
+        - TAG_NUMBER=$( echo $TRAVIS_TAG | sed 's/[^0-9.]*//g' )
+        - PREVIOUS_TAG=$( git describe --abbrev=0 --tags )
+      install: npm install --global create-dmg
+      script:
+        - echo "Info"
+        - echo $TRAVIS_TAG
+        - echo $TAG_NUMBER
+        - echo $PREVIOUS_TAG
+
+        # Update the version of the binary to match the tag
+        - /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $TAG_NUMBER" atemOSC/atemOSC-Info.plist
+
+        # Build the new binary and sign
+        - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
+        - rm -rf atemOSC.app
+        - cp -R /Users/travis/build/danielbuechele/atemOSC/atemOSC/build/Release/atemOSC.app ./
+        - ./.travis/sign.sh
+
+        # Create and validate the DMG
+        - create-dmg atemOSC.app
+        - echo "$(find atemOSC-*.dmg)"
+        - find atemOSC-*.dmg
+
+      deploy:
+        - provider: releases
+          api_key: $GITHUB_TOKEN
+          file_glob: true
+          file: atemOSC-*.dmg
+          skip_cleanup: true
+          on:
+            tags: true
+    - stage: deploy-web
+      deploy:
+        - provider: pages
+          local_dir: website
+          github_token: $GITHUB_TOKEN
+          on:
+            branch: master
