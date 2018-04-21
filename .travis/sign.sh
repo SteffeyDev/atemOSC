@@ -9,6 +9,8 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   security unlock-keychain -p mysecretpassword $KEYCHAIN;
   security import $CERTIFICATE_P12 -k $KEYCHAIN -P $CERTIFICATE_PASSWORD -T /usr/bin/codesign;
 
-  codesign --deep --force --verbose --sign "Peter Steffey Prod Key" atemOSC.app
+  codesign --force --sign "Developer ID Application" atemOSC.app/Contents/Frameworks/VVBasics.framework/Versions/Current
+  codesign --force --sign "Developer ID Application" atemOSC.app/Contents/Frameworks/VVOSC.framework/Versions/Current
+  codesign --force --sign "Developer ID Application" atemOSC.app
 
 fi
