@@ -11,6 +11,7 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   echo $KEYCHAIN;
   echo $(which codesign);
   cat $CERTIFICATE_P12;
+  ls
   security import $CERTIFICATE_P12 -k $KEYCHAIN -P "" -T $(which codesign);
 
   codesign --force --sign "Developer ID Application" atemOSC.app/Contents/Frameworks/VVBasics.framework/Versions/Current
