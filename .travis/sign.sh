@@ -2,6 +2,8 @@
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
   CERTIFICATE_P12=Certificate.p12;
+  echo $CERTIFICATE_OSX_P12
+  echo $CERTIFICATE_OSX_P12 | base64 --decode;
   echo $CERTIFICATE_OSX_P12 | base64 --decode > $CERTIFICATE_P12;
   KEYCHAIN=build.keychain;
   security create-keychain -p mysecretpassword $KEYCHAIN;
