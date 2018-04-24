@@ -12,16 +12,31 @@ jobs:
   include:
     - stage: compile
       script:
-       - echo "tag: $TRAVIS_TAG"
+       - echo "Before"
+       - echo $TRAVIS_TAG
+       - echo "After"
        - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
     - stage: deploy-dmg
+      env:
+        - TAG_NUMBER=$( echo $TRAVIS_TAG | sed 's/[^0-9.]*//g' )
       install: npm install --global create-dmg
       script:
+
+        # Only continue if a tag is set for this commit
+        - if [ -z ${TRAVIS_TAG+x} ]; then return 1; else return 0; fi
+
+        # Update the version of the binary to match the tag
+        - /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $TAG_NUMBER" atemOSC/atemOSC-Info.plist
+
+        # Build the new binary and sign
         - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
         - ./.travis/sign.sh
+
+        # Create and validate the DMG
         - create-dmg atemOSC/build/Releases/atemOSC.app
         - echo "$(find atemOSC-*.dmg)"
         - find atemOSC-*.dmg
+
       deploy:
         - provider: releases
           api_key: $GITHUB_TOKEN
