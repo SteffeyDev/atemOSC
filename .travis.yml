@@ -12,11 +12,11 @@ jobs:
   include:
     - stage: compile
       script:
-        - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
+#       - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
     - stage: deploy-dmg
       install: npm install --global create-dmg
       script:
-        - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
+# - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
         - ./.travis/sign.sh
         - create-dmg atemOSC/build/Releases/atemOSC.app
         - echo "$(find atemOSC-*.dmg)"
