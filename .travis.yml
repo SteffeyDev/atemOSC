@@ -19,11 +19,12 @@ jobs:
     - stage: deploy-dmg
       env:
         - TAG_NUMBER=$( echo $TRAVIS_TAG | sed 's/[^0-9.]*//g' )
+        - PREVIOUS_TAG=$( git describe --abbrev=0 --tags )
       install: npm install --global create-dmg
       script:
 
-        # Only continue if a tag is set for this commit
-        - if [ -z ${TRAVIS_TAG+x} ]; then return 1; else return 0; fi
+        # Only continue if a tag is set for this commit and is different from last tag
+        - if [ -z ${TRAVIS_TAG+x} ] && [ "$TRAVIS_TAG" -ne "$PREVIOUS_TAG" ]; then return 1; else return 0; fi
 
         # Update the version of the binary to match the tag
         - /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $TAG_NUMBER" atemOSC/atemOSC-Info.plist
