@@ -6,14 +6,13 @@ jobs:
   include:
     - stage: compile
       script: xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
-      script: rm -rf atemOSC.app
-      script: mv -f atemOSC/build/Releases/atemOSC.app ./
       after_script: ./sign.sh
     - stage: deploy-dmg
       install: npm install --global create-dmg
-      script: create-dmg 'atemOSC.app'
-      script: echo "$(find atemOSC-*.dmg)"
-      script: find atemOSC-*.dmg
+      script:
+        - create-dmg 'atemOSC/build/Releases/atemOSC.app'
+        - echo "$(find atemOSC-*.dmg)"
+        - find atemOSC-*.dmg
       deploy:
         - provider: releases
           api_key: $GITHUB_TOKEN
