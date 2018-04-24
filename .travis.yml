@@ -6,7 +6,7 @@ jobs:
   include:
     - stage: compile
       script: xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
-      after_script: ./sign.sh
+      after_success: ./.travis/sign.sh
     - stage: deploy-dmg
       install: npm install --global create-dmg
       script:
