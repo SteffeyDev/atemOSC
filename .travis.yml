@@ -5,18 +5,16 @@ node_js:
 jobs:
   include:
     - stage: compile
+      script: xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
+      script: rm -rf atemOSC.app
+      script: mv -f atemOSC/build/Releases/atemOSC.app ./
+      after_script: ./sign.sh
+    - stage: deploy-dmg
       install: npm install --global create-dmg
-      before_script: ./sign.sh
       script: create-dmg 'atemOSC.app'
       script: echo "$(find atemOSC-*.dmg)"
       script: find atemOSC-*.dmg
-    - stage: deploy
       deploy:
-        - provider: pages
-          local_dir: website
-          github_token: $GITHUB_TOKEN
-          on:
-            branch: master
         - provider: releases
           api_key: $GITHUB_TOKEN
           file_glob: true
@@ -24,3 +22,10 @@ jobs:
           skip_cleanup: true
           on:
             tags: true
+    - stage: deploy-web
+      deploy:
+        - provider: pages
+          local_dir: website
+          github_token: $GITHUB_TOKEN
+          on:
+            branch: master
