@@ -5,8 +5,9 @@ node_js:
 jobs:
   include:
     - stage: compile
-      script: xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
-      after_success: ./.travis/sign.sh
+      script:
+        - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
+        - ./.travis/sign.sh
     - stage: deploy-dmg
       install: npm install --global create-dmg
       script:
