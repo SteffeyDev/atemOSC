@@ -4,17 +4,14 @@ node_js:
   - "node"
 stages:
   - compile
-  - deploy-dmg
   - name: deploy-dmg
-    if: type IN (push) AND branch = master
-  - deploy-web
+    if: type IN (push) AND branch = ^v[0-9.]+$
+  - name: deploy-web
+    if: branch = master
 jobs:
   include:
     - stage: compile
       script:
-       - echo "Before"
-       - echo $TRAVIS_TAG
-       - echo "After"
        - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
     - stage: deploy-dmg
       env:
@@ -22,9 +19,12 @@ jobs:
         - PREVIOUS_TAG=$( git describe --abbrev=0 --tags )
       install: npm install --global create-dmg
       script:
+       - echo "Before"
+       - echo $TRAVIS_TAG
+       - echo "After"
 
         # Only continue if a tag is set for this commit and is different from last tag
-        - if [ -z ${TRAVIS_TAG+x} ] || [ "$TRAVIS_TAG" -eq "$PREVIOUS_TAG" ]; then return 1; else return 0; fi
+        - if [ -z ${TRAVIS_TAG+x} ] || [ "$TRAVIS_TAG" -eq "$PREVIOUS_TAG" ]; then exit 1; else exit 0; fi
 
         # Update the version of the binary to match the tag
         - /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $TAG_NUMBER" atemOSC/atemOSC-Info.plist
@@ -51,5 +51,3 @@ jobs:
         - provider: pages
           local_dir: website
           github_token: $GITHUB_TOKEN
-          on:
-            branch: master
