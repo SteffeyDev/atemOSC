@@ -13,19 +13,22 @@
 - (void)loadSettingsFromPreferences
 {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-	[mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
-	
+
+	if ([prefs stringForKey:@"atem"])
+		[mAddressTextField setStringValue:[prefs stringForKey:@"atem"]];
+
+	if ([prefs stringForKey:@"oscdevice"])
+		[mOscDeviceTextField setStringValue:[prefs objectForKey:@"oscdevice"]];
+
 	if ([prefs integerForKey:@"outgoing"])
-		[mOutgoingPortTextField setIntValue:[prefs integerForKey:@"outgoing"]];
+		[mOutgoingPortTextField setIntegerValue:[prefs integerForKey:@"outgoing"]];
 	else
 		[mOutgoingPortTextField setIntValue:4444];
-	
+
 	if ([prefs integerForKey:@"incoming"])
-		[mIncomingPortTextField setIntValue:[prefs integerForKey:@"incoming"]];
+		[mIncomingPortTextField setIntegerValue:[prefs integerForKey:@"incoming"]];
 	else
 		[mIncomingPortTextField setIntValue:3333];
-	
-	[mOscDeviceTextField setStringValue:[prefs objectForKey:@"oscdevice"]];
 }
 
 - (BOOL)isValidIPAddress:(NSString*) str
@@ -109,9 +112,12 @@
 	
 	if (validInput)
 		[appDel portChanged:[mIncomingPortTextField intValue] out:[mOutgoingPortTextField intValue] ip:[mOscDeviceTextField stringValue]];
-	
-	[prefs setInteger:[mOutgoingPortTextField intValue] forKey:@"outgoing"];
-	[prefs setInteger:[mIncomingPortTextField intValue] forKey:@"incoming"];
+
+	if (textField == mOutgoingPortTextField)
+		[prefs setInteger:[mOutgoingPortTextField intValue] forKey:@"outgoing"];
+	if (textField == mIncomingPortTextField)
+		[prefs setInteger:[mIncomingPortTextField intValue] forKey:@"incoming"];
+
 	[prefs synchronize];
 }
 
