@@ -35,10 +35,10 @@
 						[appDel mMixEffectBlock]->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, 1.0-[m calculateFloatValue]);
 				}
 				
-				else if ([[address objectAtIndex:3] isEqualToString:@"cut"] && [m calculateFloatValue]==1.0)
+				else if ([[address objectAtIndex:3] isEqualToString:@"cut"])
 					[appDel mMixEffectBlock]->PerformCut();
 				
-				else if ([[address objectAtIndex:3] isEqualToString:@"auto"] && [m calculateFloatValue]==1.0)
+				else if ([[address objectAtIndex:3] isEqualToString:@"auto"])
 					[appDel mMixEffectBlock]->PerformAutoTransition();
 				
 				else if ([[address objectAtIndex:3] isEqualToString:@"ftb"])
