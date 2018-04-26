@@ -163,7 +163,12 @@ void DownstreamKeyerMonitor::updateDSKTie() const
 		bool isTied;
 		key->GetTie(&isTied);
 		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d",i++]];
+		// Deprecated
+		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d",i++]];
+		[oldMsg addInt: isTied];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie",i++]];
 		[newMsg addInt: isTied];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 	}
@@ -178,7 +183,12 @@ void DownstreamKeyerMonitor::updateDSKOnAir() const
 		bool isOnAir;
 		key->GetOnAir(&isOnAir);
 		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i++]];
+		// Deprecated
+		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i++]];
+		[oldMsg addInt: isOnAir];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air",i++]];
 		[newMsg addInt: isOnAir];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 	}
@@ -237,16 +247,29 @@ HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEvent
 void TransitionParametersMonitor::updateTransitionParameters() const
 {
 	uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-	
+
 	uint32_t currentTransitionSelection;
 	static_cast<AppDelegate *>(appDel).switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
-	
-	for (int i = 0; i <= ((int) reinterpret_cast<AppDelegate *>(appDel).keyers.size()); i++) {
+
+	for (int i = 0; i < ((int) reinterpret_cast<AppDelegate *>(appDel).keyers.size()); i++) {
 		uint32_t requestedTransitionSelection = transitionSelections[i];
+
+		// Deprecated
+		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i+1]];
+		[oldMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
 		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i]];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie",i+1]];
 		[newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+
+		IBMDSwitcherKey* key = static_cast<AppDelegate *>(appDel).keyers[i];
+		bool onAir;
+		key->GetOnAir(&onAir);
+
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air",i+1]];
+		[newMsg2 addInt: onAir];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg2];
 	}
 }
 
@@ -254,7 +277,7 @@ float TransitionParametersMonitor::sendStatus() const
 {
 	updateTransitionParameters();
 
-	return 0.08;
+	return 0.16;
 }
 
 HRESULT MacroPoolMonitor::Notify (BMDSwitcherMacroPoolEventType eventType, uint32_t index, IBMDSwitcherTransferMacro* macroTransfer)

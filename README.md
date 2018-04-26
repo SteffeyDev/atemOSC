@@ -27,7 +27,7 @@ AtemOSC is a proxy, listening for commands following the [OSC protocol](http://o
 ## OSC API
 
  - A full overview of the actual OSC-addresses available for your switcher can be obtained from the help-menu inside the application.
- - Unless otherwise specified, send the value 1 as a float along with the OSC address below. Sending any other value may result in the command not being processed.
+ - Unless otherwise specified, send the value 1 along with the OSC address below. Sending any other value may result in the command not being processed.
  
 
 ### Program and Preview Selection
@@ -89,32 +89,36 @@ Feedback: None
 
 ### Upstream Keyers
 
- - **Cut Toggle On-Air Upstream Keyer $i** `/atem/usk/$i` 
- - **Prepare Upstream Keyer $i** `/atem/nextusk/$i`
- - **Set Upstream Keyer $i for Next Scene** `/atem/set-nextusk/$i <0|1>`
+ - **Set On-Air Upstream Keyer $i** `/atem/usk/$i/on-air <0|1>`
+     - Send a value of 1 to cut the USK on-air, and a value of 0 to cut it off-air
+ - **Cut Toggle On-Air Upstream Keyer $i** `/atem/usk/$i/on-air/toggle`
+ - **Set Tie Upstream Keyer $i** `/atem/usk/$i/tie <0|1>`
+     - Send a value of 1 to enable tie, and 0 to disable
+ - **Toggle Tie Upstream Keyer $i** `/atem/usk/$i/tie/toggle`
+ - **Set Upstream Keyer $i for Next Scene** `/atem/usk/$i/tie/set-next <0|1>`
      - Send a value of 1 to show the USK after next transition, and 0 if you don’t want to show the USK after next transition
-     - e.g. If USK 1 is on air, `/atem/set-nextusk/1 1` will untie USK 1 so that it remains on, while `/atem/set-nextusk/1 0` will tie USK 1 so that it will go off air after the next transition.
+     - e.g. If USK 1 is on air, `/atem/usk/1/tie/set-next 1` will untie USK 1 so that it remains on, while `/atem/usk/1/tie/set-next 0` will tie USK 1 so that it will go off air after the next transition.
 
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
-Feedback: Enabled for '/atem/nextusk' only
+Feedback: Enabled for '/atem/usk/$i/on-air' and '/atem/usk/$i/tie'
 
 ### Downstream Keyers
 
- - **Auto Toggle On-Air Downstreamkeyer $i** `/atem/dsk/$i`
- - **Cut Toggle On-Air Downstreamkeyer $i** `/atem/dsk/toggle/$i`
- - **Force On-Air Downstreamkeyer $i** `/atem/dsk/on-air/$i <0|1>`
+ - **Set On-Air Downstreamkeyer $i** `/atem/dsk/$i/on-air <0|1>`
      - Send a value of 1 to cut the DSK on-air, and a value of 0 to cut it off-air
- - **Toggle Tie Downstreamkeyer $i** `/atem/dsk/tie/$i`
- - **Force Tie Downstreamkeyer $i** `/atem/dsk/set-tie/$i <0|1>`
+ - **Auto Toggle On-Air Downstreamkeyer $i** `/atem/dsk/$i/on-air/auto`
+ - **Cut Toggle On-Air Downstreamkeyer $i** `/atem/dsk/$i/on-air/toggle`
+ - **Set Tie Downstreamkeyer $i** `/atem/dsk/$i/tie <0|1>`
      - Send a value of 1 to enable tie, and 0 to disable
- - **Set Downstreamkeyer $i for Next Scene** `/atem/dsk/set-next/$i <0|1>`
+ - **Toggle Tie Downstreamkeyer $i** `/atem/dsk/$i/tie/toggle`
+ - **Set Downstreamkeyer $i for Next Scene** `/atem/dsk/$i/tie/set-next <0|1>`
      - Send a value of 1 to show the DSK after next transition, and 0 if you don’t want to show the DSK after next transition
-     - e.g. If DSK1 is on air, `/atem/dsk/set-next/1 1` will untie DSK1 so that it remains on, while `/atem/dsk/set-next/1 0` will tie DSK1 so that it will go off air after the next transition.
+     - e.g. If DSK1 is on air, `/atem/dsk/1/tie/set-next 1` will untie DSK1 so that it remains on, while `/atem/dsk/1/tie/set-next 0` will tie DSK1 so that it will go off air after the next transition.
  
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
-Feedback: Enabled for '/atem/dsk/on-air' and '/atem/dsk/tie' only
+Feedback: Enabled for '/atem/dsk/$i/on-air' and '/atem/dsk/$i/tie'
 
 ### Audio
 

@@ -78,6 +78,87 @@
 					[appDel logMessage:@"You must specify a transition action of 'bar', 'cut', 'auto', 'ftb', or 'set-type"];
 			}
 			
+			else if ([[address objectAtIndex:2] isEqualToString:@"usk"] && [address count] > 4)
+			{
+				if (stringIsNumber([address objectAtIndex:3]))
+				{
+					int t = [[address objectAtIndex:3] intValue];
+					
+					if ([[address objectAtIndex:4] isEqualToString:@"tie"])
+					{
+						// Toggle tie
+						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"toggle"])
+						{
+							uint32_t currentTransitionSelection;
+							[appDel switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
+							
+							uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+							uint32_t requestedTransitionSelection = transitionSelections[t];
+							
+							[self changeTransitionSelection:t select:!((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
+						}
+						
+						// Set for state after next transition
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"set-next"])
+						{
+							bool value = [[m value] floatValue] != 0.0;
+							
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								bool isOnAir;
+								key->GetOnAir(&isOnAir);
+								
+								[self changeTransitionSelection:t select:(value != isOnAir)];
+							}
+						}
+						
+						// Set tie
+						else if ([address count] == 5)
+						{
+							bool value = [[m value] floatValue] != 0.0;
+							[self changeTransitionSelection:t select:value];
+						}
+						
+						else
+							[appDel logMessage:@"You must specify a usk tie command of 'toggle' or 'set-next', or send a value to set the tie on or off"];
+					}
+					
+					else if ([[address objectAtIndex:4] isEqualToString:@"on-air"])
+					{
+						// Cut toggle on-air
+						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"toggle"])
+						{
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								bool onAir;
+								key->GetOnAir(&onAir);
+								key->SetOnAir(!onAir);
+							}
+						}
+						
+						// Force set on-air
+						else if ([address count] == 5)
+						{
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								bool value = [[m value] floatValue] != 0.0;
+								key->SetOnAir(value);
+							}
+						}
+						
+						else
+							[appDel logMessage:@"You must specify a usk on-air command of 'toggle' or send a value to cut the usk on or off air"];
+					}
+					
+					else
+						[appDel logMessage:@"You must specify a usk command of 'tie' or 'on-air'"];
+				}
+				
+				else
+					[appDel logMessage:[NSString stringWithFormat:@"You must specify a usk between 1 and %lu", [appDel keyers].size()]];
+			}
+
+			// Deprecated
 			else if ([[address objectAtIndex:2] isEqualToString:@"set-nextusk"])
 			{
 				int t = [[address objectAtIndex:3] intValue];
@@ -92,6 +173,7 @@
 				}
 			}
 			
+			// Deprecated
 			else if ([[address objectAtIndex:2] isEqualToString:@"nextusk"])
 			{
 				int t = [[address objectAtIndex:3] intValue];
@@ -99,6 +181,7 @@
 				[self changeTransitionSelection:t select:value];
 			}
 			
+			// Deprecated
 			else if ([[address objectAtIndex:2] isEqualToString:@"usk"])
 			{
 				IBMDSwitcherKey* key = [self getUSK:[[address objectAtIndex:3] intValue]];
@@ -107,12 +190,12 @@
 					bool onAir;
 					key->GetOnAir(&onAir);
 					key->SetOnAir(!onAir);
-					[appDel logMessage:[NSString stringWithFormat:@"dsk on %@", m]];
 				}
 			}
 			
 			else if ([[address objectAtIndex:2] isEqualToString:@"dsk"])
 			{
+				// Deprecated
 				if ([[address objectAtIndex:3] isEqualToString:@"set-tie"])
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
@@ -124,6 +207,7 @@
 					}
 				}
 				
+				// Deprecated
 				else if ([[address objectAtIndex:3] isEqualToString:@"tie"])
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
@@ -136,6 +220,7 @@
 					}
 				}
 				
+				// Deprecated
 				else if ([[address objectAtIndex:3] isEqualToString:@"toggle"])
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
@@ -148,6 +233,7 @@
 					}
 				}
 				
+				// Deprecated
 				else if ([[address objectAtIndex:3] isEqualToString:@"on-air"])
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
@@ -159,6 +245,7 @@
 					}
 				}
 				
+				// Deprecated
 				else if ([[address objectAtIndex:3] isEqualToString:@"set-next"])
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
@@ -171,7 +258,8 @@
 					}
 				}
 				
-				else if (stringIsNumber([address objectAtIndex:3]))
+				// Deprecated
+				else if ([address count] == 4 && stringIsNumber([address objectAtIndex:3]))
 				{
 					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:3] intValue]])
 					{
@@ -181,8 +269,91 @@
 					}
 				}
 				
+				else if ([address count] > 4 && stringIsNumber([address objectAtIndex:3]))
+				{
+					int t = [[address objectAtIndex:3] intValue];
+					
+					if ([[address objectAtIndex:4] isEqualToString:@"tie"])
+					{
+						// Toggle tie
+						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"toggle"])
+						{
+							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
+							{
+								bool isTied;
+								key->GetTie(&isTied);
+								bool isTransitioning;
+								key->IsTransitioning(&isTransitioning);
+								if (!isTransitioning) key->SetTie(!isTied);
+							}
+						}
+						
+						// Set for state after next transition
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"set-next"])
+						{
+							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
+							{
+								bool value = [m calculateFloatValue] != 0.0;
+								bool isTransitioning, isOnAir;
+								key->IsTransitioning(&isTransitioning);
+								key->GetOnAir(&isOnAir);
+								if (!isTransitioning) key->SetTie(value != isOnAir);
+							}
+						}
+						
+						// Set tie
+						else if ([address count] == 5)
+						{
+							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
+							{
+								bool value = [m calculateFloatValue] != 0.0;
+								bool isTransitioning;
+								key->IsTransitioning(&isTransitioning);
+								if (!isTransitioning) key->SetTie(value);
+							}
+						}
+						
+						else
+							[appDel logMessage:@"You must specify a dsk tie command of 'toggle' or 'set-next', or send a value to set the tie on or off"];
+					}
+					
+					else if ([[address objectAtIndex:4] isEqualToString:@"on-air"])
+					{
+						// Cut toggle on-air
+						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"toggle"])
+						{
+							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
+							{
+								bool isLive;
+								key->GetOnAir(&isLive);
+								bool isTransitioning;
+								key->IsTransitioning(&isTransitioning);
+								if (!isTransitioning) key->SetOnAir(!isLive);
+							}
+						}
+						
+						// Set on-air
+						else if ([address count] == 5)
+						{
+							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
+							{
+								bool value = [m calculateFloatValue] != 0.0;
+								bool isTransitioning;
+								key->IsTransitioning(&isTransitioning);
+								if (!isTransitioning) key->SetOnAir(value);
+							}
+						}
+						
+						else
+							[appDel logMessage:@"You must specify a dsk on-air command of 'toggle' or send a value to cut the usk on or off air"];
+					}
+					
+					else
+						[appDel logMessage:@"You must specify a dsk command of 'tie' or 'on-air'"];
+				}
+				
 				else
-					[appDel logMessage:@"You must specify a dsk command of 'set-tie', 'tie', 'toggle', 'on-air', 'set-next', or send an integer value to toggle auto on-air"];
+					[appDel logMessage:[NSString stringWithFormat:@"You must specify a dsk between 1 and %lu", [appDel dsk].size()]];
 			}
 			
 			else if ([[address objectAtIndex:2] isEqualToString:@"mplayer"])
