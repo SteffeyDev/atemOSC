@@ -105,18 +105,32 @@
 		manager = [[OSCManager alloc] init];
 		
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-		[self portChanged:[prefs integerForKey:@"incoming"] out:[prefs integerForKey:@"outgoing"] ip:[prefs stringForKey:@"oscdevice"]];
+
+		int incomingPort = 3333, outgoingPort = 4444;
+		NSString *outIpStr = nil;
+		if ([prefs integerForKey:@"outgoing"])
+			outgoingPort = (int) [prefs integerForKey:@"outgoing"];
+		if ([prefs integerForKey:@"incoming"])
+			incomingPort = (int) [prefs integerForKey:@"incoming"];
+		if ([prefs stringForKey:@"oscdevice"])
+			outIpStr = [prefs stringForKey:@"oscdevice"];
+
+		[self portChanged:incomingPort out:outgoingPort ip:outIpStr];
 	}
 }
 
 - (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr
 {
 	[manager removeInput:inPort];
-	[manager removeOutput:outPort];
-	
-	outPort = [manager createNewOutputToAddress:outIpStr atPort:outPortValue withLabel:@"atemOSC"];
+
+	if (outIpStr != nil)
+	{
+		[manager removeOutput:outPort];
+		outPort = [manager createNewOutputToAddress:outIpStr atPort:outPortValue withLabel:@"atemOSC"];
+	}
+
 	inPort = [manager createNewInputForPort:inPortValue withLabel:@"atemOSC"];
-	
+
 	[manager setDelegate:mOscReceiver];
 }
 
