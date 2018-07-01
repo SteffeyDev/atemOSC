@@ -332,6 +332,17 @@
 							}
 						}
 						
+						// Auto on-air
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"auto"])
+						{
+							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
+							{
+								bool isTransitioning;
+								key->IsAutoTransitioning(&isTransitioning);
+								if (!isTransitioning) key->PerformAutoTransition();
+							}
+						}
+						
 						// Set on-air
 						else if ([address count] == 5)
 						{
@@ -345,7 +356,7 @@
 						}
 						
 						else
-							[appDel logMessage:@"You must specify a dsk on-air command of 'toggle' or send a value to cut the usk on or off air"];
+							[appDel logMessage:@"You must specify a dsk on-air command of 'toggle' or send a value to cut the dsk on or off air"];
 					}
 					
 					else

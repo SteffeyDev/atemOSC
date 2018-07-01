@@ -89,6 +89,9 @@ Feedback: None
 
 ### Upstream Keyers
 
+ - **Set Tie BKGD** `/atem/usk/0/tie <0|1>`
+     - Send a value of 1 to enable tie, and 0 to disable
+ - **Toggle Tie BKGD** `/atem/usk/0/tie/toggle`
  - **Set On-Air Upstream Keyer $i** `/atem/usk/$i/on-air <0|1>`
      - Send a value of 1 to cut the USK on-air, and a value of 0 to cut it off-air
  - **Cut Toggle On-Air Upstream Keyer $i** `/atem/usk/$i/on-air/toggle`

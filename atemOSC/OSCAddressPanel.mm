@@ -49,7 +49,8 @@
 	[self addEntry:@"Set to DVE" forAddress:@"/atem/transition/set-type/dve" toString:helpString];
 
 	[self addHeader:@"Upstream Keyers" toString:helpString];
-	[self addEntry:@"BKGD" forAddress:@"/atem/usk/0/tie" toString:helpString];
+	[self addEntry:@"Set Tie BKGD" forAddress:@"/atem/usk/0/tie" toString:helpString];
+	[self addEntry:@"Toggle Tie BKGD" forAddress:@"/atem/usk/0/tie/toggle" toString:helpString];
 	for (int i = 0; i<[appDel keyers].size();i++)
 	{
 		[self addEntry:[NSString stringWithFormat:@"Set USK%d On Air",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air\t<0|1>",i+1] toString:helpString];
