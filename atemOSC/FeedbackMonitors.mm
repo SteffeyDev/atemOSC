@@ -296,7 +296,7 @@ void TransitionParametersMonitor::updateTransitionParameters() const
 	uint32_t currentTransitionSelection;
 	static_cast<AppDelegate *>(appDel).switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
 
-	for (int i = 0; i < ((int) reinterpret_cast<AppDelegate *>(appDel).keyers.size()) + 1; i++) {
+	for (int i = 0; i <= ((int) reinterpret_cast<AppDelegate *>(appDel).keyers.size()); i++) {
 		uint32_t requestedTransitionSelection = transitionSelections[i];
 
 		// Deprecated
@@ -314,7 +314,7 @@ float TransitionParametersMonitor::sendStatus() const
 {
 	updateTransitionParameters();
 
-	return 0.16;
+	return 0.12;
 }
 
 HRESULT MacroPoolMonitor::Notify (BMDSwitcherMacroPoolEventType eventType, uint32_t index, IBMDSwitcherTransferMacro* macroTransfer)

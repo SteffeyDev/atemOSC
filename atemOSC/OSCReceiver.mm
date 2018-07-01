@@ -155,7 +155,7 @@
 				}
 				
 				else
-					[appDel logMessage:[NSString stringWithFormat:@"You must specify a usk between 1 and %lu", [appDel keyers].size()]];
+					[appDel logMessage:[NSString stringWithFormat:@"You must specify a usk between 0 and %lu", [appDel keyers].size()]];
 			}
 
 			// Deprecated
@@ -356,7 +356,7 @@
 						}
 						
 						else
-							[appDel logMessage:@"You must specify a dsk on-air command of 'toggle' or send a value to cut the dsk on or off air"];
+							[appDel logMessage:@"You must specify a dsk on-air command of 'toggle' or 'auto', or send a value to cut the dsk on or off air"];
 					}
 					
 					else
