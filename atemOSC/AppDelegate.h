@@ -45,6 +45,7 @@
 	IBMDSwitcherKeyFlyParameters*	    mDVEControl;
 	SwitcherMonitor*			        mSwitcherMonitor;
 	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
+	UpstreamKeyerMonitor*               mUpstreamKeyerMonitor;
 	TransitionParametersMonitor*        mTransitionParametersMonitor;
 	MacroPoolMonitor*       			mMacroPoolMonitor;
 	std::vector<SendStatusInterface*>   mMonitors;

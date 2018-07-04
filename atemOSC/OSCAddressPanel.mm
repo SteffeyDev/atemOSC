@@ -49,23 +49,26 @@
 	[self addEntry:@"Set to DVE" forAddress:@"/atem/transition/set-type/dve" toString:helpString];
 
 	[self addHeader:@"Upstream Keyers" toString:helpString];
-	[self addEntry:@"BKGD" forAddress:@"/atem/nextusk/0" toString:helpString];
+	[self addEntry:@"Set Tie BKGD" forAddress:@"/atem/usk/0/tie" toString:helpString];
+	[self addEntry:@"Toggle Tie BKGD" forAddress:@"/atem/usk/0/tie/toggle" toString:helpString];
 	for (int i = 0; i<[appDel keyers].size();i++)
 	{
-		[self addEntry:[NSString stringWithFormat:@"On Air KEY %d toggle",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"KEY %d",i+1] forAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State KEY %d",i+1] forAddress:[NSString stringWithFormat:@"/atem/set-nextusk/%d",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set USK%d On Air",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air\t<0|1>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Toggle On Air USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air/toggle",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Tie USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie\t<0|1>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Toggle Tie USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie/toggle",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie/set-next\t<0|1>",i+1] toString:helpString];
 	}
 
 	[self addHeader:@"Downstream Keyers" toString:helpString];
 	for (int i = 0; i<[appDel dsk].size();i++)
 	{
-		[self addEntry:[NSString stringWithFormat:@"Auto-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set DSK On Air%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d\t<0|1>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Tie Next-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/tie/%d",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Tie Next-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d\t<0|1>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Toggle DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/toggle/%d",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/set-next/%d",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set DSK%d On Air",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air\t<0|1>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Auto-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air/auto",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Toggle On Air DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air/toggle",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Tie DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie\t<0|1>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Toggle Tie DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie/toggle",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie/set-next\t<0|1>",i+1] toString:helpString];
 	}
 
 	[self addHeader:@"Sources" toString:helpString];

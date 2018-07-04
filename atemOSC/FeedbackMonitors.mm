@@ -162,10 +162,17 @@ void DownstreamKeyerMonitor::updateDSKTie() const
 	{
 		bool isTied;
 		key->GetTie(&isTied);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d",i++]];
+
+		// Deprecated
+		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d",i]];
+		[oldMsg addInt: isTied];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
+
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie",i]];
 		[newMsg addInt: isTied];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+
+		i++;
 	}
 }
 
@@ -177,10 +184,17 @@ void DownstreamKeyerMonitor::updateDSKOnAir() const
 	{
 		bool isOnAir;
 		key->GetOnAir(&isOnAir);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i++]];
+
+		// Deprecated
+		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i]];
+		[oldMsg addInt: isOnAir];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
+
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air",i]];
 		[newMsg addInt: isOnAir];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+
+		i++;
 	}
 }
 
@@ -215,6 +229,47 @@ float DownstreamKeyerMonitor::sendStatus() const
 	return 0.1;
 }
 
+// Send OSC messages out when DSK On Air is changed on switcher
+void UpstreamKeyerMonitor::updateUSKOnAir() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		bool isOnAir;
+		key->GetOnAir(&isOnAir);
+
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air",i]];
+		[newMsg addInt: isOnAir];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+
+		i++;
+	}
+}
+
+HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherKeyEventTypeTypeChanged:
+			// Might want to do something with this down the road
+			break;
+		case bmdSwitcherKeyEventTypeOnAirChanged:
+			updateUSKOnAir();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+float UpstreamKeyerMonitor::sendStatus() const
+{
+	updateUSKOnAir();
+
+	return 0.1;
+}
+
 HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEventType eventType)
 {
 	
@@ -237,14 +292,19 @@ HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEvent
 void TransitionParametersMonitor::updateTransitionParameters() const
 {
 	uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-	
+
 	uint32_t currentTransitionSelection;
 	static_cast<AppDelegate *>(appDel).switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
-	
+
 	for (int i = 0; i <= ((int) reinterpret_cast<AppDelegate *>(appDel).keyers.size()); i++) {
 		uint32_t requestedTransitionSelection = transitionSelections[i];
+
+		// Deprecated
+		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i]];
+		[oldMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
 		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i]];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie",i]];
 		[newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 	}
@@ -254,7 +314,7 @@ float TransitionParametersMonitor::sendStatus() const
 {
 	updateTransitionParameters();
 
-	return 0.08;
+	return 0.12;
 }
 
 HRESULT MacroPoolMonitor::Notify (BMDSwitcherMacroPoolEventType eventType, uint32_t index, IBMDSwitcherTransferMacro* macroTransfer)

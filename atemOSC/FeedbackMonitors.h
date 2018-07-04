@@ -71,6 +71,20 @@ private:
 	void updateDSKTie() const;
 };
 
+class UpstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherKeyCallback>, public SendStatusInterface
+{
+public:
+	UpstreamKeyerMonitor(void *delegate) : GenericMonitor(delegate) { }
+	HRESULT Notify (BMDSwitcherKeyEventType eventType);
+	float sendStatus() const;
+
+protected:
+	virtual ~UpstreamKeyerMonitor() { }
+
+private:
+	void updateUSKOnAir() const;
+};
+
 class TransitionParametersMonitor : public GenericMonitor<IBMDSwitcherTransitionParametersCallback>, public SendStatusInterface
 {
 public:

@@ -78,6 +78,8 @@
 	mMonitors.push_back(mSwitcherMonitor);
 	mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
 	mMonitors.push_back(mDownstreamKeyerMonitor);
+	mUpstreamKeyerMonitor = new UpstreamKeyerMonitor(self);
+	mMonitors.push_back(mUpstreamKeyerMonitor);
 	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
 	mMonitors.push_back(mTransitionParametersMonitor);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
@@ -293,6 +295,7 @@
 		while (S_OK == keyIterator->Next(&key))
 		{
 			keyers.push_back(key);
+			key->AddCallback(mUpstreamKeyerMonitor);
 		}
 		keyIterator->Release();
 		keyIterator = NULL;
@@ -480,6 +483,7 @@ finish:
 	while (keyers.size())
 	{
 		keyers.back()->Release();
+		keyers.back()->RemoveCallback(mUpstreamKeyerMonitor);
 		keyers.pop_back();
 	}
 	
