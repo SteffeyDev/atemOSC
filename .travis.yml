@@ -32,13 +32,13 @@ jobs:
 
         # Create and validate the DMG
         - create-dmg atemOSC.app
-        - find atemOSC-*.dmg
+        - find atemOSC *.dmg
 
       deploy:
         - provider: releases
           api_key: $GITHUB_TOKEN
           file_glob: true
-          file: atemOSC-*.dmg
+          file: atemOSC *.dmg
           draft: true
           skip_cleanup: true
           on:
