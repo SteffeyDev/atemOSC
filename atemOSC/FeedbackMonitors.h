@@ -83,6 +83,25 @@ protected:
 
 private:
 	void updateUSKOnAir() const;
+	void updateUSKInputFill() const;
+	void updateUSKInputCut() const;
+};
+
+class UpstreamKeyerLumaParametersMonitor : public GenericMonitor<IBMDSwitcherKeyLumaParametersCallback>, public SendStatusInterface
+{
+public:
+	UpstreamKeyerLumaParametersMonitor(void *delegate) : GenericMonitor(delegate) { }
+	HRESULT Notify (BMDSwitcherKeyLumaParametersEventType eventType);
+	float sendStatus() const;
+	
+protected:
+	virtual ~UpstreamKeyerLumaParametersMonitor() { }
+	
+private:
+	void updateUSKLumaClipParameter() const;
+	void updateUSKLumaGainParameter() const;
+	void updateUSKLumaPreMultipliedParameter() const;
+	void updateUSKLumaInverseParameter() const;
 };
 
 class TransitionParametersMonitor : public GenericMonitor<IBMDSwitcherTransitionParametersCallback>, public SendStatusInterface

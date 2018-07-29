@@ -58,6 +58,12 @@
 		[self addEntry:[NSString stringWithFormat:@"Set Tie USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie\t<0|1>",i+1] toString:helpString];
 		[self addEntry:[NSString stringWithFormat:@"Toggle Tie USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie/toggle",i+1] toString:helpString];
 		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie/set-next\t<0|1>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Fill Source USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/fill\t<int>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Cut Source USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/cut\t<int>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Clip Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/clip\t<float>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Gain Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/gain\t<float>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Pre-Multiplied Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/pre-multiplied\t<bool>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Inverse Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/inverse\t<bool>",i+1] toString:helpString];
 	}
 
 	[self addHeader:@"Downstream Keyers" toString:helpString];

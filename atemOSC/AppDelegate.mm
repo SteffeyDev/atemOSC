@@ -80,6 +80,8 @@
 	mMonitors.push_back(mDownstreamKeyerMonitor);
 	mUpstreamKeyerMonitor = new UpstreamKeyerMonitor(self);
 	mMonitors.push_back(mUpstreamKeyerMonitor);
+	mUpstreamKeyerLumaParametersMonitor = new UpstreamKeyerLumaParametersMonitor(self);
+	mMonitors.push_back(mUpstreamKeyerLumaParametersMonitor);
 	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
 	mMonitors.push_back(mTransitionParametersMonitor);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
@@ -296,6 +298,9 @@
 		{
 			keyers.push_back(key);
 			key->AddCallback(mUpstreamKeyerMonitor);
+			IBMDSwitcherKeyLumaParameters* lumaParams;
+			key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+			lumaParams->AddCallback(mUpstreamKeyerLumaParametersMonitor);
 		}
 		keyIterator->Release();
 		keyIterator = NULL;
@@ -484,6 +489,9 @@ finish:
 	{
 		keyers.back()->Release();
 		keyers.back()->RemoveCallback(mUpstreamKeyerMonitor);
+		IBMDSwitcherKeyLumaParameters* lumaParams;
+		keyers.back()->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+		lumaParams->RemoveCallback(mUpstreamKeyerLumaParametersMonitor);
 		keyers.pop_back();
 	}
 	

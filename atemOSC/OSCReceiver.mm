@@ -150,8 +150,94 @@
 							[appDel logMessage:@"You must specify a usk on-air command of 'toggle' or send a value to cut the usk on or off air"];
 					}
 					
+					else if ([[address objectAtIndex:4] isEqualToString:@"source"])
+					{
+						// Get/Set Fill Source
+						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"fill"])
+						{
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									BMDSwitcherInputId inputId = [[m value] intValue];
+									key->SetInputFill(inputId);
+								}
+							}
+						}
+						
+						// Get/Set Key (cut) Source
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"cut"])
+						{
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									BMDSwitcherInputId inputId = [[m value] intValue];
+									key->SetInputCut(inputId);
+								}
+							}
+						}
+						
+						else
+							[appDel logMessage:@"You must specify a usk source command of 'fill' or 'cut'"];
+					}
+					
+					else if ([[address objectAtIndex:4] isEqualToString:@"luma"])
+					{
+						// Get/Set PreMultiplied
+						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"pre-multiplied"])
+						{
+							if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									lumaParams->SetPreMultiplied([[m value] boolValue]);
+								}
+							}
+						}
+						
+						// Get/Set Clip
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"clip"])
+						{
+							if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									lumaParams->SetClip([[m value] floatValue]);
+								}
+							}
+						}
+						
+						// Get/Set Gain
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"gain"])
+						{
+							if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									lumaParams->SetGain([[m value] floatValue]);
+								}
+							}
+						}
+						
+						// Get/Set Inverse
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"inverse"])
+						{
+							if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									lumaParams->SetInverse([[m value] boolValue]);
+								}
+							}
+						}
+						
+						else
+							[appDel logMessage:@"You must specify a usk luma command of 'pre-multiplied', 'clip', 'gain', or 'inverse'"];
+					}
+					
 					else
-						[appDel logMessage:@"You must specify a usk command of 'tie' or 'on-air'"];
+						[appDel logMessage:@"You must specify a usk command of 'tie', 'on-air', 'source', or 'luma'"];
 				}
 				
 				else
@@ -494,6 +580,18 @@
 	if (t<=[appDel keyers].size())
 	{
 		return [appDel keyers][t-1];
+	}
+	return nullptr;
+}
+
+- (IBMDSwitcherKeyLumaParameters *) getUSKLumaParams:(int)t
+{
+	if (t<=[appDel keyers].size())
+	{
+		IBMDSwitcherKey* key = [appDel keyers][t-1];
+		IBMDSwitcherKeyLumaParameters* lumaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+		return lumaParams;
 	}
 	return nullptr;
 }
