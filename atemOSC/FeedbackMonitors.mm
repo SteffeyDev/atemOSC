@@ -246,6 +246,34 @@ void UpstreamKeyerMonitor::updateUSKOnAir() const
 	}
 }
 
+void UpstreamKeyerMonitor::updateUSKInputFill() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		BMDSwitcherInputId inputId;
+		key->GetInputFill(&inputId);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/fill",i++]];
+		[newMsg addInt: static_cast<int>(inputId)];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+
+void UpstreamKeyerMonitor::updateUSKInputCut() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		BMDSwitcherInputId inputId;
+		key->GetInputCut(&inputId);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/cut",i++]];
+		[newMsg addInt: static_cast<int>(inputId)];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+
 HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 {
 	switch (eventType)
@@ -255,6 +283,12 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 			break;
 		case bmdSwitcherKeyEventTypeOnAirChanged:
 			updateUSKOnAir();
+			break;
+		case bmdSwitcherKeyEventTypeInputCutChanged:
+			updateUSKInputCut();
+			break;
+		case bmdSwitcherKeyEventTypeInputFillChanged:
+			updateUSKInputFill();
 			break;
 		default:
 			// ignore other property changes not used for this app
@@ -266,8 +300,108 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 float UpstreamKeyerMonitor::sendStatus() const
 {
 	updateUSKOnAir();
+	updateUSKInputCut();
+	updateUSKInputFill();
 
-	return 0.1;
+	return 0.3;
+}
+
+HRESULT UpstreamKeyerLumaParametersMonitor::Notify(BMDSwitcherKeyLumaParametersEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherKeyLumaParametersEventTypePreMultipliedChanged:
+			updateUSKLumaPreMultipliedParameter();
+			break;
+		case bmdSwitcherKeyLumaParametersEventTypeClipChanged:
+			updateUSKLumaClipParameter();
+			break;
+		case bmdSwitcherKeyLumaParametersEventTypeGainChanged:
+			updateUSKLumaGainParameter();
+			break;
+		case bmdSwitcherKeyLumaParametersEventTypeInverseChanged:
+			updateUSKLumaInverseParameter();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void UpstreamKeyerLumaParametersMonitor::updateUSKLumaClipParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyLumaParameters* lumaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+		
+		double clip;
+		lumaParams->GetClip(&clip);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/clip",i++]];
+		[newMsg addFloat:clip];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+void UpstreamKeyerLumaParametersMonitor::updateUSKLumaGainParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyLumaParameters* lumaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+		
+		double gain;
+		lumaParams->GetGain(&gain);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/gain",i++]];
+		[newMsg addFloat:gain];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+void UpstreamKeyerLumaParametersMonitor::updateUSKLumaPreMultipliedParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyLumaParameters* lumaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+		
+		bool preMultiplied;
+		lumaParams->GetPreMultiplied(&preMultiplied);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/pre-multiplied",i++]];
+		[newMsg addBOOL:preMultiplied];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+void UpstreamKeyerLumaParametersMonitor::updateUSKLumaInverseParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyLumaParameters* lumaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+		
+		bool inverse;
+		lumaParams->GetInverse(&inverse);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/inverse",i++]];
+		[newMsg addBOOL:inverse];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+
+float UpstreamKeyerLumaParametersMonitor::sendStatus() const
+{
+	updateUSKLumaClipParameter();
+	updateUSKLumaGainParameter();
+	updateUSKLumaPreMultipliedParameter();
+	updateUSKLumaInverseParameter();
+	
+	return 0.4;
 }
 
 HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEventType eventType)
