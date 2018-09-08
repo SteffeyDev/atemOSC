@@ -66,8 +66,9 @@ Note: The actual numbers vary greatly from device to device, be sure to check th
 
  - **T-bar** `/atem/transition/bar <0-1>`
  - **Cut** `/atem/transition/cut`
- - **auto** `/atem/transition/auto`
- - **fade-to-black** `/atem/transition/ftb`
+ - **Auto** `/atem/transition/auto`
+ - **Fade to Black** `/atem/transition/ftb`
+ - **Preview Transition** `/atem/transition/preview <0|1>`
 
 To set the transition type of the Auto transition:
 

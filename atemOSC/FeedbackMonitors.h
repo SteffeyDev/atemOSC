@@ -47,6 +47,7 @@ public:
 	void updatePreviewButtonSelection() const;
 	void updateInTransitionState();
 	void updateSliderPosition();
+	void updatePreviewTransitionEnabled() const;
 	float sendStatus() const;
 	
 protected:
