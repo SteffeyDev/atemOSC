@@ -539,6 +539,12 @@ finish:
 		it.second->Release();
 	}
 	
+	for (auto const& it : mInputs)
+	{
+		it.second->RemoveCallback(mInputMonitors.at(it.first));
+		it.second->Release();
+	}
+	
 	if (mAudioMixer)
 	{
 		mAudioMixer->RemoveCallback(mAudioMixerMonitor);
