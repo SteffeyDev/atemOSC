@@ -61,6 +61,7 @@ Feedback: Enabled for all values
 
 Note: The actual numbers vary greatly from device to device, be sure to check the in-app address menu
 
+Note: You can fetch the names of each input by sending the `/atem/send-status` command (detailed later), this will return the short names of each input to `/atem/input/$i/short-name` and the long names to `/atem/input/$i/long-name`. After the initial fetch, you will also recieve updates when the short or long name is changed in ATEM Software Control.
 
 ### Transition Control
 
