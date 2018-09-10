@@ -154,6 +154,59 @@ float MixEffectBlockMonitor::sendStatus() const
 	return 0.2;
 }
 
+HRESULT InputMonitor::Notify(BMDSwitcherInputEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherInputEventTypeShortNameChanged:
+			updateShortName();
+			break;
+		case bmdSwitcherInputEventTypeLongNameChanged:
+			updateLongName();
+			break;
+		case bmdSwitcherInputEventTypeAreNamesDefaultChanged:
+			updateLongName();
+			updateShortName();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void InputMonitor::updateLongName() const
+{
+	// Have to delay slightly, otherwise fetch gets old name
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		NSString *name;
+		static_cast<AppDelegate *>(appDel).mInputs[inputId_]->GetLongName((CFStringRef*)&name);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/input/%lld/long-name", inputId_]];
+		[newMsg addString:name];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	});
+}
+
+void InputMonitor::updateShortName() const
+{
+	// Have to delay slightly, otherwise fetch gets old name
+	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+		NSString *name;
+		static_cast<AppDelegate *>(appDel).mInputs[inputId_]->GetShortName((CFStringRef*)&name);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/input/%lld/short-name", inputId_]];
+		[newMsg addString:name];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	});
+}
+
+float InputMonitor::sendStatus() const
+{
+	updateLongName();
+	updateShortName();
+	
+	return 0.1;
+}
+
 // Send OSC messages out when DSK Tie is changed on switcher
 void DownstreamKeyerMonitor::updateDSKTie() const
 {

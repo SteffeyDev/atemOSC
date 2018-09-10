@@ -43,9 +43,6 @@ public:
 	HRESULT PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId);
 	bool moveSliderDownwards() const;
 	bool mMoveSliderDownwards = false;
-	void updateProgramButtonSelection() const;
-	void updatePreviewButtonSelection() const;
-	void updateInTransitionState();
 	void updateSliderPosition();
 	float sendStatus() const;
 	
@@ -53,7 +50,26 @@ protected:
 	virtual ~MixEffectBlockMonitor() { }
 	
 private:
+	void updateProgramButtonSelection() const;
+	void updatePreviewButtonSelection() const;
+	void updateInTransitionState();
 	bool mCurrentTransitionReachedHalfway_ = false;
+};
+
+class InputMonitor : public GenericMonitor<IBMDSwitcherInputCallback>, public SendStatusInterface
+{
+public:
+	InputMonitor(void *delegate, BMDSwitcherInputId inputId) : GenericMonitor(delegate), inputId_(inputId) { }
+	HRESULT Notify(BMDSwitcherInputEventType eventType);
+	float sendStatus() const;
+	
+protected:
+	virtual ~InputMonitor() { }
+	
+private:
+	void updateShortName() const;
+	void updateLongName() const;
+	BMDSwitcherInputId  inputId_;
 };
 
 class DownstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherDownstreamKeyCallback>, public SendStatusInterface

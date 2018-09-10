@@ -46,6 +46,8 @@
 @synthesize mSuperSource;
 @synthesize mMacroControl;
 @synthesize mSuperSourceBoxes;
+@synthesize mInputs;
+@synthesize mInputMonitors;
 @synthesize mSwitcherInputAuxList;
 @synthesize mAudioInputs;
 @synthesize mAudioInputMonitors;
@@ -271,6 +273,14 @@
 		// For every input, install a callback to monitor property changes on the input
 		while (S_OK == inputIterator->Next(&input))
 		{
+			BMDSwitcherInputId inputId;
+			input->GetInputId(&inputId);
+			mInputs.insert(std::make_pair(inputId, input));
+			InputMonitor *monitor = new InputMonitor(self, inputId);
+			input->AddCallback(monitor);
+			mMonitors.push_back(monitor);
+			mInputMonitors.insert(std::make_pair(inputId, monitor));
+			
 			IBMDSwitcherInputAux* auxObj;
 			result = input->QueryInterface(IID_IBMDSwitcherInputAux, (void**)&auxObj);
 			if (SUCCEEDED(result))
