@@ -40,6 +40,7 @@
 	[self addEntry:@"Cut" forAddress:@"/atem/transition/cut" toString:helpString];
 	[self addEntry:@"Auto-Cut" forAddress:@"/atem/transition/auto" toString:helpString];
 	[self addEntry:@"Fade-to-black" forAddress:@"/atem/transition/ftb" toString:helpString];
+	[self addEntry:@"Preview Transition" forAddress:@"/atem/transition/preview" toString:helpString];
 
 	[self addHeader:@"Transition type" toString:helpString];
 	[self addEntry:@"Set to Mix" forAddress:@"/atem/transition/set-type/mix" toString:helpString];

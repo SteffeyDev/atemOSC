@@ -62,6 +62,9 @@ HRESULT MixEffectBlockMonitor::PropertyChanged(BMDSwitcherMixEffectBlockProperty
 		case bmdSwitcherMixEffectBlockPropertyIdTransitionPosition:
 			updateSliderPosition();
 			break;
+		case bmdSwitcherMixEffectBlockPropertyIdPreviewTransition:
+			updatePreviewTransitionEnabled();
+			break;
 		case bmdSwitcherMixEffectBlockPropertyIdTransitionFramesRemaining:
 			break;
 		case bmdSwitcherMixEffectBlockPropertyIdFadeToBlackFramesRemaining:
@@ -131,6 +134,16 @@ void MixEffectBlockMonitor::updateSliderPosition()
 	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 }
 
+void MixEffectBlockMonitor::updatePreviewTransitionEnabled() const
+{
+	bool position;
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFlag(bmdSwitcherMixEffectBlockPropertyIdPreviewTransition, &position);
+	
+	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/preview"];
+	[newMsg addFloat: position ? 1.0 : 0.0];
+	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+}
+
 float MixEffectBlockMonitor::sendStatus() const
 {
 	// Sending both program and preview at the same time causes a race condition, TouchOSC can't handle
@@ -141,6 +154,8 @@ float MixEffectBlockMonitor::sendStatus() const
 	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.15 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 		updateProgramButtonSelection();
 	});
+	
+	updatePreviewTransitionEnabled();
 	
 	double position;
 	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);

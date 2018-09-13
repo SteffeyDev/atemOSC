@@ -44,6 +44,9 @@
 				else if ([[address objectAtIndex:3] isEqualToString:@"ftb"])
 					[appDel mMixEffectBlock]->PerformFadeToBlack();
 				
+				else if ([[address objectAtIndex:3] isEqualToString:@"preview"])
+					[appDel mMixEffectBlock]->SetFlag(bmdSwitcherMixEffectBlockPropertyIdPreviewTransition, (int)[m calculateFloatValue]);
+				
 				else if ([[address objectAtIndex:3] isEqualToString:@"set-type"])
 				{
 					
