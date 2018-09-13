@@ -60,6 +60,8 @@
 
 @property (readonly)       IBMDSwitcher*				        	mSwitcher;
 @property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
+@property (readonly)       std::map<BMDSwitcherInputId, IBMDSwitcherInput*> mInputs;
+@property (readonly)       std::map<BMDSwitcherInputId, InputMonitor*> mInputMonitors;
 @property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
 @property (readonly)       IBMDSwitcherStills*                      mStills;
 @property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;
