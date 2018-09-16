@@ -538,12 +538,14 @@ finish:
 		it.second->RemoveCallback(mAudioInputMonitors.at(it.first));
 		it.second->Release();
 	}
+	mAudioInputs.clear();
 	
 	for (auto const& it : mInputs)
 	{
 		it.second->RemoveCallback(mInputMonitors.at(it.first));
 		it.second->Release();
 	}
+	mInputs.clear();
 	
 	if (mAudioMixer)
 	{
