@@ -499,16 +499,17 @@ finish:
 	{
 		keyers.back()->Release();
 		keyers.back()->RemoveCallback(mUpstreamKeyerMonitor);
-		IBMDSwitcherKeyLumaParameters* lumaParams;
+		IBMDSwitcherKeyLumaParameters* lumaParams = nil;
 		keyers.back()->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
-		lumaParams->RemoveCallback(mUpstreamKeyerLumaParametersMonitor);
+		if (lumaParams != nil)
+			lumaParams->RemoveCallback(mUpstreamKeyerLumaParametersMonitor);
 		keyers.pop_back();
 	}
 	
 	while (dsk.size())
 	{
-		dsk.back()->Release();
 		dsk.back()->RemoveCallback(mDownstreamKeyerMonitor);
+		dsk.back()->Release();
 		dsk.pop_back();
 	}
 	
@@ -557,6 +558,8 @@ finish:
 	if (switcherTransitionParameters)
 	{
 		switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
+		switcherTransitionParameters->Release();
+		switcherTransitionParameters = NULL;
 	}
 }
 
