@@ -80,9 +80,10 @@ void MixEffectBlockMonitor::updateProgramButtonSelection() const
 	BMDSwitcherInputId    programId;
 	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, &programId);
 	
-	for (int i = 0;i<=12;i++) {
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program/%d",i]];
-		if (programId==i) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
+	for (auto const& it : static_cast<AppDelegate *>(appDel).mInputs)
+	{
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program/%lld",it.first]];
+		if (programId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 	}
 }
@@ -92,9 +93,10 @@ void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 	BMDSwitcherInputId    previewId;
 	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, &previewId);
 	
-	for (int i = 0;i<=12;i++) {
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview/%d",i]];
-		if (previewId==i) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
+	for (auto const& it : static_cast<AppDelegate *>(appDel).mInputs)
+	{
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview/%lld",it.first]];
+		if (previewId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
 	}
 }
