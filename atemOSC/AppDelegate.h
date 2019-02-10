@@ -47,6 +47,7 @@
 	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
 	UpstreamKeyerMonitor*               mUpstreamKeyerMonitor;
 	UpstreamKeyerLumaParametersMonitor* mUpstreamKeyerLumaParametersMonitor;
+	UpstreamKeyerChromaParametersMonitor* mUpstreamKeyerChromaParametersMonitor;
 	TransitionParametersMonitor*        mTransitionParametersMonitor;
 	MacroPoolMonitor*       			mMacroPoolMonitor;
 	std::vector<SendStatusInterface*>   mMonitors;

@@ -348,9 +348,6 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 {
 	switch (eventType)
 	{
-		case bmdSwitcherKeyEventTypeTypeChanged:
-			// Might want to do something with this down the road
-			break;
 		case bmdSwitcherKeyEventTypeOnAirChanged:
 			updateUSKOnAir();
 			break;
@@ -360,6 +357,9 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 		case bmdSwitcherKeyEventTypeInputFillChanged:
 			updateUSKInputFill();
 			break;
+		case bmdSwitcherKeyEventTypeTypeChanged:
+			updateUSKType();
+			break;
 		default:
 			// ignore other property changes not used for this app
 			break;
@@ -367,13 +367,44 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 	return S_OK;
 }
 
+void UpstreamKeyerMonitor::updateUSKType() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		BMDSwitcherKeyType type;
+		key->GetType(&type);
+		
+		NSString *typeStr;
+		if (type == bmdSwitcherKeyTypeLuma)
+			typeStr = @"luma";
+		if (type == bmdSwitcherKeyTypeChroma)
+			typeStr = @"chroma";
+		if (type == bmdSwitcherKeyTypePattern)
+			typeStr = @"pattern";
+		if (type == bmdSwitcherKeyTypeDVE)
+			typeStr = @"dve";
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/type",i]];
+		[newMsg addString: typeStr];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		
+		// Support for legacy clients like TouchOSC
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/type/%@",i++, typeStr]];
+		[newMsg2 addFloat: 1.0];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg2];
+	}
+}
+
+
 float UpstreamKeyerMonitor::sendStatus() const
 {
 	updateUSKOnAir();
 	updateUSKInputCut();
 	updateUSKInputFill();
+	updateUSKType();
 
-	return 0.3;
+	return 0.4;
 }
 
 HRESULT UpstreamKeyerLumaParametersMonitor::Notify(BMDSwitcherKeyLumaParametersEventType eventType)
@@ -470,6 +501,124 @@ float UpstreamKeyerLumaParametersMonitor::sendStatus() const
 	updateUSKLumaGainParameter();
 	updateUSKLumaPreMultipliedParameter();
 	updateUSKLumaInverseParameter();
+	
+	return 0.4;
+}
+
+HRESULT UpstreamKeyerChromaParametersMonitor::Notify(BMDSwitcherKeyChromaParametersEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherKeyChromaParametersEventTypeHueChanged:
+			updateUSKChromaHueParameter();
+			break;
+		case bmdSwitcherKeyChromaParametersEventTypeGainChanged:
+			updateUSKChromaGainParameter();
+			break;
+		case bmdSwitcherKeyChromaParametersEventTypeYSuppressChanged:
+			updateUSKChromaYSuppressParameter();
+			break;
+		case bmdSwitcherKeyChromaParametersEventTypeLiftChanged:
+			updateUSKChromaLiftParameter();
+			break;
+		case bmdSwitcherKeyChromaParametersEventTypeNarrowChanged:
+			updateUSKChromaNarrowParameter();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void UpstreamKeyerChromaParametersMonitor::updateUSKChromaHueParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyChromaParameters* chromaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+		
+		double hue;
+		chromaParams->GetHue(&hue);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/hue",i++]];
+		[newMsg addFloat:hue];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+void UpstreamKeyerChromaParametersMonitor::updateUSKChromaGainParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyChromaParameters* chromaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+		
+		double gain;
+		chromaParams->GetGain(&gain);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/gain",i++]];
+		[newMsg addFloat:gain];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+void UpstreamKeyerChromaParametersMonitor::updateUSKChromaYSuppressParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyChromaParameters* chromaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+		
+		double ySuppress;
+		chromaParams->GetYSuppress(&ySuppress);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/y-suppress",i++]];
+		[newMsg addFloat:ySuppress];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+void UpstreamKeyerChromaParametersMonitor::updateUSKChromaLiftParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyChromaParameters* chromaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+		
+		double lift;
+		chromaParams->GetLift(&lift);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/lift",i++]];
+		[newMsg addFloat:lift];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+void UpstreamKeyerChromaParametersMonitor::updateUSKChromaNarrowParameter() const
+{
+	int i = 1;
+	for(auto& key : [(AppDelegate *)appDel keyers])
+	{
+		IBMDSwitcherKeyChromaParameters* chromaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+		
+		bool narrow;
+		chromaParams->GetNarrow(&narrow);
+		
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/narrow",i++]];
+		[newMsg addBOOL:narrow];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	}
+}
+
+float UpstreamKeyerChromaParametersMonitor::sendStatus() const
+{
+	updateUSKChromaNarrowParameter();
+	updateUSKChromaYSuppressParameter();
+	updateUSKChromaGainParameter();
+	updateUSKChromaHueParameter();
+	updateUSKChromaLiftParameter();
 	
 	return 0.4;
 }

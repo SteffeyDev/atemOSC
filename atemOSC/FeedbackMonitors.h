@@ -102,6 +102,7 @@ private:
 	void updateUSKOnAir() const;
 	void updateUSKInputFill() const;
 	void updateUSKInputCut() const;
+	void updateUSKType() const;
 };
 
 class UpstreamKeyerLumaParametersMonitor : public GenericMonitor<IBMDSwitcherKeyLumaParametersCallback>, public SendStatusInterface
@@ -119,6 +120,24 @@ private:
 	void updateUSKLumaGainParameter() const;
 	void updateUSKLumaPreMultipliedParameter() const;
 	void updateUSKLumaInverseParameter() const;
+};
+
+class UpstreamKeyerChromaParametersMonitor : public GenericMonitor<IBMDSwitcherKeyChromaParametersCallback>, public SendStatusInterface
+{
+public:
+	UpstreamKeyerChromaParametersMonitor(void *delegate) : GenericMonitor(delegate) { }
+	HRESULT Notify (BMDSwitcherKeyChromaParametersEventType eventType);
+	float sendStatus() const;
+	
+protected:
+	virtual ~UpstreamKeyerChromaParametersMonitor() { }
+	
+private:
+	void updateUSKChromaHueParameter() const;
+	void updateUSKChromaGainParameter() const;
+	void updateUSKChromaYSuppressParameter() const;
+	void updateUSKChromaLiftParameter() const;
+	void updateUSKChromaNarrowParameter() const;
 };
 
 class TransitionParametersMonitor : public GenericMonitor<IBMDSwitcherTransitionParametersCallback>, public SendStatusInterface
