@@ -511,7 +511,7 @@ finish:
 		if (lumaParams != nil)
 			lumaParams->RemoveCallback(mUpstreamKeyerLumaParametersMonitor);
 		IBMDSwitcherKeyChromaParameters* chromaParams = nil;
-		keyers.back()->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&chromaParams);
+		keyers.back()->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
 		if (chromaParams != nil)
 			chromaParams->RemoveCallback(mUpstreamKeyerChromaParametersMonitor);
 		keyers.pop_back();
