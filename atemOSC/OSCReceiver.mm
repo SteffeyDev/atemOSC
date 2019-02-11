@@ -185,6 +185,38 @@
 							[appDel logMessage:@"You must specify a usk source command of 'fill' or 'cut'"];
 					}
 					
+					else if ([[address objectAtIndex:4] isEqualToString:@"type"])
+					{
+						if (([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"luma"]) || [[[m value] stringValue] isEqualToString: @"luma"])
+						{
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								key->SetType(bmdSwitcherKeyTypeLuma);
+							}
+						}
+						else if (([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"chroma"]) || ([m valueCount] > 0 && [[[m value] stringValue] isEqualToString: @"chroma"]))
+						{
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								key->SetType(bmdSwitcherKeyTypeChroma);
+							}
+						}
+						else if (([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"pattern"]) || ([m valueCount] > 0 && [[[m value] stringValue] isEqualToString: @"pattern"]))
+						{
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								key->SetType(bmdSwitcherKeyTypePattern);
+							}
+						}
+						else if (([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"dve"]) || ([m valueCount] > 0 && [[[m value] stringValue] isEqualToString: @"dve"]))
+						{
+							if (IBMDSwitcherKey* key = [self getUSK:t])
+							{
+								key->SetType(bmdSwitcherKeyTypeDVE);
+							}
+						}
+					}
+					
 					else if ([[address objectAtIndex:4] isEqualToString:@"luma"])
 					{
 						// Get/Set PreMultiplied
@@ -239,8 +271,65 @@
 							[appDel logMessage:@"You must specify a usk luma command of 'pre-multiplied', 'clip', 'gain', or 'inverse'"];
 					}
 					
+					else if ([[address objectAtIndex:4] isEqualToString:@"chroma"])
+					{
+						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"hue"])
+						{
+							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									chromaParams->SetHue([[m value] floatValue]);
+								}
+							}
+						}
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"gain"])
+						{
+							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									chromaParams->SetGain([[m value] floatValue]);
+								}
+							}
+						}
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"y-suppress"])
+						{
+							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									chromaParams->SetYSuppress([[m value] floatValue]);
+								}
+							}
+						}
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"lift"])
+						{
+							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									chromaParams->SetLift([[m value] floatValue]);
+								}
+							}
+						}
+						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"narrow"])
+						{
+							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
+							{
+								if ([m valueCount] > 0)
+								{
+									chromaParams->SetNarrow([[m value] boolValue]);
+								}
+							}
+						}
+						
+						else
+							[appDel logMessage:@"You must specify a usk chroma command of 'hue', 'gain', 'y-suppress', 'lift', or 'narrow'"];
+					}
+					
 					else
-						[appDel logMessage:@"You must specify a usk command of 'tie', 'on-air', 'source', or 'luma'"];
+						[appDel logMessage:@"You must specify a usk command of 'tie', 'on-air', 'type', 'source', 'chroma', or 'luma'"];
 				}
 				
 				else
@@ -595,6 +684,18 @@
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
 		return lumaParams;
+	}
+	return nullptr;
+}
+
+- (IBMDSwitcherKeyChromaParameters *) getUSKChromaParams:(int)t
+{
+	if (t<=[appDel keyers].size())
+	{
+		IBMDSwitcherKey* key = [appDel keyers][t-1];
+		IBMDSwitcherKeyChromaParameters* chromaParams;
+		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+		return chromaParams;
 	}
 	return nullptr;
 }

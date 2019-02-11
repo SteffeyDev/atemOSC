@@ -103,10 +103,16 @@ Feedback: None
  - **Set Upstream Keyer $i for Next Scene** `/atem/usk/$i/tie/set-next <0|1>`
      - Send a value of 1 to show the USK after next transition, and 0 if you don’t want to show the USK after next transition
      - e.g. If USK 1 is on air, `/atem/usk/1/tie/set-next 1` will untie USK 1 so that it remains on, while `/atem/usk/1/tie/set-next 0` will tie USK 1 so that it will go off air after the next transition.
+ - **Set Key type for Upstream Keyer $i** `/atem/usk/$i/type <luma|chroma|pattern|dve>`
+     - Also supports sending the type in the address instead of as a string value (e.g. `/atem/usk/$i/type/luma`)
+
+#### USK Source
  - **Set Fill Source for Upstream Keyer $i** `/atem/usk/$i/source/fill <int>`
      - Int value should be the ID of the input to set as the source (from in-app help menu, under the Sources section)
  - **Set Key (cut) Source for Upstream Keyer $i** `/atem/usk/$i/source/cut <int>`
      - Int value should be the ID of the input to set as the source (from in-app help menu, under the Sources section)
+
+#### USK Luma Parameters
  - **Set Clip Luma Parameter for Upstream Keyer $i** `/atem/usk/$i/luma/clip <float>`
      - Float value should be between 0.0 (for 0%) and 1.0 (for 100%)
  - **Set Gain Luma Parameter for Upstream Keyer $i** `/atem/usk/$i/luma/gain <float>`
@@ -114,9 +120,20 @@ Feedback: None
  - **Set Pre-Multiplied Luma Parameter for Upstream Keyer $i** `/atem/usk/$i/luma/pre-multiplied <bool>`
  - **Set Inverse Luma Parameter for Upstream Keyer $i** `/atem/usk/$i/luma/inverse <bool>`
 
+#### USK Chroma Parameters
+ - **Set Hue Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/hue <float>`
+     - Float value should be between 0.0 and 359.9
+ - **Set Gain Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/gain <float>`
+     - Float value should be between 0.0 (for 0%) and 1.0 (for 100%)
+ - **Set Y Suppress Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/y-suppress <float>`
+     - Float value should be between 0.0 (for 0%) and 1.0 (for 100%)
+ - **Set Lift Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/lift <float>`
+     - Float value should be between 0.0 (for 0%) and 1.0 (for 100%)
+ - **Set "Narrow Chroma Key Range" Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/narrow <bool>`
+
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
-Feedback: Enabled for '/atem/usk/$i/on-air', '/atem/usk/$i/tie', '/atem/usk/$i/source/*', and '/atem/usk/$i/luma/*'
+Feedback: Enabled for '/atem/usk/$i/on-air', '/atem/usk/$i/tie', '/atem/usk/$i/source/*', '/atem/usk/$i/luma/*', and '/atem/usk/$i/chroma/*'
 
 ### Downstream Keyers
 

@@ -84,6 +84,8 @@
 	mMonitors.push_back(mUpstreamKeyerMonitor);
 	mUpstreamKeyerLumaParametersMonitor = new UpstreamKeyerLumaParametersMonitor(self);
 	mMonitors.push_back(mUpstreamKeyerLumaParametersMonitor);
+	mUpstreamKeyerChromaParametersMonitor = new UpstreamKeyerChromaParametersMonitor(self);
+	mMonitors.push_back(mUpstreamKeyerChromaParametersMonitor);
 	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
 	mMonitors.push_back(mTransitionParametersMonitor);
 	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
@@ -308,9 +310,14 @@
 		{
 			keyers.push_back(key);
 			key->AddCallback(mUpstreamKeyerMonitor);
+			
 			IBMDSwitcherKeyLumaParameters* lumaParams;
 			key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
 			lumaParams->AddCallback(mUpstreamKeyerLumaParametersMonitor);
+			
+			IBMDSwitcherKeyChromaParameters* chromaParams;
+			key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+			chromaParams->AddCallback(mUpstreamKeyerChromaParametersMonitor);
 		}
 		keyIterator->Release();
 		keyIterator = NULL;
@@ -503,6 +510,10 @@ finish:
 		keyers.back()->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
 		if (lumaParams != nil)
 			lumaParams->RemoveCallback(mUpstreamKeyerLumaParametersMonitor);
+		IBMDSwitcherKeyChromaParameters* chromaParams = nil;
+		keyers.back()->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+		if (chromaParams != nil)
+			chromaParams->RemoveCallback(mUpstreamKeyerChromaParametersMonitor);
 		keyers.pop_back();
 	}
 	
