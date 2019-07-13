@@ -218,6 +218,18 @@ Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/
 
 ----------
 
+## Common Issues
+
+### Auto and cut commands don’t seem to work, or look buggy, when combining atemOSC with MIDI control
+
+#### Problem
+A lot of MIDI controls send two signals when a button is pressed, one signal when you press down, and another when you release. If you connect the button the `/atem/transition/auto` or `cut`, atemOSC recieves both events and attempts to send the transition command to the switcher twice. This can cause buggy behavior or just not work at all.  
+
+#### Solution
+Tune your MIDI software to send only one of the two signals, either ok button press (rising edge) or button release (falling edge). See #120 for instructions for OSCulator. 
+
+----------
+
 ## Tested Use Cases
 
 This software has been used successfuly with TouchOSC on the iPad. A TouchOSC-interface for the iPad can be found in the repository.
