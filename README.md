@@ -220,13 +220,23 @@ Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/
 
 ## Common Issues
 
+### I want to use \<insert feature here\> that AtemOSC does not support yet
+
+#### Problem
+
+There are a lot of features that AtemOSC does not yet support, most noteably HyperDeck support and advanced USK settings.
+
+#### Solution
+
+You are free to open an issue or comment on and existing issue, but the quickest solution for you is to create a **macro** in ATEM Software Control that accomplishes the task you would like and call the **macro** using AtemOSC.
+
 ### Auto and cut commands don’t seem to work, or look buggy, when combining atemOSC with MIDI control
 
 #### Problem
 A lot of MIDI controls send two signals when a button is pressed, one signal when you press down, and another when you release. If you connect the button the `/atem/transition/auto` or `cut`, atemOSC recieves both events and attempts to send the transition command to the switcher twice. This can cause buggy behavior or just not work at all.  
 
 #### Solution
-Tune your MIDI software to send only one of the two signals, either ok button press (rising edge) or button release (falling edge). See #120 for instructions for OSCulator. 
+Tune your MIDI software to send only one of the two signals, either ok button press (rising edge) or button release (falling edge). See #120 for instructions for OSCulator.
 
 ----------
 
