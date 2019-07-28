@@ -22,6 +22,12 @@ AtemOSC is a proxy, listening for commands following the [OSC protocol](http://o
 
 **If you are sending atemOSC messages from another device**, you will need to send it to the IP address of the computer running atemOSC on the port that atemOSC is listening on.  You can find the IP address of a macOS computer by going to `System Preferences` > `Network` or by running `ifconfig` in a terminal window.
 
+**If you would like to send OSC from AppleScript or Terminal commands**, you can download and use the [sendosc](https://github.com/yoggy/sendosc) command.  See the [actionscript example](https://github.com/danielbuechele/atemOSC/blob/master/samples/controllermate-actionscript.txt) in this repository for an example of using AppleScript and sendOSC.  SendOSC also enables using AtemOSC with [ControllerMate](http://www.orderedbytes.com/controllermate/) and [X-keys](http://xkeys.com/XkeysKeyboards/index.php).
+
+**If you would like to control your switcher using a MIDI board or device**, consider pairing this software with [OSCulator](https://osculator.net) or [MidiPipe](http://www.subtlesoft.square7.net/MidiPipe.html).  If you would like to control AtemOSC directly using MIDI, comment on [Issue #111](https://github.com/danielbuechele/atemOSC/issues/111) to let us know.
+
+**If you would like to control your switcher using a mobile device**, you can use [TouchOSC](https://hexler.net/products/touchosc) (see included layouts in [samples](https://github.com/danielbuechele/atemOSC/tree/master/samples) folder) or Open Stage Control (https://openstagecontrol.ammd.net).
+
 ----------
 
 ## OSC API
@@ -237,16 +243,6 @@ A lot of MIDI controls send two signals when a button is pressed, one signal whe
 
 #### Solution
 Tune your MIDI software to send only one of the two signals, either ok button press (rising edge) or button release (falling edge). See #120 for instructions for OSCulator.
-
-----------
-
-## Tested Use Cases
-
-This software has been used successfuly with TouchOSC on the iPad. A TouchOSC-interface for the iPad can be found in the repository.
-
-![TouchOSC interface](https://github.com/danielbuechele/atemOSC/raw/master/ipad-interface.png)
-
-This software has been used successfuly with [ControllerMate](http://www.orderedbytes.com/controllermate/) and [X-keys](http://xkeys.com/XkeysKeyboards/index.php) via [sendOSC](http://archive.cnmat.berkeley.edu/OpenSoundControl/clients/sendOSC.html) and [iTerm 2](https://www.iterm2.com/). An example ActionScript for use within ControllerMate can be found in the repository.  It has also been used with [OSCulator](https://osculator.net).
 
 -----------
 
