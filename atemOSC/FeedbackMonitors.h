@@ -218,4 +218,23 @@ private:
 	void updateBalance() const;
 };
 
+// Callback class to monitor HyperDecks
+class HyperDeckMonitor : public GenericMonitor<IBMDSwitcherHyperDeckCallback>, public SendStatusInterface
+{
+public:
+	HyperDeckMonitor(void *delegate, BMDSwitcherHyperDeckId hyperdeckId) : GenericMonitor(delegate), hyperdeckId_(hyperdeckId) { }
+	HRESULT Notify(BMDSwitcherHyperDeckEventType eventType);
+	HRESULT NotifyError(BMDSwitcherHyperDeckErrorType eventType) {}
+	float sendStatus() const;
+	
+protected:
+	virtual ~HyperDeckMonitor() { }
+	
+private:
+	void updateCurrentClip() const;
+	void updateCurrentClipTime() const;
+	void updateCurrentTimelineTime() const;
+	BMDSwitcherHyperDeckId  hyperdeckId_;
+};
+
 #endif /* SwitcherMonitor_h */

@@ -648,6 +648,49 @@
 					[appDel logMessage:[NSString stringWithFormat:@"Invalid command '%@'. You must specify an audio command of 'input' or 'output'", [address objectAtIndex:3]]];
 			}
 			
+			else if ([[address objectAtIndex:2] isEqualToString:@"hyperdeck"])
+			{
+				if (stringIsNumber([address objectAtIndex:3]))
+				{
+					BMDSwitcherHyperDeckId hyperdeckNumber = [[address objectAtIndex:3] intValue];
+					if ([appDel mHyperdecks].count(hyperdeckNumber-1) > 0)
+					{
+						if ([[address objectAtIndex:4] isEqualToString:@"play"])
+							[appDel mHyperdecks][hyperdeckNumber-1]->Play();
+						
+						else if ([[address objectAtIndex:4] isEqualToString:@"stop"])
+							[appDel mHyperdecks][hyperdeckNumber-1]->Stop();
+						
+						else if ([[address objectAtIndex:4] isEqualToString:@"record"])
+							[appDel mHyperdecks][hyperdeckNumber-1]->Record();
+						
+						else if ([[address objectAtIndex:4] isEqualToString:@"shuttle"])
+							[appDel mHyperdecks][hyperdeckNumber-1]->Shuttle([[m value] intValue]);
+						
+						else if ([[address objectAtIndex:4] isEqualToString:@"jog"])
+							[appDel mHyperdecks][hyperdeckNumber-1]->Jog([[m value] intValue]);
+						
+						else if ([[address objectAtIndex:4] isEqualToString:@"clip"])
+							[appDel mHyperdecks][hyperdeckNumber-1]->SetCurrentClip([[m value] intValue]-1);
+						
+						else if ([[address objectAtIndex:4] isEqualToString:@"clip-time"])
+							[self setHyperDeckTime:hyperdeckNumber-1 time:[[m value] stringValue] clip:YES];
+						
+						else if ([[address objectAtIndex:4] isEqualToString:@"timeline-time"])
+							[self setHyperDeckTime:hyperdeckNumber-1 time:[[m value] stringValue] clip:NO];
+						
+						else
+							[appDel logMessage:[NSString stringWithFormat:@"Invalid option '%@'. You must specify a hyperdeck option of 'play', 'stop', 'record', 'shuttle', or 'jog'", [address objectAtIndex:4]]];
+					}
+					
+					else
+						[appDel logMessage:[NSString stringWithFormat:@"Invalid HyperDeck identifier %lld. Please choose a valid HyperDeck identifier from the list in Help > OSC addresses.", hyperdeckNumber]];
+				}
+				
+				else
+					[appDel logMessage:[NSString stringWithFormat:@"Invalid input %@. The address following hyperdeck/ must be a number", [address objectAtIndex:3]]];
+			}
+			
 			else
 				[appDel logMessage:[NSString stringWithFormat:@"Cannot handle command: %@\nYou can find a list of valid commands in the help menu", [m address]]];
 		}
@@ -942,6 +985,37 @@
 	
 	else
 		[appDel logMessage:@"You must specify a super-source box command of 'enabled', 'source', 'x', 'y', 'size', 'cropped', 'crop-top', 'crop-bottom', 'crop-left', 'crop-right', or 'crop-reset'"];
+}
+
+- (void) setHyperDeckTime:(int)hyperdeckId time:(NSString *)timeString clip:(BOOL)clipTime
+{
+	NSArray *timeComponents = [timeString componentsSeparatedByString:@":"];
+	uint16_t hour = 0;
+	uint8_t minute = 0, second = 0, frame = 0;
+	if (timeComponents.count == 1 && stringIsNumber(timeComponents[0]))
+		second = [timeComponents[0] intValue];
+	else if (timeComponents.count == 2 && stringIsNumber(timeComponents[0]) && stringIsNumber(timeComponents[1]))
+	{
+		minute = [timeComponents[0] intValue];
+		second = [timeComponents[1] intValue];
+	}
+	else if (timeComponents.count == 3 && stringIsNumber(timeComponents[0]) && stringIsNumber(timeComponents[1]) && stringIsNumber(timeComponents[2]))
+	{
+		hour = [timeComponents[0] intValue];
+		minute = [timeComponents[1] intValue];
+		second = [timeComponents[2] intValue];
+	}
+	else
+		[appDel logMessage:[NSString stringWithFormat:@"Invalid time '%@'. You must specify a time in the format HH:MM:SS (e.g. 00:00:05)", timeString]];
+	
+	HRESULT status;
+	if (clipTime)
+		status = [appDel mHyperdecks][hyperdeckId]->SetCurrentClipTime(hour, minute, second, frame);
+	else
+		status = [appDel mHyperdecks][hyperdeckId]->SetCurrentTimelineTime(hour, minute, second, frame);
+	
+	if (status != S_OK)
+		[appDel logMessage:[NSString stringWithFormat:@"Could not seek to time '%@'. Make sure the time is valid and not past the end of the clip/timeline.", timeString]];
 }
 
 @end

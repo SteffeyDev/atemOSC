@@ -63,6 +63,8 @@
 @property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
 @property (readonly)       std::map<BMDSwitcherInputId, IBMDSwitcherInput*> mInputs;
 @property (readonly)       std::map<BMDSwitcherInputId, InputMonitor*> mInputMonitors;
+@property (readonly)       std::map<BMDSwitcherHyperDeckId, IBMDSwitcherHyperDeck*> mHyperdecks;
+@property (readonly)       std::map<BMDSwitcherHyperDeckId, HyperDeckMonitor*> mHyperdeckMonitors;
 @property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
 @property (readonly)       IBMDSwitcherStills*                      mStills;
 @property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;

@@ -863,4 +863,61 @@ float AudioMixerMonitor::sendStatus() const
 }
 
 
+float HyperDeckMonitor::sendStatus() const
+{
+	updateCurrentClip();
+	updateCurrentClipTime();
+	updateCurrentTimelineTime();
+	
+	return 0.03;
+}
 
+HRESULT HyperDeckMonitor::Notify (BMDSwitcherHyperDeckEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherHyperDeckEventTypeCurrentClipChanged:
+			updateCurrentClip();
+			break;
+		case bmdSwitcherHyperDeckEventTypeCurrentClipTimeChanged:
+			updateCurrentClipTime();
+			break;
+		case bmdSwitcherHyperDeckEventTypeCurrentTimelineTimeChanged:
+			updateCurrentTimelineTime();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	
+	return S_OK;
+}
+
+void HyperDeckMonitor::updateCurrentClip() const
+{
+	BMDSwitcherHyperDeckClipId clipId;
+	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentClip(&clipId);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip", hyperdeckId_]];
+	[newMsg addInt:(int)clipId+1];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void HyperDeckMonitor::updateCurrentClipTime() const
+{
+	uint16_t hours;
+	uint8_t minutes, seconds, frames;
+	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentClipTime(&hours, &minutes, &seconds, &frames);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip-time", hyperdeckId_]];
+	[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void HyperDeckMonitor::updateCurrentTimelineTime() const
+{
+	uint16_t hours;
+	uint8_t minutes, seconds, frames;
+	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentTimelineTime(&hours, &minutes, &seconds, &frames);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/timeline-time", hyperdeckId_]];
+	[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}

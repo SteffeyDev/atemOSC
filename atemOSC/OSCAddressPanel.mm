@@ -217,6 +217,24 @@
 	[self addEntry:@"Get the Description of a Macro" forAddress:@"/atem/macros/<index>/description" toString:helpString];
 	[self addEntry:@"Get whether the Macro at <index> is valid" forAddress:@"/atem/macros/<index>/is-valid" toString:helpString];
 	[self addEntry:@"Run the Macro at <index>" forAddress:@"/atem/macros/<index>/run" toString:helpString];
+	
+	[self addHeader:@"HyperDecks" toString:helpString];
+	for (auto const& it : [appDel mHyperdecks])
+	{
+		BMDSwitcherHyperDeckConnectionStatus status;
+		it.second->GetConnectionStatus(&status);
+		if (status == bmdSwitcherHyperDeckConnectionStatusConnected)
+		{
+			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Play", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/play", it.first+1] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Stop", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/stop", it.first+1] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Record", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/record", it.first+1] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Shuttle", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/shuttle\t<int>", it.first+1] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Jog", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/jog\t<int>", it.first+1] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set HyperDeck %lld Current Clip Number", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip\t<int>", it.first+1] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set HyperDeck %lld Current Clip Time", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip-time\t<string>", it.first+1] toString:helpString];
+			[self addEntry:[NSString stringWithFormat:@"Set HyperDeck %lld Current Timeline Time", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/timeline-time\t<string>", it.first+1] toString:helpString];
+		}
+	}
 
 	[helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
 	[[helpTextView textStorage] setAttributedString:helpString];

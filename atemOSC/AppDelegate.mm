@@ -56,6 +56,8 @@
 @synthesize outPort;
 @synthesize inPort;
 @synthesize mSwitcher;
+@synthesize mHyperdecks;
+@synthesize mHyperdeckMonitors;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -254,6 +256,7 @@
 	IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
 	IBMDSwitcherInputIterator* inputIterator = NULL;
 	IBMDSwitcherAudioInputIterator* audioInputIterator = NULL;
+	IBMDSwitcherHyperDeckIterator* hyperDeckIterator = NULL;
 	isConnectedToATEM = YES;
 	
 	if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
@@ -464,6 +467,28 @@
 	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
 	
 	self->mMixEffectBlockMonitor->updateSliderPosition();
+	
+	// Hyperdeck Setup
+	result = mSwitcher->CreateIterator(IID_IBMDSwitcherHyperDeckIterator, (void**)&hyperDeckIterator);
+	if (FAILED(result))
+	{
+		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
+		return;
+	}
+	
+	IBMDSwitcherHyperDeck* hyperdeck = NULL;
+	while (S_OK == hyperDeckIterator->Next(&hyperdeck))
+	{
+		BMDSwitcherHyperDeckId hyperdeckId;
+		hyperdeck->GetId(&hyperdeckId);
+		mHyperdecks.insert(std::make_pair(hyperdeckId, hyperdeck));
+		HyperDeckMonitor *monitor = new HyperDeckMonitor(self, hyperdeckId);
+		hyperdeck->AddCallback(monitor);
+		mMonitors.push_back(monitor);
+		mHyperdeckMonitors.insert(std::make_pair(hyperdeckId, monitor));
+	}
+	hyperDeckIterator->Release();
+	hyperDeckIterator = NULL;
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[helpPanel setupWithDelegate: self];
@@ -585,6 +610,13 @@ finish:
 		it.second->Release();
 	}
 	mInputs.clear();
+	
+	for (auto const& it : mHyperdecks)
+	{
+		it.second->RemoveCallback(mHyperdeckMonitors.at(it.first));
+		it.second->Release();
+	}
+	mHyperdecks.clear();
 	
 	if (mAudioMixer)
 	{
