@@ -125,6 +125,33 @@
 
 		[self portChanged:incomingPort out:outgoingPort ip:outIpStr];
 	}
+	
+	// Check if new version available
+	NSError *error = nil;
+	NSString *url_string = [NSString stringWithFormat: @"https://api.github.com/repos/danielbuechele/atemOSC/releases/latest"];
+	NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString:url_string]];
+	if (!error) {
+		NSMutableDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+		NSString *availableVersion = [[json objectForKey:@"name"] stringByReplacingOccurrencesOfString:@"v" withString:@""];
+		NSString *installedVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+		NSLog(@"version available: %@", availableVersion);
+		NSLog(@"version installed: %@", installedVersion);
+		if ([availableVersion isEqualToString:installedVersion])
+		{
+			NSAlert *alert = [[NSAlert alloc] init];
+			[alert setMessageText:@"New Version Available"];
+			[alert setInformativeText:@"There is a new version of AtemOSC available!"];
+			[alert addButtonWithTitle:@"Go to Download"];
+			[alert addButtonWithTitle:@"Skip"];
+			[alert beginSheetModalForWindow:[(AppDelegate *)[[NSApplication sharedApplication] delegate] window] completionHandler:^(NSInteger returnCode)
+			 {
+				 if ( returnCode == NSAlertFirstButtonReturn )
+				 {
+					 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/danielbuechele/atemOSC/releases/latest"]];
+				 }
+			 }];
+		}
+	}
 }
 
 - (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr
