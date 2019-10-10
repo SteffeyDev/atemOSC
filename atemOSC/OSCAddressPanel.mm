@@ -187,12 +187,6 @@
 	if ([appDel mSuperSourceBoxes].size() > 0)
 	{
 		[self addHeader:@"Super Source" toString:helpString];
-		[self addEntry:@"Set the border enabled flag" forAddress:@"/atem/supersource/border-enabled\t<0|1>" toString:helpString];
-		[self addEntry:@"Set the border outer width" forAddress:@"/atem/supersource/border-outer\t<float>" toString:helpString];
-		[self addEntry:@"Set the border inner width" forAddress:@"/atem/supersource/border-inner\t<float>" toString:helpString];
-		[self addEntry:@"Set the border hue" forAddress:@"/atem/supersource/border-hue\t<float>" toString:helpString];
-		[self addEntry:@"Set the border saturation" forAddress:@"/atem/supersource/border-saturation\t<float>" toString:helpString];
-		[self addEntry:@"Set the border luminescence" forAddress:@"/atem/supersource/border-luminescence\t<float>" toString:helpString];
 
 		for (int i = 1; i <= [appDel mSuperSourceBoxes].size(); i++)
 		{

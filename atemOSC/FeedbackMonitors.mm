@@ -46,28 +46,34 @@ ULONG STDMETHODCALLTYPE GenericMonitor<T>::Release(void)
 	return newCount;
 }
 
-HRESULT MixEffectBlockMonitor::PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId)
+
+HRESULT MixEffectBlockMonitor::Notify(BMDSwitcherMixEffectBlockEventType eventType)
 {
-	switch (propertyId)
+    return S_OK;
+}
+
+HRESULT MixEffectBlockMonitor::PropertyChanged(BMDSwitcherMixEffectBlockEventType eventType)
+{
+	switch (eventType)
 	{
-		case bmdSwitcherMixEffectBlockPropertyIdProgramInput:
+		case bmdSwitcherMixEffectBlockEventTypeProgramInputChanged:
 			updateProgramButtonSelection();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdPreviewInput:
+		case bmdSwitcherMixEffectBlockEventTypePreviewInputChanged:
 			updatePreviewButtonSelection();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdInTransition:
+		case bmdSwitcherMixEffectBlockEventTypeInTransitionChanged:
 			updateInTransitionState();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdTransitionPosition:
+		case bmdSwitcherMixEffectBlockEventTypeTransitionPositionChanged:
 			updateSliderPosition();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdPreviewTransition:
+		case bmdSwitcherMixEffectBlockEventTypePreviewTransitionChanged:
 			updatePreviewTransitionEnabled();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdTransitionFramesRemaining:
+		case bmdSwitcherMixEffectBlockEventTypeTransitionFramesRemainingChanged:
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdFadeToBlackFramesRemaining:
+		case bmdSwitcherMixEffectBlockEventTypeFadeToBlackFramesRemainingChanged:
 			break;
 		default:    // ignore other property changes not used for this sample app
 			break;
@@ -78,7 +84,7 @@ HRESULT MixEffectBlockMonitor::PropertyChanged(BMDSwitcherMixEffectBlockProperty
 void MixEffectBlockMonitor::updateProgramButtonSelection() const
 {
 	BMDSwitcherInputId    programId;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, &programId);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetProgramInput(&programId);
 	
 	for (auto const& it : static_cast<AppDelegate *>(appDel).mInputs)
 	{
@@ -91,7 +97,7 @@ void MixEffectBlockMonitor::updateProgramButtonSelection() const
 void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 {
 	BMDSwitcherInputId    previewId;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, &previewId);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetPreviewInput(&previewId);
 	
 	for (auto const& it : static_cast<AppDelegate *>(appDel).mInputs)
 	{
@@ -104,7 +110,7 @@ void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 void MixEffectBlockMonitor::updateInTransitionState()
 {
 	bool inTransition;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFlag(bmdSwitcherMixEffectBlockPropertyIdInTransition, &inTransition);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInTransition(&inTransition);
 	
 	if (inTransition == false)
 	{
@@ -122,7 +128,7 @@ void MixEffectBlockMonitor::updateInTransitionState()
 void MixEffectBlockMonitor::updateSliderPosition()
 {
 	double position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetTransitionPosition(&position);
 	
 	// Record when transition passes halfway so we can flip orientation of slider handle at the end of transition
 	mCurrentTransitionReachedHalfway_ = (position >= 0.50);
@@ -139,7 +145,7 @@ void MixEffectBlockMonitor::updateSliderPosition()
 void MixEffectBlockMonitor::updatePreviewTransitionEnabled() const
 {
 	bool position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFlag(bmdSwitcherMixEffectBlockPropertyIdPreviewTransition, &position);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetPreviewTransition(&position);
 	
 	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/preview"];
 	[newMsg addFloat: position ? 1.0 : 0.0];
@@ -160,7 +166,7 @@ float MixEffectBlockMonitor::sendStatus() const
 	updatePreviewTransitionEnabled();
 	
 	double position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetTransitionPosition(&position);
 	double sliderPosition = position * 100;
 	if (mMoveSliderDownwards)
 		sliderPosition = 100 - position * 100;

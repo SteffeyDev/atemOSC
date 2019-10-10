@@ -30,9 +30,9 @@
 				if ([[address objectAtIndex:3] isEqualToString:@"bar"])
 				{
 					if ([appDel mMixEffectBlockMonitor]->mMoveSliderDownwards)
-						[appDel mMixEffectBlock]->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, [m calculateFloatValue]);
+						[appDel mMixEffectBlock]->SetTransitionPosition([m calculateFloatValue]);
 					else
-						[appDel mMixEffectBlock]->SetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, 1.0-[m calculateFloatValue]);
+						[appDel mMixEffectBlock]->SetTransitionPosition(1.0-[m calculateFloatValue]);
 				}
 				
 				else if ([[address objectAtIndex:3] isEqualToString:@"cut"])
@@ -45,7 +45,7 @@
 					[appDel mMixEffectBlock]->PerformFadeToBlack();
 				
 				else if ([[address objectAtIndex:3] isEqualToString:@"preview"])
-					[appDel mMixEffectBlock]->SetFlag(bmdSwitcherMixEffectBlockPropertyIdPreviewTransition, (int)[m calculateFloatValue]);
+					[appDel mMixEffectBlock]->SetPreviewTransition((int)[m calculateFloatValue]);
 				
 				else if ([[address objectAtIndex:3] isEqualToString:@"set-type"])
 				{
@@ -809,49 +809,13 @@
 
 - (void) handleSuperSource:(OSCMessage *)m address:(NSArray*)address
 {
-	if ([[address objectAtIndex:3] isEqualToString:@"border-enabled"])
-	{
-		bool value = [[address objectAtIndex:4] boolValue];
-		[appDel mSuperSource]->SetBorderEnabled(value);
-	}
-	
-	else if ([[address objectAtIndex:3] isEqualToString:@"border-outer"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSource]->SetBorderWidthOut(value);
-	}
-	
-	else if ([[address objectAtIndex:3] isEqualToString:@"border-inner"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSource]->SetBorderWidthIn(value);
-	}
-	
-	else if ([[address objectAtIndex:3] isEqualToString:@"border-hue"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSource]->SetBorderHue(value);
-	}
-	
-	else if ([[address objectAtIndex:3] isEqualToString:@"border-saturations"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSource]->SetBorderSaturation(value);
-	}
-	
-	else if ([[address objectAtIndex:3] isEqualToString:@"border-luminescence"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSource]->SetBorderLuma(value);
-	}
-	
-	else if ([[address objectAtIndex:3] isEqualToString:@"box"])
+	if ([[address objectAtIndex:3] isEqualToString:@"box"])
 	{
 		[self handleSuperSourceBox:m address:address];
 	}
 	
 	else
-		[appDel logMessage:@"You must specify a super-source command of 'border-enabled', 'border-outer', 'border-inner', 'border-hue', 'border-saturations', 'border-luminescence', or 'box'"];
+		[appDel logMessage:@"You must specify a super-source command of 'box'"];
 }
 
 - (void) handleSuperSourceBox:(OSCMessage *)m address:(NSArray*)address

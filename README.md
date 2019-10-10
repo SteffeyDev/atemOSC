@@ -1,4 +1,4 @@
-# AtemOSC v2.5.6
+# AtemOSC v2.5.7
 
 ## Features
 This is a macOS application, providing an interface to control an ATEM video switcher via OSC. 
@@ -34,7 +34,7 @@ AtemOSC is a proxy, listening for commands following the [OSC protocol](http://o
 
  - A full overview of the actual OSC-addresses available for your switcher can be obtained from the help-menu inside the application.
  - Unless otherwise specified, send the value 1 along with the OSC address below. Sending any other value may result in the command not being processed.
- 
+
 
 ### Program and Preview Selection
 
@@ -84,9 +84,9 @@ To set the transition type of the Auto transition:
  - **Wipe** `/atem/transition/set-type/wipe`
  - **Stinger** `/atem/transition/set-type/sting`
  - **DVE** `/atem/transition/set-type/dve`
- 
+
  Feedback: None
- 
+
 ### Auxiliary Source Selection
 
  - **Set Aux $i source to $x** `/atem/aux/$i $x`
@@ -153,7 +153,7 @@ Feedback: Enabled for '/atem/usk/$i/on-air', '/atem/usk/$i/tie', '/atem/usk/$i/s
  - **Set Downstreamkeyer $i for Next Scene** `/atem/dsk/$i/tie/set-next <0|1>`
      - Send a value of 1 to show the DSK after next transition, and 0 if you don’t want to show the DSK after next transition
      - e.g. If DSK1 is on air, `/atem/dsk/1/tie/set-next 1` will untie DSK1 so that it remains on, while `/atem/dsk/1/tie/set-next 0` will tie DSK1 so that it will go off air after the next transition.
- 
+
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
 Feedback: Enabled for '/atem/dsk/$i/on-air' and '/atem/dsk/$i/tie'
@@ -188,9 +188,9 @@ Feedback: None
 
 ### SuperSource (when available)
 
-   - **Toggle SuperSource Box $i enabled** `/atem/supersource/$i/enabled <0|1>`
+   - **Toggle SuperSource Box $i enabled** `/atem/supersource/box/$i/enabled <0|1>`
      - Send a value of 1 to enable, and 0 to disable
-   - **Set SuperSource Box $i source to input $x** `/atem/supersource/$i/source $x`
+   - **Set SuperSource Box $i source to input $x** `/atem/supersource/box/$i/source $x`
      - Where `$x` is a valid program source. Check the Help Menu for the correct values.
    - Other options are available. Check the Help Menu in the app for the full list.
 

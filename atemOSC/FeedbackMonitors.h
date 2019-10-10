@@ -40,7 +40,8 @@ class MixEffectBlockMonitor : public GenericMonitor<IBMDSwitcherMixEffectBlockCa
 {
 public:
 	MixEffectBlockMonitor(void *delegate) : GenericMonitor(delegate) { }
-	HRESULT PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId);
+	HRESULT PropertyChanged(BMDSwitcherMixEffectBlockEventType eventType);
+    HRESULT Notify(BMDSwitcherMixEffectBlockEventType eventType);
 	bool moveSliderDownwards() const;
 	bool mMoveSliderDownwards = false;
 	void updateSliderPosition();
