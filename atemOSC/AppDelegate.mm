@@ -44,6 +44,7 @@
 @synthesize mStills;
 @synthesize mMacroPool;
 @synthesize mSuperSource;
+@synthesize mSuperSourceBorder;
 @synthesize mMacroControl;
 @synthesize mSuperSourceBoxes;
 @synthesize mInputs;
@@ -72,6 +73,7 @@
 	mMixEffectBlock = NULL;
 	mMediaPool = NULL;
 	mMacroPool = NULL;
+    mSuperSourceBorder = NULL;
 	isConnectedToATEM = NO;
 	
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
@@ -423,6 +425,13 @@
 		}
 		superSourceIterator->Release();
 		superSourceIterator = NULL;
+        
+        result = mSuperSource->QueryInterface(IID_IBMDSwitcherInputSuperSource, (void**)&mSuperSourceBorder);
+        if (FAILED(result))
+        {
+            [self logMessage:@"Could not get IID_IBMDSwitcherInputSuperSource interface"];
+            return;
+        }
 	}
 	
 	// Audio Mixer (Output)

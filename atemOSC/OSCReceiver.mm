@@ -809,7 +809,43 @@
 
 - (void) handleSuperSource:(OSCMessage *)m address:(NSArray*)address
 {
-	if ([[address objectAtIndex:3] isEqualToString:@"box"])
+	if ([[address objectAtIndex:3] isEqualToString:@"border-enabled"])
+    {
+        bool value = [[address objectAtIndex:4] boolValue];
+        [appDel mSuperSourceBorder]->SetBorderEnabled(value);
+    }
+
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-outer"])
+    {
+        float value = [m calculateFloatValue];
+        [appDel mSuperSourceBorder]->SetBorderWidthOut(value);
+    }
+
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-inner"])
+    {
+        float value = [m calculateFloatValue];
+        [appDel mSuperSourceBorder]->SetBorderWidthIn(value);
+    }
+
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-hue"])
+    {
+        float value = [m calculateFloatValue];
+        [appDel mSuperSourceBorder]->SetBorderHue(value);
+    }
+
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-saturations"])
+    {
+        float value = [m calculateFloatValue];
+        [appDel mSuperSourceBorder]->SetBorderSaturation(value);
+    }
+
+    else if ([[address objectAtIndex:3] isEqualToString:@"border-luminescence"])
+    {
+        float value = [m calculateFloatValue];
+        [appDel mSuperSourceBorder]->SetBorderLuma(value);
+    }
+
+    else if ([[address objectAtIndex:3] isEqualToString:@"box"])
 	{
 		[self handleSuperSourceBox:m address:address];
 	}

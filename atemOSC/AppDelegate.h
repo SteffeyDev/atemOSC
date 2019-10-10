@@ -66,6 +66,7 @@
 @property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
 @property (readonly)       IBMDSwitcherStills*                      mStills;
 @property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;
+@property (readonly)       IBMDSwitcherSuperSourceBorder*           mSuperSourceBorder;
 @property (readonly)       IBMDSwitcherMacroPool*                   mMacroPool;
 @property (readonly)       IBMDSwitcherMacroControl*                mMacroControl;
 @property (assign, readonly) OSCInPort*                             inPort;
