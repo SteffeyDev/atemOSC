@@ -1,5 +1,5 @@
 /* -LICENSE-START-
-** Copyright (c) 2016 Blackmagic Design
+** Copyright (c) 2019 Blackmagic Design
 **
 ** Permission is hereby granted, free of charge, to any person or organization
 ** obtaining a copy of the software and accompanying documentation covered by
@@ -47,7 +47,7 @@ static void	InitBMDSwitcherAPI (void)
 		gBundleRef = CFBundleCreate(kCFAllocatorDefault, bundleURL);
 		if (gBundleRef != NULL)
 		{
-			gCreateDiscoveryFunc = (CreateDiscoveryFunc)CFBundleGetFunctionPointerForName(gBundleRef, CFSTR("GetBMDSwitcherDiscoveryInstance_0003"));
+			gCreateDiscoveryFunc = (CreateDiscoveryFunc)CFBundleGetFunctionPointerForName(gBundleRef, CFSTR("GetBMDSwitcherDiscoveryInstance_0006"));
 		}
 		CFRelease(bundleURL);
 	}

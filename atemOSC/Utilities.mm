@@ -150,7 +150,7 @@ void activateChannel(int channel, bool program)
 	if (program) {
 		@try
 		{
-			[appDel mMixEffectBlock]->SetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, InputId);
+			[appDel mMixEffectBlock]->SetProgramInput(InputId);
 		}
 		@catch (NSException *exception)
 		{
@@ -163,7 +163,7 @@ void activateChannel(int channel, bool program)
 	{
 		@try
 		{
-			[appDel mMixEffectBlock]->SetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, InputId);
+			[appDel mMixEffectBlock]->SetPreviewInput(InputId);
 		}
 		@catch (NSException *exception)
 		{

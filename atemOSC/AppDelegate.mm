@@ -138,7 +138,7 @@
 		NSString *installedVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
 		NSLog(@"version available: %@", availableVersion);
 		NSLog(@"version installed: %@", installedVersion);
-		if ([availableVersion isEqualToString:installedVersion])
+		if (![availableVersion isEqualToString:installedVersion])
 		{
 			NSAlert *alert = [[NSAlert alloc] init];
 			[alert setMessageText:@"New Version Available"];

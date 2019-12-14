@@ -40,7 +40,7 @@ class MixEffectBlockMonitor : public GenericMonitor<IBMDSwitcherMixEffectBlockCa
 {
 public:
 	MixEffectBlockMonitor(void *delegate) : GenericMonitor(delegate) { }
-	HRESULT PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId);
+	HRESULT Notify(BMDSwitcherMixEffectBlockEventType eventType);
 	bool moveSliderDownwards() const;
 	bool mMoveSliderDownwards = false;
 	void updateSliderPosition();
@@ -224,7 +224,7 @@ class HyperDeckMonitor : public GenericMonitor<IBMDSwitcherHyperDeckCallback>, p
 public:
 	HyperDeckMonitor(void *delegate, BMDSwitcherHyperDeckId hyperdeckId) : GenericMonitor(delegate), hyperdeckId_(hyperdeckId) { }
 	HRESULT Notify(BMDSwitcherHyperDeckEventType eventType);
-	HRESULT NotifyError(BMDSwitcherHyperDeckErrorType eventType) {}
+	HRESULT NotifyError(BMDSwitcherHyperDeckErrorType eventType) { }
 	float sendStatus() const;
 	
 protected:
@@ -234,6 +234,7 @@ private:
 	void updateCurrentClip() const;
 	void updateCurrentClipTime() const;
 	void updateCurrentTimelineTime() const;
+	void updatePlayerState() const;
 	BMDSwitcherHyperDeckId  hyperdeckId_;
 };
 

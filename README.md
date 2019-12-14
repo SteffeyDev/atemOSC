@@ -216,6 +216,23 @@ Feedback: None
 
 Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/macros/$i/description`, and `/atem/macros/$i/is-valid`. Also available On-Request (you can send the command to get the value in a return message)
 
+### HyperDeck
+
+ - **Select Clip on HyperDeck $i** `/atem/hyperdeck/$i/clip <int>`
+     - e.g. `/atem/hyperdeck/1/clip 5`
+ - **Play Selected Clip on HyperDeck $i** `/atem/hyperdeck/$i/play`
+ - **Record New Clip on HyperDeck $i** `/atem/hyperdeck/$i/record`
+ - **Stop Play/Record on HyperDeck $i** `/atem/hyperdeck/$i/stop`
+ - **Shuttle Clip on HyperDeck $i** `/atem/hyperdeck/$i/shuttle $x`
+     - Where `$x` is an integer value specifying the speed to start playback at, expressed as a percentage
+     - e.g. `/atem/hyperdeck/1/shuttle 200` = 2x speed
+     - e.g. `/atem/hyperdeck/1/shuttle 50` = 1/2 speed
+     - e.g. `/atem/hyperdeck/1/shuttle 0` = stopped
+ - **Jog Clip on HyperDeck $i** `/atem/hyperdeck/$i/jog $x`
+     - Where `$x` is an integer value specifying the number of frames to jump forward or backward in the selected clip
+
+Feedback: Enabled for `/atem/hyperdeck/$i/clip`.  The state of the HyperDeck is available as a string value at `/atem/hyperdeck/$i/state`, and is sent out automatically when the state changes. State options are `play`, `record`, `shuttle`, `idle`, or `unknown`.
+
 ### Other
 
   - **Request all feedback available** `/atem/send-status`

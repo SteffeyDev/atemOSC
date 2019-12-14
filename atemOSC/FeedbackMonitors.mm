@@ -46,28 +46,28 @@ ULONG STDMETHODCALLTYPE GenericMonitor<T>::Release(void)
 	return newCount;
 }
 
-HRESULT MixEffectBlockMonitor::PropertyChanged(BMDSwitcherMixEffectBlockPropertyId propertyId)
+HRESULT MixEffectBlockMonitor::Notify(BMDSwitcherMixEffectBlockEventType eventType)
 {
-	switch (propertyId)
+	switch (eventType)
 	{
-		case bmdSwitcherMixEffectBlockPropertyIdProgramInput:
+		case bmdSwitcherMixEffectBlockEventTypeProgramInputChanged:
 			updateProgramButtonSelection();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdPreviewInput:
+		case bmdSwitcherMixEffectBlockEventTypePreviewInputChanged:
 			updatePreviewButtonSelection();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdInTransition:
+		case bmdSwitcherMixEffectBlockEventTypeInTransitionChanged:
 			updateInTransitionState();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdTransitionPosition:
+		case bmdSwitcherMixEffectBlockEventTypeTransitionPositionChanged:
 			updateSliderPosition();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdPreviewTransition:
+		case bmdSwitcherMixEffectBlockEventTypePreviewTransitionChanged:
 			updatePreviewTransitionEnabled();
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdTransitionFramesRemaining:
+		case bmdSwitcherMixEffectBlockEventTypeTransitionFramesRemainingChanged:
 			break;
-		case bmdSwitcherMixEffectBlockPropertyIdFadeToBlackFramesRemaining:
+		case bmdSwitcherMixEffectBlockEventTypeFadeToBlackFramesRemainingChanged:
 			break;
 		default:    // ignore other property changes not used for this sample app
 			break;
@@ -78,7 +78,7 @@ HRESULT MixEffectBlockMonitor::PropertyChanged(BMDSwitcherMixEffectBlockProperty
 void MixEffectBlockMonitor::updateProgramButtonSelection() const
 {
 	BMDSwitcherInputId    programId;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdProgramInput, &programId);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetProgramInput(&programId);
 	
 	for (auto const& it : static_cast<AppDelegate *>(appDel).mInputs)
 	{
@@ -91,7 +91,7 @@ void MixEffectBlockMonitor::updateProgramButtonSelection() const
 void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 {
 	BMDSwitcherInputId    previewId;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInt(bmdSwitcherMixEffectBlockPropertyIdPreviewInput, &previewId);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetPreviewInput(&previewId);
 	
 	for (auto const& it : static_cast<AppDelegate *>(appDel).mInputs)
 	{
@@ -104,7 +104,7 @@ void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 void MixEffectBlockMonitor::updateInTransitionState()
 {
 	bool inTransition;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFlag(bmdSwitcherMixEffectBlockPropertyIdInTransition, &inTransition);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInTransition(&inTransition);
 	
 	if (inTransition == false)
 	{
@@ -122,7 +122,7 @@ void MixEffectBlockMonitor::updateInTransitionState()
 void MixEffectBlockMonitor::updateSliderPosition()
 {
 	double position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetTransitionPosition(&position);
 	
 	// Record when transition passes halfway so we can flip orientation of slider handle at the end of transition
 	mCurrentTransitionReachedHalfway_ = (position >= 0.50);
@@ -139,7 +139,7 @@ void MixEffectBlockMonitor::updateSliderPosition()
 void MixEffectBlockMonitor::updatePreviewTransitionEnabled() const
 {
 	bool position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFlag(bmdSwitcherMixEffectBlockPropertyIdPreviewTransition, &position);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetPreviewTransition(&position);
 	
 	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/preview"];
 	[newMsg addFloat: position ? 1.0 : 0.0];
@@ -160,7 +160,7 @@ float MixEffectBlockMonitor::sendStatus() const
 	updatePreviewTransitionEnabled();
 	
 	double position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetFloat(bmdSwitcherMixEffectBlockPropertyIdTransitionPosition, &position);
+	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetTransitionPosition(&position);
 	double sliderPosition = position * 100;
 	if (mMoveSliderDownwards)
 		sliderPosition = 100 - position * 100;
@@ -868,6 +868,7 @@ float HyperDeckMonitor::sendStatus() const
 	updateCurrentClip();
 	updateCurrentClipTime();
 	updateCurrentTimelineTime();
+	updatePlayerState();
 	
 	return 0.03;
 }
@@ -884,6 +885,9 @@ HRESULT HyperDeckMonitor::Notify (BMDSwitcherHyperDeckEventType eventType)
 			break;
 		case bmdSwitcherHyperDeckEventTypeCurrentTimelineTimeChanged:
 			updateCurrentTimelineTime();
+			break;
+		case bmdSwitcherHyperDeckEventTypePlayerStateChanged:
+			updatePlayerState();
 			break;
 		default:
 			// ignore other property changes not used for this app
@@ -919,5 +923,21 @@ void HyperDeckMonitor::updateCurrentTimelineTime() const
 	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentTimelineTime(&hours, &minutes, &seconds, &frames);
 	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/timeline-time", hyperdeckId_]];
 	[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
+	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+}
+
+void HyperDeckMonitor::updatePlayerState() const
+{
+	BMDSwitcherHyperDeckPlayerState state;
+	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetPlayerState(&state);
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/state", hyperdeckId_]];
+	switch (state)
+	{
+		case bmdSwitcherHyperDeckStateIdle: [newMsg addString:@"idle"]; break;
+		case bmdSwitcherHyperDeckStatePlay: [newMsg addString:@"play"]; break;
+		case bmdSwitcherHyperDeckStateRecord: [newMsg addString:@"record"]; break;
+		case bmdSwitcherHyperDeckStateShuttle: [newMsg addString:@"shuttle"]; break;
+		case bmdSwitcherHyperDeckStateUnknown: [newMsg addString:@"unknown"]; break;
+	}
 	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
 }

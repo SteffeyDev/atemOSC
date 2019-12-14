@@ -65,6 +65,14 @@
 		[self addEntry:[NSString stringWithFormat:@"Set Gain Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/gain\t<float>",i+1] toString:helpString];
 		[self addEntry:[NSString stringWithFormat:@"Set Pre-Multiplied Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/pre-multiplied\t<bool>",i+1] toString:helpString];
 		[self addEntry:[NSString stringWithFormat:@"Set Inverse Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/inverse\t<bool>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Border Enabled DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-enabled/true",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Border Inner Width DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-width-inner\t<float>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Border Outer Width DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-width-outer\t<float>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Border Inner Softness DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-softness-inner\t<float>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Border Outer Softness DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-softness-outer\t<float>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Border Hue DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-hue\t<float>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Border Saturation DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-saturation\t<float>",i+1] toString:helpString];
+		[self addEntry:[NSString stringWithFormat:@"Set Border Luman DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-luma\t<float>",i+1] toString:helpString];
 	}
 
 	[self addHeader:@"Downstream Keyers" toString:helpString];
@@ -187,12 +195,6 @@
 	if ([appDel mSuperSourceBoxes].size() > 0)
 	{
 		[self addHeader:@"Super Source" toString:helpString];
-		[self addEntry:@"Set the border enabled flag" forAddress:@"/atem/supersource/border-enabled\t<0|1>" toString:helpString];
-		[self addEntry:@"Set the border outer width" forAddress:@"/atem/supersource/border-outer\t<float>" toString:helpString];
-		[self addEntry:@"Set the border inner width" forAddress:@"/atem/supersource/border-inner\t<float>" toString:helpString];
-		[self addEntry:@"Set the border hue" forAddress:@"/atem/supersource/border-hue\t<float>" toString:helpString];
-		[self addEntry:@"Set the border saturation" forAddress:@"/atem/supersource/border-saturation\t<float>" toString:helpString];
-		[self addEntry:@"Set the border luminescence" forAddress:@"/atem/supersource/border-luminescence\t<float>" toString:helpString];
 
 		for (int i = 1; i <= [appDel mSuperSourceBoxes].size(); i++)
 		{
