@@ -1,4 +1,4 @@
-# AtemOSC v2.5.6
+# AtemOSC v2.5.7
 
 ## Features
 This is a macOS application, providing an interface to control an ATEM video switcher via OSC. 
