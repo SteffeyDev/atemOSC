@@ -8,6 +8,7 @@
 #import "OSCAddressPanel.h"
 #import "BMDSwitcherAPI.h"
 #import "AppDelegate.h"
+#import "OSCEndpoint.h"
 
 @implementation OSCAddressPanel
 
@@ -48,44 +49,7 @@
 	[self addEntry:@"Set to Wipe" forAddress:@"/atem/transition/set-type/wipe" toString:helpString];
 	[self addEntry:@"Set to Stinger" forAddress:@"/atem/transition/set-type/sting" toString:helpString];
 	[self addEntry:@"Set to DVE" forAddress:@"/atem/transition/set-type/dve" toString:helpString];
-
-	[self addHeader:@"Upstream Keyers" toString:helpString];
-	[self addEntry:@"Set Tie BKGD" forAddress:@"/atem/usk/0/tie" toString:helpString];
-	[self addEntry:@"Toggle Tie BKGD" forAddress:@"/atem/usk/0/tie/toggle" toString:helpString];
-	for (int i = 0; i<[appDel keyers].size();i++)
-	{
-		[self addEntry:[NSString stringWithFormat:@"Set USK%d On Air",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air\t<0|1>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Toggle On Air USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air/toggle",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Tie USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie\t<0|1>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Toggle Tie USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie/toggle",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie/set-next\t<0|1>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Fill Source USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/fill\t<int>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Cut Source USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/cut\t<int>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Clip Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/clip\t<float>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Gain Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/gain\t<float>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Pre-Multiplied Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/pre-multiplied\t<bool>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Inverse Luma Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/inverse\t<bool>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Border Enabled DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-enabled/true",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Border Inner Width DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-width-inner\t<float>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Border Outer Width DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-width-outer\t<float>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Border Inner Softness DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-softness-inner\t<float>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Border Outer Softness DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-softness-outer\t<float>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Border Hue DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-hue\t<float>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Border Saturation DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-saturation\t<float>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Border Luman DVE Parameter USK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/usk/%d/dve/border-luma\t<float>",i+1] toString:helpString];
-	}
-
-	[self addHeader:@"Downstream Keyers" toString:helpString];
-	for (int i = 0; i<[appDel dsk].size();i++)
-	{
-		[self addEntry:[NSString stringWithFormat:@"Set DSK%d On Air",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air\t<0|1>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Auto-Transistion DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air/auto",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Toggle On Air DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air/toggle",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Tie DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie\t<0|1>",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Toggle Tie DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie/toggle",i+1] toString:helpString];
-		[self addEntry:[NSString stringWithFormat:@"Set Next-Transition State DSK%d",i+1] forAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie/set-next\t<0|1>",i+1] toString:helpString];
-	}
-
+	
 	[self addHeader:@"Sources" toString:helpString];
 
 	HRESULT result;
@@ -116,6 +80,52 @@
 		[name release];
 	}
 	inputIterator->Release();
+
+	[self addHeader:@"Upstream Keyers" toString:helpString];
+	[self addEntry:@"Set Tie BKGD" forAddress:@"/atem/usk/0/tie" toString:helpString];
+	[self addEntry:@"Toggle Tie BKGD" forAddress:@"/atem/usk/0/tie/toggle" toString:helpString];
+	for (int i = 0; i<[appDel keyers].size();i++)
+	{
+		for (OSCEndpoint* endpoint : [appDel endpoints])
+		{
+			if ([[endpoint addressTemplate] containsString:@"/usk/"])
+			{
+				NSString *label = [[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
+				NSString *address = [[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
+				if (endpoint.valueType == OSCValInt)
+					address = [address stringByAppendingString:@" <int>"];
+				else if (endpoint.valueType == OSCValBool)
+					address = [address stringByAppendingString:@" <true|false>"];
+				else if (endpoint.valueType == OSCValFloat)
+					address = [address stringByAppendingString:@" <decimal>"];
+				else if (endpoint.valueType == OSCValString)
+					address = [address stringByAppendingString:@" <string>"];
+				[self addEntry:label forAddress:address toString:helpString];
+			}
+		}
+	}
+
+	[self addHeader:@"Downstream Keyers" toString:helpString];
+	for (int i = 0; i<[appDel dsk].size();i++)
+	{
+		for (OSCEndpoint* endpoint : [appDel endpoints])
+		{
+			if ([[endpoint addressTemplate] containsString:@"/dsk/"])
+			{
+				NSString *label = [[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
+				NSString *address = [[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
+				if (endpoint.valueType == OSCValInt)
+					address = [address stringByAppendingString:@" <int>"];
+				else if (endpoint.valueType == OSCValBool)
+					address = [address stringByAppendingString:@" <true|false>"];
+				else if (endpoint.valueType == OSCValFloat)
+					address = [address stringByAppendingString:@" <decimal>"];
+				else if (endpoint.valueType == OSCValString)
+					address = [address stringByAppendingString:@" <string>"];
+				[self addEntry:label forAddress:address toString:helpString];
+			}
+		}
+	}
 
 	[self addHeader:@"Audio Inputs" toString:helpString];
 
@@ -198,45 +208,76 @@
 
 		for (int i = 1; i <= [appDel mSuperSourceBoxes].size(); i++)
 		{
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d enabled",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/enabled\t<0|1>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Input source",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/source\t<see sources for valid options>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Position X",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/x\t<float>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Position Y",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/y\t<float>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Size",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/size\t<float>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Cropped Enabled",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/cropped\t<0|1>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Top",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-top\t<float>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Bottom",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-bottom\t<float>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Left",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-left\t<float>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set Box %d Crop Right",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-right\t<float>",i] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Reset Box %d Crop",i] forAddress:[NSString stringWithFormat:@"/atem/supersource/box/%d/crop-reset\t<1>",i] toString:helpString];
+			for (OSCEndpoint* endpoint : [appDel endpoints])
+			{
+				if ([[endpoint addressTemplate] containsString:@"/supersource/"])
+				{
+					NSString *label = [[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:i] stringValue]];
+					NSString *address = [[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:i] stringValue]];
+					if (endpoint.valueType == OSCValInt)
+						address = [address stringByAppendingString:@" <int>"];
+					else if (endpoint.valueType == OSCValBool)
+						address = [address stringByAppendingString:@" <true|false>"];
+					else if (endpoint.valueType == OSCValFloat)
+						address = [address stringByAppendingString:@" <decimal>"];
+					else if (endpoint.valueType == OSCValString)
+						address = [address stringByAppendingString:@" <string>"];
+					[self addEntry:label forAddress:address toString:helpString];
+				}
+			}
 		}
 	}
 
 	[self addHeader:@"Macros" toString:helpString];
-	[self addEntry:@"Get the Maximum Number of Macros" forAddress:@"/atem/macros/max-number" toString:helpString];
-	[self addEntry:@"Stop the currently active Macro (if any)" forAddress:@"/atem/macros/stop" toString:helpString];
-	[self addEntry:@"Get the Name of a Macro" forAddress:@"/atem/macros/<index>/name" toString:helpString];
-	[self addEntry:@"Get the Description of a Macro" forAddress:@"/atem/macros/<index>/description" toString:helpString];
-	[self addEntry:@"Get whether the Macro at <index> is valid" forAddress:@"/atem/macros/<index>/is-valid" toString:helpString];
-	[self addEntry:@"Run the Macro at <index>" forAddress:@"/atem/macros/<index>/run" toString:helpString];
+	for (OSCEndpoint* endpoint : [appDel endpoints])
+	{
+		if ([[endpoint addressTemplate] containsString:@"/macros/"])
+		{
+			NSString *address = [endpoint addressTemplate];
+			if (endpoint.valueType == OSCValInt)
+				address = [address stringByAppendingString:@" <int>"];
+			else if (endpoint.valueType == OSCValBool)
+				address = [address stringByAppendingString:@" <true|false>"];
+			else if (endpoint.valueType == OSCValFloat)
+				address = [address stringByAppendingString:@" <decimal>"];
+			else if (endpoint.valueType == OSCValString)
+				address = [address stringByAppendingString:@" <string>"];
+			[self addEntry:[endpoint label] forAddress:address toString:helpString];
+		}
+	}
 	
-	[self addHeader:@"HyperDecks" toString:helpString];
 	for (auto const& it : [appDel mHyperdecks])
 	{
 		BMDSwitcherHyperDeckConnectionStatus status;
 		it.second->GetConnectionStatus(&status);
 		if (status == bmdSwitcherHyperDeckConnectionStatusConnected)
 		{
-			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Play", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/play", it.first+1] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Stop", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/stop", it.first+1] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Record", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/record", it.first+1] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Shuttle", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/shuttle\t<int>", it.first+1] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"HyperDeck %lld Jog", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/jog\t<int>", it.first+1] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set HyperDeck %lld Current Clip Number", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip\t<int>", it.first+1] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set HyperDeck %lld Current Clip Time", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip-time\t<string>", it.first+1] toString:helpString];
-			[self addEntry:[NSString stringWithFormat:@"Set HyperDeck %lld Current Timeline Time", it.first+1] forAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/timeline-time\t<string>", it.first+1] toString:helpString];
+			if (it.first == 0)
+				[self addHeader:@"HyperDecks" toString:helpString];
+			
+			for (OSCEndpoint* endpoint : [appDel endpoints])
+			{
+				if ([[endpoint addressTemplate] containsString:@"/hyperdeck/"])
+				{
+					NSString *label = [[endpoint label] stringByReplacingOccurrencesOfString:@"<number>" withString:[[NSNumber numberWithLongLong:it.first+1] stringValue]];
+					NSString *address = [[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<number>" withString:[[NSNumber numberWithLongLong:it.first+1] stringValue]];
+					if (endpoint.valueType == OSCValInt)
+						address = [address stringByAppendingString:@" <int>"];
+					else if (endpoint.valueType == OSCValBool)
+						address = [address stringByAppendingString:@" <true|false>"];
+					else if (endpoint.valueType == OSCValFloat)
+						address = [address stringByAppendingString:@" <decimal>"];
+					else if (endpoint.valueType == OSCValString)
+						address = [address stringByAppendingString:@" <string>"];
+					[self addEntry:label forAddress:address toString:helpString];
+				}
+			}
 		}
 	}
+	
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\nNote: Additional addresses are available that provide backward-compatibility with TouchOSC.  See the Readme on Github for details.\n\n"]];
+	
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"We add support for addresses on an as-needed basis.  If you are in need of an additional address, open an issue on Github letting us know what it is.\n"]];
 
 	[helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
 	[[helpTextView textStorage] setAttributedString:helpString];

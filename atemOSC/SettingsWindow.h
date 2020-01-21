@@ -20,13 +20,19 @@
 	
 	IBOutlet NSTextField*        mAddressTextField;
 	IBOutlet NSTextField*        mSwitcherNameLabel;
+	IBOutlet NSTextField*		 mLogLabel;
 	
 	AppDelegate*                appDel;
+	IBOutlet NSMenuItem*		logMenuOption;
+	IBOutlet NSMenuItem *addressesMenuOption;
 }
 
 - (void)loadSettingsFromPreferences;
 - (void)showSwitcherConnected:(NSString *)switcherName;
 - (void)showSwitcherDisconnected;
 - (NSString *)switcherAddress;
+- (void)updateLogLabel:(NSString *)message;
+- (IBAction)viewLogButtonPressed:(id)sender;
+- (IBAction)viewAddressesButtonPressed:(id)sender;
 
 @end

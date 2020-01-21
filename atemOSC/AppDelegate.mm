@@ -29,6 +29,7 @@
 #include <libkern/OSAtomic.h>
 #import "OSCAddressPanel.h"
 #import "SettingsWindow.h"
+#import "OSCReceiver.h"
 
 @implementation AppDelegate
 
@@ -58,6 +59,7 @@
 @synthesize mSwitcher;
 @synthesize mHyperdecks;
 @synthesize mHyperdeckMonitors;
+@synthesize endpoints;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -76,6 +78,7 @@
 	mMacroPool = NULL;
 	isConnectedToATEM = NO;
 	
+	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
 	mSwitcherMonitor = new SwitcherMonitor(self);
@@ -111,8 +114,8 @@
 	{
 		[self switcherDisconnected];		// start with switcher disconnected
 		
-		//	make an osc manager- i'm using a custom in-port to record a bunch of extra conversion for the display, but you can just make a "normal" manager
 		manager = [[OSCManager alloc] init];
+		[manager setDelegate:mOscReceiver];
 		
 		NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 
@@ -158,17 +161,20 @@
 
 - (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr
 {
-	[manager removeInput:inPort];
-
-	if (outIpStr != nil)
-	{
-		[manager removeOutput:outPort];
+	if (inPort == nil)
+		inPort = [manager createNewInputForPort:inPortValue withLabel:@"atemOSC"];
+	else if (inPortValue != [inPort port])
+		[inPort setPort:inPortValue];
+	
+	if (outPort == nil)
 		outPort = [manager createNewOutputToAddress:outIpStr atPort:outPortValue withLabel:@"atemOSC"];
+	else
+	{
+		if (![outIpStr isEqualToString: [outPort addressString]])
+			[outPort setAddressString:outIpStr];
+		if (outPortValue != [outPort port])
+			[outPort setPort:outPortValue];
 	}
-
-	inPort = [manager createNewInputForPort:inPortValue withLabel:@"atemOSC"];
-
-	[manager setDelegate:mOscReceiver];
 }
 
 - (void)applicationWillTerminate:(NSNotification*)aNotification
@@ -508,12 +514,16 @@ finish:
 	
 	self.activity = nil;
 	
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
-	[newMsg addFloat:0.0];
-	[outPort sendThisMessage:newMsg];
-	newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
-	[newMsg addFloat:1.0];
-	[outPort sendThisMessage:newMsg];
+	if (outPort != nil)
+	{
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
+		[newMsg addFloat:0.0];
+		[outPort sendThisMessage:newMsg];
+		newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
+		[newMsg addFloat:1.0];
+		[outPort sendThisMessage:newMsg];
+	}
+	
 	
 	[(SettingsWindow *)window showSwitcherDisconnected];
 	
@@ -656,6 +666,7 @@ finish:
 	if (message) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self appendMessage:message];
+			[(SettingsWindow *)window updateLogLabel:message];
 		});
 		NSLog(@"%@", message);
 	}

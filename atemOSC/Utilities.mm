@@ -179,3 +179,11 @@ bool stringIsNumber(NSString * str)
 	NSCharacterSet* notDigits = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
 	return [str rangeOfCharacterFromSet:notDigits].location == NSNotFound;
 }
+
+NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx)) {
+    NSMutableArray *result = [NSMutableArray arrayWithCapacity:[array count]];
+    [array enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [result addObject:block(obj, idx)];
+    }];
+    return result;
+}
