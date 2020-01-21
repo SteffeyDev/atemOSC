@@ -760,7 +760,6 @@
 		
 		OSCValueType neededType = endpoint.valueType;
 		OSCValueType actualType = [value type];
-		if (actualType == OSCValUnknown) actualType = OSCValNil;
 		if (actualType != neededType)
 		{
 			// Transform value if needed to match desired type

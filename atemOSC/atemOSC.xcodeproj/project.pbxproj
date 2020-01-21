@@ -16,11 +16,12 @@
 		335AB1C115703EF4003EA2D2 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; };
 		335AB1C315703EFA003EA2D2 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		335AB1C415703EFA003EA2D2 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A91A812F1FAEA2DC00983D66 /* Utilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91A812D1FAEA2DC00983D66 /* Utilities.mm */; };
+		A91EFE6B23D7519E00590AD0 /* OSCEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */; };
+		A91EFE7123D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A91EFE7023D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp */; };
 		A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */ = {isa = PBXBuildFile; fileRef = A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */; };
 		A98839421F8D913800F91789 /* OSCAddressPanel.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839411F8D913800F91789 /* OSCAddressPanel.mm */; };
 		A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839471F8E307100F91789 /* SettingsWindow.mm */; };
@@ -56,12 +57,14 @@
 		333E3044161395CF0002287B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		335AB1BB15703EF4003EA2D2 /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVOSC.framework; sourceTree = "<group>"; };
 		335AB1BD15703EF4003EA2D2 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVBasics.framework; sourceTree = "<group>"; };
-		335B268B1573A16300F72574 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDSwitcherAPI.h; sourceTree = "<group>"; };
-		335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BMDSwitcherAPIDispatch.cpp; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* atemOSC-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "atemOSC-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* atemOSC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atemOSC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91A812D1FAEA2DC00983D66 /* Utilities.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Utilities.mm; sourceTree = "<group>"; };
 		A91A812E1FAEA2DC00983D66 /* Utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
+		A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCEndpoint.m; sourceTree = "<group>"; };
+		A91EFE6A23D7519E00590AD0 /* OSCEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCEndpoint.h; sourceTree = "<group>"; };
+		A91EFE6F23D7559700590AD0 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDSwitcherAPI.h; sourceTree = "<group>"; };
+		A91EFE7023D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BMDSwitcherAPIDispatch.cpp; sourceTree = "<group>"; };
 		A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeedbackMonitors.h; sourceTree = "<group>"; };
 		A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FeedbackMonitors.mm; sourceTree = "<group>"; };
 		A98839401F8D913800F91789 /* OSCAddressPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCAddressPanel.h; sourceTree = "<group>"; };
@@ -102,6 +105,8 @@
 				A9F790691F89B83C003ACBCF /* OSCReceiver.mm */,
 				A91A812E1FAEA2DC00983D66 /* Utilities.h */,
 				A91A812D1FAEA2DC00983D66 /* Utilities.mm */,
+				A91EFE6A23D7519E00590AD0 /* OSCEndpoint.h */,
+				A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -150,8 +155,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				335B268B1573A16300F72574 /* BMDSwitcherAPI.h */,
-				335B268C1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp */,
+				A91EFE6F23D7559700590AD0 /* BMDSwitcherAPI.h */,
+				A91EFE7023D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
 			name = "Other Sources";
@@ -254,11 +259,12 @@
 				A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				A91A812F1FAEA2DC00983D66 /* Utilities.mm in Sources */,
+				A91EFE6B23D7519E00590AD0 /* OSCEndpoint.m in Sources */,
 				A98839421F8D913800F91789 /* OSCAddressPanel.mm in Sources */,
 				A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */,
 				A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */,
-				335B268D1573A16300F72574 /* BMDSwitcherAPIDispatch.cpp in Sources */,
+				A91EFE7123D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,6 +312,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "cc.buechele.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = atemOSC;
 				SDKROOT = macosx;
@@ -332,6 +339,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "cc.buechele.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = atemOSC;
 				SDKROOT = macosx;
