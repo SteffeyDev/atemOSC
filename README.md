@@ -1,11 +1,11 @@
-# AtemOSC v2.5.7
+# AtemOSC v3.0.0
 
 ## Features
-This is a macOS application, providing an interface to control an ATEM video switcher via OSC. 
+This is a macOS application, providing an interface to control an ATEM video switcher via OSC.
 
-![atemOSC](https://github.com/danielbuechele/atemOSC/raw/master/atemOSC.jpg)
+<img alt="atemOSC Screenshot" src="https://github.com/danielbuechele/atemOSC/raw/master/atemOSC_3.png" width="50%">
 
-The current version is built for Mac OS 10.15.1 (as of version 2.5.7). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 8.1 (as of version 2.5.7). 
+The current version is built for Mac OS 10.15.1 (since version 2.5.7). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 8.1 (since version 2.5.7).
 
 ## Download the App
 
@@ -32,36 +32,36 @@ AtemOSC is a proxy, listening for commands following the [OSC protocol](http://o
 
 ## OSC API
 
- - A full overview of the actual OSC-addresses available for your switcher can be obtained from the help-menu inside the application.
- - Unless otherwise specified, send the value 1 along with the OSC address below. Sending any other value may result in the command not being processed.
- 
+A full overview of the actual OSC-addresses available for your switcher can be obtained from the help menu inside the application.
 
 ### Program and Preview Selection
 
- - **Black** `/atem/program/0`
+ - **Black** `/atem/program 0`
 
- - **Cam 1** `/atem/program/1`
- - **Cam 2** `/atem/program/2`
- - **Cam 3** `/atem/program/3`
- - **Cam 4** `/atem/program/4`
- - **Cam 5** `/atem/program/5`
- - **Cam 6** `/atem/program/6`
+ - **Cam 1** `/atem/program 1`
+ - **Cam 2** `/atem/program 2`
+ - **Cam 3** `/atem/program 3`
+ - **Cam 4** `/atem/program 4`
+ - **Cam 5** `/atem/program 5`
+ - **Cam 6** `/atem/program 6`
  - and so on...
 
- - **Color Bars** `/atem/program/1000`
- - **Color 1** `/atem/program/2001`
- - **Color 2** `/atem/program/2002`
- - **Media 1** `/atem/program/3010`
- - **Media 2** `/atem/program/3020`
- - **Key 1 Mask** `/atem/program/4010`
- - **DSK 1 Mask**: `/atem/program/5010`
- - **DSK 2 Mask**: `/atem/program/5020`
- - **Clean Feed 1** `/atem/program/7001`
- - **Clean Feed 2** `/atem/program/7002`
- - **Auxiliary 1** `/atem/program/8001`
+ - **Color Bars** `/atem/program 1000`
+ - **Color 1** `/atem/program 2001`
+ - **Color 2** `/atem/program 2002`
+ - **Media 1** `/atem/program 3010`
+ - **Media 2** `/atem/program 3020`
+ - **Key 1 Mask** `/atem/program 4010`
+ - **DSK 1 Mask**: `/atem/program 5010`
+ - **DSK 2 Mask**: `/atem/program 5020`
+ - **Clean Feed 1** `/atem/program 7001`
+ - **Clean Feed 2** `/atem/program 7002`
+ - **Auxiliary 1** `/atem/program 8001`
  - and so on...
 
-For preview selection `/atem/preview/$i` can be used.
+For preview selection `/atem/preview $i` can be used.
+
+Also supports sending the input in the address instead of as a value (e.g. `/atem/program/5`)
 
 Feedback: Enabled for all values
 
@@ -74,41 +74,42 @@ Note: You can fetch the names of each input by sending the `/atem/send-status` c
  - **T-bar** `/atem/transition/bar <0-1>`
  - **Cut** `/atem/transition/cut`
  - **Auto** `/atem/transition/auto`
- - **Fade to Black** `/atem/transition/ftb`
- - **Preview Transition** `/atem/transition/preview <0|1>`
+ - **Fade to Black Toggle** `/atem/transition/ftb`
+ - **Preview Transition** `/atem/transition/preview <true|false>`
 
 To set the transition type of the Auto transition:
 
- - **Mix** `/atem/transition/set-type/mix`
- - **Dip** `/atem/transition/set-type/dip`
- - **Wipe** `/atem/transition/set-type/wipe`
- - **Stinger** `/atem/transition/set-type/sting`
- - **DVE** `/atem/transition/set-type/dve`
- 
+ - **Mix** `/atem/transition/type mix`
+ - **Dip** `/atem/transition/type dip`
+ - **Wipe** `/atem/transition/type wipe`
+ - **Stinger** `/atem/transition/type sting`
+ - **DVE** `/atem/transition/type dve`
+ - Also supports sending the type in the address instead of as a string value (e.g. `/atem/transition/type/dve`)
+
  Feedback: None
- 
+
 ### Auxiliary Source Selection
 
  - **Set Aux $i source to $x** `/atem/aux/$i $x`
-   - Where `$x` is an integer value that is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
-   - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
+     - Where `$x` is an integer value that is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
+     - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
 
 Feedback: None
 
 ### Upstream Keyers
 
- - **Set Tie BKGD** `/atem/usk/0/tie <0|1>`
+ - **Set Tie BKGD** `/atem/usk/0/tie <true|false>`
      - Send a value of 1 to enable tie, and 0 to disable
  - **Toggle Tie BKGD** `/atem/usk/0/tie/toggle`
- - **Set On-Air Upstream Keyer $i** `/atem/usk/$i/on-air <0|1>`
-     - Send a value of 1 to cut the USK on-air, and a value of 0 to cut it off-air
+ - **Set On-Air Upstream Keyer $i** `/atem/usk/$i/on-air <true|false>`
+     - Send a value of true to cut the USK on-air, and a value of false to cut it off-air
  - **Cut Toggle On-Air Upstream Keyer $i** `/atem/usk/$i/on-air/toggle`
- - **Set Tie Upstream Keyer $i** `/atem/usk/$i/tie <0|1>`
-     - Send a value of 1 to enable tie, and 0 to disable
+ - **Set Tie Upstream Keyer $i** `/atem/usk/$i/tie <true|false>`
+     - Send a value of true to enable tie, and false to disable
  - **Toggle Tie Upstream Keyer $i** `/atem/usk/$i/tie/toggle`
- - **Set Upstream Keyer $i for Next Scene** `/atem/usk/$i/tie/set-next <0|1>`
-     - Send a value of 1 to show the USK after next transition, and 0 if you don’t want to show the USK after next transition
-     - e.g. If USK 1 is on air, `/atem/usk/1/tie/set-next 1` will untie USK 1 so that it remains on, while `/atem/usk/1/tie/set-next 0` will tie USK 1 so that it will go off air after the next transition.
+ - **Set Upstream Keyer $i for Next Scene** `/atem/usk/$i/tie/set-next <true|false>`
+     - Send a boolean value of true to show the USK after next transition, and false if you don’t want to show the USK after next transition
+     - e.g. If USK 1 is on air, `/atem/usk/1/tie/set-next true` will untie USK 1 so that it remains on, while `/atem/usk/1/tie/set-next false` will tie USK 1 so that it will go off air after the next transition.
  - **Set Key type for Upstream Keyer $i** `/atem/usk/$i/type <luma|chroma|pattern|dve>`
      - Also supports sending the type in the address instead of as a string value (e.g. `/atem/usk/$i/type/luma`)
 
@@ -137,23 +138,43 @@ Feedback: None
      - Float value should be between 0.0 (for 0%) and 1.0 (for 100%)
  - **Set "Narrow Chroma Key Range" Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/narrow <bool>`
 
+#### USK DVE Parameters
+ - **Set DVE Border Enabled for Upstream Keyer $i** `/atem/usk/$i/dve/enabled <true|false>`
+ - Other values supported are: `border-width-outer`, `border-width-inner`, `border-softness-outer`, `border-softness-inner`, `border-opacity`, `border-hue`, `border-saturation`, and `border-luma`
+
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
 Feedback: Enabled for '/atem/usk/$i/on-air', '/atem/usk/$i/tie', '/atem/usk/$i/source/*', '/atem/usk/$i/luma/*', and '/atem/usk/$i/chroma/*'
 
 ### Downstream Keyers
 
- - **Set On-Air Downstreamkeyer $i** `/atem/dsk/$i/on-air <0|1>`
-     - Send a value of 1 to cut the DSK on-air, and a value of 0 to cut it off-air
+ - **Set On-Air Downstreamkeyer $i** `/atem/dsk/$i/on-air <true|false>`
+     - Send a value of true to cut the DSK on-air, and a value of false to cut it off-air
  - **Auto Toggle On-Air Downstreamkeyer $i** `/atem/dsk/$i/on-air/auto`
  - **Cut Toggle On-Air Downstreamkeyer $i** `/atem/dsk/$i/on-air/toggle`
- - **Set Tie Downstreamkeyer $i** `/atem/dsk/$i/tie <0|1>`
-     - Send a value of 1 to enable tie, and 0 to disable
+ - **Set Tie Downstreamkeyer $i** `/atem/dsk/$i/tie <true|false>`
+     - Send a value of true to enable tie, and false to disable
  - **Toggle Tie Downstreamkeyer $i** `/atem/dsk/$i/tie/toggle`
- - **Set Downstreamkeyer $i for Next Scene** `/atem/dsk/$i/tie/set-next <0|1>`
-     - Send a value of 1 to show the DSK after next transition, and 0 if you don’t want to show the DSK after next transition
-     - e.g. If DSK1 is on air, `/atem/dsk/1/tie/set-next 1` will untie DSK1 so that it remains on, while `/atem/dsk/1/tie/set-next 0` will tie DSK1 so that it will go off air after the next transition.
- 
+ - **Set Downstreamkeyer $i for Next Scene** `/atem/dsk/$i/tie/set-next <true|false>`
+     - Send a value of true to show the DSK after next transition, and false if you don’t want to show the DSK after next transition
+     - e.g. If DSK1 is on air, `/atem/dsk/1/tie/set-next true` will untie DSK1 so that it remains on, while `/atem/dsk/1/tie/set-next false` will tie DSK1 so that it will go off air after the next transition.
+
+#### DSK Source
+ - **Set Fill Source for Downstreamkeyer $i** `/atem/dsk/$i/source/fill <int>`
+     - Int value should be the ID of the input to set as the source (from in-app help menu, under the Sources section)
+ - **Set Key (cut) Source for Downstreamkeyer $i** `/atem/dsk/$i/source/cut <int>`
+     - Int value should be the ID of the input to set as the source (from in-app help menu, under the Sources section)
+
+#### DSK Parameters
+ - **Set Clip Parameter for Downstreamkeyer $i** `/atem/dsk/$i/clip <float>`
+     - Float value should be between 0.0 (for 0%) and 1.0 (for 100%)
+ - **Set Gain Parameter for Downstreamkeyer $i** `/atem/dsk/$i/gain <float>`
+     - Float value should be between 0.0 (for 0%) and 1.0 (for 100%)
+ - **Set Pre-multiplied Parameter for Downstreamkeyer $i** `/atem/dsk/$i/pre-multiplied <true|false>`
+ - **Set Invert Parameter for Downstreamkeyer $i** `/atem/dsk/$i/inverse <true|false>`
+ - **Set Rate Parameter for Downstreamkeyer $i** `/atem/dsk/$i/rate <int>`
+    - Int value is number of frames, so 30 is 1 second and 60 is 2 seconds (given 30 fps base value)
+
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
 Feedback: Enabled for '/atem/dsk/$i/on-air' and '/atem/dsk/$i/tie'
@@ -177,41 +198,41 @@ Feedback: Enabled for all values
 
 ### Media Players
 
- - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip/$x`
+ - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip $x`
      - Where `$i` can be 1 or 2, and `$x` can be 1 or 2 depending on the capability of your ATEM switcher
-     - e.g. `/atem/mplayer/2/clip/1`
- - **Set Media Player $i source to Still $x** `/atem/mplayer/$i/still/$x`
+     - e.g. `/atem/mplayer/2/clip 1`
+ - **Set Media Player $i source to Still $x** `/atem/mplayer/$i/still $x`
      - Where `$i` can be 1 or 2, and `$x` can be 1-20 depending on the capability of your ATEM switcher
-     - e.g. `/atem/mplayer/1/still/5`
+     - e.g. `/atem/mplayer/1/still 5`
 
 Feedback: None
 
 ### SuperSource (when available)
 
-   - **Toggle SuperSource Box $i enabled** `/atem/supersource/$i/enabled <0|1>`
+ - **Toggle SuperSource Box $i enabled** `/atem/supersource/$i/enabled <true|false>`
      - Send a value of 1 to enable, and 0 to disable
-   - **Set SuperSource Box $i source to input $x** `/atem/supersource/$i/source $x`
+ - **Set SuperSource Box $i source to input $x** `/atem/supersource/$i/source $x`
      - Where `$x` is a valid program source. Check the Help Menu for the correct values.
-   - Other options are available. Check the Help Menu in the app for the full list.
+ - Other options are available. Check the Help Menu in the app for the full list.
 
 Feedback: None
 
 ### Macros
 
-   - Macros should be recorded within the ATEM Control Panel software.
-   - Macros are stored within the ATEM in a 0-index array
+ - Macros should be recorded within the ATEM Control Panel software.
+ - Macros are stored within the ATEM in a 0-index array
      - This means that to access the first recorded Macro, you should use an index `$i` of `0`, to access the second recorded Macro, you should use an index of `1` etc.
-   - Get the Maximum Number of Macros: `/atem/macros/max-number`
+ - Get the Maximum Number of Macros: `/atem/macros/max-number`
      - Returns an `int` of the maximum number of Macros supported by your ATEM
      - Access to these Macros should be used via an index of `n-1`
-   - Stop the currently active Macro (if any): `/atem/macros/stop`
-   - Get the Name of a Macro: `/atem/macros/$i/name`
+ - Stop the currently active Macro (if any): `/atem/macros/stop`
+ - Get the Name of a Macro: `/atem/macros/$i/name`
      - Returns a `string` with the name, or "" if the Macro is invalid
-   - Get the Description of a Macro: `/atem/macros/$i/description`
+ - Get the Description of a Macro: `/atem/macros/$i/description`
      - Returns a `string` with the description, or "" if the Macro is invalid
-   - Get whether the Macro at index $i is valid: `/atem/macros/$i/is-valid`
+ - Get whether the Macro at index $i is valid: `/atem/macros/$i/is-valid`
      - Returns an `int` of `0|1` to indicate whether the requested Macro is valid
-   - Run the Macro at index $i: `/atem/macros/$i/run`
+ - Run the Macro at index $i: `/atem/macros/$i/run`
      - Returns an `int` of `0|1` to indicate whether the requested Macro was executed. A `0` will be returned if the Macro is invalid, or does not exist
 
 Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/macros/$i/description`, and `/atem/macros/$i/is-valid`. Also available On-Request (you can send the command to get the value in a return message)
@@ -230,14 +251,30 @@ Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/
      - e.g. `/atem/hyperdeck/1/shuttle 0` = stopped
  - **Jog Clip on HyperDeck $i** `/atem/hyperdeck/$i/jog $x`
      - Where `$x` is an integer value specifying the number of frames to jump forward or backward in the selected clip
+ - **Jump to clip time $x on HyperDeck $i** `/atem/hyperdeck/$i/clip-time $x`
+     - Where `$x` is a string in the format 'hh:mm:ss' (h = hour, m = minute, s = second)
+     - e.g. `/atem/hyperdeck/1/clip-time 00:05:00` = jump 5 minutes into the clip
+ - **Jump to timeline time $x on HyperDeck $i** `/atem/hyperdeck/$i/timeline-time $x`
 
 Feedback: Enabled for `/atem/hyperdeck/$i/clip`.  The state of the HyperDeck is available as a string value at `/atem/hyperdeck/$i/state`, and is sent out automatically when the state changes. State options are `play`, `record`, `shuttle`, `idle`, or `unknown`.
 
 ### Other
 
   - **Request all feedback available** `/atem/send-status`
-  	- This will query the switcher and send back the status for the program/preview, transition control, keyers, and macros
-	- e.g. This can be used when a new OSC client device is brought online, so that it gets the current status of the system
+     - This will query the switcher and send back the status for the program/preview, transition control, keyers, and macros
+  - e.g. This can be used when a new OSC client device is brought online, so that it gets the current status of the system
+
+### Type Casting
+
+For your convenience, atemOSC will cast certain types to the correct type for certain endpoints
+
+ - If you pass an int or float value of 0 to a boolean method, the 0 will be interpreted as false
+ - If you pass an int or float value of 1 to a boolean method, the 1 will be interpreted as true
+ - If you pass an int value to an endpoint that requires a float, it will be properly converted (and vice-versa)
+
+### TouchOSC Support
+
+Due to the limited capabilities of the TouchOSC client, atemOSC supports an alternative form of passing values.  For any method listed above that requires a string or int value, you can pass the string or int as part of the address instead of as a value.  For example, you can send `/atem/transition/type/wipe` instead of `/atem/transition/type wipe`, or send `/atem/usk/1/source/fill/3` instead of `/atem/usk/1/source/fill 3`.  Additionally, any command sent with one of these alternative addresses and a float value of `0.0` will be ignored, as that represents a button release and commonly causes issues.  If you would like to trigger a change on button release instead of button press, simply flip the values in the TouchOSC Editor.
 
 ----------
 
@@ -256,7 +293,7 @@ You are free to open an issue or comment on and existing issue, but the quickest
 ### Auto and cut commands don’t seem to work, or look buggy, when combining atemOSC with MIDI control
 
 #### Problem
-A lot of MIDI controls send two signals when a button is pressed, one signal when you press down, and another when you release. If you connect the button the `/atem/transition/auto` or `cut`, atemOSC recieves both events and attempts to send the transition command to the switcher twice. This can cause buggy behavior or just not work at all.  
+A lot of MIDI controls send two signals when a button is pressed, one signal when you press down, and another when you release. If you connect the button the `/atem/transition/auto` or `cut`, atemOSC recieves both events and attempts to send the transition command to the switcher twice. This can cause buggy behavior or just not work at all.
 
 #### Solution
 Tune your MIDI software to send only one of the two signals, either ok button press (rising edge) or button release (falling edge). See #120 for instructions for OSCulator.
@@ -265,6 +302,6 @@ Tune your MIDI software to send only one of the two signals, either ok button pr
 
 ## Acknowledgements
 
-- The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blackmagic.
-- [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
-- Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).
+ - The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blackmagic.
+ - [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
+ - Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).

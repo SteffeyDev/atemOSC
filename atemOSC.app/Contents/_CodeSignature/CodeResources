@@ -10,7 +10,7 @@
 		</data>
 		<key>Resources/Assets.car</key>
 		<data>
-		9gmHOetLoTsB+b0r87t6MoQuORc=
+		b6iNnrhvUAfxRlrhCZbpnJgvRho=
 		</data>
 		<key>Resources/English.lproj/InfoPlist.strings</key>
 		<dict>
@@ -25,7 +25,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			V+dzOHGDjeHhBzzBXteotCCe+gc=
+			wBuaKUn4VZeFg2mKnDZt4E//u8M=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -41,7 +41,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			n3+ahAsOMfbLU+FvA8mFDklLWvY=
+			VnUyxGww9kziBAKkzjrSQUs1Nnk=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.yourcompany.VVBasics" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: Ken Steffey (649CFX9WPE)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -50,7 +50,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			4rqnrWBG8OshBChmyX5Yx8jesuA=
+			XFVVMK3iviuw2KR4y+2msv0xias=
 			</data>
 			<key>requirement</key>
 			<string>identifier "com.yourcompany.VVOSC" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: Ken Steffey (649CFX9WPE)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -70,11 +70,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			9gmHOetLoTsB+b0r87t6MoQuORc=
+			b6iNnrhvUAfxRlrhCZbpnJgvRho=
 			</data>
 			<key>hash2</key>
 			<data>
-			oxvdPooL+X1LHZZzaZyTDJ/kHpUx4C2RLtRvjbSEMvs=
+			WlH2b62MgYZ9yW2C0fu9CkGN6RKRzC8m6nISEYMQM3Q=
 			</data>
 		</dict>
 		<key>Resources/English.lproj/InfoPlist.strings</key>
@@ -94,11 +94,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			V+dzOHGDjeHhBzzBXteotCCe+gc=
+			wBuaKUn4VZeFg2mKnDZt4E//u8M=
 			</data>
 			<key>hash2</key>
 			<data>
-			/zb8JN1gbA8IBmz7W6Z6gq5on6+sgO1ad+gqZMK+I/I=
+			2yOOtP93uzCJP0oVdMX9JJmAmC3+1tIBHx2urhDwi0s=
 			</data>
 			<key>optional</key>
 			<true/>
