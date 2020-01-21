@@ -19,5 +19,6 @@ extern NSString* getNameOfMacro(uint32_t index);
 extern NSString* getDescriptionOfMacro(uint32_t index);
 extern void activateChannel(int channel, bool program);
 extern bool stringIsNumber(NSString * str);
+extern NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx));
 
 #endif /* Utilities_hpp */

@@ -33,6 +33,7 @@
 #import <Cocoa/Cocoa.h>
 
 #import "FeedbackMonitors.h"
+#import "OSCEndpoint.h"
 
 @class OSCAddressPanel;
 @class OSCReceiver;
@@ -86,6 +87,8 @@
 @property (readonly)       bool                                     isConnectedToATEM;
 @property (strong)         IBOutlet NSWindow*                       window;
 @property (strong)         id                                       activity;
+
+@property(nonatomic, retain) NSMutableArray<OSCEndpoint *> *endpoints;
 
 - (void)connectBMD;
 - (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr;

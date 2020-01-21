@@ -85,6 +85,10 @@ void MixEffectBlockMonitor::updateProgramButtonSelection() const
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program/%lld",it.first]];
 		if (programId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program"]];
+		[newMsg2 addInt:(int)it.first];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg2];
 	}
 }
 
@@ -98,6 +102,10 @@ void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview/%lld",it.first]];
 		if (previewId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview"]];
+		[newMsg2 addInt:(int)it.first];
+		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg2];
 	}
 }
 
@@ -233,11 +241,6 @@ void DownstreamKeyerMonitor::updateDSKTie() const
 		bool isTied;
 		key->GetTie(&isTied);
 
-		// Deprecated
-		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/set-tie/%d",i]];
-		[oldMsg addInt: isTied];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
-
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie",i]];
 		[newMsg addInt: isTied];
 		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
@@ -254,11 +257,6 @@ void DownstreamKeyerMonitor::updateDSKOnAir() const
 	{
 		bool isOnAir;
 		key->GetOnAir(&isOnAir);
-
-		// Deprecated
-		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/on-air/%d",i]];
-		[oldMsg addInt: isOnAir];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
 
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air",i]];
 		[newMsg addInt: isOnAir];
@@ -651,11 +649,6 @@ void TransitionParametersMonitor::updateTransitionParameters() const
 
 	for (int i = 0; i <= ((int) reinterpret_cast<AppDelegate *>(appDel).keyers.size()); i++) {
 		uint32_t requestedTransitionSelection = transitionSelections[i];
-
-		// Deprecated
-		OSCMessage *oldMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/nextusk/%d",i]];
-		[oldMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:oldMsg];
 		
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie",i]];
 		[newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];

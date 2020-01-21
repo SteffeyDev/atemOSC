@@ -110,6 +110,7 @@
 		}
 	}
 	
+	// Only update if the input is valid and actually changed
 	if (validInput)
 		[appDel portChanged:[mIncomingPortTextField intValue] out:[mOutgoingPortTextField intValue] ip:[mOscDeviceTextField stringValue]];
 
@@ -143,6 +144,22 @@
 - (NSString *)switcherAddress
 {
 	return [mAddressTextField stringValue];
+}
+
+- (void)updateLogLabel:(NSString *)message
+{
+	[mLogLabel setStringValue:message];
+}
+
+- (IBAction)viewLogButtonPressed:(id)sender
+{
+	NSInteger index = [logMenuOption.menu indexOfItem:logMenuOption];
+	[logMenuOption.menu performActionForItemAtIndex:index];
+}
+
+- (IBAction)viewAddressesButtonPressed:(id)sender {
+	NSInteger index = [addressesMenuOption.menu indexOfItem:addressesMenuOption];
+	[addressesMenuOption.menu performActionForItemAtIndex:index];
 }
 
 @end

@@ -4,852 +4,832 @@
 
 @implementation OSCReceiver
 
+@synthesize endpointMap;
+@synthesize validators;
+
 - (instancetype) initWithDelegate:(AppDelegate *) delegate
 {
 	self = [super init];
 	appDel = delegate;
+	
+	endpointMap = [[NSMutableDictionary alloc] init];
+	validators = [[NSMutableDictionary alloc] init];
+	
+	NSLog(@"Setting up validators");
+
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (key > 0 && key <= [appDel dsk].size())
+			return true;
+		[appDel logMessage:[NSString stringWithFormat:@"DSK %d is not available on your switcher, valid DSK values are 1 - %lu", key, [appDel dsk].size()]];
+		return false;
+	} copy] forKey:@"/atem/dsk"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		NSString *address = [d objectForKey:@"address"];
+		
+		// Normal USK
+		if (key > 0 && key <= [appDel keyers].size())
+			return true;
+		
+		// Background
+		if (key == 0 && [address containsString:@"tie"])
+			return true;
+		
+		[appDel logMessage:[NSString stringWithFormat:@"USK %d is not available on your switcher, valid USK values are 1 - %lu", key, [appDel keyers].size()]];
+		return false;
+	} copy] forKey:@"/atem/usk"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		int number = [[d objectForKey:@"<number>"] intValue];
+		if (number > 0 && [appDel mHyperdecks].count(number-1) > 0)
+			return true;
+		[appDel logMessage:[NSString stringWithFormat:@"Hyperdeck %d is not available on your switcher, valid Hyperdecks are 1 - %lu", number, [appDel mHyperdecks].size()]];
+		return false;
+	} copy] forKey:@"/atem/hyperdeck"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		int number = [[d objectForKey:@"<number>"] intValue];
+		if (number > 0 && [appDel mAudioInputs].count(number) > 0)
+			return true;
+		[appDel logMessage:[NSString stringWithFormat:@"Invalid input %d. Please choose a valid audio input number from the list in Help > OSC addresses.", number]];
+		return false;
+	} copy] forKey:@"/atem/audio/input"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		int mplayer = [[d objectForKey:@"<player>"] intValue];
+
+		if (![appDel mMediaPool])
+		{
+			[appDel logMessage:@"No media pool\n"];
+			return false;
+		}
+		
+		if ([appDel mMediaPlayers].size() < mplayer || mplayer < 0)
+		{
+			[appDel logMessage:[NSString stringWithFormat:@"No media player %d", mplayer]];
+			return false;
+		}
+		return true;
+	} copy] forKey:@"/atem/mplayer"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+
+		if (![appDel mSuperSource])
+		{
+			[appDel logMessage:@"No super source"];
+			return false;
+		}
+		
+		if ([appDel mSuperSourceBoxes].size() < key)
+		{
+			[appDel logMessage:[NSString stringWithFormat:@"No super source box %d", key]];
+			return false;
+		}
+		
+		return true;
+	} copy] forKey:@"/atem/supersource"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		int auxToChange = [[d objectForKey:@"<key>"] intValue];
+		if (auxToChange > 0 && auxToChange-1 < [appDel mSwitcherInputAuxList].size())
+			return true;
+		[appDel logMessage:[NSString stringWithFormat:@"Aux number %d not available on your switcher", auxToChange]];
+		return false;
+	} copy] forKey:@"/atem/aux"];
+	
+	
+	
+	NSLog(@"Setting up endpoints");
+	
+	[self addEndpoint:@"/atem/send-status" handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel sendStatus];
+	}];
+	
+	[self addEndpoint:@"/atem/preview" valueType: OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		activateChannel([v intValue], false);
+	}];
+	
+	[self addEndpoint:@"/atem/program" valueType: OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		activateChannel([v intValue], true);
+	}];
+	
+	[self addEndpoint:@"/atem/transition/bar" valueType: OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		if ([appDel mMixEffectBlockMonitor]->mMoveSliderDownwards)
+			[appDel mMixEffectBlock]->SetTransitionPosition([v floatValue]);
+		else
+			[appDel mMixEffectBlock]->SetTransitionPosition(1.0-[v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/transition/cut" handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel mMixEffectBlock]->PerformCut();
+	}];
+	
+	[self addEndpoint:@"/atem/transition/auto" handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel mMixEffectBlock]->PerformAutoTransition();
+	}];
+	
+	[self addEndpoint:@"/atem/transition/ftb" handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel mMixEffectBlock]->PerformFadeToBlack();
+	}];
+	
+	[self addEndpoint:@"/atem/transition/preview" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel mMixEffectBlock]->SetPreviewTransition([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/transition/type" valueType:OSCValString handler:^void(NSDictionary *d, OSCValue *v) {
+		REFIID transitionStyleID = IID_IBMDSwitcherTransitionParameters;
+		IBMDSwitcherTransitionParameters* mTransitionStyleParameters=NULL;
+		[appDel mMixEffectBlock]->QueryInterface(transitionStyleID, (void**)&mTransitionStyleParameters);
+		
+		if ([[v stringValue] isEqualToString:@"mix"])
+			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
+		else if ([[v stringValue] isEqualToString:@"dip"])
+			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDip);
+		else if ([[v stringValue] isEqualToString:@"wipe"])
+			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleWipe);
+		else if ([[v stringValue] isEqualToString:@"sting"])
+			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleStinger);
+		else if ([[v stringValue] isEqualToString:@"dve"])
+			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/tie" label:@"Set USK<key> Tie" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[self changeTransitionSelection:key select:[v boolValue]];
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/tie/toggle" label: @"Toggle USK<key> Tie" handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		uint32_t currentTransitionSelection;
+		[appDel switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
+		
+		uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+		uint32_t requestedTransitionSelection = transitionSelections[key];
+		
+		[self changeTransitionSelection:key select:!((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/tie/set-next" label:@"Set Next-Transition State for USK<key>" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		bool isOnAir;
+		[appDel keyers][key-1]->GetOnAir(&isOnAir);
+		[self changeTransitionSelection:key select:([v boolValue] != isOnAir)];
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/on-air" label:@"Set USK<key> On Air" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel keyers][key-1]->SetOnAir([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/on-air/toggle" label:@"Toggle USK<key> On Air" handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		bool onAir;
+		[appDel keyers][key-1]->GetOnAir(&onAir);
+		[appDel keyers][key-1]->SetOnAir(!onAir);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/source/fill" label:@"Set Fill Source for USK<key>" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel keyers][key-1]->SetInputFill([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/source/cut" label:@"Set Cut Source for USK<key>" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel keyers][key-1]->SetInputCut([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/type" label:@"Set USK<key> Type" valueType:OSCValString handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if ([[v stringValue] isEqualToString:@"luma"])
+			[appDel keyers][key-1]->SetType(bmdSwitcherKeyTypeLuma);
+		else if ([[v stringValue] isEqualToString:@"chroma"])
+			[appDel keyers][key-1]->SetType(bmdSwitcherKeyTypeChroma);
+		else if ([[v stringValue] isEqualToString:@"pattern"])
+			[appDel keyers][key-1]->SetType(bmdSwitcherKeyTypePattern);
+		else if ([[v stringValue] isEqualToString:@"dve"])
+			[appDel keyers][key-1]->SetType(bmdSwitcherKeyTypeDVE);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/luma/pre-multiplied" label:@"Set Pre-Multiplied Luma Parameter for USK<key>" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key])
+			lumaParams->SetPreMultiplied([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/luma/clip" label:@"Set Clip Luma Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key])
+			lumaParams->SetClip([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/luma/gain" label:@"Set Gain Luma Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key])
+			lumaParams->SetGain([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/luma/inverse" label:@"Set Inverse Luma Parameter for USK<key>" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key])
+			lumaParams->SetInverse([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/chroma/hue" label:@"Set Hue Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key])
+			chromaParams->SetHue([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/chroma/gain" label:@"Set Gain Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key])
+			chromaParams->SetGain([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/chroma/y-suppress" label:@"Set Y-Suppress Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key])
+			chromaParams->SetYSuppress([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/chroma/lift" label:@"Set Lift Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key])
+			chromaParams->SetLift([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/chroma/narrow" label:@"Set Narrow Chroma Parameter for USK<key>" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key])
+			chromaParams->SetNarrow([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/enabled" label:@"Set Border Enabled DVE Parameter for USK<key>" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderEnabled([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/border-width-inner" label:@"Set Border Inner Width DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderWidthIn([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/border-width-outer" label:@"Set Border Outer Width DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderWidthOut([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/border-softness-inner" label:@"Set Border Inner Softness DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderSoftnessIn([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/border-softness-outer" label:@"Set Border Outer Softness DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderSoftnessOut([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/border-opacity" label:@"Set Border Opacity DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderOpacity([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/border-hue" label:@"Set Border Hue DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderHue([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/border-saturation" label:@"Set Border Saturation DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderSaturation([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/usk/<key>/dve/border-luma" label:@"Set Border Luma DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key])
+			dveParams->SetBorderLuma([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/tie" label:@"Set DSK<key> Tie" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		bool isTransitioning;
+		[appDel dsk][key-1]->IsTransitioning(&isTransitioning);
+		if (!isTransitioning) [appDel dsk][key-1]->SetTie([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/tie/toggle" label:@"Toggle DSK<key> Tie" handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		bool isTied, isTransitioning;
+		[appDel dsk][key-1]->GetTie(&isTied);
+		[appDel dsk][key-1]->IsTransitioning(&isTransitioning);
+		if (!isTransitioning) [appDel dsk][key-1]->SetTie(!isTied);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/tie/set-next" label:@"Set Next-Transition State for DSK<key>" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		bool isTransitioning, isOnAir;
+		[appDel dsk][key-1]->IsTransitioning(&isTransitioning);
+		[appDel dsk][key-1]->GetOnAir(&isOnAir);
+		if (!isTransitioning) [appDel dsk][key-1]->SetTie([v boolValue] != isOnAir);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/on-air"  label:@"Set DSK<key> On Air" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		bool isTransitioning;
+		[appDel dsk][key-1]->IsTransitioning(&isTransitioning);
+		if (!isTransitioning) [appDel dsk][key-1]->SetOnAir([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/on-air/toggle" label:@"Toggle DSK<key> On Air" handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		bool isLive, isTransitioning;
+		[appDel dsk][key-1]->GetOnAir(&isLive);
+		[appDel dsk][key-1]->IsTransitioning(&isTransitioning);
+		if (!isTransitioning) [appDel dsk][key-1]->SetOnAir(!isLive);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/on-air/auto" label:@"Auto-Transistion DSK<key>" handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		bool isTransitioning;
+		[appDel dsk][key-1]->IsAutoTransitioning(&isTransitioning);
+		if (!isTransitioning) [appDel dsk][key-1]->PerformAutoTransition();
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/source/fill" label:@"Set Fill Source for DSK<key>" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel dsk][key-1]->SetInputFill([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/source/cut" label:@"Set Cut Source for DSK<key>" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel dsk][key-1]->SetInputCut([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/clip" label:@"Set Clip Level for DSK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel dsk][key-1]->SetClip([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/gain" label:@"Set Gain Level for DSK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel dsk][key-1]->SetGain([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/rate" label:@"Set Rate for DSK<key>" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel dsk][key-1]->SetRate([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/inverse" label:@"Set Inverse Parameter for DSK<key>" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel dsk][key-1]->SetInverse([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/pre-multiplied" label:@"Set Pre-multiplied Parameter for DSK<key>" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel dsk][key-1]->SetPreMultiplied([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/mplayer/<player>/clip" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int mplayer = [[d objectForKey:@"<player>"] intValue];
+		[appDel mMediaPlayers][mplayer-1]->SetSource(bmdSwitcherMediaPlayerSourceTypeClip, [v intValue]-1);
+	}];
+	
+	[self addEndpoint:@"/atem/mplayer/<player>/still" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int mplayer = [[d objectForKey:@"<player>"] intValue];
+		[appDel mMediaPlayers][mplayer-1]->SetSource(bmdSwitcherMediaPlayerSourceTypeStill, [v intValue]-1);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/enabled" label:@"Set Box <key> enabled" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetEnabled([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/source" label:@"Set Box <key> Input Source" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetInputSource([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/x" label:@"Set Box <key> X Position" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetPositionX([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/y" label:@"Set Box <key> Y Position" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetPositionY([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/size" label:@"Set Box <key> Size" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetSize([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/cropped" label:@"Set Box <key> Crop Enabled" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetCropped([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/crop-top" label:@"Set Box <key> Crop Top Amount" valueType: OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetCropTop([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/crop-bottom" label:@"Set Box <key> Crop Bottom Amount" valueType: OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetCropBottom([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/crop-left" label:@"Set Box <key> Crop Left Amount" valueType: OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetCropLeft([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/crop-right" label:@"Set Box <key> Crop Right Amount" valueType: OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->SetCropRight([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/supersource/box/<key>/crop-reset" label:@"Reset box <key> crop" handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel mSuperSourceBoxes][key-1]->ResetCrop();
+	}];
+	
+	[self addEndpoint:@"/atem/macros/stop" label:@"Stop the currently active Macro (if any)" handler:^void(NSDictionary *d, OSCValue *v) {
+		stopRunningMacro();
+	}];
+	
+	[self addEndpoint:@"/atem/macros/max-number" label:@"Get the Maximum Number of Macros" handler:^void(NSDictionary *d, OSCValue *v) {
+		uint32_t value = getMaxNumberOfMacros();
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/max-number"];
+		[newMsg addInt:(int)value];
+		[[appDel outPort] sendThisMessage:newMsg];
+	}];
+	
+	[self addEndpoint:@"/atem/macros/<index>/run" label:@"Run the Macro at <index>" handler:^void(NSDictionary *d, OSCValue *v) {
+		int macroIndex = [[d objectForKey:@"<index>"] intValue];
+		int value = runMacroAtIndex(macroIndex); // Try to run the valid Macro
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/<index>/run"];
+		[newMsg addInt:(int)value];
+		[[appDel outPort] sendThisMessage:newMsg];
+	}];
+	
+	[self addEndpoint:@"/atem/macros/<index>/name" label:@"Get the Name of a Macro" handler:^void(NSDictionary *d, OSCValue *v) {
+		int macroIndex = [[d objectForKey:@"<index>"] intValue];
+		NSString *value = getNameOfMacro(macroIndex);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/<index>/name"];
+		[newMsg addString:(NSString *)value];
+		[[appDel outPort] sendThisMessage:newMsg];
+	}];
+	
+	[self addEndpoint:@"/atem/macros/<index>/description" label:@"Get the Description of a Macro" handler:^void(NSDictionary *d, OSCValue *v) {
+		int macroIndex = [[d objectForKey:@"<index>"] intValue];
+		NSString *value = getDescriptionOfMacro(macroIndex);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/<index>/description"];
+		[newMsg addString:(NSString *)value];
+		[[appDel outPort] sendThisMessage:newMsg];
+	}];
+	
+	[self addEndpoint:@"/atem/macros/<index>/is-valid" label:@"Get whether the Macro at <index> is valid" handler:^void(NSDictionary *d, OSCValue *v) {
+		int macroIndex = [[d objectForKey:@"<index>"] intValue];
+		int value = isMacroValid(macroIndex) ? 1 : 0;
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/<index>/is-valid"];
+		[newMsg addInt:(int)value];
+		[[appDel outPort] sendThisMessage:newMsg];
+	}];
+	
+	[self addEndpoint:@"/atem/aux/<key>" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		int auxToChange = [[d objectForKey:@"<key>"] intValue];
+		BMDSwitcherInputId inputId = [v intValue];
+		[appDel mSwitcherInputAuxList][auxToChange-1]->SetInputSource(inputId);
+	}];
+	
+	[self addEndpoint:@"/atem/audio/input/<number>/gain" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mAudioInputs][inputNumber]->SetGain([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/audio/input/<number>/balance" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mAudioInputs][inputNumber]->SetBalance([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/audio/output/gain" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel mAudioMixer]->SetProgramOutGain([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/audio/output/balance" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel mAudioMixer]->SetProgramOutBalance([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/hyperdeck/<number>/play" label:@"HyperDeck <number> Play" handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mHyperdecks][hyperdeckNumber-1]->Play();
+	}];
+	
+	[self addEndpoint:@"/atem/hyperdeck/<number>/stop" label:@"HyperDeck <number> Stop" handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mHyperdecks][hyperdeckNumber-1]->Stop();
+	}];
+	
+	[self addEndpoint:@"/atem/hyperdeck/<number>/record" label:@"HyperDeck <number> Record" handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mHyperdecks][hyperdeckNumber-1]->Record();
+	}];
+	
+	[self addEndpoint:@"/atem/hyperdeck/<number>/shuttle" label:@"HyperDeck <number> Shuttle" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mHyperdecks][hyperdeckNumber-1]->Shuttle([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/hyperdeck/<number>/jog" label:@"HyperDeck <number> Jog" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mHyperdecks][hyperdeckNumber-1]->Jog([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/hyperdeck/<number>/clip" label:@"HyperDeck <number> Select Clip" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mHyperdecks][hyperdeckNumber-1]->SetCurrentClip([v intValue]-1);
+	}];
+	
+	[self addEndpoint:@"/atem/hyperdeck/<number>/clip-time" label:@"HyperDeck <number> Set Clip Time" valueType:OSCValString handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[self setHyperDeckTime:hyperdeckNumber-1 time:[v stringValue] clip:YES];
+	}];
+	
+	[self addEndpoint:@"/atem/hyperdeck/<number>/timeline-time" label:@"HyperDeck <number> Set Timeline Time" valueType:OSCValString handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[self setHyperDeckTime:hyperdeckNumber-1 time:[v stringValue] clip:NO];
+	}];
+	
+	// Recursively build the tree from the list
+	// This allows for O(1) calls to find the handler for the address instead of O(n)
+	for (OSCEndpoint *endpoint in [appDel endpoints])
+		[self buildMapLevel:endpointMap endpoint:endpoint index:0];
+
+	// Turn on for debugging
+	//[self printLevel:endpointMap index:0];
+	
 	return self;
+}
+
+// For debugging purposes
+- (void) printLevel:(NSMutableDictionary *)level index:(int)index
+{
+	if ([level isKindOfClass:[OSCEndpoint class]])
+		return;
+	
+	for (NSString *key in [level allKeys])
+	{
+		NSLog(@"%@%@", [@"" stringByPaddingToLength:index*2 withString: @" " startingAtIndex:0], key);
+		if ([level objectForKey:key] != nil)
+			[self printLevel:[level objectForKey:key] index:index+1];
+	}
+}
+
+// Recursive function to build the endpoint tree from the endpoint list
+// Tree is just nested dictionaries that correspond to each component in the OSC address
+- (void) buildMapLevel:(NSMutableDictionary *)level endpoint:(OSCEndpoint *)endpoint index:(int)index
+{
+	NSMutableArray *addressComponents = [NSMutableArray arrayWithArray:[[endpoint addressTemplate] componentsSeparatedByString:@"/"]];
+	[addressComponents removeObjectAtIndex:0]; // Remove empty string
+	NSString *key = [addressComponents objectAtIndex:index];
+	
+	// Create new dictionaries as needed
+	if ([level objectForKey:key] == nil)
+		[level setObject:[[NSMutableDictionary alloc] init] forKey:key];
+	
+	if (index == [addressComponents count] - 1)
+		[[level objectForKey:key] setObject:endpoint forKey:@"handler"];
+	else
+		[self buildMapLevel:[level objectForKey:key] endpoint:endpoint index:index+1];
+}
+
+// Helper function for cleaner syntax when add endpoints (see examples above)
+- (void) addEndpoint:(NSString *)addressTemplate label:(NSString*)label valueType:(OSCValueType)valueType handler:(void (^)(NSDictionary *, OSCValue *))handler
+{
+	OSCEndpoint *endpoint = [[OSCEndpoint alloc] init];
+	endpoint.addressTemplate = addressTemplate;
+	endpoint.handler = handler;
+	endpoint.valueType = valueType;
+	endpoint.label = label;
+	[[appDel endpoints] addObject: endpoint];
+}
+- (void) addEndpoint:(NSString *)addressTemplate valueType:(OSCValueType)valueType handler:(void (^)(NSDictionary *, OSCValue *))handler
+{
+	[self addEndpoint:addressTemplate label:nil valueType:valueType handler:handler];
+}
+
+// Makes valueType an optional parameter
+- (void) addEndpoint:(NSString *)addressTemplate handler:(void (^)(NSDictionary *, OSCValue *))handler
+{
+	[self addEndpoint:addressTemplate label:nil valueType:OSCValNil handler:handler];
+}
+- (void) addEndpoint:(NSString *)addressTemplate label:(NSString*)label handler:(void (^)(NSDictionary *, OSCValue *))handler
+{
+	[self addEndpoint:addressTemplate label:label valueType:OSCValNil handler:handler];
+}
+
+- (OSCEndpoint *) findEndpointForAddress:(NSString *)address whileUpdatingArgs:(NSMutableDictionary *)args andSettingFinalLevel:(NSMutableDictionary *)finalLevel
+{
+	NSMutableArray<NSString *> *addressComponents = [NSMutableArray arrayWithArray:[address componentsSeparatedByString:@"/"]];
+	[addressComponents removeObjectAtIndex:0]; // remove empty string
+	
+	NSMutableDictionary *currentLevel = endpointMap;
+	
+	// Go down tree of possible endpoints until one is found that matches
+	// Add paramaterized values as we go (ones that look like <something>)
+	for (int i = 0; i < [addressComponents count]; i++)
+	{
+		NSString *method = addressComponents[i];
+		
+		// Match directly if possible
+		if ([currentLevel objectForKey:method] != nil)
+			currentLevel = [currentLevel objectForKey:method];
+		// Otherwise, this is a variable or invalid method
+		else
+		{
+			// In case this is a variable in the address string, look for address templates that accept variables at this location
+			NSString *paramPlaceholder = nil;
+			for (NSString *option in [currentLevel allKeys])
+			{
+				if ([option hasPrefix:@"<"])
+				{
+					paramPlaceholder = option;
+
+					// Set args to pass this to the handler function
+					if (stringIsNumber(method))
+						[args setObject:[NSNumber numberWithInt:[method intValue]] forKey:option];
+					else
+						[args setObject:method forKey:option];
+				}
+			}
+			
+			// If found, set the level and continue
+			if ([currentLevel objectForKey:paramPlaceholder] != nil)
+				currentLevel = [currentLevel objectForKey:paramPlaceholder];
+			// If we didn't find any available endpoints that accept, leave the loop and error out
+			else
+			{
+				[finalLevel addEntriesFromDictionary:currentLevel];
+				return nil;
+			}
+		}
+	}
+	
+	[finalLevel addEntriesFromDictionary:currentLevel];
+	if ([currentLevel objectForKey:@"handler"] != nil)
+		return [currentLevel objectForKey:@"handler"];
+	
+	return nil;
+}
+
+// Starting at any point in the tree, recursively returns all child endpoints
+// This is useful for showing contextual help menus when they type invalue commands
+- (NSArray<OSCEndpoint *> *) getEndpointsForNode:(NSMutableDictionary *)node
+{
+	if (node == nil)
+		return [[NSArray<OSCEndpoint *> alloc] init];
+	
+	NSMutableArray *endpoints = [[NSMutableArray alloc] init];
+	for (NSMutableDictionary *object in [node allValues])
+	{
+		if ([object isKindOfClass:[OSCEndpoint class]])
+			[endpoints addObject:object];
+		else
+			[endpoints addObjectsFromArray:[self getEndpointsForNode:object]];
+	}
+	
+	return endpoints;
 }
 
 - (void) receivedOSCMessage:(OSCMessage *)m
 {
 	[appDel logMessage:[NSString stringWithFormat:@"Received OSC message: %@\tValue: %@", [m address], [m value]]];
-	if ([appDel isConnectedToATEM]) { //Do nothing if not connected
-		NSArray *address = [[m address] componentsSeparatedByString:@"/"];
+	
+	if (![appDel isConnectedToATEM])
+		return [appDel logMessage:[NSString stringWithFormat:@"Cannot process command %@ because no switcher connected", [m address]]];
+	
+	NSMutableDictionary *args = [[NSMutableDictionary alloc] init];
+	[args setValue:[m address] forKey:@"address"];
+
+	NSMutableDictionary *finalLevel = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *finalLevelSecondTry = [[NSMutableDictionary alloc] init];
+	OSCValue *value = [m value];
+
+	// First check normal address and values
+	OSCEndpoint *endpoint = [self findEndpointForAddress:[m address] whileUpdatingArgs:args andSettingFinalLevel:finalLevel];
+	
+	// Then try passing the last component of the address as the value and see if that matches any better
+	// This would be common with TouchOSC, for example passing /transition/type/mix 1.0 instead of /transition/type mix
+	if (endpoint == nil)
+	{
+		// In TouchOSC specifically, it will send a float value of 1.0 on button press and 0.0 on button release
+		// This ignores the button release message to prevent duplicate calls
+		if ([[m value] type] == OSCValFloat && [[m value] floatValue] == 0.0)
+			return;
 		
-		if ([[address objectAtIndex:1] isEqualToString:@"atem"])
-		{
-			if ([[address objectAtIndex:2] isEqualToString:@"send-status"])
-				[appDel sendStatus];
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"preview"] || [[address objectAtIndex:2] isEqualToString:@"program"])
-				activateChannel([[address objectAtIndex:3] intValue], [[address objectAtIndex:2] isEqualToString:@"program"]);
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"transition"])
-			{
-				if ([[address objectAtIndex:3] isEqualToString:@"bar"])
-				{
-					if ([appDel mMixEffectBlockMonitor]->mMoveSliderDownwards)
-						[appDel mMixEffectBlock]->SetTransitionPosition([m calculateFloatValue]);
-					else
-						[appDel mMixEffectBlock]->SetTransitionPosition(1.0-[m calculateFloatValue]);
-				}
-				
-				else if ([[address objectAtIndex:3] isEqualToString:@"cut"])
-					[appDel mMixEffectBlock]->PerformCut();
-				
-				else if ([[address objectAtIndex:3] isEqualToString:@"auto"])
-					[appDel mMixEffectBlock]->PerformAutoTransition();
-				
-				else if ([[address objectAtIndex:3] isEqualToString:@"ftb"])
-					[appDel mMixEffectBlock]->PerformFadeToBlack();
-				
-				else if ([[address objectAtIndex:3] isEqualToString:@"preview"])
-					[appDel mMixEffectBlock]->SetPreviewTransition((int)[m calculateFloatValue]);
-				
-				else if ([[address objectAtIndex:3] isEqualToString:@"set-type"])
-				{
-					
-					HRESULT result;
-					NSString *style = [address objectAtIndex:4];
-					REFIID transitionStyleID = IID_IBMDSwitcherTransitionParameters;
-					IBMDSwitcherTransitionParameters* mTransitionStyleParameters=NULL;
-					result = [appDel mMixEffectBlock]->QueryInterface(transitionStyleID, (void**)&mTransitionStyleParameters);
-					if (SUCCEEDED(result))
-					{
-						if ([style isEqualToString:@"mix"])
-							mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
-						
-						else if ([style isEqualToString:@"dip"])
-							mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDip);
-						
-						else if ([style isEqualToString:@"wipe"])
-							mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleWipe);
-						
-						else if ([style isEqualToString:@"sting"])
-							mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleStinger);
-						
-						else if ([style isEqualToString:@"dve"])
-							mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
-						
-						else
-							[appDel logMessage:@"You must specify a transition type of 'mix', 'dip', 'wipe', 'sting', or 'dve'"];
-					}
-				}
-				
-				else
-					[appDel logMessage:@"You must specify a transition action of 'bar', 'cut', 'auto', 'ftb', or 'set-type"];
-			}
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"usk"] && [address count] > 4)
-			{
-				if (stringIsNumber([address objectAtIndex:3]))
-				{
-					int t = [[address objectAtIndex:3] intValue];
-					
-					if ([[address objectAtIndex:4] isEqualToString:@"tie"])
-					{
-						// Toggle tie
-						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"toggle"])
-						{
-							uint32_t currentTransitionSelection;
-							[appDel switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
-							
-							uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-							uint32_t requestedTransitionSelection = transitionSelections[t];
-							
-							[self changeTransitionSelection:t select:!((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
-						}
-						
-						// Set for state after next transition
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"set-next"])
-						{
-							bool value = [[m value] floatValue] != 0.0;
-							
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								bool isOnAir;
-								key->GetOnAir(&isOnAir);
-								
-								[self changeTransitionSelection:t select:(value != isOnAir)];
-							}
-						}
-						
-						// Set tie
-						else if ([address count] == 5)
-						{
-							bool value = [[m value] floatValue] != 0.0;
-							[self changeTransitionSelection:t select:value];
-						}
-						
-						else
-							[appDel logMessage:@"You must specify a usk tie command of 'toggle' or 'set-next', or send a value to set the tie on or off"];
-					}
-					
-					else if ([[address objectAtIndex:4] isEqualToString:@"on-air"])
-					{
-						// Cut toggle on-air
-						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"toggle"])
-						{
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								bool onAir;
-								key->GetOnAir(&onAir);
-								key->SetOnAir(!onAir);
-							}
-						}
-						
-						// Force set on-air
-						else if ([address count] == 5)
-						{
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								bool value = [[m value] floatValue] != 0.0;
-								key->SetOnAir(value);
-							}
-						}
-						
-						else
-							[appDel logMessage:@"You must specify a usk on-air command of 'toggle' or send a value to cut the usk on or off air"];
-					}
-					
-					else if ([[address objectAtIndex:4] isEqualToString:@"source"])
-					{
-						// Get/Set Fill Source
-						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"fill"])
-						{
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									BMDSwitcherInputId inputId = [[m value] intValue];
-									key->SetInputFill(inputId);
-								}
-							}
-						}
-						
-						// Get/Set Key (cut) Source
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"cut"])
-						{
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									BMDSwitcherInputId inputId = [[m value] intValue];
-									key->SetInputCut(inputId);
-								}
-							}
-						}
-						
-						else
-							[appDel logMessage:@"You must specify a usk source command of 'fill' or 'cut'"];
-					}
-					
-					else if ([[address objectAtIndex:4] isEqualToString:@"type"])
-					{
-						if (([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"luma"]) || [[[m value] stringValue] isEqualToString: @"luma"])
-						{
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								key->SetType(bmdSwitcherKeyTypeLuma);
-							}
-						}
-						else if (([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"chroma"]) || ([m valueCount] > 0 && [[[m value] stringValue] isEqualToString: @"chroma"]))
-						{
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								key->SetType(bmdSwitcherKeyTypeChroma);
-							}
-						}
-						else if (([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"pattern"]) || ([m valueCount] > 0 && [[[m value] stringValue] isEqualToString: @"pattern"]))
-						{
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								key->SetType(bmdSwitcherKeyTypePattern);
-							}
-						}
-						else if (([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"dve"]) || ([m valueCount] > 0 && [[[m value] stringValue] isEqualToString: @"dve"]))
-						{
-							if (IBMDSwitcherKey* key = [self getUSK:t])
-							{
-								key->SetType(bmdSwitcherKeyTypeDVE);
-							}
-						}
-					}
-					
-					else if ([[address objectAtIndex:4] isEqualToString:@"luma"])
-					{
-						// Get/Set PreMultiplied
-						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"pre-multiplied"])
-						{
-							if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									lumaParams->SetPreMultiplied([[m value] boolValue]);
-								}
-							}
-						}
-						
-						// Get/Set Clip
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"clip"])
-						{
-							if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									lumaParams->SetClip([[m value] floatValue]);
-								}
-							}
-						}
-						
-						// Get/Set Gain
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"gain"])
-						{
-							if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									lumaParams->SetGain([[m value] floatValue]);
-								}
-							}
-						}
-						
-						// Get/Set Inverse
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"inverse"])
-						{
-							if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									lumaParams->SetInverse([[m value] boolValue]);
-								}
-							}
-						}
-						
-						else
-							[appDel logMessage:@"You must specify a usk luma command of 'pre-multiplied', 'clip', 'gain', or 'inverse'"];
-					}
-					
-					else if ([[address objectAtIndex:4] isEqualToString:@"chroma"])
-					{
-						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"hue"])
-						{
-							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									chromaParams->SetHue([[m value] floatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"gain"])
-						{
-							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									chromaParams->SetGain([[m value] floatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"y-suppress"])
-						{
-							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									chromaParams->SetYSuppress([[m value] floatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"lift"])
-						{
-							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									chromaParams->SetLift([[m value] floatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"narrow"])
-						{
-							if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									chromaParams->SetNarrow([[m value] boolValue]);
-								}
-							}
-						}
-						
-						else
-							[appDel logMessage:@"You must specify a usk chroma command of 'hue', 'gain', 'y-suppress', 'lift', or 'narrow'"];
-					}
-					
-					else if ([[address objectAtIndex:4] isEqualToString:@"dve"])
-					{
-						if ([address count] == 7 && [[address objectAtIndex:5] isEqualToString:@"enabled"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderHue([[address objectAtIndex:6] boolValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"border-width-inner"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderWidthIn([m calculateFloatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"border-width-outer"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderWidthOut([m calculateFloatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"border-softness-outer"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderSoftnessOut([m calculateFloatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"border-softness-outer"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderSoftnessOut([m calculateFloatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"border-opacity"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderOpacity([m calculateFloatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"border-hue"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderHue([m calculateFloatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"border-saturation"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderSaturation([m calculateFloatValue]);
-								}
-							}
-						}
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"border-luma"])
-						{
-							if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:t])
-							{
-								if ([m valueCount] > 0)
-								{
-									dveParams->SetBorderLuma([m calculateFloatValue]);
-								}
-							}
-						}
-						
-						else
-							[appDel logMessage:@"You must specify a usk dve command of 'border-width-inner', 'border-width-outer', 'border-softness-inner', 'border-softness-outer', 'border-opacity', 'border-hue', 'border-saturation', or 'border-luma'"];
-					}
-					
-					else
-						[appDel logMessage:@"You must specify a usk command of 'tie', 'on-air', 'type', 'source', 'chroma', or 'luma'"];
-				}
-				
-				else
-					[appDel logMessage:[NSString stringWithFormat:@"You must specify a usk between 0 and %lu", [appDel keyers].size()]];
-			}
-
-			// Deprecated
-			else if ([[address objectAtIndex:2] isEqualToString:@"set-nextusk"])
-			{
-				int t = [[address objectAtIndex:3] intValue];
-				bool value = [m calculateFloatValue] != 0.0;
-				
-				if (IBMDSwitcherKey* key = [self getUSK:t])
-				{
-					bool isOnAir;
-					key->GetOnAir(&isOnAir);
-					
-					[self changeTransitionSelection:t select:(value != isOnAir)];
-				}
-			}
-			
-			// Deprecated
-			else if ([[address objectAtIndex:2] isEqualToString:@"nextusk"])
-			{
-				int t = [[address objectAtIndex:3] intValue];
-				bool value = [m calculateFloatValue] != 0.0;
-				[self changeTransitionSelection:t select:value];
-			}
-			
-			// Deprecated
-			else if ([[address objectAtIndex:2] isEqualToString:@"usk"])
-			{
-				IBMDSwitcherKey* key = [self getUSK:[[address objectAtIndex:3] intValue]];
-				if (key && [m calculateFloatValue] != 0.0)
-				{
-					bool onAir;
-					key->GetOnAir(&onAir);
-					key->SetOnAir(!onAir);
-				}
-			}
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"dsk"])
-			{
-				// Deprecated
-				if ([[address objectAtIndex:3] isEqualToString:@"set-tie"])
-				{
-					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
-					{
-						bool value = [m calculateFloatValue] != 0.0;
-						bool isTransitioning;
-						key->IsTransitioning(&isTransitioning);
-						if (!isTransitioning) key->SetTie(value);
-					}
-				}
-				
-				// Deprecated
-				else if ([[address objectAtIndex:3] isEqualToString:@"tie"])
-				{
-					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
-					{
-						bool isTied;
-						key->GetTie(&isTied);
-						bool isTransitioning;
-						key->IsTransitioning(&isTransitioning);
-						if (!isTransitioning) key->SetTie(!isTied);
-					}
-				}
-				
-				// Deprecated
-				else if ([[address objectAtIndex:3] isEqualToString:@"toggle"])
-				{
-					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
-					{
-						bool isLive;
-						key->GetOnAir(&isLive);
-						bool isTransitioning;
-						key->IsTransitioning(&isTransitioning);
-						if (!isTransitioning) key->SetOnAir(!isLive);
-					}
-				}
-				
-				// Deprecated
-				else if ([[address objectAtIndex:3] isEqualToString:@"on-air"])
-				{
-					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
-					{
-						bool value = [m calculateFloatValue] != 0.0;
-						bool isTransitioning;
-						key->IsTransitioning(&isTransitioning);
-						if (!isTransitioning) key->SetOnAir(value);
-					}
-				}
-				
-				// Deprecated
-				else if ([[address objectAtIndex:3] isEqualToString:@"set-next"])
-				{
-					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:4] intValue]])
-					{
-						bool value = [m calculateFloatValue] != 0.0;
-						bool isTransitioning, isOnAir;
-						key->IsTransitioning(&isTransitioning);
-						key->GetOnAir(&isOnAir);
-						if (!isTransitioning) key->SetTie(value != isOnAir);
-					}
-				}
-				
-				// Deprecated
-				else if ([address count] == 4 && stringIsNumber([address objectAtIndex:3]))
-				{
-					if (IBMDSwitcherDownstreamKey* key = [self getDSK:[[address objectAtIndex:3] intValue]])
-					{
-						bool isTransitioning;
-						key->IsAutoTransitioning(&isTransitioning);
-						if (!isTransitioning) key->PerformAutoTransition();
-					}
-				}
-				
-				else if ([address count] > 4 && stringIsNumber([address objectAtIndex:3]))
-				{
-					int t = [[address objectAtIndex:3] intValue];
-					
-					if ([[address objectAtIndex:4] isEqualToString:@"tie"])
-					{
-						// Toggle tie
-						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"toggle"])
-						{
-							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
-							{
-								bool isTied;
-								key->GetTie(&isTied);
-								bool isTransitioning;
-								key->IsTransitioning(&isTransitioning);
-								if (!isTransitioning) key->SetTie(!isTied);
-							}
-						}
-						
-						// Set for state after next transition
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"set-next"])
-						{
-							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
-							{
-								bool value = [m calculateFloatValue] != 0.0;
-								bool isTransitioning, isOnAir;
-								key->IsTransitioning(&isTransitioning);
-								key->GetOnAir(&isOnAir);
-								if (!isTransitioning) key->SetTie(value != isOnAir);
-							}
-						}
-						
-						// Set tie
-						else if ([address count] == 5)
-						{
-							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
-							{
-								bool value = [m calculateFloatValue] != 0.0;
-								bool isTransitioning;
-								key->IsTransitioning(&isTransitioning);
-								if (!isTransitioning) key->SetTie(value);
-							}
-						}
-						
-						else
-							[appDel logMessage:@"You must specify a dsk tie command of 'toggle' or 'set-next', or send a value to set the tie on or off"];
-					}
-					
-					else if ([[address objectAtIndex:4] isEqualToString:@"on-air"])
-					{
-						// Cut toggle on-air
-						if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"toggle"])
-						{
-							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
-							{
-								bool isLive;
-								key->GetOnAir(&isLive);
-								bool isTransitioning;
-								key->IsTransitioning(&isTransitioning);
-								if (!isTransitioning) key->SetOnAir(!isLive);
-							}
-						}
-						
-						// Auto on-air
-						else if ([address count] == 6 && [[address objectAtIndex:5] isEqualToString:@"auto"])
-						{
-							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
-							{
-								bool isTransitioning;
-								key->IsAutoTransitioning(&isTransitioning);
-								if (!isTransitioning) key->PerformAutoTransition();
-							}
-						}
-						
-						// Set on-air
-						else if ([address count] == 5)
-						{
-							if (IBMDSwitcherDownstreamKey* key = [self getDSK:t])
-							{
-								bool value = [m calculateFloatValue] != 0.0;
-								bool isTransitioning;
-								key->IsTransitioning(&isTransitioning);
-								if (!isTransitioning) key->SetOnAir(value);
-							}
-						}
-						
-						else
-							[appDel logMessage:@"You must specify a dsk on-air command of 'toggle' or 'auto', or send a value to cut the dsk on or off air"];
-					}
-					
-					else
-						[appDel logMessage:@"You must specify a dsk command of 'tie' or 'on-air'"];
-				}
-				
-				else
-					[appDel logMessage:[NSString stringWithFormat:@"You must specify a dsk between 1 and %lu", [appDel dsk].size()]];
-			}
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"mplayer"])
-			{
-				int mplayer = [[address objectAtIndex:3] intValue];
-				NSString *type = [address objectAtIndex:4];
-				int requestedValue = [[address objectAtIndex:5] intValue];
-				BMDSwitcherMediaPlayerSourceType sourceType;
-				
-				// check we have the media pool
-				if (![appDel mMediaPool])
-				{
-					[appDel logMessage:@"No media pool\n"];
-					return;
-				}
-				
-				if ([appDel mMediaPlayers].size() < mplayer || mplayer < 0)
-				{
-					[appDel logMessage:[NSString stringWithFormat:@"No media player %d", mplayer]];
-					return;
-				}
-				
-				if ([type isEqualToString:@"clip"])
-				{
-					sourceType = bmdSwitcherMediaPlayerSourceTypeClip;
-				}
-				else if ([type isEqualToString:@"still"])
-				{
-					sourceType = bmdSwitcherMediaPlayerSourceTypeStill;
-				}
-				else
-				{
-					[appDel logMessage:@"You must specify the Media type 'clip' or 'still'"];
-					return;
-				}
-				// set media player source
-				HRESULT result;
-				result = [appDel mMediaPlayers][mplayer-1]->SetSource(sourceType, requestedValue-1);
-				if (FAILED(result))
-				{
-					[appDel logMessage:[NSString stringWithFormat:@"Could not set media player %d source\n", mplayer]];
-					return;
-				}
-			}
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"supersource"])
-			{
-				[self handleSuperSource:m address:address];
-			}
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"macros"])
-			{
-				[self handleMacros:m address:address];
-			}
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"aux"])
-			{
-				int auxToChange = [[address objectAtIndex:3] intValue];
-				int source = [m calculateFloatValue];
-				[self handleAuxSource:auxToChange channel:source];
-			}
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"audio"] && [address count] > 3)
-			{
-				if ([[address objectAtIndex:3] isEqualToString:@"input"])
-				{
-					if (stringIsNumber([address objectAtIndex:4]))
-					{
-						BMDSwitcherAudioInputId inputNumber = [[address objectAtIndex:4] intValue];
-						if ([appDel mAudioInputs].count(inputNumber) > 0)
-						{
-							if ([[address objectAtIndex:5] isEqualToString:@"gain"])
-								[appDel mAudioInputs][inputNumber]->SetGain([m calculateFloatValue]);
-
-							else if ([[address objectAtIndex:5] isEqualToString:@"balance"])
-								[appDel mAudioInputs][inputNumber]->SetBalance([m calculateFloatValue]);
-
-							else
-								[appDel logMessage:[NSString stringWithFormat:@"Invalid option '%@'. You must specify an audio input option of 'gain' or 'balance'", [address objectAtIndex:5]]];
-						}
-
-						else
-							[appDel logMessage:[NSString stringWithFormat:@"Invalid input %lld. Please choose a valid audio input number from the list in Help > OSC addresses.", inputNumber]];
-					}
-
-					else
-						[appDel logMessage:[NSString stringWithFormat:@"Invalid input %@. The address following input/ must be a number", [address objectAtIndex:4]]];
-				}
-
-				else if ([[address objectAtIndex:3] isEqualToString:@"output"])
-				{
-					if ([[address objectAtIndex:4] isEqualToString:@"gain"])
-						[appDel mAudioMixer]->SetProgramOutGain([m calculateFloatValue]);
-					
-					else if ([[address objectAtIndex:4] isEqualToString:@"balance"])
-						[appDel mAudioMixer]->SetProgramOutBalance([m calculateFloatValue]);
-					
-					else
-						[appDel logMessage:[NSString stringWithFormat:@"Invalid option '%@'. You must specify an audio output option of 'gain' or 'balance'", [address objectAtIndex:4]]];
-				}
-				
-				else
-					[appDel logMessage:[NSString stringWithFormat:@"Invalid command '%@'. You must specify an audio command of 'input' or 'output'", [address objectAtIndex:3]]];
-			}
-			
-			else if ([[address objectAtIndex:2] isEqualToString:@"hyperdeck"])
-			{
-				if (stringIsNumber([address objectAtIndex:3]))
-				{
-					BMDSwitcherHyperDeckId hyperdeckNumber = [[address objectAtIndex:3] intValue];
-					if ([appDel mHyperdecks].count(hyperdeckNumber-1) > 0)
-					{
-						if ([[address objectAtIndex:4] isEqualToString:@"play"])
-							[appDel mHyperdecks][hyperdeckNumber-1]->Play();
-						
-						else if ([[address objectAtIndex:4] isEqualToString:@"stop"])
-							[appDel mHyperdecks][hyperdeckNumber-1]->Stop();
-						
-						else if ([[address objectAtIndex:4] isEqualToString:@"record"])
-							[appDel mHyperdecks][hyperdeckNumber-1]->Record();
-						
-						else if ([[address objectAtIndex:4] isEqualToString:@"shuttle"])
-							[appDel mHyperdecks][hyperdeckNumber-1]->Shuttle([[m value] intValue]);
-						
-						else if ([[address objectAtIndex:4] isEqualToString:@"jog"])
-							[appDel mHyperdecks][hyperdeckNumber-1]->Jog([[m value] intValue]);
-						
-						else if ([[address objectAtIndex:4] isEqualToString:@"clip"])
-							[appDel mHyperdecks][hyperdeckNumber-1]->SetCurrentClip([[m value] intValue]-1);
-						
-						else if ([[address objectAtIndex:4] isEqualToString:@"clip-time"])
-							[self setHyperDeckTime:hyperdeckNumber-1 time:[[m value] stringValue] clip:YES];
-						
-						else if ([[address objectAtIndex:4] isEqualToString:@"timeline-time"])
-							[self setHyperDeckTime:hyperdeckNumber-1 time:[[m value] stringValue] clip:NO];
-						
-						else
-							[appDel logMessage:[NSString stringWithFormat:@"Invalid option '%@'. You must specify a hyperdeck option of 'play', 'stop', 'record', 'shuttle', or 'jog'", [address objectAtIndex:4]]];
-					}
-					
-					else
-						[appDel logMessage:[NSString stringWithFormat:@"Invalid HyperDeck identifier %lld. Please choose a valid HyperDeck identifier from the list in Help > OSC addresses.", hyperdeckNumber]];
-				}
-				
-				else
-					[appDel logMessage:[NSString stringWithFormat:@"Invalid input %@. The address following hyperdeck/ must be a number", [address objectAtIndex:3]]];
-			}
-			
-			else
-				[appDel logMessage:[NSString stringWithFormat:@"Cannot handle command: %@\nYou can find a list of valid commands in the help menu", [m address]]];
-		}
+		NSMutableArray *componentArray = [[NSMutableArray alloc] initWithArray:[[m address] componentsSeparatedByString:@"/"]];
+		if (stringIsNumber([componentArray lastObject]))
+			value = [OSCValue createWithInt:[[componentArray lastObject] intValue]];
 		else
-			[appDel logMessage:[NSString stringWithFormat:@"Cannot handle command: %@\nYou can find a list of valid commands in the help menu", [m address]]];
+			value = [OSCValue createWithString:[componentArray lastObject]];
+		[componentArray removeLastObject];
+		NSString *modifiedAddress = [componentArray componentsJoinedByString:@"/"];
+		[args removeAllObjects];
+		endpoint = [self findEndpointForAddress:modifiedAddress whileUpdatingArgs:args andSettingFinalLevel:finalLevelSecondTry];
 	}
+	
+	if (endpoint != nil)
+	{
+		NSLog(@"Found OSCEndpoint for address: %@", [m address]);
+		
+		if (value == nil && endpoint.valueType != OSCValNil)
+			return [appDel logMessage:[NSString stringWithFormat:@"Value required for %@, but no value given", [m address]]];
+		
+		OSCValueType neededType = endpoint.valueType;
+		OSCValueType actualType = [value type];
+		if (actualType != neededType)
+		{
+			// Transform value if needed to match desired type
+			// This is needed for compatibility with TouchOSC mostly, which can only send floats that need to be converted to ints and bools
+			if (neededType == OSCValInt && actualType == OSCValFloat)
+				value = [OSCValue createWithInt:(int)[[m value] floatValue]];
+			else if (neededType == OSCValFloat && actualType == OSCValInt)
+				value = [OSCValue createWithFloat:(float)[[m value] intValue]];
+			else if (neededType == OSCValBool && actualType == OSCValFloat)
+				value = [OSCValue createWithBool:[[m value] floatValue] == 1.0];
+			else if (neededType == OSCValBool && actualType == OSCValInt)
+				value = [OSCValue createWithBool:[[m value] intValue] == 1];
+			else if (neededType == OSCValNil)
+				[appDel logMessage:[NSString stringWithFormat:@"Unecessary value passed for %@, but running regardless", [m address]]];
+			else
+				return [appDel logMessage:[NSString stringWithFormat:@"Incorrect value type for %@", [m address]]];
+		}
+				
+		// Pass validation if needed (relatively small number of validators should ensure this is performant)
+		// Validation functions will print their own error messages, so we can just exit directly if they fail
+		for (NSString *validatorKey in [validators allKeys])
+			if ([[endpoint addressTemplate] hasPrefix:validatorKey] && ![validators objectForKey:validatorKey](args, value))
+				return;
+		
+		// Call handler found for address with paramaterized arguments and value of matching type
+		endpoint.handler(args, value);
+	}
+	
 	else
-		[appDel logMessage:[NSString stringWithFormat:@"Cannot process command %@ because no switcher connected", [m address]]];
-}
-
-- (IBMDSwitcherDownstreamKey *) getDSK:(int)t
-{
-	if (t<=[appDel dsk].size())
 	{
-		return [appDel dsk][t-1];
-	}
-	return nullptr;
-}
+		// Given the last element we could match, show possible future elements that they might have meant
+		if ([[finalLevel allKeys] count] > 0)
+		{
+			NSArray *possibleEndpoints = [self getEndpointsForNode:finalLevel];
+			if ([possibleEndpoints count] < 15)
+			{
+				NSMutableArray *possibleAddresses = [[NSMutableArray alloc] init];
+				for (OSCEndpoint *endpoint in possibleEndpoints)
+					[possibleAddresses addObject:[endpoint addressTemplate]];
 
-- (IBMDSwitcherKey *) getUSK:(int)t
-{
-	if (t<=[appDel keyers].size())
-	{
-		return [appDel keyers][t-1];
+				return [appDel logMessage:[NSString stringWithFormat:@"OSC endpoint not implemented for %@, maybe you meant to call one of these methods: %@", [m address], [possibleAddresses componentsJoinedByString:@", "]]];
+			}
+		}
+		
+		[appDel logMessage:[NSString stringWithFormat:@"OSC endpoint not implemented for %@, refer to the help menu for a list of available addresses", [m address]]];
 	}
-	return nullptr;
 }
 
 - (IBMDSwitcherKeyLumaParameters *) getUSKLumaParams:(int)t
 {
-	if (t<=[appDel keyers].size())
-	{
-		IBMDSwitcherKey* key = [appDel keyers][t-1];
-		IBMDSwitcherKeyLumaParameters* lumaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
-		return lumaParams;
-	}
-	return nullptr;
+	IBMDSwitcherKey* key = [appDel keyers][t-1];
+	IBMDSwitcherKeyLumaParameters* lumaParams;
+	key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+	return lumaParams;
 }
 
 - (IBMDSwitcherKeyChromaParameters *) getUSKChromaParams:(int)t
 {
-	if (t<=[appDel keyers].size())
-	{
-		IBMDSwitcherKey* key = [appDel keyers][t-1];
-		IBMDSwitcherKeyChromaParameters* chromaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
-		return chromaParams;
-	}
-	return nullptr;
+	IBMDSwitcherKey* key = [appDel keyers][t-1];
+	IBMDSwitcherKeyChromaParameters* chromaParams;
+	key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+	return chromaParams;
 }
 
 - (IBMDSwitcherKeyDVEParameters *) getUSKDVEParams:(int)t
 {
-	if (t<=[appDel keyers].size())
-	{
-		IBMDSwitcherKey* key = [appDel keyers][t-1];
-		IBMDSwitcherKeyDVEParameters* dveParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyDVEParameters, (void**)&dveParams);
-		return dveParams;
-	}
-	return nullptr;
+	IBMDSwitcherKey* key = [appDel keyers][t-1];
+	IBMDSwitcherKeyDVEParameters* dveParams;
+	key->QueryInterface(IID_IBMDSwitcherKeyDVEParameters, (void**)&dveParams);
+	return dveParams;
 }
 
 - (void) changeTransitionSelection:(int)t select:(bool) select
@@ -874,193 +854,7 @@
 	}
 }
 
-- (void) handleAuxSource:(int)auxToChange channel:(int)channel
-{
-	BMDSwitcherInputId inputId = channel;
-	if (auxToChange-1 < [appDel mSwitcherInputAuxList].size())
-		[appDel mSwitcherInputAuxList][auxToChange-1]->SetInputSource(inputId);
-	else
-		[appDel logMessage:[NSString stringWithFormat:@"Aux number %d not available on your switcher", channel]];
-}
-
-- (void) handleMacros:(OSCMessage *)m address:(NSArray*)address
-{
-	if (![appDel mMacroPool] || ![appDel mMacroControl])
-	{
-		// No Macro support
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-		[newMsg addInt:(int)0];
-		[[appDel outPort] sendThisMessage:newMsg];
-		return;
-	}
-	if ([[address objectAtIndex:3] isEqualToString:@"get-max-number"] || [[address objectAtIndex:3] isEqualToString:@"max-number"])
-	{
-		uint32_t value = getMaxNumberOfMacros();
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-		[newMsg addInt:(int)value];
-		[[appDel outPort] sendThisMessage:newMsg];
-	}
-	else if ([[address objectAtIndex:3] isEqualToString:@"stop"])
-	{
-		stopRunningMacro();
-	}
-	else
-	{
-		if (stringIsNumber([address objectAtIndex:3]))
-		{
-			int macroIndex = [[address objectAtIndex:3] intValue];
-			if ([[address objectAtIndex:4] isEqualToString:@"name"])
-			{
-				NSString *value = getNameOfMacro(macroIndex);
-				OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-				[newMsg addString:(NSString *)value];
-				[[appDel outPort] sendThisMessage:newMsg];
-			}
-			
-			else if ([[address objectAtIndex:4] isEqualToString:@"description"])
-			{
-				NSString *value = getDescriptionOfMacro(macroIndex);
-				OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-				[newMsg addString:(NSString *)value];
-				[[appDel outPort] sendThisMessage:newMsg];
-			}
-			
-			else if ([[address objectAtIndex:4] isEqualToString:@"is-valid"])
-			{
-				int value = 0;
-				if (isMacroValid(macroIndex))
-				{
-					value = 1;
-				}
-				OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-				[newMsg addInt:(int)value];
-				[[appDel outPort] sendThisMessage:newMsg];
-			}
-			
-			else if ([[address objectAtIndex:4] isEqualToString:@"run"])
-			{
-				int value = 0;
-				if (isMacroValid(macroIndex))
-				{
-					// Try to run the valid Macro
-					value = runMacroAtIndex(macroIndex);
-				}
-				OSCMessage *newMsg = [OSCMessage createWithAddress:[m address]];
-				[newMsg addInt:(int)value];
-				[[appDel outPort] sendThisMessage:newMsg];
-			}
-			
-			else
-				[appDel logMessage:[NSString stringWithFormat:@"You must specify a macro command of 'run', 'name', 'description', or 'is-valid' for the macro at index %d", macroIndex]];
-		}
-		else
-			[appDel logMessage:@"You must specify a macro command of 'max-number', 'stop', or send the macro number you want to control as an integer"];
-	}
-}
-
-- (void) handleSuperSource:(OSCMessage *)m address:(NSArray*)address
-{
-	if ([[address objectAtIndex:3] isEqualToString:@"box"])
-	{
-		[self handleSuperSourceBox:m address:address];
-	}
-	
-	else
-		[appDel logMessage:@"You must specify a super-source command of 'box'"];
-}
-
-- (void) handleSuperSourceBox:(OSCMessage *)m address:(NSArray*)address
-{
-	int box = [[address objectAtIndex:4] intValue];
-	
-	// check we have the super source
-	if (![appDel mSuperSource])
-	{
-		[appDel logMessage:@"No super source"];
-		return;
-	}
-	
-	if ([appDel mSuperSourceBoxes].size() < box)
-	{
-		[appDel logMessage:[NSString stringWithFormat:@"No super source box %d", box]];
-		return;
-	}
-	
-	// convert to value required for arrays
-	box--;
-	
-	if ([[address objectAtIndex:5] isEqualToString:@"enabled"])
-	{
-		bool value = [m calculateFloatValue] != 0.0;
-		[appDel mSuperSourceBoxes][box]->SetEnabled(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"source"])
-	{
-		int value = [[m value] intValue];
-		BMDSwitcherInputId InputId = value;
-		[appDel mSuperSourceBoxes][box]->SetInputSource(InputId);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"x"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSourceBoxes][box]->SetPositionX(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"y"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSourceBoxes][box]->SetPositionY(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"size"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSourceBoxes][box]->SetSize(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"cropped"])
-	{
-		bool value = [m calculateFloatValue] != 0.0;
-		[appDel mSuperSourceBoxes][box]->SetCropped(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"crop-top"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSourceBoxes][box]->SetCropTop(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"crop-bottom"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSourceBoxes][box]->SetCropBottom(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"crop-left"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSourceBoxes][box]->SetCropLeft(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"crop-right"])
-	{
-		float value = [m calculateFloatValue];
-		[appDel mSuperSourceBoxes][box]->SetCropRight(value);
-	}
-	
-	else if ([[address objectAtIndex:5] isEqualToString:@"crop-reset"])
-	{
-		[appDel mSuperSourceBoxes][box]->ResetCrop();
-	}
-	
-	else
-		[appDel logMessage:@"You must specify a super-source box command of 'enabled', 'source', 'x', 'y', 'size', 'cropped', 'crop-top', 'crop-bottom', 'crop-left', 'crop-right', or 'crop-reset'"];
-}
-
-- (void) setHyperDeckTime:(int)hyperdeckId time:(NSString *)timeString clip:(BOOL)clipTime
+- (void) setHyperDeckTime:(long long)hyperdeckId time:(NSString *)timeString clip:(BOOL)clipTime
 {
 	NSArray *timeComponents = [timeString componentsSeparatedByString:@":"];
 	uint16_t hour = 0;
