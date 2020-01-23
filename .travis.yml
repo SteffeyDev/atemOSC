@@ -15,32 +15,15 @@ jobs:
         - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
 
     - stage: deploy-dmg
-      env:
-        - TAG_NUMBER=$( echo $TRAVIS_TAG | sed 's/[^0-9.]*//g' )
-        - PREVIOUS_TAG=$( git describe --abbrev=0 --tags )
       install: npm install --global create-dmg
-      script:
-
-        # Update the version of the binary to match the tag
-        - /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $TAG_NUMBER" atemOSC/atemOSC-Info.plist
-
-        # Build the new binary and sign
-        - xcodebuild -project atemOSC/atemOSC.xcodeproj -target AtemOSC
-        - rm -rf atemOSC.app
-        - cp -R /Users/travis/build/danielbuechele/atemOSC/atemOSC/build/Release/atemOSC.app ./
-        - ./.travis/sign.sh
-
-        # Create and validate the DMG
-        - create-dmg atemOSC.app
-        - find atemOSC *.dmg
-
+      script: bash .travis/deploy.sh
       deploy:
         - provider: releases
-          api_key: $GITHUB_TOKEN
-          file_glob: true
-          file: atemOSC *.dmg
+          edge: true
+          token: $GITHUB_TOKEN
+          file: output/*
           draft: true
-          skip_cleanup: true
+          overwrite: true
           on:
             tags: true
 
@@ -49,6 +32,6 @@ jobs:
       deploy:
         - provider: pages
           local_dir: website
-          github_token: $GITHUB_TOKEN
+          token: $GITHUB_TOKEN
           on:
             branch: master
