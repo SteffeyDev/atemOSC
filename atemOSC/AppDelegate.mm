@@ -348,12 +348,12 @@
 			key->AddCallback(mUpstreamKeyerMonitor);
 			
 			IBMDSwitcherKeyLumaParameters* lumaParams;
-			key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
-			lumaParams->AddCallback(mUpstreamKeyerLumaParametersMonitor);
+			if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
+				lumaParams->AddCallback(mUpstreamKeyerLumaParametersMonitor);
 			
 			IBMDSwitcherKeyChromaParameters* chromaParams;
-			key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
-			chromaParams->AddCallback(mUpstreamKeyerChromaParametersMonitor);
+			if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
+				chromaParams->AddCallback(mUpstreamKeyerChromaParametersMonitor);
 		}
 		keyIterator->Release();
 		keyIterator = NULL;

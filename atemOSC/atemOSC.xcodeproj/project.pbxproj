@@ -340,10 +340,14 @@
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				MARKETING_VERSION = 3.0.5;
 =======
 				MARKETING_VERSION = 3.0.8;
 >>>>>>> 33b636d... Adjusting build script
+=======
+				MARKETING_VERSION = 3.0.6;
+>>>>>>> 676c712... Potential crash fix
 				PRODUCT_BUNDLE_IDENTIFIER = "cc.buechele.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = atemOSC;
 				SDKROOT = macosx;
