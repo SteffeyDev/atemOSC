@@ -257,12 +257,7 @@
 - (void)switcherConnected
 {
 	HRESULT result;
-	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
-	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
-	IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
-	IBMDSwitcherInputIterator* inputIterator = NULL;
-	IBMDSwitcherAudioInputIterator* audioInputIterator = NULL;
-	IBMDSwitcherHyperDeckIterator* hyperDeckIterator = NULL;
+
 	isConnectedToATEM = YES;
 	
 	if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
@@ -277,11 +272,10 @@
 	[newMsg addFloat:0.0];
 	[outPort sendThisMessage:newMsg];
 	
-	NSString* productName;
+	NSString* productName = @"N/A";
 	if (FAILED(mSwitcher->GetProductName((CFStringRef*)&productName)))
 	{
 		[self logMessage:@"Could not get switcher product name"];
-		return;
 	}
 	
 	[(SettingsWindow *)window showSwitcherConnected:productName];
@@ -289,22 +283,24 @@
 	mSwitcher->AddCallback(mSwitcherMonitor);
 	
 	// Get the mix effect block iterator
-	result = mSwitcher->CreateIterator(IID_IBMDSwitcherMixEffectBlockIterator, (void**)&iterator);
-	if (FAILED(result))
+	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
+	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherMixEffectBlockIterator, (void**)&iterator)))
+	{
+		// Use the first Mix Effect Block
+		if (S_OK != iterator->Next(&mMixEffectBlock))
+		{
+			[self logMessage:@"Could not get the first IBMDSwitcherMixEffectBlock"];
+		}
+	}
+	else
 	{
 		[self logMessage:@"Could not create IBMDSwitcherMixEffectBlockIterator iterator"];
-		return;
 	}
 	
-	// Use the first Mix Effect Block
-	if (S_OK != iterator->Next(&mMixEffectBlock))
-	{
-		[self logMessage:@"Could not get the first IBMDSwitcherMixEffectBlock"];
-		return;
-	}
+	
 	// Create an InputMonitor for each input so we can catch any changes to input names
-	result = mSwitcher->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator);
-	if (SUCCEEDED(result))
+	IBMDSwitcherInputIterator* inputIterator = NULL;
+	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator)))
 	{
 		IBMDSwitcherInput* input = NULL;
 		
@@ -334,13 +330,16 @@
 		inputIterator->Release();
 		inputIterator = NULL;
 	}
+	else
+	{
+		[self logMessage:@"Could not create IBMDSwitcherInputIterator iterator"];
+	}
 	
 	
 	//Upstream Keyer
 	IBMDSwitcherKeyIterator* keyIterator = NULL;
-	result = mMixEffectBlock->CreateIterator(IID_IBMDSwitcherKeyIterator, (void**)&keyIterator);
 	IBMDSwitcherKey* key = NULL;
-	if (SUCCEEDED(result))
+	if (SUCCEEDED(mMixEffectBlock->CreateIterator(IID_IBMDSwitcherKeyIterator, (void**)&keyIterator)))
 	{
 		while (S_OK == keyIterator->Next(&key))
 		{
@@ -358,144 +357,158 @@
 		keyIterator->Release();
 		keyIterator = NULL;
 	}
+	else
+	{
+		[self logMessage:@"Could not create IBMDSwitcherKeyIterator iterator"];
+	}
 	
 	
 	//Downstream Keyer
 	IBMDSwitcherDownstreamKeyIterator* dskIterator = NULL;
-	result = mSwitcher->CreateIterator(IID_IBMDSwitcherDownstreamKeyIterator, (void**)&dskIterator);
 	IBMDSwitcherDownstreamKey* downstreamKey = NULL;
-	if (SUCCEEDED(result))
+	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherDownstreamKeyIterator, (void**)&dskIterator)))
 	{
 		while (S_OK == dskIterator->Next(&downstreamKey))
 		{
 			dsk.push_back(downstreamKey);
 			downstreamKey->AddCallback(mDownstreamKeyerMonitor);
 		}
+		dskIterator->Release();
+		dskIterator = NULL;
 	}
-	dskIterator->Release();
-	dskIterator = NULL;
-	
+	else
+	{
+		[self logMessage:@"Could not create IBMDSwitcherDownstreamKeyIterator iterator"];
+	}
 	
 	// Media Players
-	result = mSwitcher->CreateIterator(IID_IBMDSwitcherMediaPlayerIterator, (void**)&mediaPlayerIterator);
-	if (FAILED(result))
+	IBMDSwitcherMediaPlayerIterator* mediaPlayerIterator = NULL;
+	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherMediaPlayerIterator, (void**)&mediaPlayerIterator)))
+	{
+		IBMDSwitcherMediaPlayer* mediaPlayer = NULL;
+		while (S_OK == mediaPlayerIterator->Next(&mediaPlayer))
+		{
+			mMediaPlayers.push_back(mediaPlayer);
+		}
+		mediaPlayerIterator->Release();
+		mediaPlayerIterator = NULL;
+	}
+	else
 	{
 		[self logMessage:@"Could not create IBMDSwitcherMediaPlayerIterator iterator"];
-		return;
 	}
-	
-	IBMDSwitcherMediaPlayer* mediaPlayer = NULL;
-	while (S_OK == mediaPlayerIterator->Next(&mediaPlayer))
-	{
-		mMediaPlayers.push_back(mediaPlayer);
-	}
-	mediaPlayerIterator->Release();
-	mediaPlayerIterator = NULL;
 	
 	// get media pool
-	result = mSwitcher->QueryInterface(IID_IBMDSwitcherMediaPool, (void**)&mMediaPool);
-	if (FAILED(result))
+	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherMediaPool, (void**)&mMediaPool)))
 	{
 		[self logMessage:@"Could not get IBMDSwitcherMediaPool interface"];
-		return;
 	}
 	
 	// get macro pool
-	result = mSwitcher->QueryInterface(IID_IBMDSwitcherMacroPool, (void**)&mMacroPool);
-	if (FAILED(result))
+	if (SUCCEEDED(mSwitcher->QueryInterface(IID_IBMDSwitcherMacroPool, (void**)&mMacroPool)))
+	{
+		mMacroPool->AddCallback(mMacroPoolMonitor);
+	}
+	else
 	{
 		[self logMessage:@"Could not get IID_IBMDSwitcherMacroPool interface"];
-		return;
 	}
-	mMacroPool->AddCallback(mMacroPoolMonitor);
 	
 	// get macro controller
-	result = mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl);
-	if (FAILED(result))
+	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl)))
 	{
 		[self logMessage:@"Could not get IID_IBMDSwitcherMacroControl interface"];
-		return;
 	}
 	
 	// Super source
-	if (mSuperSource) {
-		result = mSuperSource->CreateIterator(IID_IBMDSwitcherSuperSourceBoxIterator, (void**)&superSourceIterator);
-		if (FAILED(result))
+	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherInputSuperSource, (void**)&mSuperSource))) {
+		IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
+		if (SUCCEEDED(mSuperSource->CreateIterator(IID_IBMDSwitcherSuperSourceBoxIterator, (void**)&superSourceIterator)))
+		{
+			IBMDSwitcherSuperSourceBox* superSourceBox = NULL;
+			while (S_OK == superSourceIterator->Next(&superSourceBox))
+			{
+				mSuperSourceBoxes.push_back(superSourceBox);
+			}
+			superSourceIterator->Release();
+			superSourceIterator = NULL;
+		}
+		else
 		{
 			[self logMessage:@"Could not create IBMDSwitcherSuperSourceBoxIterator iterator"];
-			return;
 		}
-		IBMDSwitcherSuperSourceBox* superSourceBox = NULL;
-		while (S_OK == superSourceIterator->Next(&superSourceBox))
-		{
-			mSuperSourceBoxes.push_back(superSourceBox);
-		}
-		superSourceIterator->Release();
-		superSourceIterator = NULL;
+	}
+	else
+	{
+		[self logMessage:@"Could not get IBMDSwitcherInputSuperSource interface"];
 	}
 	
 	// Audio Mixer (Output)
-	mAudioMixer = NULL;
-	result = mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer);
-	if (FAILED(result))
+	if (SUCCEEDED(mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer)))
+	{
+		mAudioMixer->AddCallback(mAudioMixerMonitor);
+	}
+	else
 	{
 		[self logMessage:@"Could not get IBMDSwitcherAudioMixer interface"];
-		return;
 	}
-	mAudioMixer->AddCallback(mAudioMixerMonitor);
 
 	// Audio Inputs
-	result = mAudioMixer->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator);
-	if (FAILED(result))
+	IBMDSwitcherAudioInputIterator* audioInputIterator = NULL;
+	if (SUCCEEDED(mAudioMixer->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator)))
+	{
+		IBMDSwitcherAudioInput* audioInput = NULL;
+		while (S_OK == audioInputIterator->Next(&audioInput))
+		{
+			BMDSwitcherAudioInputId inputId;
+			audioInput->GetAudioInputId(&inputId);
+			mAudioInputs.insert(std::make_pair(inputId, audioInput));
+			AudioInputMonitor *monitor = new AudioInputMonitor(self, inputId);
+			audioInput->AddCallback(monitor);
+			mMonitors.push_back(monitor);
+			mAudioInputMonitors.insert(std::make_pair(inputId, monitor));
+		}
+		audioInputIterator->Release();
+		audioInputIterator = NULL;
+	}
+	else
 	{
 		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
-		return;
 	}
 
-	IBMDSwitcherAudioInput* audioInput = NULL;
-	while (S_OK == audioInputIterator->Next(&audioInput))
-	{
-		BMDSwitcherAudioInputId inputId;
-		audioInput->GetAudioInputId(&inputId);
-		mAudioInputs.insert(std::make_pair(inputId, audioInput));
-		AudioInputMonitor *monitor = new AudioInputMonitor(self, inputId);
-		audioInput->AddCallback(monitor);
-		mMonitors.push_back(monitor);
-		mAudioInputMonitors.insert(std::make_pair(inputId, monitor));
-	}
-	audioInputIterator->Release();
-	audioInputIterator = NULL;
-	
 	switcherTransitionParameters = NULL;
-	mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
-	switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
-	
-	mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
+	if (mMixEffectBlock)
+	{
+		mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
+		switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
+		mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
+	}
 	
 	self->mMixEffectBlockMonitor->updateSliderPosition();
 	
 	// Hyperdeck Setup
-	result = mSwitcher->CreateIterator(IID_IBMDSwitcherHyperDeckIterator, (void**)&hyperDeckIterator);
-	if (FAILED(result))
+	IBMDSwitcherHyperDeckIterator* hyperDeckIterator = NULL;
+	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherHyperDeckIterator, (void**)&hyperDeckIterator)))
+	{
+		IBMDSwitcherHyperDeck* hyperdeck = NULL;
+		while (S_OK == hyperDeckIterator->Next(&hyperdeck))
+		{
+			BMDSwitcherHyperDeckId hyperdeckId;
+			hyperdeck->GetId(&hyperdeckId);
+			mHyperdecks.insert(std::make_pair(hyperdeckId, hyperdeck));
+			HyperDeckMonitor *monitor = new HyperDeckMonitor(self, hyperdeckId);
+			hyperdeck->AddCallback(monitor);
+			mMonitors.push_back(monitor);
+			mHyperdeckMonitors.insert(std::make_pair(hyperdeckId, monitor));
+		}
+		hyperDeckIterator->Release();
+		hyperDeckIterator = NULL;
+	}
+	else
 	{
 		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
-		return;
 	}
 	
-	IBMDSwitcherHyperDeck* hyperdeck = NULL;
-	while (S_OK == hyperDeckIterator->Next(&hyperdeck))
-	{
-		BMDSwitcherHyperDeckId hyperdeckId;
-		hyperdeck->GetId(&hyperdeckId);
-		mHyperdecks.insert(std::make_pair(hyperdeckId, hyperdeck));
-		HyperDeckMonitor *monitor = new HyperDeckMonitor(self, hyperdeckId);
-		hyperdeck->AddCallback(monitor);
-		mMonitors.push_back(monitor);
-		mHyperdeckMonitors.insert(std::make_pair(hyperdeckId, monitor));
-	}
-	hyperDeckIterator->Release();
-	hyperDeckIterator = NULL;
-
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[helpPanel setupWithDelegate: self];
 	});

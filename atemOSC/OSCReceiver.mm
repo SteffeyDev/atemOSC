@@ -16,6 +16,13 @@
 	validators = [[NSMutableDictionary alloc] init];
 	
 	NSLog(@"Setting up validators");
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		if ([appDel mMixEffectBlock])
+			return true;
+		[appDel logMessage:@"No mix effect block"];
+		return false;
+	} copy] forKey:@"/atem/transition"];
 
 	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
@@ -28,6 +35,12 @@
 	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		NSString *address = [d objectForKey:@"address"];
+		
+		if (![appDel switcherTransitionParameters])
+		{
+			[appDel logMessage:@"No switcher transition parameters"];
+			return false;
+		}
 		
 		// Normal USK
 		if (key > 0 && key <= [appDel keyers].size())
@@ -834,6 +847,11 @@
 
 - (void) changeTransitionSelection:(int)t select:(bool) select
 {
+	if ([appDel switcherTransitionParameters] == nil)
+	{
+		return;
+	}
+	
 	uint32_t currentTransitionSelection;
 	[appDel switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
 	
