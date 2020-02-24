@@ -15,9 +15,9 @@ create-dmg atemOSC.app
 mkdir output
 mv "atemOSC $TAG_NUMBER.dmg" ./output/"atemOSC_$TAG_NUMBER.dmg"
 
-# Zip .app and .app.dSYM for uploading
-zip -r -q ./output/atemOSC.app.zip ${HOME}/build/${TRAVIS_REPO_SLUG}/atemOSC/build/Release/atemOSC.app
-zip -r -q ./output/atemOSC.app.dSYM.zip ${HOME}/build/${TRAVIS_REPO_SLUG}/atemOSC/build/Release/atemOSC.app.dSYM
+# Zip .app and .app.dSYM for uploading (recursive and quiet)
+cp -R ${HOME}/build/${TRAVIS_REPO_SLUG}/atemOSC/build/Release/atemOSC.app.dSYM ./
+zip -rq ./output/atemOSC.debug.zip atemOSC.app atemOSC.app.dSYM
 
 echo "TAG_NUMBER: $TAG_NUMBER"
 echo "Output Files:"
