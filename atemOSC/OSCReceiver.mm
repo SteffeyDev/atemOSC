@@ -71,6 +71,13 @@
 	} copy] forKey:@"/atem/audio/input"];
 	
 	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		if ([appDel mAudioMixer])
+			return true;
+		[appDel logMessage:@"No audio mixer"];
+		return false;
+	} copy] forKey:@"/atem/audio/output"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
 		int mplayer = [[d objectForKey:@"<player>"] intValue];
 
 		if (![appDel mMediaPool])

@@ -42,7 +42,6 @@
 @synthesize switcherTransitionParameters;
 @synthesize mMediaPool;
 @synthesize mMediaPlayers;
-@synthesize mStills;
 @synthesize mMacroPool;
 @synthesize mSuperSource;
 @synthesize mMacroControl;
@@ -63,42 +62,23 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	NSMenu* edit = [[[[NSApplication sharedApplication] mainMenu] itemWithTitle: @"Edit"] submenu];
-	if ([[edit itemAtIndex: [edit numberOfItems] - 1] action] == NSSelectorFromString(@"orderFrontCharacterPalette:"))
-		[edit removeItemAtIndex: [edit numberOfItems] - 1];
-	if ([[edit itemAtIndex: [edit numberOfItems] - 1] action] == NSSelectorFromString(@"startDictation:"))
-		[edit removeItemAtIndex: [edit numberOfItems] - 1];
-	if ([[edit itemAtIndex: [edit numberOfItems] - 1] isSeparatorItem])
-		[edit removeItemAtIndex: [edit numberOfItems] - 1];
+	[self setupMenu];
 	
 	mSwitcherDiscovery = NULL;
 	mSwitcher = NULL;
 	mMixEffectBlock = NULL;
 	mMediaPool = NULL;
 	mMacroPool = NULL;
+	mSuperSource = NULL;
+	mMacroControl = NULL;
+	mAudioMixer = NULL;
+	
 	isConnectedToATEM = NO;
 	
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
-	mSwitcherMonitor = new SwitcherMonitor(self);
-	mMonitors.push_back(mSwitcherMonitor);
-	mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
-	mMonitors.push_back(mDownstreamKeyerMonitor);
-	mUpstreamKeyerMonitor = new UpstreamKeyerMonitor(self);
-	mMonitors.push_back(mUpstreamKeyerMonitor);
-	mUpstreamKeyerLumaParametersMonitor = new UpstreamKeyerLumaParametersMonitor(self);
-	mMonitors.push_back(mUpstreamKeyerLumaParametersMonitor);
-	mUpstreamKeyerChromaParametersMonitor = new UpstreamKeyerChromaParametersMonitor(self);
-	mMonitors.push_back(mUpstreamKeyerChromaParametersMonitor);
-	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
-	mMonitors.push_back(mTransitionParametersMonitor);
-	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
-	mMonitors.push_back(mMixEffectBlockMonitor);
-	mMacroPoolMonitor = new MacroPoolMonitor(self);
-	mMonitors.push_back(mMacroPoolMonitor);
-	mAudioMixerMonitor = new AudioMixerMonitor(self);
-	mMonitors.push_back(mAudioMixerMonitor);
+	[self setupMonitors];
 	
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
@@ -131,6 +111,44 @@
 		[self portChanged:incomingPort out:outgoingPort ip:outIpStr];
 	}
 	
+	[self checkForUpdate];
+}
+
+- (void)setupMenu
+{
+	NSMenu* edit = [[[[NSApplication sharedApplication] mainMenu] itemWithTitle: @"Edit"] submenu];
+	if ([[edit itemAtIndex: [edit numberOfItems] - 1] action] == NSSelectorFromString(@"orderFrontCharacterPalette:"))
+		[edit removeItemAtIndex: [edit numberOfItems] - 1];
+	if ([[edit itemAtIndex: [edit numberOfItems] - 1] action] == NSSelectorFromString(@"startDictation:"))
+		[edit removeItemAtIndex: [edit numberOfItems] - 1];
+	if ([[edit itemAtIndex: [edit numberOfItems] - 1] isSeparatorItem])
+		[edit removeItemAtIndex: [edit numberOfItems] - 1];
+}
+
+- (void)setupMonitors
+{
+	mSwitcherMonitor = new SwitcherMonitor(self);
+	mMonitors.push_back(mSwitcherMonitor);
+	mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
+	mMonitors.push_back(mDownstreamKeyerMonitor);
+	mUpstreamKeyerMonitor = new UpstreamKeyerMonitor(self);
+	mMonitors.push_back(mUpstreamKeyerMonitor);
+	mUpstreamKeyerLumaParametersMonitor = new UpstreamKeyerLumaParametersMonitor(self);
+	mMonitors.push_back(mUpstreamKeyerLumaParametersMonitor);
+	mUpstreamKeyerChromaParametersMonitor = new UpstreamKeyerChromaParametersMonitor(self);
+	mMonitors.push_back(mUpstreamKeyerChromaParametersMonitor);
+	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
+	mMonitors.push_back(mTransitionParametersMonitor);
+	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
+	mMonitors.push_back(mMixEffectBlockMonitor);
+	mMacroPoolMonitor = new MacroPoolMonitor(self);
+	mMonitors.push_back(mMacroPoolMonitor);
+	mAudioMixerMonitor = new AudioMixerMonitor(self);
+	mMonitors.push_back(mAudioMixerMonitor);
+}
+
+- (void)checkForUpdate
+{
 	// Check if new version available
 	NSError *error = nil;
 	NSString *url_string = [NSString stringWithFormat: @"https://api.github.com/repos/danielbuechele/atemOSC/releases/latest"];
@@ -287,10 +305,27 @@
 	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherMixEffectBlockIterator, (void**)&iterator)))
 	{
 		// Use the first Mix Effect Block
-		if (S_OK != iterator->Next(&mMixEffectBlock))
+		if (S_OK == iterator->Next(&mMixEffectBlock))
+		{
+			mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
+			mMixEffectBlockMonitor->updateSliderPosition();
+			
+			if (SUCCEEDED(mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters)))
+			{
+				switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
+			}
+			else
+			{
+				[self logMessage:@"Could not get IBMDSwitcherTransitionParameters"];
+			}
+			
+		}
+		else
 		{
 			[self logMessage:@"Could not get the first IBMDSwitcherMixEffectBlock"];
 		}
+		
+		iterator->Release();
 	}
 	else
 	{
@@ -475,16 +510,6 @@
 	{
 		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
 	}
-
-	switcherTransitionParameters = NULL;
-	if (mMixEffectBlock)
-	{
-		mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters);
-		switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
-		mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
-	}
-	
-	self->mMixEffectBlockMonitor->updateSliderPosition();
 	
 	// Hyperdeck Setup
 	IBMDSwitcherHyperDeckIterator* hyperDeckIterator = NULL;
@@ -512,10 +537,6 @@
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[helpPanel setupWithDelegate: self];
 	});
-	
-finish:
-	if (iterator)
-		iterator->Release();
 }
 
 - (void)switcherDisconnected
@@ -547,34 +568,38 @@ finish:
 
 - (void)cleanUpConnection
 {
+	if (mSwitcher)
+	{
+		mSwitcher->RemoveCallback(mSwitcherMonitor);
+		mSwitcher->Release();
+		mSwitcher = NULL;
+	}
+	
+	if (mMixEffectBlock)
+	{
+		mMixEffectBlock->RemoveCallback(mMixEffectBlockMonitor);
+		mMixEffectBlock->Release();
+		mMixEffectBlock = NULL;
+	}
+	
+	if (switcherTransitionParameters)
+	{
+		switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
+		switcherTransitionParameters->Release();
+		switcherTransitionParameters = NULL;
+	}
+	
+	for (auto const& it : mInputs)
+	{
+		it.second->RemoveCallback(mInputMonitors.at(it.first));
+		it.second->Release();
+	}
+	mInputs.clear();
+	
 	while (mSwitcherInputAuxList.size())
 	{
 		mSwitcherInputAuxList.back()->Release();
 		mSwitcherInputAuxList.pop_back();
-	}
-	
-	while (mMediaPlayers.size())
-	{
-		mMediaPlayers.back()->Release();
-		mMediaPlayers.pop_back();
-	}
-	
-	if (mStills)
-	{
-		mStills->Release();
-		mStills = NULL;
-	}
-	
-	if (mMediaPool)
-	{
-		mMediaPool->Release();
-		mMediaPool = NULL;
-	}
-	
-	while (mSuperSourceBoxes.size())
-	{
-		mSuperSourceBoxes.back()->Release();
-		mSuperSourceBoxes.pop_back();
 	}
 	
 	while (keyers.size())
@@ -599,18 +624,16 @@ finish:
 		dsk.pop_back();
 	}
 	
-	if (mMixEffectBlock)
+	while (mMediaPlayers.size())
 	{
-		mMixEffectBlock->RemoveCallback(mMixEffectBlockMonitor);
-		mMixEffectBlock->Release();
-		mMixEffectBlock = NULL;
+		mMediaPlayers.back()->Release();
+		mMediaPlayers.pop_back();
 	}
 	
-	if (mSwitcher)
+	if (mMediaPool)
 	{
-		mSwitcher->RemoveCallback(mSwitcherMonitor);
-		mSwitcher->Release();
-		mSwitcher = NULL;
+		mMediaPool->Release();
+		mMediaPool = NULL;
 	}
 	
 	if (mMacroPool)
@@ -620,26 +643,11 @@ finish:
 		mMacroPool = NULL;
 	}
 	
-	for (auto const& it : mAudioInputs)
+	while (mSuperSourceBoxes.size())
 	{
-		it.second->RemoveCallback(mAudioInputMonitors.at(it.first));
-		it.second->Release();
+		mSuperSourceBoxes.back()->Release();
+		mSuperSourceBoxes.pop_back();
 	}
-	mAudioInputs.clear();
-	
-	for (auto const& it : mInputs)
-	{
-		it.second->RemoveCallback(mInputMonitors.at(it.first));
-		it.second->Release();
-	}
-	mInputs.clear();
-	
-	for (auto const& it : mHyperdecks)
-	{
-		it.second->RemoveCallback(mHyperdeckMonitors.at(it.first));
-		it.second->Release();
-	}
-	mHyperdecks.clear();
 	
 	if (mAudioMixer)
 	{
@@ -648,12 +656,19 @@ finish:
 		mAudioMixer = NULL;
 	}
 	
-	if (switcherTransitionParameters)
+	for (auto const& it : mAudioInputs)
 	{
-		switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
-		switcherTransitionParameters->Release();
-		switcherTransitionParameters = NULL;
+		it.second->RemoveCallback(mAudioInputMonitors.at(it.first));
+		it.second->Release();
 	}
+	mAudioInputs.clear();
+	
+	for (auto const& it : mHyperdecks)
+	{
+		it.second->RemoveCallback(mHyperdeckMonitors.at(it.first));
+		it.second->Release();
+	}
+	mHyperdecks.clear();
 }
 
 // We run this recursively so that we can get the

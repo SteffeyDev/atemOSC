@@ -67,7 +67,6 @@
 @property (readonly)       std::map<BMDSwitcherHyperDeckId, IBMDSwitcherHyperDeck*> mHyperdecks;
 @property (readonly)       std::map<BMDSwitcherHyperDeckId, HyperDeckMonitor*> mHyperdeckMonitors;
 @property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
-@property (readonly)       IBMDSwitcherStills*                      mStills;
 @property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;
 @property (readonly)       IBMDSwitcherMacroPool*                   mMacroPool;
 @property (readonly)       IBMDSwitcherMacroControl*                mMacroControl;
