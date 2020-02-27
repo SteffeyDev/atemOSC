@@ -434,14 +434,15 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaClipParameter() const
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
-		
-		double clip;
-		lumaParams->GetClip(&clip);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/clip",i++]];
-		[newMsg addFloat:clip];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
+		{
+			double clip;
+			lumaParams->GetClip(&clip);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/clip",i++]];
+			[newMsg addFloat:clip];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaGainParameter() const
@@ -450,14 +451,15 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaGainParameter() const
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
-		
-		double gain;
-		lumaParams->GetGain(&gain);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/gain",i++]];
-		[newMsg addFloat:gain];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
+		{
+			double gain;
+			lumaParams->GetGain(&gain);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/gain",i++]];
+			[newMsg addFloat:gain];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaPreMultipliedParameter() const
@@ -466,14 +468,15 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaPreMultipliedParameter() c
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
-		
-		bool preMultiplied;
-		lumaParams->GetPreMultiplied(&preMultiplied);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/pre-multiplied",i++]];
-		[newMsg addBOOL:preMultiplied];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
+		{
+			bool preMultiplied;
+			lumaParams->GetPreMultiplied(&preMultiplied);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/pre-multiplied",i++]];
+			[newMsg addBOOL:preMultiplied];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaInverseParameter() const
@@ -482,14 +485,15 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaInverseParameter() const
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
-		
-		bool inverse;
-		lumaParams->GetInverse(&inverse);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/inverse",i++]];
-		[newMsg addBOOL:inverse];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
+		{
+			bool inverse;
+			lumaParams->GetInverse(&inverse);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/inverse",i++]];
+			[newMsg addBOOL:inverse];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 
@@ -535,14 +539,15 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaHueParameter() const
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
-		
-		double hue;
-		chromaParams->GetHue(&hue);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/hue",i++]];
-		[newMsg addFloat:hue];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
+		{
+			double hue;
+			chromaParams->GetHue(&hue);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/hue",i++]];
+			[newMsg addFloat:hue];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaGainParameter() const
@@ -551,14 +556,15 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaGainParameter() const
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
-		
-		double gain;
-		chromaParams->GetGain(&gain);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/gain",i++]];
-		[newMsg addFloat:gain];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
+		{
+			double gain;
+			chromaParams->GetGain(&gain);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/gain",i++]];
+			[newMsg addFloat:gain];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaYSuppressParameter() const
@@ -567,14 +573,15 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaYSuppressParameter() c
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
-		
-		double ySuppress;
-		chromaParams->GetYSuppress(&ySuppress);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/y-suppress",i++]];
-		[newMsg addFloat:ySuppress];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
+		{
+			double ySuppress;
+			chromaParams->GetYSuppress(&ySuppress);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/y-suppress",i++]];
+			[newMsg addFloat:ySuppress];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaLiftParameter() const
@@ -583,14 +590,15 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaLiftParameter() const
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
-		
-		double lift;
-		chromaParams->GetLift(&lift);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/lift",i++]];
-		[newMsg addFloat:lift];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
+		{
+			double lift;
+			chromaParams->GetLift(&lift);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/lift",i++]];
+			[newMsg addFloat:lift];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaNarrowParameter() const
@@ -599,14 +607,15 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaNarrowParameter() cons
 	for(auto& key : [(AppDelegate *)appDel keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
-		key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
-		
-		bool narrow;
-		chromaParams->GetNarrow(&narrow);
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/narrow",i++]];
-		[newMsg addBOOL:narrow];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
+		{
+			bool narrow;
+			chromaParams->GetNarrow(&narrow);
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/narrow",i++]];
+			[newMsg addBOOL:narrow];
+			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		}
 	}
 }
 
