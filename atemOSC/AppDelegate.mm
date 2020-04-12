@@ -482,33 +482,33 @@
 	if (SUCCEEDED(mSwitcher->QueryInterface(IID_IBMDSwitcherAudioMixer, (void**)&mAudioMixer)))
 	{
 		mAudioMixer->AddCallback(mAudioMixerMonitor);
+		
+		// Audio Inputs
+		IBMDSwitcherAudioInputIterator* audioInputIterator = NULL;
+		if (SUCCEEDED(mAudioMixer->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator)))
+		{
+			IBMDSwitcherAudioInput* audioInput = NULL;
+			while (S_OK == audioInputIterator->Next(&audioInput))
+			{
+				BMDSwitcherAudioInputId inputId;
+				audioInput->GetAudioInputId(&inputId);
+				mAudioInputs.insert(std::make_pair(inputId, audioInput));
+				AudioInputMonitor *monitor = new AudioInputMonitor(self, inputId);
+				audioInput->AddCallback(monitor);
+				mMonitors.push_back(monitor);
+				mAudioInputMonitors.insert(std::make_pair(inputId, monitor));
+			}
+			audioInputIterator->Release();
+			audioInputIterator = NULL;
+		}
+		else
+		{
+			[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
+		}
 	}
 	else
 	{
 		[self logMessage:@"Could not get IBMDSwitcherAudioMixer interface"];
-	}
-
-	// Audio Inputs
-	IBMDSwitcherAudioInputIterator* audioInputIterator = NULL;
-	if (SUCCEEDED(mAudioMixer->CreateIterator(IID_IBMDSwitcherAudioInputIterator, (void**)&audioInputIterator)))
-	{
-		IBMDSwitcherAudioInput* audioInput = NULL;
-		while (S_OK == audioInputIterator->Next(&audioInput))
-		{
-			BMDSwitcherAudioInputId inputId;
-			audioInput->GetAudioInputId(&inputId);
-			mAudioInputs.insert(std::make_pair(inputId, audioInput));
-			AudioInputMonitor *monitor = new AudioInputMonitor(self, inputId);
-			audioInput->AddCallback(monitor);
-			mMonitors.push_back(monitor);
-			mAudioInputMonitors.insert(std::make_pair(inputId, monitor));
-		}
-		audioInputIterator->Release();
-		audioInputIterator = NULL;
-	}
-	else
-	{
-		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
 	}
 	
 	// Hyperdeck Setup
