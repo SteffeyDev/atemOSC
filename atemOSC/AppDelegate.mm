@@ -574,6 +574,7 @@
 		mSwitcher->RemoveCallback(mSwitcherMonitor);
 		mSwitcher->Release();
 		mSwitcher = NULL;
+		mSwitcherMonitor = NULL;
 	}
 	
 	if (mMixEffectBlock)
@@ -581,6 +582,7 @@
 		mMixEffectBlock->RemoveCallback(mMixEffectBlockMonitor);
 		mMixEffectBlock->Release();
 		mMixEffectBlock = NULL;
+		mMixEffectBlockMonitor = NULL;
 	}
 	
 	if (switcherTransitionParameters)
@@ -588,6 +590,7 @@
 		switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
 		switcherTransitionParameters->Release();
 		switcherTransitionParameters = NULL;
+		mTransitionParametersMonitor = NULL;
 	}
 	
 	for (auto const& it : mInputs)
@@ -596,6 +599,7 @@
 		it.second->Release();
 	}
 	mInputs.clear();
+	mInputMonitors.clear();
 	
 	while (mSwitcherInputAuxList.size())
 	{
@@ -616,6 +620,9 @@
 		if (chromaParams != nil)
 			chromaParams->RemoveCallback(mUpstreamKeyerChromaParametersMonitor);
 		keyers.pop_back();
+		mUpstreamKeyerMonitor = NULL;
+		mUpstreamKeyerLumaParametersMonitor = NULL;
+		mUpstreamKeyerChromaParametersMonitor = NULL;
 	}
 	
 	while (dsk.size())
@@ -623,6 +630,7 @@
 		dsk.back()->RemoveCallback(mDownstreamKeyerMonitor);
 		dsk.back()->Release();
 		dsk.pop_back();
+		mDownstreamKeyerMonitor = NULL;
 	}
 	
 	while (mMediaPlayers.size())
@@ -642,6 +650,7 @@
 		mMacroPool->RemoveCallback(mMacroPoolMonitor);
 		mMacroPool->Release();
 		mMacroPool = NULL;
+		mMacroPoolMonitor = NULL;
 	}
 	
 	while (mSuperSourceBoxes.size())
@@ -655,6 +664,7 @@
 		mAudioMixer->RemoveCallback(mAudioMixerMonitor);
 		mAudioMixer->Release();
 		mAudioMixer = NULL;
+		mAudioMixerMonitor = NULL;
 	}
 	
 	for (auto const& it : mAudioInputs)
@@ -663,6 +673,7 @@
 		it.second->Release();
 	}
 	mAudioInputs.clear();
+	mAudioInputMonitors.clear();
 	
 	for (auto const& it : mHyperdecks)
 	{
@@ -670,6 +681,7 @@
 		it.second->Release();
 	}
 	mHyperdecks.clear();
+	mHyperdeckMonitors.clear();
 	
 	mMonitors.clear();
 }
@@ -679,7 +691,14 @@
 // wait times between sends
 - (void)sendStatus
 {
-	[self sendEachStatus:0];
+	if ([self isConnectedToATEM])
+	{
+		[self sendEachStatus:0];
+	}
+	else
+	{
+		[self logMessage:@"Cannot send status - Not connected to switcher"];
+	}
 }
 
 - (void)sendEachStatus:(int)nextMonitor
