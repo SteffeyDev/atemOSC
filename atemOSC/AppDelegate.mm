@@ -78,7 +78,6 @@
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
-	[self setupMonitors];
 	
 	[logTextView setTextColor:[NSColor whiteColor]];
 	
@@ -282,6 +281,8 @@
 	{
 		self.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
 	}
+	
+	[self setupMonitors];
 	
 	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
 	[newMsg addFloat:1.0];
@@ -669,6 +670,8 @@
 		it.second->Release();
 	}
 	mHyperdecks.clear();
+	
+	mMonitors.clear();
 }
 
 // We run this recursively so that we can get the
