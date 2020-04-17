@@ -202,26 +202,32 @@ HRESULT InputMonitor::Notify(BMDSwitcherInputEventType eventType)
 
 void InputMonitor::updateLongName() const
 {
-	// Have to delay slightly, otherwise fetch gets old name
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		NSString *name;
-		static_cast<AppDelegate *>(appDel).mInputs[inputId_]->GetLongName((CFStringRef*)&name);
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/input/%lld/long-name", inputId_]];
-		[newMsg addString:name];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
-	});
+	if (static_cast<AppDelegate *>(appDel).mInputs.count(inputId_) > 0)
+	{
+		// Have to delay slightly, otherwise fetch gets old name
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			NSString *name;
+			static_cast<AppDelegate *>(appDel).mInputs[inputId_]->GetLongName((CFStringRef*)&name);
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/input/%lld/long-name", inputId_]];
+			[newMsg addString:name];
+			[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		});
+	}
 }
 
 void InputMonitor::updateShortName() const
 {
-	// Have to delay slightly, otherwise fetch gets old name
-	dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-		NSString *name;
-		static_cast<AppDelegate *>(appDel).mInputs[inputId_]->GetShortName((CFStringRef*)&name);
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/input/%lld/short-name", inputId_]];
-		[newMsg addString:name];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
-	});
+	if (static_cast<AppDelegate *>(appDel).mInputs.count(inputId_) > 0)
+	{
+		// Have to delay slightly, otherwise fetch gets old name
+		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+			NSString *name;
+			static_cast<AppDelegate *>(appDel).mInputs[inputId_]->GetShortName((CFStringRef*)&name);
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/input/%lld/short-name", inputId_]];
+			[newMsg addString:name];
+			[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		});
+	}
 }
 
 float InputMonitor::sendStatus() const
@@ -790,20 +796,26 @@ HRESULT STDMETHODCALLTYPE AudioInputMonitor::LevelNotification (double left, dou
 
 void AudioInputMonitor::updateGain() const
 {
-	double gain;
-	static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetGain(&gain);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain", inputId_]];
-	[newMsg addFloat:(float)gain];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	if (static_cast<AppDelegate *>(appDel).mAudioInputs.count(inputId_) > 0)
+	{
+		double gain;
+		static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetGain(&gain);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain", inputId_]];
+		[newMsg addFloat:(float)gain];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
 }
 
 void AudioInputMonitor::updateBalance() const
 {
-	double balance;
-	static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetBalance(&balance);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance", inputId_]];
-	[newMsg addFloat:(float)balance];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	if (static_cast<AppDelegate *>(appDel).mAudioInputs.count(inputId_) > 0)
+	{
+		double balance;
+		static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetBalance(&balance);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance", inputId_]];
+		[newMsg addFloat:(float)balance];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
 }
 
 float AudioInputMonitor::sendStatus() const
@@ -840,20 +852,26 @@ HRESULT STDMETHODCALLTYPE AudioMixerMonitor::ProgramOutLevelNotification (double
 
 void AudioMixerMonitor::updateGain() const
 {
-	double gain;
-	static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutGain(&gain);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/gain"];
-	[newMsg addFloat:(float)gain];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	if (static_cast<AppDelegate *>(appDel).mAudioMixer != nil)
+	{
+		double gain;
+		static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutGain(&gain);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/gain"];
+		[newMsg addFloat:(float)gain];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
 }
 
 void AudioMixerMonitor::updateBalance() const
 {
-	double balance;
-	static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutBalance(&balance);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/balance"];
-	[newMsg addFloat:(float)balance];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	if (static_cast<AppDelegate *>(appDel).mAudioMixer != nil)
+	{
+		double balance;
+		static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutBalance(&balance);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/balance"];
+		[newMsg addFloat:(float)balance];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
 }
 
 float AudioMixerMonitor::sendStatus() const
@@ -901,45 +919,57 @@ HRESULT HyperDeckMonitor::Notify (BMDSwitcherHyperDeckEventType eventType)
 
 void HyperDeckMonitor::updateCurrentClip() const
 {
-	BMDSwitcherHyperDeckClipId clipId;
-	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentClip(&clipId);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip", hyperdeckId_]];
-	[newMsg addInt:(int)clipId+1];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	if (static_cast<AppDelegate *>(appDel).mHyperdecks.count(hyperdeckId_) > 0)
+	{
+		BMDSwitcherHyperDeckClipId clipId;
+		static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentClip(&clipId);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip", hyperdeckId_]];
+		[newMsg addInt:(int)clipId+1];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
 }
 
 void HyperDeckMonitor::updateCurrentClipTime() const
 {
-	uint16_t hours;
-	uint8_t minutes, seconds, frames;
-	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentClipTime(&hours, &minutes, &seconds, &frames);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip-time", hyperdeckId_]];
-	[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	if (static_cast<AppDelegate *>(appDel).mHyperdecks.count(hyperdeckId_) > 0)
+	{
+		uint16_t hours;
+		uint8_t minutes, seconds, frames;
+		static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentClipTime(&hours, &minutes, &seconds, &frames);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip-time", hyperdeckId_]];
+		[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
 }
 
 void HyperDeckMonitor::updateCurrentTimelineTime() const
 {
-	uint16_t hours;
-	uint8_t minutes, seconds, frames;
-	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentTimelineTime(&hours, &minutes, &seconds, &frames);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/timeline-time", hyperdeckId_]];
-	[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	if (static_cast<AppDelegate *>(appDel).mHyperdecks.count(hyperdeckId_) > 0)
+	{
+		uint16_t hours;
+		uint8_t minutes, seconds, frames;
+		static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentTimelineTime(&hours, &minutes, &seconds, &frames);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/timeline-time", hyperdeckId_]];
+		[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
 }
 
 void HyperDeckMonitor::updatePlayerState() const
 {
-	BMDSwitcherHyperDeckPlayerState state;
-	static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetPlayerState(&state);
-	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/state", hyperdeckId_]];
-	switch (state)
+	if (static_cast<AppDelegate *>(appDel).mHyperdecks.count(hyperdeckId_) > 0)
 	{
-		case bmdSwitcherHyperDeckStateIdle: [newMsg addString:@"idle"]; break;
-		case bmdSwitcherHyperDeckStatePlay: [newMsg addString:@"play"]; break;
-		case bmdSwitcherHyperDeckStateRecord: [newMsg addString:@"record"]; break;
-		case bmdSwitcherHyperDeckStateShuttle: [newMsg addString:@"shuttle"]; break;
-		case bmdSwitcherHyperDeckStateUnknown: [newMsg addString:@"unknown"]; break;
+		BMDSwitcherHyperDeckPlayerState state;
+		static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetPlayerState(&state);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/state", hyperdeckId_]];
+		switch (state)
+		{
+			case bmdSwitcherHyperDeckStateIdle: [newMsg addString:@"idle"]; break;
+			case bmdSwitcherHyperDeckStatePlay: [newMsg addString:@"play"]; break;
+			case bmdSwitcherHyperDeckStateRecord: [newMsg addString:@"record"]; break;
+			case bmdSwitcherHyperDeckStateShuttle: [newMsg addString:@"shuttle"]; break;
+			case bmdSwitcherHyperDeckStateUnknown: [newMsg addString:@"unknown"]; break;
+		}
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
 	}
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
 }
