@@ -218,6 +218,41 @@ private:
 	void updateBalance() const;
 };
 
+// Callback class to monitor fairlight audio inputs
+class FairlightAudioSourceMonitor : public GenericMonitor<IBMDSwitcherFairlightAudioSourceCallback>, public SendStatusInterface
+{
+public:
+	FairlightAudioSourceMonitor(void *delegate, BMDSwitcherFairlightAudioSourceId sourceId) : GenericMonitor(delegate), sourceId_(sourceId) { }
+	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherFairlightAudioSourceEventType eventType);
+	HRESULT STDMETHODCALLTYPE OutputLevelNotification (uint32_t numLevels, const double* levels, uint32_t numPeakLevels, const double* peakLevels);
+	float sendStatus() const;
+	
+protected:
+	virtual ~FairlightAudioSourceMonitor() { }
+	
+private:
+	void updateFaderGain() const;
+	void updatePan() const;
+	BMDSwitcherFairlightAudioSourceId  sourceId_;
+};
+
+// Callback class to monitor fairlight audio mixer
+class FairlightAudioMixerMonitor : public GenericMonitor<IBMDSwitcherFairlightAudioMixerCallback>, public SendStatusInterface
+{
+public:
+	FairlightAudioMixerMonitor(void *delegate) : GenericMonitor(delegate) { }
+	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherFairlightAudioMixerEventType eventType);
+    HRESULT STDMETHODCALLTYPE MasterOutLevelNotification (uint32_t numLevels, const double* levels, uint32_t numPeakLevels, const double* peakLevels);
+
+	float sendStatus() const;
+	
+protected:
+	virtual ~FairlightAudioMixerMonitor() { }
+	
+private:
+	void updateGain() const;
+};
+
 // Callback class to monitor HyperDecks
 class HyperDeckMonitor : public GenericMonitor<IBMDSwitcherHyperDeckCallback>, public SendStatusInterface
 {

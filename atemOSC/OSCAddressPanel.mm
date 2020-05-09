@@ -127,27 +127,56 @@
 		}
 	}
 
-	[self addHeader:@"Audio Inputs" toString:helpString];
-
-	for (auto const& it : [appDel mAudioInputs])
+	if ([appDel mAudioInputs].size() > 0)
 	{
-		BMDSwitcherAudioInputType inputType;
-		[appDel mAudioInputs].at(it.first)->GetType(&inputType);
-		const char *inputTypeString = inputType == bmdSwitcherAudioInputTypeEmbeddedWithVideo ? "camera audio" : (inputType == bmdSwitcherAudioInputTypeMediaPlayer ? "media player" : "external audio-in");
+		[self addHeader:@"Audio Inputs" toString:helpString];
 
-		[self
-		 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Gain", it.first, inputTypeString]
-		 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain <float>", it.first]
-		 toString:helpString];
-		[self
-		 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Balance", it.first, inputTypeString]
-		 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance <float>", it.first]
-		 toString:helpString];
+		for (auto const& it : [appDel mAudioInputs])
+		{
+			BMDSwitcherAudioInputType inputType;
+			[appDel mAudioInputs].at(it.first)->GetType(&inputType);
+			const char *inputTypeString = inputType == bmdSwitcherAudioInputTypeEmbeddedWithVideo ? "camera audio" : (inputType == bmdSwitcherAudioInputTypeMediaPlayer ? "media player" : "external audio-in");
+
+			[self
+			 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Gain", it.first, inputTypeString]
+			 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain <float>", it.first]
+			 toString:helpString];
+			[self
+			 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Balance", it.first, inputTypeString]
+			 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance <float>", it.first]
+			 toString:helpString];
+		}
 	}
 
-	[self addHeader:@"Audio Output (Mix)" toString:helpString];
-	[self addEntry:@"Audio Output Gain" forAddress:@"/atem/audio/output/gain <float>" toString:helpString];
-	[self addEntry:@"Audio Output Balance" forAddress:@"/atem/audio/output/balance <float>" toString:helpString];
+	if ([appDel mAudioMixer] != nil)
+	{
+		[self addHeader:@"Audio Output (Mix)" toString:helpString];
+		[self addEntry:@"Audio Output Gain" forAddress:@"/atem/audio/output/gain <float>" toString:helpString];
+		[self addEntry:@"Audio Output Balance" forAddress:@"/atem/audio/output/balance <float>" toString:helpString];
+	}
+	
+	if ([appDel mFairlightAudioSources].size() > 0)
+	{
+		[self addHeader:@"Fairlight Audio Sources" toString:helpString];
+		
+		for (auto const& it : [appDel mFairlightAudioSources])
+		{
+			[self
+			 addEntry:[NSString stringWithFormat:@"Fairlight Audio Source %lld Gain", it.first]
+			 forAddress:[NSString stringWithFormat:@"/atem/fairlight-audio/source/%lld/gain <float>", it.first]
+			 toString:helpString];
+			[self
+			 addEntry:[NSString stringWithFormat:@"Fairlight Audio Source %lld Pan", it.first]
+			 forAddress:[NSString stringWithFormat:@"/atem/fairlight-audio/source/%lld/pan <float>", it.first]
+			 toString:helpString];
+		}
+	}
+
+	if ([appDel mFairlightAudioMixer] != nil)
+	{
+		[self addHeader:@"Fairlight Audio Output (Mix)" toString:helpString];
+		[self addEntry:@"Fairlight Audio Output Gain" forAddress:@"/atem/fairlight-audio/output/gain <float>" toString:helpString];
+	}
 
 	[self addHeader:@"Aux Outputs" toString:helpString];
 	for (int i = 0; i<[appDel mSwitcherInputAuxList].size();i++)

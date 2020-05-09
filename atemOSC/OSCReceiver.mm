@@ -78,6 +78,21 @@
 	} copy] forKey:@"/atem/audio/output"];
 	
 	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		int number = [[d objectForKey:@"<number>"] intValue];
+		if (number > 0 && [appDel mFairlightAudioSources].count(number) > 0)
+			return true;
+		[appDel logMessage:[NSString stringWithFormat:@"Invalid source %d. Please choose a valid Fairlight audio source number from the list in Help > OSC addresses.", number]];
+		return false;
+	} copy] forKey:@"/atem/fairlight-audio/source"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
+		if ([appDel mFairlightAudioMixer])
+			return true;
+		[appDel logMessage:@"No Fairlight audio mixer"];
+		return false;
+	} copy] forKey:@"/atem/fairlight-audio/output"];
+	
+	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
 		int mplayer = [[d objectForKey:@"<player>"] intValue];
 
 		if (![appDel mMediaPool])
@@ -551,6 +566,20 @@
 	
 	[self addEndpoint:@"/atem/audio/output/balance" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
 		[appDel mAudioMixer]->SetProgramOutBalance([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/fairlight-audio/source/<number>/gain" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherFairlightAudioSourceId sourceNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mFairlightAudioSources][sourceNumber]->SetFaderGain([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/fairlight-audio/source/<number>/pan" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		BMDSwitcherFairlightAudioSourceId sourceNumber = [[d objectForKey:@"<number>"] intValue];
+		[appDel mFairlightAudioSources][sourceNumber]->SetPan([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/fairlight-audio/output/gain" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel mFairlightAudioMixer]->SetMasterOutFaderGain([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/atem/hyperdeck/<number>/play" label:@"HyperDeck <number> Play" handler:^void(NSDictionary *d, OSCValue *v) {

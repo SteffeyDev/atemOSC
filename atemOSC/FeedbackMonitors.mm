@@ -882,6 +882,102 @@ float AudioMixerMonitor::sendStatus() const
 	return 0.02;
 }
 
+HRESULT STDMETHODCALLTYPE FairlightAudioSourceMonitor::Notify (BMDSwitcherFairlightAudioSourceEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherFairlightAudioSourceEventTypeFaderGainChanged:
+			updateFaderGain();
+			break;
+		case bmdSwitcherFairlightAudioSourceEventTypePanChanged:
+			updatePan();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE FairlightAudioSourceMonitor::OutputLevelNotification (uint32_t numLevels, const double* levels, uint32_t numPeakLevels, const double* peakLevels)
+{
+	return S_OK;
+}
+
+void FairlightAudioSourceMonitor::updateFaderGain() const
+{
+	if (static_cast<AppDelegate *>(appDel).mFairlightAudioSources.count(sourceId_) > 0)
+	{
+		double gain;
+		static_cast<AppDelegate *>(appDel).mFairlightAudioSources[sourceId_]->GetFaderGain(&gain);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/fairlight-audio/source/%lld/gain", sourceId_]];
+		[newMsg addFloat:(float)gain];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+void FairlightAudioSourceMonitor::updatePan() const
+{
+	if (static_cast<AppDelegate *>(appDel).mFairlightAudioSources.count(sourceId_) > 0)
+	{
+		double pan;
+		static_cast<AppDelegate *>(appDel).mFairlightAudioSources[sourceId_]->GetPan(&pan);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/fairlight-audio/source/%lld/pan", sourceId_]];
+		[newMsg addFloat:(float)pan];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+float FairlightAudioSourceMonitor::sendStatus() const
+{
+	updateFaderGain();
+	updatePan();
+
+	return 0.02;
+}
+
+
+HRESULT STDMETHODCALLTYPE FairlightAudioMixerMonitor::Notify (BMDSwitcherFairlightAudioMixerEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherFairlightAudioMixerEventTypeMasterOutFaderGainChanged:
+			updateGain();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	
+	return S_OK;
+}
+
+HRESULT STDMETHODCALLTYPE FairlightAudioMixerMonitor::MasterOutLevelNotification (uint32_t numLevels, const double* levels, uint32_t numPeakLevels, const double* peakLevels)
+{
+	return S_OK;
+}
+
+void FairlightAudioMixerMonitor::updateGain() const
+{
+	if (static_cast<AppDelegate *>(appDel).mFairlightAudioMixer != nil)
+	{
+		double gain;
+		static_cast<AppDelegate *>(appDel).mFairlightAudioMixer->GetMasterOutFaderGain(&gain);
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/fairlight-audio/output/gain"];
+		[newMsg addFloat:(float)gain];
+		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	}
+}
+
+float FairlightAudioMixerMonitor::sendStatus() const
+{
+	updateGain();
+
+	return 0.01;
+}
+
+
 
 float HyperDeckMonitor::sendStatus() const
 {
