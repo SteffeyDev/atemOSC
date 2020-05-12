@@ -49,10 +49,17 @@
 @synthesize mInputs;
 @synthesize mInputMonitors;
 @synthesize mSwitcherInputAuxList;
+
 @synthesize mAudioInputs;
 @synthesize mAudioInputMonitors;
 @synthesize mAudioMixer;
 @synthesize mAudioMixerMonitor;
+
+@synthesize mFairlightAudioSources;
+@synthesize mFairlightAudioSourceMonitors;
+@synthesize mFairlightAudioMixer;
+@synthesize mFairlightAudioMixerMonitor;
+
 @synthesize outPort;
 @synthesize inPort;
 @synthesize mSwitcher;
@@ -144,6 +151,8 @@
 	mMonitors.push_back(mMacroPoolMonitor);
 	mAudioMixerMonitor = new AudioMixerMonitor(self);
 	mMonitors.push_back(mAudioMixerMonitor);
+	mFairlightAudioMixerMonitor = new FairlightAudioMixerMonitor(self);
+	mMonitors.push_back(mFairlightAudioMixerMonitor);
 }
 
 - (void)checkForUpdate
@@ -512,6 +521,38 @@
 		[self logMessage:@"Could not get IBMDSwitcherAudioMixer interface"];
 	}
 	
+	// Fairlight Audio Mixer
+	if (SUCCEEDED(mSwitcher->QueryInterface(IID_IBMDSwitcherFairlightAudioMixer, (void**)&mFairlightAudioMixer))) {
+		mFairlightAudioMixer->AddCallback(mFairlightAudioMixerMonitor);
+		
+		// Audio Inputs
+		IBMDSwitcherFairlightAudioSourceIterator* audioSourceIterator = NULL;
+		if (SUCCEEDED(mFairlightAudioMixer->CreateIterator(IID_IBMDSwitcherFairlightAudioSourceIterator, (void**)&audioSourceIterator)))
+		{
+			IBMDSwitcherFairlightAudioSource* audioSource = NULL;
+			while (S_OK == audioSourceIterator->Next(&audioSource))
+			{
+				BMDSwitcherFairlightAudioSourceId sourceId;
+				audioSource->GetId(&sourceId);
+				mFairlightAudioSources.insert(std::make_pair(sourceId, audioSource));
+				FairlightAudioSourceMonitor *monitor = new FairlightAudioSourceMonitor(self, sourceId);
+				audioSource->AddCallback(monitor);
+				mMonitors.push_back(monitor);
+				mFairlightAudioSourceMonitors.insert(std::make_pair(sourceId, monitor));
+			}
+			audioSourceIterator->Release();
+			audioSourceIterator = NULL;
+		}
+		else
+		{
+			[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherFairlightAudioSourceIterator iterator. code: %d", HRESULT_CODE(result)]];
+		}
+	}
+	else
+	{
+		[self logMessage:@"Could not get IBMDSwitcherFairlightAudioMixer interface"];
+	}
+	
 	// Hyperdeck Setup
 	IBMDSwitcherHyperDeckIterator* hyperDeckIterator = NULL;
 	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherHyperDeckIterator, (void**)&hyperDeckIterator)))
@@ -674,6 +715,22 @@
 	}
 	mAudioInputs.clear();
 	mAudioInputMonitors.clear();
+	
+	if (mFairlightAudioMixer)
+	{
+		mFairlightAudioMixer->RemoveCallback(mFairlightAudioMixerMonitor);
+		mFairlightAudioMixer->Release();
+		mFairlightAudioMixer = NULL;
+		mFairlightAudioMixerMonitor = NULL;
+	}
+	
+	for (auto const& it : mFairlightAudioSources)
+	{
+		it.second->RemoveCallback(mFairlightAudioSourceMonitors.at(it.first));
+		it.second->Release();
+	}
+	mFairlightAudioSources.clear();
+	mFairlightAudioSourceMonitors.clear();
 	
 	for (auto const& it : mHyperdecks)
 	{

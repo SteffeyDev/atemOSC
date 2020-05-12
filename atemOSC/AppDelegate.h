@@ -79,10 +79,17 @@
 @property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
 @property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
 @property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
+
 @property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherAudioInput*> mAudioInputs;
 @property (readonly)       std::map<BMDSwitcherAudioInputId, AudioInputMonitor*> mAudioInputMonitors;
 @property (readonly)       IBMDSwitcherAudioMixer*                  mAudioMixer;
 @property (readonly)       AudioMixerMonitor*                       mAudioMixerMonitor;
+
+@property (readonly)       std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> mFairlightAudioSources;
+@property (readonly)       std::map<BMDSwitcherFairlightAudioSourceId, FairlightAudioSourceMonitor*> mFairlightAudioSourceMonitors;
+@property (readonly)       IBMDSwitcherFairlightAudioMixer*         mFairlightAudioMixer;
+@property (readonly)       FairlightAudioMixerMonitor*              mFairlightAudioMixerMonitor;
+
 @property (readonly)       bool                                     isConnectedToATEM;
 @property (strong)         IBOutlet NSWindow*                       window;
 @property (strong)         id                                       activity;

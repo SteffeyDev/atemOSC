@@ -196,6 +196,21 @@ Feedback: Enabled for '/atem/dsk/$i/on-air' and '/atem/dsk/$i/tie'
 
 Feedback: Enabled for all values
 
+### Fairlight Audio
+
+ - **Change Gain for Fairlight Audio Source $i** `/atem/fairlight-audio/source/$i/gain $x`
+     - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
+     - e.g. `/atem/fairlight-audio/source/2/gain -30.0`
+ - **Change Pan for Fairlight Audio Source $i** `/atem/fairlight-audio/source/$i/pan $x`
+     - Where `$x` is the pan, `-1.0` for full left up to `1.0` for full right
+     - e.g. `/atem/fairlight-audio/source/2/pan 0.4`
+ - **Change Gain for Fairlight Audio Output (Mix)** `/atem/fairlight-audio/output/gain $x`
+     - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
+     - e.g. `/atem/fairlight-audio/output/gain -30.0`
+
+Feedback: Enabled for all values
+
+
 ### Media Players
 
  - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip $x`
