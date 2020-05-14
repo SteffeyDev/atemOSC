@@ -526,26 +526,41 @@
 		mFairlightAudioMixer->AddCallback(mFairlightAudioMixerMonitor);
 		
 		// Audio Inputs
-		IBMDSwitcherFairlightAudioSourceIterator* audioSourceIterator = NULL;
-		if (SUCCEEDED(mFairlightAudioMixer->CreateIterator(IID_IBMDSwitcherFairlightAudioSourceIterator, (void**)&audioSourceIterator)))
+		IBMDSwitcherFairlightAudioInputIterator* audioInputIterator = NULL;
+		if (SUCCEEDED(mAudioMixer->CreateIterator(IID_IBMDSwitcherFairlightAudioInputIterator, (void**)&audioInputIterator)))
 		{
-			IBMDSwitcherFairlightAudioSource* audioSource = NULL;
-			while (S_OK == audioSourceIterator->Next(&audioSource))
+			IBMDSwitcherFairlightAudioInput* audioInput = NULL;
+			while (S_OK == audioInputIterator->Next(&audioInput))
 			{
-				BMDSwitcherFairlightAudioSourceId sourceId;
-				audioSource->GetId(&sourceId);
-				mFairlightAudioSources.insert(std::make_pair(sourceId, audioSource));
-				FairlightAudioSourceMonitor *monitor = new FairlightAudioSourceMonitor(self, sourceId);
-				audioSource->AddCallback(monitor);
-				mMonitors.push_back(monitor);
-				mFairlightAudioSourceMonitors.insert(std::make_pair(sourceId, monitor));
+				// Audio Sources
+				IBMDSwitcherFairlightAudioSourceIterator* audioSourceIterator = NULL;
+				if (SUCCEEDED(audioInput->CreateIterator(IID_IBMDSwitcherFairlightAudioSourceIterator, (void**)&audioSourceIterator)))
+				{
+					IBMDSwitcherFairlightAudioSource* audioSource = NULL;
+					while (S_OK == audioSourceIterator->Next(&audioSource))
+					{
+						BMDSwitcherFairlightAudioSourceId sourceId;
+						audioSource->GetId(&sourceId);
+						mFairlightAudioSources.insert(std::make_pair(sourceId, audioSource));
+						FairlightAudioSourceMonitor *monitor = new FairlightAudioSourceMonitor(self, sourceId);
+						audioSource->AddCallback(monitor);
+						mMonitors.push_back(monitor);
+						mFairlightAudioSourceMonitors.insert(std::make_pair(sourceId, monitor));
+					}
+					audioSourceIterator->Release();
+					audioSourceIterator = NULL;
+				}
+				else
+				{
+					[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherFairlightAudioSourceIterator iterator. code: %d", HRESULT_CODE(result)]];
+				}
 			}
-			audioSourceIterator->Release();
-			audioSourceIterator = NULL;
+			audioInputIterator->Release();
+			audioInputIterator = NULL;
 		}
 		else
 		{
-			[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherFairlightAudioSourceIterator iterator. code: %d", HRESULT_CODE(result)]];
+			[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherFairlightAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
 		}
 	}
 	else
