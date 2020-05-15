@@ -320,3 +320,19 @@ Tune your MIDI software to send only one of the two signals, either ok button pr
  - The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blackmagic.
  - [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
  - Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).
+
+ ----------
+
+## Developer Resources
+
+### Find what line a crash occured on given a crash report (on MacOS)
+
+People like to send crash reports in issues.  You can use this method to find out which line of the program crashed from just the crash report and version number.
+
+1. Download the `atemOSC.debug.zip` file associated with the release that crashed and unzip it
+2. At a command line, `cd` into the unzipped folder (Usually `~/Downloads/atemOSC.debug`)
+3. Copy the crash report into a file (e.g. `crash.log`) and save it to the unzipped folder
+4. Copy the `find_crash` bash script from the root of this repository into that folder as well
+5. Run `./find_crash crash.log`, replacing `crash.log` with whatever your crash report file is named
+6. The script should tell you which line in which file caused the crash
+

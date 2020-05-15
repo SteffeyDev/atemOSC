@@ -527,7 +527,7 @@
 		
 		// Audio Inputs
 		IBMDSwitcherFairlightAudioInputIterator* audioInputIterator = NULL;
-		if (SUCCEEDED(mAudioMixer->CreateIterator(IID_IBMDSwitcherFairlightAudioInputIterator, (void**)&audioInputIterator)))
+		if (SUCCEEDED(mFairlightAudioMixer->CreateIterator(IID_IBMDSwitcherFairlightAudioInputIterator, (void**)&audioInputIterator)))
 		{
 			IBMDSwitcherFairlightAudioInput* audioInput = NULL;
 			while (S_OK == audioInputIterator->Next(&audioInput))

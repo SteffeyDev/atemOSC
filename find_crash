@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Usage: ./find_crash <crash_file>
+crashed_thread=$(cat $1 | grep "Crashed Thread" | cut -d' ' -f3)
+start_loc=$(cat $1 | grep "Binary Images" -A1 | grep -v Binary | cut -d' ' -f1)
+crash_loc=$(cat $1 | grep "Thread $crashed_thread Crashed" -A1 | grep -v Thread | cut -d' ' -f3)
+xcrun atos -o atemOSC.app.dSYM/Contents/Resources/DWARF/atemOSC -arch x86_64 -l $start_loc $crash_loc
