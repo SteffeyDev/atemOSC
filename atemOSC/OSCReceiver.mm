@@ -56,7 +56,7 @@
 	
 	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
 		int number = [[d objectForKey:@"<number>"] intValue];
-		if (number > 0 && [appDel mHyperdecks].count(number-1) > 0)
+		if ([appDel mHyperdecks].count(number-1) > 0)
 			return true;
 		[appDel logMessage:[NSString stringWithFormat:@"Hyperdeck %d is not available on your switcher, valid Hyperdecks are 1 - %lu", number, [appDel mHyperdecks].size()]];
 		return false;
@@ -64,7 +64,7 @@
 	
 	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
 		int number = [[d objectForKey:@"<number>"] intValue];
-		if (number > 0 && [appDel mAudioInputs].count(number) > 0)
+		if ([appDel mAudioInputs].count(number) > 0)
 			return true;
 		[appDel logMessage:[NSString stringWithFormat:@"Invalid input %d. Please choose a valid audio input number from the list in Help > OSC addresses.", number]];
 		return false;
@@ -79,7 +79,7 @@
 	
 	[validators setObject:[^bool(NSDictionary *d, OSCValue *v) {
 		int number = [[d objectForKey:@"<number>"] intValue];
-		if (number > 0 && [appDel mFairlightAudioSources].count(number) > 0)
+		if ([appDel mFairlightAudioSources].count(number) > 0)
 			return true;
 		[appDel logMessage:[NSString stringWithFormat:@"Invalid source %d. Please choose a valid Fairlight audio source number from the list in Help > OSC addresses.", number]];
 		return false;
