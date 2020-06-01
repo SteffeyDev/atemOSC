@@ -326,20 +326,20 @@
 			}
 			else
 			{
-				[self logMessage:@"Could not get IBMDSwitcherTransitionParameters"];
+				[self logMessage:@"[Debug] Could not get IBMDSwitcherTransitionParameters"];
 			}
 			
 		}
 		else
 		{
-			[self logMessage:@"Could not get the first IBMDSwitcherMixEffectBlock"];
+			[self logMessage:@"[Debug] Could not get the first IBMDSwitcherMixEffectBlock"];
 		}
 		
 		iterator->Release();
 	}
 	else
 	{
-		[self logMessage:@"Could not create IBMDSwitcherMixEffectBlockIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherMixEffectBlockIterator iterator"];
 	}
 	
 	
@@ -377,7 +377,7 @@
 	}
 	else
 	{
-		[self logMessage:@"Could not create IBMDSwitcherInputIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherInputIterator iterator"];
 	}
 	
 	
@@ -404,7 +404,7 @@
 	}
 	else
 	{
-		[self logMessage:@"Could not create IBMDSwitcherKeyIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherKeyIterator iterator"];
 	}
 	
 	
@@ -423,7 +423,7 @@
 	}
 	else
 	{
-		[self logMessage:@"Could not create IBMDSwitcherDownstreamKeyIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherDownstreamKeyIterator iterator"];
 	}
 	
 	// Media Players
@@ -440,13 +440,13 @@
 	}
 	else
 	{
-		[self logMessage:@"Could not create IBMDSwitcherMediaPlayerIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherMediaPlayerIterator iterator"];
 	}
 	
 	// get media pool
 	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherMediaPool, (void**)&mMediaPool)))
 	{
-		[self logMessage:@"Could not get IBMDSwitcherMediaPool interface"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherMediaPool interface"];
 	}
 	
 	// get macro pool
@@ -456,13 +456,13 @@
 	}
 	else
 	{
-		[self logMessage:@"Could not get IID_IBMDSwitcherMacroPool interface"];
+		[self logMessage:@"[Debug] Could not get IID_IBMDSwitcherMacroPool interface"];
 	}
 	
 	// get macro controller
 	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl)))
 	{
-		[self logMessage:@"Could not get IID_IBMDSwitcherMacroControl interface"];
+		[self logMessage:@"[Debug] Could not get IID_IBMDSwitcherMacroControl interface"];
 	}
 	
 	// Super source
@@ -480,12 +480,12 @@
 		}
 		else
 		{
-			[self logMessage:@"Could not create IBMDSwitcherSuperSourceBoxIterator iterator"];
+			[self logMessage:@"[Debug] Could not create IBMDSwitcherSuperSourceBoxIterator iterator"];
 		}
 	}
 	else
 	{
-		[self logMessage:@"Could not get IBMDSwitcherInputSuperSource interface"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherInputSuperSource interface"];
 	}
 	
 	// Audio Mixer (Output)
@@ -513,12 +513,12 @@
 		}
 		else
 		{
-			[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
+			[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
 		}
 	}
 	else
 	{
-		[self logMessage:@"Could not get IBMDSwitcherAudioMixer interface"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherAudioMixer interface (If your switcher supports Fairlight audio, you can ignore this)"];
 	}
 	
 	// Fairlight Audio Mixer
@@ -552,7 +552,7 @@
 				}
 				else
 				{
-					[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherFairlightAudioSourceIterator iterator. code: %d", HRESULT_CODE(result)]];
+					[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherFairlightAudioSourceIterator iterator. code: %d", HRESULT_CODE(result)]];
 				}
 			}
 			audioInputIterator->Release();
@@ -560,12 +560,12 @@
 		}
 		else
 		{
-			[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherFairlightAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
+			[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherFairlightAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
 		}
 	}
 	else
 	{
-		[self logMessage:@"Could not get IBMDSwitcherFairlightAudioMixer interface"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherFairlightAudioMixer interface (If your switcher does not support Fairlight audio, you can ignore this)"];
 	}
 	
 	// Hyperdeck Setup
@@ -588,7 +588,7 @@
 	}
 	else
 	{
-		[self logMessage:[NSString stringWithFormat:@"Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
+		[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
 	}
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
