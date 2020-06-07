@@ -190,10 +190,59 @@
 			mTransitionParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
 	}];
 	
-	[self addEndpoint:@"/atem/transition/rate" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/atem/transition/rate" label:@"Set rate for selected transition type (mix, dip, wipe, or DVE)" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+		[appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters);
+		BMDSwitcherTransitionStyle style=NULL;
+		mTransitionParameters->GetNextTransitionStyle(&style);
+		
 		IBMDSwitcherTransitionMixParameters* mTransitionMixParameters=NULL;
-		[appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionMixParameters, (void**)&mTransitionMixParameters);
-		mTransitionMixParameters->SetRate([v floatValue]);
+		IBMDSwitcherTransitionDipParameters* mTransitionDipParameters=NULL;
+		IBMDSwitcherTransitionWipeParameters* mTransitionWipeParameters=NULL;
+		IBMDSwitcherTransitionDVEParameters* mTransitionDVEParameters=NULL;
+
+		switch (style) {
+			case bmdSwitcherTransitionStyleMix:
+				if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionMixParameters, (void**)&mTransitionMixParameters)))
+					mTransitionMixParameters->SetRate([v floatValue]);
+				break;
+			case bmdSwitcherTransitionStyleDip:
+				if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionDipParameters)))
+					mTransitionDipParameters->SetRate([v floatValue]);
+				break;
+			case bmdSwitcherTransitionStyleWipe:
+				if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionWipeParameters)))
+					mTransitionWipeParameters->SetRate([v floatValue]);
+				break;
+			case bmdSwitcherTransitionStyleDVE:
+				if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDVEParameters, (void**)&mTransitionDVEParameters)))
+					mTransitionDVEParameters->SetRate([v floatValue]);
+				break;
+		}
+	}];
+	
+	[self addEndpoint:@"/atem/transition/mix/rate" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		IBMDSwitcherTransitionMixParameters* mTransitionMixParameters=NULL;
+		if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionMixParameters, (void**)&mTransitionMixParameters)))
+			mTransitionMixParameters->SetRate([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/transition/dip/rate" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		IBMDSwitcherTransitionDipParameters* mTransitionDipParameters=NULL;
+		if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionDipParameters)))
+			mTransitionDipParameters->SetRate([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/transition/wipe/rate" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		IBMDSwitcherTransitionWipeParameters* mTransitionWipeParameters=NULL;
+		if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionWipeParameters)))
+			mTransitionWipeParameters->SetRate([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/atem/transition/dve/rate" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		IBMDSwitcherTransitionDVEParameters* mTransitionDVEParameters=NULL;
+		if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDVEParameters, (void**)&mTransitionDVEParameters)))
+			mTransitionDVEParameters->SetRate([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/atem/usk/<key>/tie" label:@"Set USK<key> Tie" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
@@ -361,6 +410,7 @@
 			dveParams->SetBorderLuma([v floatValue]);
 	}];
 	
+	
 	[self addEndpoint:@"/atem/dsk/<key>/tie" label:@"Set DSK<key> Tie" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		bool isTransitioning;
@@ -404,6 +454,11 @@
 		bool isTransitioning;
 		[appDel dsk][key-1]->IsAutoTransitioning(&isTransitioning);
 		if (!isTransitioning) [appDel dsk][key-1]->PerformAutoTransition();
+	}];
+	
+	[self addEndpoint:@"/atem/dsk/<key>/rate" label:@"Set Rate for DSK<key>" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[appDel dsk][key-1]->SetRate([v intValue]);
 	}];
 	
 	[self addEndpoint:@"/atem/dsk/<key>/source/fill" label:@"Set Fill Source for DSK<key>" valueType:OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {

@@ -1,4 +1,4 @@
-# AtemOSC v3.1.4
+# AtemOSC v3.1.5
 
 ## Features
 This is a macOS application, providing an interface to control an ATEM video switcher via OSC.
@@ -76,7 +76,6 @@ Note: You can fetch the names of each input by sending the `/atem/send-status` c
  - **Auto** `/atem/transition/auto`
  - **Fade to Black Toggle** `/atem/transition/ftb`
  - **Preview Transition** `/atem/transition/preview <true|false>`
- - **Change Rate** `/atem/transition/rate <float>`
 
 To set the transition type of the Auto transition:
 
@@ -86,6 +85,14 @@ To set the transition type of the Auto transition:
  - **Stinger** `/atem/transition/type sting`
  - **DVE** `/atem/transition/type dve`
  - Also supports sending the type in the address instead of as a string value (e.g. `/atem/transition/type/dve`)
+
+ To set rate for Auto transition:
+
+ - **Currently selected type** `/atem/transition/rate <float>`
+ - **Mix** `/atem/transition/mix/rate <float>`
+ - **Dip** `/atem/transition/dip/rate <float>`
+ - **Wipe** `/atem/transition/wipe/rate <float>`
+ - **DVE** `/atem/transition/dve/rate <float>`
 
  Feedback: None
 
