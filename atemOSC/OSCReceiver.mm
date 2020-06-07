@@ -175,20 +175,25 @@
 	}];
 	
 	[self addEndpoint:@"/atem/transition/type" valueType:OSCValString handler:^void(NSDictionary *d, OSCValue *v) {
-		REFIID transitionStyleID = IID_IBMDSwitcherTransitionParameters;
-		IBMDSwitcherTransitionParameters* mTransitionStyleParameters=NULL;
-		[appDel mMixEffectBlock]->QueryInterface(transitionStyleID, (void**)&mTransitionStyleParameters);
+		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+		[appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters);
 		
 		if ([[v stringValue] isEqualToString:@"mix"])
-			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
+			mTransitionParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
 		else if ([[v stringValue] isEqualToString:@"dip"])
-			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDip);
+			mTransitionParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDip);
 		else if ([[v stringValue] isEqualToString:@"wipe"])
-			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleWipe);
+			mTransitionParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleWipe);
 		else if ([[v stringValue] isEqualToString:@"sting"])
-			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleStinger);
+			mTransitionParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleStinger);
 		else if ([[v stringValue] isEqualToString:@"dve"])
-			mTransitionStyleParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
+			mTransitionParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
+	}];
+	
+	[self addEndpoint:@"/atem/transition/rate" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
+		IBMDSwitcherTransitionMixParameters* mTransitionMixParameters=NULL;
+		[appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionMixParameters, (void**)&mTransitionMixParameters);
+		mTransitionMixParameters->SetRate([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/atem/usk/<key>/tie" label:@"Set USK<key> Tie" valueType:OSCValBool handler:^void(NSDictionary *d, OSCValue *v) {

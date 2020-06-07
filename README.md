@@ -76,6 +76,7 @@ Note: You can fetch the names of each input by sending the `/atem/send-status` c
  - **Auto** `/atem/transition/auto`
  - **Fade to Black Toggle** `/atem/transition/ftb`
  - **Preview Transition** `/atem/transition/preview <true|false>`
+ - **Change Rate** `/atem/transition/rate <float>`
 
 To set the transition type of the Auto transition:
 
@@ -94,7 +95,7 @@ To set the transition type of the Auto transition:
      - Where `$x` is an integer value that is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
      - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
 
-Feedback: None
+Feedback: Enabled for `/atem/transition/bar`
 
 ### Upstream Keyers
 
