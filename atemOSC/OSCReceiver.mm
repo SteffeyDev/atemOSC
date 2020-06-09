@@ -235,7 +235,7 @@
 	
 	[self addEndpoint:@"/atem/transition/wipe/rate" valueType:OSCValFloat handler:^void(NSDictionary *d, OSCValue *v) {
 		IBMDSwitcherTransitionWipeParameters* mTransitionWipeParameters=NULL;
-		if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionWipeParameters)))
+		if (SUCCEEDED([appDel mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionWipeParameters, (void**)&mTransitionWipeParameters)))
 			mTransitionWipeParameters->SetRate([v floatValue]);
 	}];
 	
