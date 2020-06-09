@@ -143,6 +143,10 @@
 		[appDel sendStatus];
 	}];
 	
+	[self addEndpoint:@"/atem/send-status/mix-effect-block" handler:^void(NSDictionary *d, OSCValue *v) {
+		[appDel mMixEffectBlockMonitor]->sendStatus();
+	}];
+	
 	[self addEndpoint:@"/atem/preview" valueType: OSCValInt handler:^void(NSDictionary *d, OSCValue *v) {
 		activateChannel([v intValue], false);
 	}];

@@ -285,6 +285,8 @@ Feedback: Enabled for `/atem/hyperdeck/$i/clip`.  The state of the HyperDeck is 
 
   - **Request all feedback available** `/atem/send-status`
      - This will query the switcher and send back the status for the program/preview, transition control, keyers, and macros
+  - **Request only Program/Preview/Bar status** `/atem/send-status/mix-effect-block`
+     - This will query the switcher and send back the status for only program/preview, bar, and preview
   - e.g. This can be used when a new OSC client device is brought online, so that it gets the current status of the system
 
 ### Type Casting
