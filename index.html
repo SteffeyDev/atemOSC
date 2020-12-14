@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>atemOSC - Control Blackmagic Design ATEM video switchers via OSC</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body data-spy="scroll" data-target="#mainnav">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <ul class="nav flex-column sticky-top" id="mainnav">
+          <li class="nav-item">
+            <a class="nav-link" href="#section1">atemOSC</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#section2">Getting started</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#section3">OSC API</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#section4">Use cases</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#section5">FAQs</a>
+          </li>
+        </ul>
+      </div>
+      <div class="col-md-9" id="content">
+        <section id="section1">
+          <img src="./img/icon.png" alt="" width="200"/>
+          <h1>atemOSC</h1>
+          <h2>OSC-bridge for controlling ATEM switchers</h2>
+          <p>
+          </p>
+          <p>
+            atemOSC is an open source project which acts as a bridge between OSC and Blackmagic Design ATEM switchers.
+          </p>
+        </section>
+        <section id="section2">
+          <h2>Getting started</h2>
+          <h3>Downloading</h3>
+          <p>
+            In order to get started with atemOSC, download the latest build <a href="https://github.com/danielbuechele/atemOSC/releases" target="_blank">from our GitHub repo</a>. The current software is built for ATEM v7.2.
+          </p>
+          <p>
+            Once downloaded, unzip the folder and copy the atemOSC .app file over to your applications folder.
+          </p>
+          <img src="./img/atem-osc-interface-2-5.png" alt="" width="75%"/>
+          <p>
+            Next, open the app, enter your ATEM switchers IP address and atemOSC will connect automatically.
+          </p>
+        </section>
+        <section id="section3">
+          <h2>OSC API</h2>
+          <p>
+            To see the full list of OSC addresses, use the <span class="callout">Help</span> menu within atemOSC and choose <span class="callout">OSC addresses</span>.
+          </p>
+            <h3>Program selection</h3>
+            <ul>
+              <li>
+                Black <span class="callout">/atem/program/0</span>
+              </li>
+              <li>
+                Input 1 <span class="callout">/atem/program/1</span>
+              </li>
+              <li>
+                Input 2 <span class="callout">/atem/program/2</span>
+              </li>
+              <li>
+                Input 3 <span class="callout">/atem/program/3</span>
+              </li>
+              <li>
+                Input 4 <span class="callout">/atem/program/4</span>
+              </li>
+              <li>
+                and so on...
+              </li>
+              <li>
+                Bars <span class="callout">/atem/program/7</span>
+              </li>
+              <li>
+                Color 1 <span class="callout">/atem/program/8</span>
+              </li>
+              <li>
+                Color 2 <span class="callout">/atem/program/9</span>
+              </li>
+              <li>
+                Media Player 1 <span class="callout">/atem/program/10</span>
+              </li>
+              <li>
+                Media Player 2 <span class="callout">/atem/program/12</span>
+              </li>
+            </ul>
+            <p>
+              Feedback: Enabled for all values.
+            </p>
+            <h3>Preview selection</h3>
+            <ul>
+              <li>
+                Black <span class="callout">/atem/preview/0</span>
+              </li>
+              <li>
+                Input 1 <span class="callout">/atem/preview/1</span>
+              </li>
+              <li>
+                Input 2 <span class="callout">/atem/preview/2</span>
+              </li>
+              <li>
+                Input 3 <span class="callout">/atem/preview/3</span>
+              </li>
+              <li>
+                Input 4 <span class="callout">/atem/preview/4</span>
+              </li>
+              <li>
+                and so on...
+              </li>
+              <li>
+                Bars <span class="callout">/atem/preview/7</span>
+              </li>
+              <li>
+                Color 1 <span class="callout">/atem/preview/8</span>
+              </li>
+              <li>
+                Color 2 <span class="callout">/atem/preview/9</span>
+              </li>
+              <li>
+                Media Player 1 <span class="callout">/atem/preview/10</span>
+              </li>
+              <li>
+                Media Player 2 <span class="callout">/atem/preview/12</span>
+              </li>
+            </ul>
+            <p>
+              Feedback: Enabled for all values.
+            </p>
+            <h3>Transitions</h3>
+            <ul>
+              <li>
+                T-bar <span class="callout">/atem/transition/bar <0-1></span>
+              </li>
+              <li>
+                Cut <span class="callout">/atem/transition/cut</span>
+              </li>
+              <li>
+                Auto <span class="callout">/atem/transition/auto</span>
+              </li>
+              <li>
+                Fade-to-black <span class="callout">/atem/transition/ftb</span>
+              </li>
+            </ul>
+            <h3>Setting transition type</h3>
+            <ul>
+              <li>
+                Mix <span class="callout">/atem/transition/set-type/mix</span>
+              </li>
+              <li>
+                Dip <span class="callout">/atem/transition/set-type/dip</span>
+              </li>
+              <li>
+                Wipe <span class="callout">/atem/transition/set-type/wipe</span>
+              </li>
+              <li>
+                Stinger <span class="callout">/atem/transition/set-type/sting</span>
+              </li>
+              <li>
+                DVE <span class="callout">/atem/transition/set-type/dve</span>
+              </li>
+            </ul>
+            <p>
+              Feedback: None.
+            </p>
+            <h3>Auxiliary source selection</h3>
+            <ul>
+              <li>
+                Aux <span class="callout">/atem/aux/$i $x</span>
+                <ul>
+                  <li>Where <span class="callout">$x</span> is an integer value that is a valid Aux source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.</li>
+                  <li>e.g. <span class="callout">/atem/aux/1 1</span> to set Aux 1 output to source 1 (Camera 1).</li>
+              </ul>
+              </li>
+            </ul>
+            <p>
+              Feedback: None.
+            </p>
+            <h3>Upstream keyers</h3>
+            <ul>
+              <li>
+                Toggle On-Air Upstream Keyer $i <span class="callout">/atem/usk/$i</span>
+              </li>
+              <li>
+                Prepare Upstream Keyer $i <span class="callout">/atem/nextusk/$i</span>
+              </li>
+              <li>
+                Set Upstream Keyer $i for Next Scene  <span class="callout">/atem/set-nextusk/$i <0|1></span>
+                <ul>
+                  <li>Send a value of 1 to show the USK after next transition, and 0 if you don’t want to show the USK after next transition.</li>
+                  <li>e.g. If USK 1 is on air, <span class="callout">/atem/set-nextusk/1 1</span> will untie USK 1 so that it remains on, while <span class="callout">/atem/set-nextusk/1 0</span> will tie USK 1 so that it will go off air after the next transition.</li>
+                </ul>
+              </li>
+            </ul>
+            <p>
+              Feedback: Enabled for <span class="callout">/atem/nextusk</span> only.
+            </p>
+            <h3>Downstream keyers</h3>
+            <ul>
+              <li>
+                Auto Toggle On-Air Downstreamkeyer $i <span class="callout">/atem/dsk/$i</span>
+              </li>
+              <li>
+                Cut Toggle On-Air Downstreamkeyer $i <span class="callout">/atem/dsk/toggle/$i</span>
+              </li>
+              <li>
+                Force On-Air Downstreamkeyer $i <span class="callout">/atem/dsk/on-air/$i <0|1></span>
+                <ul>
+                  <li>Send a value of 1 to cut the DSK on-air, and a value of 0 to cut it off-air.</li>
+                </ul>
+              </li>
+              <li>
+                Toggle Tie Downstreamkeyer $i <span class="callout">/atem/dsk/tie/$i</span>
+              </li>
+              <li>
+                Force Tie Downstreamkeyer $i <span class="callout">/atem/dsk/set-tie/$i <0|1></span>
+                <ul>
+                  <li>Send a value of 1 to enable tie, and 0 to disable.</li>
+                </ul>
+              </li>
+              <li>
+                Set Downstreamkeyer $i for Next Scene <span class="callout">/atem/dsk/set-next/$i <0|1></span>
+                <ul>
+                  <li>Send a value of 1 to show the DSK after next transition, and 0 if you don’t want to show the DSK after next transition.</li>
+                  <li>e.g. If DSK1 is on air, <span class="callout">/atem/dsk/set-next/1 1</span> will untie DSK1 so that it remains on, while <span class="callout">/atem/dsk/set-next/1 0</span> will tie DSK1 so that it will go off air after the next transition.</li>
+                </ul>
+              </li>
+            </ul>
+            <p>
+              Feedback: Enabled for <span class="callout">/atem/dsk/on-air</span> and <span class="callout">/atem/dsk/tie</span> only.
+            </p>
+            <h3>Media players</h3>
+            <ul>
+              <li>
+                Set Media Player $i source to Clip $x <span class="callout">/atem/mplayer/$i/clip/$x</span>
+                <ul>
+                  <li>Where <span class="callout">$i</span> can be 1 or 2, and <span class="callout">$x</span> can be 1 or 2 depending on the capability of your ATEM switcher.</li>
+                  <li>e.g. <span class="callout">/atem/mplayer/2/clip/1</span></li>
+                </ul>
+              </li>
+              <li>
+                Set Media Player $i source to Still $x <span class="callout">/atem/mplayer/$i/still/$x</span>
+                <ul>
+                  <li>Where <span class="callout">$i</span> can be 1 or 2, and <span class="callout">$x</span> can be 1-20 depending on the capability of your ATEM switcher.</li>
+                <li>e.g. <span class="callout">/atem/mplayer/1/still/5</span></li>
+                </ul>
+              </li>
+            </ul>
+            <p>
+              Feedback: None.
+            </p>
+            <h3>SuperSource (when available)</h3>
+            <ul>
+              <li>
+                Toggle SuperSource Box $i enabled <span class="callout">/atem/supersource/$i/enabled <0|1></span>
+                <ul>
+                  <li>Send a value of 1 to enable, and 0 to disable.</li>
+                </ul>
+              </li>
+              <li>
+                Set SuperSource Box $i source to input $x <span class="callout">/atem/supersource/$i/source $x</span>
+                <ul>
+                  <li>Where <span class="callout">$x</span> is a valid program source. Check the Help Menu for the correct values.</li>
+                </ul>
+              </li>
+            </ul>
+            <p>
+              Other options are available. Check the Help Menu in the app for the full list.
+            </p>
+            <p>
+              Feedback: None.
+            </p>
+            <h3>Macros</h3>
+            <p>
+              Macros should be recorded within the ATEM Control Panel software.<br />
+              Macros are stored within the ATEM in a 0-index array. This means that to access the first recorded Macro, you should use an index <span class="callout">$i</span> of 0, to access the second recorded Macro, you should use an index of 1 etc.
+            </p>
+            <ul>
+              <li>
+                Get the Maximum Number of Macros <span class="callout">/atem/macros/max-number</span>
+                <ul>
+                  <li>Returns an int of the maximum number of Macros supported by your ATEM.</li>
+                  <li>Access to these Macros should be used via an index of n-1.</li>
+                </ul>
+              </li>
+              <li>
+                Stop the currently active Macro (if any) <span class="callout">/atem/macros/stop</span>
+              </li>
+              <li>
+                Get the Name of a Macro <span class="callout">/atem/macros/$i/name</span>
+                <ul>
+                  <li>Returns a string with the name, or "" if the Macro is invalid.</li>
+                </ul>
+              </li>
+              <li>
+                Get the Description of a Macro <span class="callout">/atem/macros/$i/description</span>
+                <ul>
+                  <li>Returns a string with the description, or "" if the Macro is invalid.</li>
+                </ul>
+              </li>
+              <li>
+                Get whether the Macro at index $i is valid <span class="callout">/atem/macros/$i/is-valid</span>
+                <ul>
+                  <li>Returns an int of <span class="callout">0|1</span> to indicate whether the requested Macro is valid.</li>
+                </ul>
+              </li>
+              <li>
+                Run the Macro at index $i <span class="callout">/atem/macros/$i/run</span>
+                <ul>
+                  <li>Returns an int of <span class="callout">0|1</span> to indicate whether the requested Macro was executed. A 0 will be returned if the Macro is invalid, or does not exist.</li>
+                </ul>
+              </li>
+            </ul>
+            <p>
+              Feedback: Enabled for <span class="callout">/atem/macros/max-number</span>, <span class="callout">/atem/macros/$i/name</span>, <span class="callout">/atem/macros/$i/description</span>, and <span class="callout">/atem/macros/$i/is-valid</span>. Also available On-Request (you can send the command to get the value in a return message).
+            </p>
+            <h3>Other</h3>
+            <ul>
+              <li>
+                Request all feedback available  <span class="callout">/atem/send-status</span>
+                <ul>
+                  <li>This will query the switcher and send back the status for the program/preview, transition control, keyers, and macros.</li>
+                  <li>e.g. This can be used when a new OSC client device is brought online, so that it gets the current status of the system.</li>
+                </ul>
+              </li>
+            </ul>
+        </section>
+        <section id="section4">
+          <h2>Use cases</h2>
+          <p>
+            Here's a peek at some of the ways to control your ATEM with atemOSC.
+          </p>
+          <h3>iPad</h3>
+          <p>
+            In combination with <a href="https://hexler.net/software/touchosc" target="_blank">TouchOSC</a>, you can create, configure and control a custom layout for operating your ATEM. The beauty of this system is that you have complete control over what your control panel looks like.
+          </p>
+          <h3>MIDI panel</h3>
+          <p>
+            If you prefer a more tactile approach to your control panel, you can pick up just about any MIDI panel - and in combination with <a href="https://osculator.net/" target="_blank">OSCulator</a> - you can control your ATEM.
+          </p>
+        </section>
+        <section id="section5">
+          <h2>FAQs</h2>
+          <p>
+            <strong>"It's not working for me"</strong><br/>
+            First things first, make sure your IP address has been entered correctly. If you're still experienceing issues, create an issue <a href="https://github.com/danielbuechele/atemOSC/issues" target="_blank">on our GitHub repo</a>. It's okay if you're not a familar with GitHub, just follow the link, click on the green "New issue" option, create an account, and fill in as much information as you can!
+          </p>
+          <p>
+            <strong>"I have a feature request"</strong><br/>
+            Excellent! Feel free to open an issue <a href="https://github.com/danielbuechele/atemOSC/issues" target="_blank">on our GitHub repo</a>. Just be sure to check someone hasn't already requested the feature.
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+</body>
+</html>
