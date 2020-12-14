@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title>atemOSC Download</title>
+  </head>
+  <body>
+    <p>If this page does not automatically redirect, download the app from the <a href="https://github.com/SteffeyDev/atemOSC/releases">releases</a> page</p>
+    <script>
+      fetch('https://api.github.com/repos/SteffeyDev/atemOSC/releases/latest')
+        .then(response => response.json())
+        .then(release => {
+          const version = release.tag_name.substring(1);
+          window.location.href = `https://github.com/SteffeyDev/atemOSC/releases/download/v${version}/atemOSC_${version}.dmg'
+        })
+    </script>
+  </body>
+</html>

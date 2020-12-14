@@ -1,38 +1,51 @@
-# AtemOSC v3.1.5
+# atemOSC
 
-## Features
-This is a macOS application, providing an interface to control an ATEM video switcher via OSC.
+A macOS application to control ATEM video switchers with [OSC](http://opensoundcontrol.org/introduction-osc).
 
-<img alt="atemOSC Screenshot" src="https://github.com/danielbuechele/atemOSC/raw/master/atemOSC_3.png" width="50%">
-
-The current version is built for Mac OS 10.15.1 (since version 2.5.7). A compiled and runnable version of the atemOSC is included which has been built against Blackmagic SDK 8.1 (since version 2.5.7).
+<img alt="atemOSC Screenshot" src="https://github.com/SteffeyDev/atemOSC/raw/master/atemOSC_3.png" width="50%">
 
 ## Download the App
 
-1. Go to the [releases page](https://github.com/danielbuechele/atemOSC/releases)
-2. For the latest version, use the first release.  For a version that supports older versions of the Atem SDK, scroll down until you find the release for the version you want.
-2. Under `Assets`, select `atemOSC.dmg`
-3. Double-click the downloaded DMG, drag the application to your Applications folder, then launch it from the Launchpad.
+[Download Stable Version](http://atemosc.com/download.html)
+
+Download older or pre-release versions:
+1. Go to the [releases page](https://github.com/SteffeyDev/atemOSC/releases)
+2. For a version that supports older versions of the Atem SDK, scroll down until you find the release for the version you want.
+3. Under `Assets`, select `atemOSC_[version].dmg`
 
 ## Setup and Usage
 
-AtemOSC is a proxy, listening for commands following the [OSC protocol](http://opensoundcontrol.org/introduction-osc) and executing those commands on Blackmagic video switchers.  You just have to tell atemOSC where the switcher is and what local port to listen on, and then send commands to the IP address of the computer running atemOSC on port you specified.  If you set an outgoing IP address and port, atemOSC will send status updates and feedback OSC messages to the IP address and port you specified.
+atemOSC is a network proxy, listening for commands following the [OSC protocol](http://opensoundcontrol.org/introduction-osc) and executing those commands on Blackmagic ATEM video switchers.  After launching the application, enter the IP address of the switcher and which local port to listen on (default 3333), and then send OSC commands to the IP address of the computer running atemOSC that port.  If you set an outgoing IP address and port, atemOSC will send status updates and feedback OSC messages to the IP address and port you specified.
 
 **If you are sending atemOSC messages from a queueing software or translation software on the same computer that atemOSC is running on**, make sure to send messages to `127.0.0.1` (localhost) on the port that atemOSC is listening on.
 
 **If you are sending atemOSC messages from another device**, you will need to send it to the IP address of the computer running atemOSC on the port that atemOSC is listening on.  You can find the IP address of a macOS computer by going to `System Preferences` > `Network` or by running `ifconfig` in a terminal window.
 
-**If you would like to send OSC from AppleScript or Terminal commands**, you can download and use the [sendosc](https://github.com/yoggy/sendosc) command.  See the [actionscript example](https://github.com/danielbuechele/atemOSC/blob/master/samples/controllermate-actionscript.txt) in this repository for an example of using AppleScript and sendOSC.  SendOSC also enables using AtemOSC with [ControllerMate](http://www.orderedbytes.com/controllermate/) and [X-keys](http://xkeys.com/XkeysKeyboards/index.php).
+**If you would like to send OSC from AppleScript or Terminal commands**, you can download and use the [sendosc](https://github.com/yoggy/sendosc) command.  See the [actionscript example](https://github.com/SteffeyDev/atemOSC/blob/master/samples/controllermate-actionscript.txt) in this repository for an example of using AppleScript and sendOSC.  SendOSC also enables using AtemOSC with [ControllerMate](http://www.orderedbytes.com/controllermate/) and [X-keys](http://xkeys.com/XkeysKeyboards/index.php).
 
-**If you would like to control your switcher using a MIDI board or device**, consider pairing this software with [OSCulator](https://osculator.net) or [MidiPipe](http://www.subtlesoft.square7.net/MidiPipe.html).  If you would like to control AtemOSC directly using MIDI, comment on [Issue #111](https://github.com/danielbuechele/atemOSC/issues/111) to let us know.
+**If you would like to control your switcher using a MIDI board or device**, consider pairing this software with [OSCulator](https://osculator.net) or [MidiPipe](http://www.subtlesoft.square7.net/MidiPipe.html).  If you would like to control AtemOSC directly using MIDI, comment on [Issue #111](https://github.com/SteffeyDev/atemOSC/issues/111) to let us know.
 
-**If you would like to control your switcher using a mobile device**, you can use [TouchOSC](https://hexler.net/products/touchosc) (see included layouts in [samples](https://github.com/danielbuechele/atemOSC/tree/master/samples) folder) or Open Stage Control (https://openstagecontrol.ammd.net).
+**If you would like to control your switcher using a mobile device**, you can use [TouchOSC](https://hexler.net/products/touchosc) (see included layouts in [samples](https://github.com/SteffeyDev/atemOSC/tree/master/samples) folder) or Open Stage Control (https://openstagecontrol.ammd.net).
+
+## Videos & Guides
+
+**Usage with Ableton Live and OSCulator (MIDI) by Jake Gosselin**: https://www.youtube.com/watch?v=Xhbk1epkrLc
+
+**Usage with QLab by Jack Phelan**: https://jackp.svbtle.com/atem-mini-qlab-and-osc
+
+**Usage with TouchOSC by John Barker**: https://www.youtube.com/watch?v=jX7YI-DTMxM
+
+**Usage with OSCulator (MIDI) by John Barker**: https://www.youtube.com/watch?v=HQm2KZYcPws&t=29s
+
+**Usage with OSCulator (MIDI) by Morgan Warf**: https://www.youtube.com/watch?v=ooaOz5Uytxs&t=252s
+
+**Usage with ProPresenter and OSCulator (MIDI) by Tiffany Howard**: https://www.youtube.com/watch?v=dHwSHa8UWVw
 
 ----------
 
 ## OSC API
 
-A full overview of the actual OSC-addresses available for your switcher can be obtained from the help menu inside the application.
+The full list of the OSC-addresses available for your switcher can be obtained by clicking the "Show OSC Addresses" button once you've connected atemOSC to your switcher. The list below is just an overview of what the addresses may look like for a generic switcher.
 
 ### Program and Preview Selection
 
@@ -325,9 +338,13 @@ Tune your MIDI software to send only one of the two signals, either ok button pr
 
 -----------
 
+## Contributing
+
+I welcome pull requests, but recommend that you open an issue first so that we can discuss the bug or feature before you implement it.
+
 ## Acknowledgements
 
- - The code is based on the *SwitcherPanel*-Democode (Version 3.5) provided by Blackmagic.
+ - Project originally created by [Daniel Büchele](https://github.com/danielbuechele)
  - [VVOSC](http://code.google.com/p/vvopensource/) is used as OSC-framework.
  - Program icon based heavily on the ATEM Software Control icon by [Blackmagic Design](http://www.blackmagicdesign.com).
 

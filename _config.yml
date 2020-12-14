@@ -1,1 +1,4 @@
 theme: jekyll-theme-slate
+title: atemOSC
+description: Control ATEM video switchers with OSC
+show_downloads: true
