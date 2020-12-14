@@ -10,7 +10,7 @@
         .then(release => {
           const version = release.tag_name.substring(1);
           window.open(`https://github.com/SteffeyDev/atemOSC/releases/download/v${version}/atemOSC_${version}.dmg`, '_blank');
-          window.close();
+          window.back();
         })
     </script>
   </body>
