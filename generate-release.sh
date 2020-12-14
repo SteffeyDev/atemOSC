@@ -99,7 +99,7 @@ if [[ ! $(git config --get remote.origin.url) ]]
   then
     echo -e "Remote ${GREY_COLOR}origin${NO_COLOR} missing"
     echo -e "You need to specify the remote repository manually"
-    echo "e.g. ${GREY_COLOR}git remote add origin https://github.com/danielbuechele/atemOSC${NO_COLOR}"
+    echo "e.g. ${GREY_COLOR}git remote add origin https://github.com/SteffeyDev/atemOSC${NO_COLOR}"
 	exit 1
 fi
 

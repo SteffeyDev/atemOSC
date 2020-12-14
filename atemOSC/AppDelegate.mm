@@ -159,7 +159,7 @@
 {
 	// Check if new version available
 	NSError *error = nil;
-	NSString *url_string = [NSString stringWithFormat: @"https://api.github.com/repos/danielbuechele/atemOSC/releases/latest"];
+	NSString *url_string = [NSString stringWithFormat: @"https://api.github.com/repos/SteffeyDev/atemOSC/releases/latest"];
 	NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString:url_string]];
 	if (!error) {
 		NSMutableDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
@@ -178,7 +178,7 @@
 			 {
 				 if ( returnCode == NSAlertFirstButtonReturn )
 				 {
-					 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/danielbuechele/atemOSC/releases/latest"]];
+					 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/SteffeyDev/atemOSC/releases/latest"]];
 				 }
 			 }];
 		}
@@ -220,7 +220,7 @@
 
 - (IBAction)githubPageButtonPressed:(id)sender
 {
-	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/danielbuechele/atemOSC/"]];
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/SteffeyDev/atemOSC/"]];
 }
 
 - (void)connectBMD
