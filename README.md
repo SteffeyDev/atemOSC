@@ -8,6 +8,13 @@ A macOS application to control ATEM video switchers with [OSC](http://opensoundc
 
 [Download Latest Version](http://www.atemosc.com/download.html)
 
+If you encounter a warning that says “atemOSC” cannot be opened because the developer cannot be verified:
+1. Close the dialog
+2. Open System Preferences
+3. Open Security & Privacy
+4. On the General tab, click the "Open Anyway" button next to the text that says "atemOSC was blocked..."
+5. Click "Open" in the dialog
+
 Download older or pre-release versions:
 1. Go to the [releases page](https://github.com/SteffeyDev/atemOSC/releases)
 2. For a version that supports older versions of the Atem SDK, scroll down until you find the release for the version you want.
