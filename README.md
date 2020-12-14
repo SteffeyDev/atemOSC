@@ -6,7 +6,7 @@ A macOS application to control ATEM video switchers with [OSC](http://opensoundc
 
 ## Download the App
 
-[Download Stable Version](http://www.atemosc.com/download.html)
+<a href="(http://www.atemosc.com/download.html" target="_blank">https://github.com/SteffeyDev/atemOSC/releases</a>
 
 Download older or pre-release versions:
 1. Go to the [releases page](https://github.com/SteffeyDev/atemOSC/releases)
