@@ -11,9 +11,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OSCEndpoint : NSObject
-	@property(nonatomic) NSString *addressTemplate;
-	@property(nonatomic) NSString *helpText;
-	@property(nonatomic) NSString *label;
+	@property(nonatomic, assign) NSString *addressTemplate;
+	@property(nonatomic, assign) NSString *helpText;
+	@property(nonatomic, assign) NSString *label;
 	@property(nonatomic) OSCValueType valueType;
 	@property(nonatomic, copy) void (^handler)(NSDictionary *, OSCValue *);
 @end

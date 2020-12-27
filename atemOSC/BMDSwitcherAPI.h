@@ -1,5 +1,5 @@
 /* -LICENSE-START-
-** Copyright (c) 2019 Blackmagic Design
+** Copyright (c) 2020 Blackmagic Design
 **
 ** Permission is hereby granted, free of charge, to any person or organization
 ** obtaining a copy of the software and accompanying documentation covered by
@@ -51,6 +51,7 @@ typedef int64_t BMDSwitcherInputId;
 typedef struct { uint8_t data[16]; } BMDSwitcherHash;
 typedef int64_t BMDSwitcherAudioInputId;
 typedef int64_t BMDSwitcherFairlightAudioSourceId;
+typedef uint32_t BMDSwitcherRecordDiskId;
 typedef int64_t BMDSwitcherHyperDeckClipId;
 typedef int64_t BMDSwitcherHyperDeckId;
 
@@ -82,8 +83,6 @@ BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioEqualizer          = /* 89E3453D-
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSourceCallback     = /* E9331BC4-6E0F-44DD-8F90-5FC159EFF8E5 */ { 0xE9,0x33,0x1B,0xC4,0x6E,0x0F,0x44,0xDD,0x8F,0x90,0x5F,0xC1,0x59,0xEF,0xF8,0xE5 };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSource             = /* D8D1D78D-0B9F-4300-9734-AE8DA35A8ECA */ { 0xD8,0xD1,0xD7,0x8D,0x0B,0x9F,0x43,0x00,0x97,0x34,0xAE,0x8D,0xA3,0x5A,0x8E,0xCA };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSourceIterator     = /* 050233A3-3244-46B0-A7CD-EF37A869ACDD */ { 0x05,0x02,0x33,0xA3,0x32,0x44,0x46,0xB0,0xA7,0xCD,0xEF,0x37,0xA8,0x69,0xAC,0xDD };
-BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputXLRCallback   = /* 64F0DCA8-CEF4-4C72-AC24-D7BB7DF38737 */ { 0x64,0xF0,0xDC,0xA8,0xCE,0xF4,0x4C,0x72,0xAC,0x24,0xD7,0xBB,0x7D,0xF3,0x87,0x37 };
-BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputXLR           = /* CD9FE826-776E-44F6-A508-EF7DFAA9E5F8 */ { 0xCD,0x9F,0xE8,0x26,0x77,0x6E,0x44,0xF6,0xA5,0x08,0xEF,0x7D,0xFA,0xA9,0xE5,0xF8 };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAnalogAudioInputCallback = /* A9B917B9-46C7-474D-BD86-75CC34D71AF8 */ { 0xA9,0xB9,0x17,0xB9,0x46,0xC7,0x47,0x4D,0xBD,0x86,0x75,0xCC,0x34,0xD7,0x1A,0xF8 };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAnalogAudioInput        = /* C3F347F3-49BB-4832-835C-E329FBF5707E */ { 0xC3,0xF3,0x47,0xF3,0x49,0xBB,0x48,0x32,0x83,0x5C,0xE3,0x29,0xFB,0xF5,0x70,0x7E };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputCallback      = /* 25F66467-A6BB-4813-B214-158D0FF8653C */ { 0x25,0xF6,0x64,0x67,0xA6,0xBB,0x48,0x13,0xB2,0x14,0x15,0x8D,0x0F,0xF8,0x65,0x3C };
@@ -139,7 +138,7 @@ BMD_CONST REFIID IID_IBMDSwitcherSuperSourceBorder                = /* 4D082919-
 BMD_CONST REFIID IID_IBMDSwitcherInputSuperSourceCallback         = /* 161446A5-6F0C-4B45-A59B-AEF6CD0C4950 */ { 0x16,0x14,0x46,0xA5,0x6F,0x0C,0x4B,0x45,0xA5,0x9B,0xAE,0xF6,0xCD,0x0C,0x49,0x50 };
 BMD_CONST REFIID IID_IBMDSwitcherInputSuperSource                 = /* B97A1B97-69D0-457B-9580-92CCFE89FA4F */ { 0xB9,0x7A,0x1B,0x97,0x69,0xD0,0x45,0x7B,0x95,0x80,0x92,0xCC,0xFE,0x89,0xFA,0x4F };
 BMD_CONST REFIID IID_IBMDSwitcherMultiViewCallback                = /* 345CE414-0BF1-46F9-97AC-FB1A47499005 */ { 0x34,0x5C,0xE4,0x14,0x0B,0xF1,0x46,0xF9,0x97,0xAC,0xFB,0x1A,0x47,0x49,0x90,0x05 };
-BMD_CONST REFIID IID_IBMDSwitcherMultiView                        = /* BCFAAA0B-295B-4208-92D8-20BFEEF5B4D7 */ { 0xBC,0xFA,0xAA,0x0B,0x29,0x5B,0x42,0x08,0x92,0xD8,0x20,0xBF,0xEE,0xF5,0xB4,0xD7 };
+BMD_CONST REFIID IID_IBMDSwitcherMultiView                        = /* 38EC859F-5EC6-4EDE-BDF5-1AAC9E63B1EB */ { 0x38,0xEC,0x85,0x9F,0x5E,0xC6,0x4E,0xDE,0xBD,0xF5,0x1A,0xAC,0x9E,0x63,0xB1,0xEB };
 BMD_CONST REFIID IID_IBMDSwitcherDownstreamKeyCallback            = /* 0C7D4DE3-E7D1-4062-86B4-9F82F7BB346D */ { 0x0C,0x7D,0x4D,0xE3,0xE7,0xD1,0x40,0x62,0x86,0xB4,0x9F,0x82,0xF7,0xBB,0x34,0x6D };
 BMD_CONST REFIID IID_IBMDSwitcherDownstreamKey                    = /* F54F9E1D-5EEE-40D2-A77A-85197A7D344E */ { 0xF5,0x4F,0x9E,0x1D,0x5E,0xEE,0x40,0xD2,0xA7,0x7A,0x85,0x19,0x7A,0x7D,0x34,0x4E };
 BMD_CONST REFIID IID_IBMDSwitcherInputIterator                    = /* 275E9888-2F65-4B2E-9434-1937A72B9EC4 */ { 0x27,0x5E,0x98,0x88,0x2F,0x65,0x4B,0x2E,0x94,0x34,0x19,0x37,0xA7,0x2B,0x9E,0xC4 };
@@ -148,7 +147,7 @@ BMD_CONST REFIID IID_IBMDSwitcherMixEffectBlockIterator           = /* EA8D1E06-
 BMD_CONST REFIID IID_IBMDSwitcherDownstreamKeyIterator            = /* AF65039F-C4D0-4C85-8CB0-AE060EDDC0B9 */ { 0xAF,0x65,0x03,0x9F,0xC4,0xD0,0x4C,0x85,0x8C,0xB0,0xAE,0x06,0x0E,0xDD,0xC0,0xB9 };
 BMD_CONST REFIID IID_IBMDSwitcherKeyIterator                      = /* 63032A58-35FC-4AE3-86E3-49DFF879EA4A */ { 0x63,0x03,0x2A,0x58,0x35,0xFC,0x4A,0xE3,0x86,0xE3,0x49,0xDF,0xF8,0x79,0xEA,0x4A };
 BMD_CONST REFIID IID_IBMDSwitcherMediaPlayerIterator              = /* E910816F-59CB-4224-A77F-06DE3D232275 */ { 0xE9,0x10,0x81,0x6F,0x59,0xCB,0x42,0x24,0xA7,0x7F,0x06,0xDE,0x3D,0x23,0x22,0x75 };
-BMD_CONST REFIID IID_IBMDSwitcherMultiViewIterator                = /* 6A5BCCD8-CCD8-4983-9E6A-5FEE666D0ACA */ { 0x6A,0x5B,0xCC,0xD8,0xCC,0xD8,0x49,0x83,0x9E,0x6A,0x5F,0xEE,0x66,0x6D,0x0A,0xCA };
+BMD_CONST REFIID IID_IBMDSwitcherMultiViewIterator                = /* B731477F-A85D-4003-9A89-9606309F3D34 */ { 0xB7,0x31,0x47,0x7F,0xA8,0x5D,0x40,0x03,0x9A,0x89,0x96,0x06,0x30,0x9F,0x3D,0x34 };
 BMD_CONST REFIID IID_IBMDSwitcherAudioMonitorOutputIterator       = /* C76BAC6A-DFEE-4F2F-B161-226B481D556A */ { 0xC7,0x6B,0xAC,0x6A,0xDF,0xEE,0x4F,0x2F,0xB1,0x61,0x22,0x6B,0x48,0x1D,0x55,0x6A };
 BMD_CONST REFIID IID_IBMDSwitcherAudioHeadphoneOutputIterator     = /* 151CFF07-EF32-441F-8FF8-C2163A751EA2 */ { 0x15,0x1C,0xFF,0x07,0xEF,0x32,0x44,0x1F,0x8F,0xF8,0xC2,0x16,0x3A,0x75,0x1E,0xA2 };
 BMD_CONST REFIID IID_IBMDSwitcherAudioInputIterator               = /* 97959903-651E-4F68-BA42-1FA61508F189 */ { 0x97,0x95,0x99,0x03,0x65,0x1E,0x4F,0x68,0xBA,0x42,0x1F,0xA6,0x15,0x08,0xF1,0x89 };
@@ -157,8 +156,8 @@ BMD_CONST REFIID IID_IBMDSwitcherHyperDeckIterator                = /* 35879F23-
 BMD_CONST REFIID IID_IBMDSwitcherMixMinusOutputIterator           = /* 7EE8380F-2A09-4085-86BC-DFB8ACACE0FB */ { 0x7E,0xE8,0x38,0x0F,0x2A,0x09,0x40,0x85,0x86,0xBC,0xDF,0xB8,0xAC,0xAC,0xE0,0xFB };
 BMD_CONST REFIID IID_IBMDSwitcherTalkbackIterator                 = /* 17AC2EFF-C51A-41AB-A4CB-3C3AF2157FFE */ { 0x17,0xAC,0x2E,0xFF,0xC5,0x1A,0x41,0xAB,0xA4,0xCB,0x3C,0x3A,0xF2,0x15,0x7F,0xFE };
 BMD_CONST REFIID IID_IBMDSwitcherCallback                         = /* EE50FC2C-D0D7-42D6-965A-57498CECC1F6 */ { 0xEE,0x50,0xFC,0x2C,0xD0,0xD7,0x42,0xD6,0x96,0x5A,0x57,0x49,0x8C,0xEC,0xC1,0xF6 };
-BMD_CONST REFIID IID_IBMDSwitcher                                 = /* 04ADE67B-27B1-48A7-80A3-553230C5046F */ { 0x04,0xAD,0xE6,0x7B,0x27,0xB1,0x48,0xA7,0x80,0xA3,0x55,0x32,0x30,0xC5,0x04,0x6F };
-BMD_CONST REFIID IID_IBMDSwitcherDiscovery                        = /* 568FC291-CEB5-4A1E-95AC-43FDE5E91249 */ { 0x56,0x8F,0xC2,0x91,0xCE,0xB5,0x4A,0x1E,0x95,0xAC,0x43,0xFD,0xE5,0xE9,0x12,0x49 };
+BMD_CONST REFIID IID_IBMDSwitcher                                 = /* 00E7C247-9504-452B-AC97-F56EC3A180DE */ { 0x00,0xE7,0xC2,0x47,0x95,0x04,0x45,0x2B,0xAC,0x97,0xF5,0x6E,0xC3,0xA1,0x80,0xDE };
+BMD_CONST REFIID IID_IBMDSwitcherDiscovery                        = /* 1BE1FC40-E404-48C5-BAB6-535D27D8AF88 */ { 0x1B,0xE1,0xFC,0x40,0xE4,0x04,0x48,0xC5,0xBA,0xB6,0x53,0x5D,0x27,0xD8,0xAF,0x88 };
 BMD_CONST REFIID IID_IBMDSwitcherFrame                            = /* 35A1F6A6-D317-4F89-A565-0F0BD414CF77 */ { 0x35,0xA1,0xF6,0xA6,0xD3,0x17,0x4F,0x89,0xA5,0x65,0x0F,0x0B,0xD4,0x14,0xCF,0x77 };
 BMD_CONST REFIID IID_IBMDSwitcherAudio                            = /* E89BD25E-FD04-4FBE-A124-CCAF5ADBE5B2 */ { 0xE8,0x9B,0xD2,0x5E,0xFD,0x04,0x4F,0xBE,0xA1,0x24,0xCC,0xAF,0x5A,0xDB,0xE5,0xB2 };
 BMD_CONST REFIID IID_IBMDSwitcherLockCallback                     = /* 56663D7A-85A8-4DA0-9B13-2A52D3C7740C */ { 0x56,0x66,0x3D,0x7A,0x85,0xA8,0x4D,0xA0,0x9B,0x13,0x2A,0x52,0xD3,0xC7,0x74,0x0C };
@@ -167,10 +166,17 @@ BMD_CONST REFIID IID_IBMDSwitcherStills                           = /* 235C654C-
 BMD_CONST REFIID IID_IBMDSwitcherClipCallback                     = /* 407117B4-B6A8-46D2-9911-43254171B1B7 */ { 0x40,0x71,0x17,0xB4,0xB6,0xA8,0x46,0xD2,0x99,0x11,0x43,0x25,0x41,0x71,0xB1,0xB7 };
 BMD_CONST REFIID IID_IBMDSwitcherClip                             = /* 94AAF18A-7AF4-4721-8C1E-1843D42644E7 */ { 0x94,0xAA,0xF1,0x8A,0x7A,0xF4,0x47,0x21,0x8C,0x1E,0x18,0x43,0xD4,0x26,0x44,0xE7 };
 BMD_CONST REFIID IID_IBMDSwitcherMediaPoolCallback                = /* B8617A16-1B17-4FD6-93BF-664FA71F2A50 */ { 0xB8,0x61,0x7A,0x16,0x1B,0x17,0x4F,0xD6,0x93,0xBF,0x66,0x4F,0xA7,0x1F,0x2A,0x50 };
-BMD_CONST REFIID IID_IBMDSwitcherMediaPool                        = /* 59A3056E-7B62-46F0-8B78-1FB149F7372C */ { 0x59,0xA3,0x05,0x6E,0x7B,0x62,0x46,0xF0,0x8B,0x78,0x1F,0xB1,0x49,0xF7,0x37,0x2C };
+BMD_CONST REFIID IID_IBMDSwitcherMediaPool                        = /* 33D14916-8E2C-46CC-A63B-2C9213A572C1 */ { 0x33,0xD1,0x49,0x16,0x8E,0x2C,0x46,0xCC,0xA6,0x3B,0x2C,0x92,0x13,0xA5,0x72,0xC1 };
 BMD_CONST REFIID IID_IBMDSwitcherStillCapture                     = /* CC762E9E-5074-4B64-BC76-848E2C4E7421 */ { 0xCC,0x76,0x2E,0x9E,0x50,0x74,0x4B,0x64,0xBC,0x76,0x84,0x8E,0x2C,0x4E,0x74,0x21 };
 BMD_CONST REFIID IID_IBMDSwitcherStillCaptureCallback             = /* 56AB0A02-9706-417C-85F4-584C275F9DEA */ { 0x56,0xAB,0x0A,0x02,0x97,0x06,0x41,0x7C,0x85,0xF4,0x58,0x4C,0x27,0x5F,0x9D,0xEA };
 BMD_CONST REFIID IID_IBMDSwitcherSaveRecall                       = /* 7C8B477A-6BE3-4E85-B8EE-BE58BEC28958 */ { 0x7C,0x8B,0x47,0x7A,0x6B,0xE3,0x4E,0x85,0xB8,0xEE,0xBE,0x58,0xBE,0xC2,0x89,0x58 };
+BMD_CONST REFIID IID_IBMDSwitcherRecordDiskIterator               = /* 777B5A46-83EF-4615-9722-146C79436927 */ { 0x77,0x7B,0x5A,0x46,0x83,0xEF,0x46,0x15,0x97,0x22,0x14,0x6C,0x79,0x43,0x69,0x27 };
+BMD_CONST REFIID IID_IBMDSwitcherRecordDisk                       = /* 2F2046BD-E6FC-4CC0-8689-94454F027997 */ { 0x2F,0x20,0x46,0xBD,0xE6,0xFC,0x4C,0xC0,0x86,0x89,0x94,0x45,0x4F,0x02,0x79,0x97 };
+BMD_CONST REFIID IID_IBMDSwitcherRecordDiskCallback               = /* B83041FC-3091-472B-B6A3-9D753692BF29 */ { 0xB8,0x30,0x41,0xFC,0x30,0x91,0x47,0x2B,0xB6,0xA3,0x9D,0x75,0x36,0x92,0xBF,0x29 };
+BMD_CONST REFIID IID_IBMDSwitcherRecordAV                         = /* 43C5A333-3DF4-4DF2-8F81-0A994CE63315 */ { 0x43,0xC5,0xA3,0x33,0x3D,0xF4,0x4D,0xF2,0x8F,0x81,0x0A,0x99,0x4C,0xE6,0x33,0x15 };
+BMD_CONST REFIID IID_IBMDSwitcherRecordAVCallback                 = /* 0DD309AE-D406-460D-B4AA-4D9EF2D31DE2 */ { 0x0D,0xD3,0x09,0xAE,0xD4,0x06,0x46,0x0D,0xB4,0xAA,0x4D,0x9E,0xF2,0xD3,0x1D,0xE2 };
+BMD_CONST REFIID IID_IBMDSwitcherStreamRTMP                       = /* 89A72582-A54B-40B6-9CFB-9B750D6C5DD9 */ { 0x89,0xA7,0x25,0x82,0xA5,0x4B,0x40,0xB6,0x9C,0xFB,0x9B,0x75,0x0D,0x6C,0x5D,0xD9 };
+BMD_CONST REFIID IID_IBMDSwitcherStreamRTMPCallback               = /* 0A7F37FF-3195-4EF2-82C9-AA3751906059 */ { 0x0A,0x7F,0x37,0xFF,0x31,0x95,0x4E,0xF2,0x82,0xC9,0xAA,0x37,0x51,0x90,0x60,0x59 };
 BMD_CONST REFIID IID_IBMDSwitcherCameraControlParameterIterator   = /* 6B6E289F-0847-480A-A0BD-E8FB78A5505A */ { 0x6B,0x6E,0x28,0x9F,0x08,0x47,0x48,0x0A,0xA0,0xBD,0xE8,0xFB,0x78,0xA5,0x50,0x5A };
 BMD_CONST REFIID IID_IBMDSwitcherCameraControlCallback            = /* 90337CAC-9376-4A62-A58F-10936130970B */ { 0x90,0x33,0x7C,0xAC,0x93,0x76,0x4A,0x62,0xA5,0x8F,0x10,0x93,0x61,0x30,0x97,0x0B };
 BMD_CONST REFIID IID_IBMDSwitcherCameraControl                    = /* 889111CC-02CA-4268-ADD1-569166F0F0D9 */ { 0x88,0x91,0x11,0xCC,0x02,0xCA,0x42,0x68,0xAD,0xD1,0x56,0x91,0x66,0xF0,0xF0,0xD9 };
@@ -218,7 +224,9 @@ enum _BMDSwitcherPortType {
     bmdSwitcherPortTypeSuperSource                               = /* 'ssrc' */ 0x73737263,
     bmdSwitcherPortTypeMixEffectBlockOutput                      = /* 'mebo' */ 0x6D65626F,
     bmdSwitcherPortTypeAuxOutput                                 = /* 'auxo' */ 0x6175786F,
-    bmdSwitcherPortTypeKeyCutOutput                              = /* 'kcto' */ 0x6B63746F
+    bmdSwitcherPortTypeKeyCutOutput                              = /* 'kcto' */ 0x6B63746F,
+    bmdSwitcherPortTypeMultiview                                 = /* 'mlvw' */ 0x6D6C7677,
+    bmdSwitcherPortTypeExternalDirect                            = /* 'edir' */ 0x65646972
 };
 
 /* Enum BMDSwitcherExternalPortType - IBMDSwitcherInput External Port Types */
@@ -267,6 +275,7 @@ enum _BMDSwitcherEventType {
     bmdSwitcherEventType3GSDIOutputLevelChanged                  = /* 'se3g' */ 0x73653367,
     bmdSwitcherEventTypeTimeCodeChanged                          = /* 'setc' */ 0x73657463,
     bmdSwitcherEventTypeTimeCodeLockedChanged                    = /* 'tclc' */ 0x74636C63,
+    bmdSwitcherEventTypeTimeCodeModeChanged                      = /* 'tcmc' */ 0x74636D63,
     bmdSwitcherEventTypeSuperSourceCascadeChanged                = /* 'sscc' */ 0x73736363,
     bmdSwitcherEventTypeAutoVideoModeChanged                     = /* 'aivm' */ 0x6169766D,
     bmdSwitcherEventTypeAutoVideoModeDetectedChanged             = /* 'avmd' */ 0x61766D64
@@ -644,13 +653,6 @@ enum _BMDSwitcherFairlightAudioMixOption {
     bmdSwitcherFairlightAudioMixOptionAudioFollowVideo           = 0x00000004
 };
 
-/* Enum BMDSwitcherFairlightAudioInputXLREventType - Used in IBMDSwitcherFairlightAudioInputXLRCallback */
-
-typedef uint32_t BMDSwitcherFairlightAudioInputXLREventType;
-enum _BMDSwitcherFairlightAudioInputXLREventType {
-    bmdSwitcherFairlightAudioInputXLREventTypeRCAToXLREnabledChanged = /* 'rtxC' */ 0x72747843
-};
-
 /* Enum BMDSwitcherFairlightAudioInputEventType - Used in IBMDSwitcherFairlightAudioInputCallback */
 
 typedef uint32_t BMDSwitcherFairlightAudioInputEventType;
@@ -671,7 +673,8 @@ enum _BMDSwitcherFairlightAnalogAudioInputEventType {
 typedef uint32_t BMDSwitcherFairlightAudioAnalogInputLevel;
 enum _BMDSwitcherFairlightAudioAnalogInputLevel {
     bmdSwitcherFairlightAudioAnalogInputLevelMicrophone          = 0x00000001,
-    bmdSwitcherFairlightAudioAnalogInputLevelConsumerLine        = 0x00000002
+    bmdSwitcherFairlightAudioAnalogInputLevelConsumerLine        = 0x00000002,
+    bmdSwitcherFairlightAudioAnalogInputLevelProLine             = 0x00000004
 };
 
 /* Enum BMDSwitcherFairlightAudioInputType - Fairlight Audio Input Type */
@@ -1149,6 +1152,102 @@ enum _BMDSwitcherStillCaptureEventType {
     bmdSwitcherStillCaptureEventTypeIsAvailableChanged           = /* 'scac' */ 0x73636163
 };
 
+/* Enum BMDSwitcherRecordDiskStatus - Used in IBMDSwitcherRecordDisk */
+
+typedef uint32_t BMDSwitcherRecordDiskStatus;
+enum _BMDSwitcherRecordDiskStatus {
+    bmdSwitcherRecordDiskIdle                                    = /* 'rdid' */ 0x72646964,
+    bmdSwitcherRecordDiskUnformatted                             = /* 'rduf' */ 0x72647566,
+    bmdSwitcherRecordDiskActive                                  = /* 'rdav' */ 0x72646176,
+    bmdSwitcherRecordDiskRecording                               = /* 'rdrc' */ 0x72647263
+};
+
+/* Enum BMDSwitcherRecordDiskEventType - Used in IBMDSwitcherRecordDiskCallback */
+
+typedef uint32_t BMDSwitcherRecordDiskEventType;
+enum _BMDSwitcherRecordDiskEventType {
+    bmdSwitcherRecordDiskEventTypeStatusChanged                  = /* 'rdsc' */ 0x72647363,
+    bmdSwitcherRecordDiskEventTypeRecordingTimeAvailableChanged  = /* 'rdtc' */ 0x72647463,
+    bmdSwitcherRecordDiskEventTypeVolumeNameChanged              = /* 'rdvc' */ 0x72647663
+};
+
+/* Enum BMDSwitcherRecordAVEventType - Used in IBMDSwitcherRecordAVCallback */
+
+typedef uint32_t BMDSwitcherRecordAVEventType;
+enum _BMDSwitcherRecordAVEventType {
+    bmdSwitcherRecordAVEventTypeFilenameChanged                  = /* 'rmfc' */ 0x726D6663,
+    bmdSwitcherRecordAVEventTypeRecordInAllCamerasChanged        = /* 'racc' */ 0x72616363,
+    bmdSwitcherRecordAVEventTypeDurationChanged                  = /* 'rmdc' */ 0x726D6463,
+    bmdSwitcherRecordAVEventTypeActiveDiskIndexChanged           = /* 'rmac' */ 0x726D6163,
+    bmdSwitcherRecordAVEventTypeTotalRecordingTimeAvailableChanged = /* 'rmtc' */ 0x726D7463,
+    bmdSwitcherRecordAVEventTypeRecordAllISOInputsChanged        = /* 'isra' */ 0x69737261
+};
+
+/* Enum BMDSwitcherRecordDiskAvailabilityEventType - Used in IBMDSwitcherRecordAVCallback */
+
+typedef uint32_t BMDSwitcherRecordDiskAvailabilityEventType;
+enum _BMDSwitcherRecordDiskAvailabilityEventType {
+    bmdSwitcherRecordDiskAvailabilityEventTypeAvailable          = /* 'rdaa' */ 0x72646161,
+    bmdSwitcherRecordDiskAvailabilityEventTypeRemoved            = /* 'rdar' */ 0x72646172
+};
+
+/* Enum BMDSwitcherRecordAVState - Used in IBMDSwitcherRecordAV */
+
+typedef uint32_t BMDSwitcherRecordAVState;
+enum _BMDSwitcherRecordAVState {
+    bmdSwitcherRecordAVStateIdle                                 = /* 'rasi' */ 0x72617369,
+    bmdSwitcherRecordAVStateRecording                            = /* 'rasr' */ 0x72617372,
+    bmdSwitcherRecordAVStateStopping                             = /* 'rass' */ 0x72617373
+};
+
+/* Enum BMDSwitcherRecordAVError - Used in IBMDSwitcherRecordAV */
+
+typedef uint32_t BMDSwitcherRecordAVError;
+enum _BMDSwitcherRecordAVError {
+    bmdSwitcherRecordAVErrorNone                                 = /* 'renn' */ 0x72656E6E,
+    bmdSwitcherRecordAVErrorNoMedia                              = /* 'renm' */ 0x72656E6D,
+    bmdSwitcherRecordAVErrorMediaFull                            = /* 'remf' */ 0x72656D66,
+    bmdSwitcherRecordAVErrorMediaError                           = /* 'reme' */ 0x72656D65,
+    bmdSwitcherRecordAVErrorMediaUnformatted                     = /* 'remu' */ 0x72656D75,
+    bmdSwitcherRecordAVErrorDroppingFrames                       = /* 'redf' */ 0x72656466,
+    bmdSwitcherRecordAVErrorUnknown                              = /* 'reuk' */ 0x7265756B
+};
+
+/* Enum BMDSwitcherStreamRTMPEventType - Used in IBMDSwitcherStreamRTMPCallback */
+
+typedef uint32_t BMDSwitcherStreamRTMPEventType;
+enum _BMDSwitcherStreamRTMPEventType {
+    bmdSwitcherStreamRTMPEventTypeServiceNameChanged             = /* 'rsnh' */ 0x72736E68,
+    bmdSwitcherStreamRTMPEventTypeUrlChanged                     = /* 'rsuc' */ 0x72737563,
+    bmdSwitcherStreamRTMPEventTypeKeyChanged                     = /* 'rskc' */ 0x72736B63,
+    bmdSwitcherStreamRTMPEventTypeVideoBitratesChanged           = /* 'rsbc' */ 0x72736263,
+    bmdSwitcherStreamRTMPEventTypeAudioBitratesChanged           = /* 'rabc' */ 0x72616263,
+    bmdSwitcherStreamRTMPEventTypeEncodingBitrateChanged         = /* 'rsec' */ 0x72736563,
+    bmdSwitcherStreamRTMPEventTypeCacheUsedChanged               = /* 'rscc' */ 0x72736363,
+    bmdSwitcherStreamRTMPEventTypeDurationChanged                = /* 'rsdc' */ 0x72736463,
+    bmdSwitcherStreamRTMPEventTypeAuthenticationChanged          = /* 'rsac' */ 0x72736163,
+    bmdSwitcherStreamRTMPEventTypeLowLatencyChanged              = /* 'lltc' */ 0x6C6C7463
+};
+
+/* Enum BMDSwitcherStreamRTMPState - Used in IBMDSwitcherStreamRTMP */
+
+typedef uint32_t BMDSwitcherStreamRTMPState;
+enum _BMDSwitcherStreamRTMPState {
+    bmdSwitcherStreamRTMPStateIdle                               = /* 'rtsi' */ 0x72747369,
+    bmdSwitcherStreamRTMPStateConnecting                         = /* 'rtsc' */ 0x72747363,
+    bmdSwitcherStreamRTMPStateStreaming                          = /* 'rtss' */ 0x72747373,
+    bmdSwitcherStreamRTMPStateStopping                           = /* 'rtst' */ 0x72747374
+};
+
+/* Enum BMDSwitcherStreamRTMPError - Used in IBMDSwitcherStreamRTMP */
+
+typedef uint32_t BMDSwitcherStreamRTMPError;
+enum _BMDSwitcherStreamRTMPError {
+    bmdSwitcherStreamRTMPErrorNone                               = /* 'rten' */ 0x7274656E,
+    bmdSwitcherStreamRTMPErrorInvalidState                       = /* 'rtei' */ 0x72746569,
+    bmdSwitcherStreamRTMPErrorUnknown                            = /* 'rteu' */ 0x72746575
+};
+
 /* Enum BMDSwitcherCameraControlEventType - Used in IBMDSwitcherCameraControlCallback */
 
 typedef uint32_t BMDSwitcherCameraControlEventType;
@@ -1326,6 +1425,14 @@ enum _BMDSwitcherAudioInputXLREventType {
     bmdSwitcherAudioInputXLREventTypeRCAToXLREnabledChanged      = /* 'rtxC' */ 0x72747843
 };
 
+/* Enum BMDSwitcherTimeCodeMode - Used in IBMDSwitcher */
+
+typedef uint32_t BMDSwitcherTimeCodeMode;
+enum _BMDSwitcherTimeCodeMode {
+    bmdSwitcherTimeCodeModeFreeRun                               = /* 'tmfr' */ 0x746D6672,
+    bmdSwitcherTimeCodeModeTimeOfDay                             = /* 'tmtd' */ 0x746D7464
+};
+
 #if defined(__cplusplus)
 
 // Forward Declarations
@@ -1356,8 +1463,6 @@ class IBMDSwitcherFairlightAudioEqualizer;
 class IBMDSwitcherFairlightAudioSourceCallback;
 class IBMDSwitcherFairlightAudioSource;
 class IBMDSwitcherFairlightAudioSourceIterator;
-class IBMDSwitcherFairlightAudioInputXLRCallback;
-class IBMDSwitcherFairlightAudioInputXLR;
 class IBMDSwitcherFairlightAnalogAudioInputCallback;
 class IBMDSwitcherFairlightAnalogAudioInput;
 class IBMDSwitcherFairlightAudioInputCallback;
@@ -1445,6 +1550,13 @@ class IBMDSwitcherMediaPool;
 class IBMDSwitcherStillCapture;
 class IBMDSwitcherStillCaptureCallback;
 class IBMDSwitcherSaveRecall;
+class IBMDSwitcherRecordDiskIterator;
+class IBMDSwitcherRecordDisk;
+class IBMDSwitcherRecordDiskCallback;
+class IBMDSwitcherRecordAV;
+class IBMDSwitcherRecordAVCallback;
+class IBMDSwitcherStreamRTMP;
+class IBMDSwitcherStreamRTMPCallback;
 class IBMDSwitcherCameraControlParameterIterator;
 class IBMDSwitcherCameraControlCallback;
 class IBMDSwitcherCameraControl;
@@ -1915,32 +2027,6 @@ public:
 
 protected:
     virtual ~IBMDSwitcherFairlightAudioSourceIterator () {} // call Release method to drop reference count
-};
-
-/* Interface IBMDSwitcherFairlightAudioInputXLRCallback - Fairlight Audio Input XLR Object Callback */
-
-class BMD_PUBLIC IBMDSwitcherFairlightAudioInputXLRCallback : public IUnknown
-{
-public:
-    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioInputXLREventType eventType) = 0;
-
-protected:
-    virtual ~IBMDSwitcherFairlightAudioInputXLRCallback () {} // call Release method to drop reference count
-};
-
-/* Interface IBMDSwitcherFairlightAudioInputXLR - Fairlight Audio Input XLR Object */
-
-class BMD_PUBLIC IBMDSwitcherFairlightAudioInputXLR : public IUnknown
-{
-public:
-    virtual HRESULT HasRCAToXLR (/* out */ bool* hasRcaToXlr) = 0;
-    virtual HRESULT GetRCAToXLREnabled (/* out */ bool* rcaToXlrEnabled) = 0;
-    virtual HRESULT SetRCAToXLREnabled (/* in */ bool rcaToXlrEnabled) = 0;
-    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioInputXLRCallback* callback) = 0;
-    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioInputXLRCallback* callback) = 0;
-
-protected:
-    virtual ~IBMDSwitcherFairlightAudioInputXLR () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherFairlightAnalogAudioInputCallback - Fairlight Analog Audio Input Object Callback */
@@ -3020,6 +3106,7 @@ protected:
 class BMD_PUBLIC IBMDSwitcherMultiView : public IUnknown
 {
 public:
+    virtual HRESULT CanChangeLayout (/* out */ bool* canChangeLayout) = 0;
     virtual HRESULT GetLayout (/* out */ BMDSwitcherMultiViewLayout* layout) = 0;
     virtual HRESULT SetLayout (/* in */ BMDSwitcherMultiViewLayout layout) = 0;
     virtual HRESULT SupportsQuadrantLayout (/* out */ bool* supportsQuadrantLayout) = 0;
@@ -3032,6 +3119,7 @@ public:
     virtual HRESULT CurrentInputSupportsVuMeter (/* in */ uint32_t window, /* out */ bool* supportsVuMeter) = 0;
     virtual HRESULT GetVuMeterEnabled (/* in */ uint32_t window, /* out */ bool* enabled) = 0;
     virtual HRESULT SetVuMeterEnabled (/* in */ uint32_t window, /* in */ bool enabled) = 0;
+    virtual HRESULT CanAdjustVuMeterOpacity (/* out */ bool* canAdjustVuMeterOpacity) = 0;
     virtual HRESULT GetVuMeterOpacity (/* out */ double* opacity) = 0;
     virtual HRESULT SetVuMeterOpacity (/* in */ double opacity) = 0;
     virtual HRESULT CanToggleSafeAreaEnabled (/* out */ bool* canToggleSafeAreaEnabled) = 0;
@@ -3302,6 +3390,8 @@ public:
     virtual HRESULT SetTimeCode (/* in */ uint8_t hours, /* in */ uint8_t minutes, /* in */ uint8_t seconds, /* in */ uint8_t frames) = 0;
     virtual HRESULT RequestTimeCode (void) = 0;
     virtual HRESULT GetTimeCodeLocked (/* out */ bool* timeCodeLocked) = 0;
+    virtual HRESULT GetTimeCodeMode (/* out */ BMDSwitcherTimeCodeMode* timeCodeMode) = 0;
+    virtual HRESULT SetTimeCodeMode (/* in */ BMDSwitcherTimeCodeMode timeCodeMode) = 0;
     virtual HRESULT GetAreOutputsConfigurable (/* out */ bool* configurable) = 0;
     virtual HRESULT GetSuperSourceCascade (/* out */ bool* cascade) = 0;
     virtual HRESULT SetSuperSourceCascade (/* in */ bool cascade) = 0;
@@ -3475,6 +3565,7 @@ public:
     virtual HRESULT GetClipMaxFrameCounts (/* in */ uint32_t clipCount, /* out */ uint32_t* clipMaxFrameCounts) = 0;	// one array element per clip, each element holds the maximum frame count
     virtual HRESULT SetClipMaxFrameCounts (/* in */ uint32_t clipCount, /* in */ const uint32_t* clipMaxFrameCounts) = 0;	// one array element per clip, each element holds the maximum frame count
     virtual HRESULT Clear (void) = 0;	// clears all stills, clips and clip audio
+    virtual HRESULT DoesVideoModeChangeClearMediaPool (/* in */ BMDSwitcherVideoMode videoMode, /* out */ bool* clear) = 0;
     virtual HRESULT AddCallback (/* in */ IBMDSwitcherMediaPoolCallback* callback) = 0;
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherMediaPoolCallback* callback) = 0;
 
@@ -3514,6 +3605,128 @@ public:
 
 protected:
     virtual ~IBMDSwitcherSaveRecall () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherRecordDiskIterator - RecordDisk Iterator */
+
+class BMD_PUBLIC IBMDSwitcherRecordDiskIterator : public IUnknown
+{
+public:
+    virtual HRESULT Next (/* out */ IBMDSwitcherRecordDisk** recordDisk) = 0;
+    virtual HRESULT GetById (/* in */ BMDSwitcherRecordDiskId diskId, /* out */ IBMDSwitcherRecordDisk** disk) = 0;
+
+protected:
+    virtual ~IBMDSwitcherRecordDiskIterator () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherRecordDisk - Switcher RecordDisk Object */
+
+class BMD_PUBLIC IBMDSwitcherRecordDisk : public IUnknown
+{
+public:
+    virtual HRESULT GetId (/* out */ BMDSwitcherRecordDiskId* diskId) = 0;
+    virtual HRESULT GetVolumeName (/* out */ CFStringRef* volumeName) = 0;
+    virtual HRESULT GetRecordingTimeAvailable (/* out */ uint32_t* recordingTimeAvailable) = 0;
+    virtual HRESULT GetStatus (/* out */ BMDSwitcherRecordDiskStatus* diskStatus) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherRecordDiskCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherRecordDiskCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherRecordDisk () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherRecordDiskCallback - RecordDisk Callback Delegate */
+
+class BMD_PUBLIC IBMDSwitcherRecordDiskCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherRecordDiskEventType eventType, /* in */ BMDSwitcherRecordDiskId diskId) = 0;
+};
+
+/* Interface IBMDSwitcherRecordAV - Switcher RecordAV Object */
+
+class BMD_PUBLIC IBMDSwitcherRecordAV : public IUnknown
+{
+public:
+    virtual HRESULT StartRecording (void) = 0;
+    virtual HRESULT StopRecording (void) = 0;
+    virtual HRESULT SwitchDisk (void) = 0;
+    virtual HRESULT IsRecording (/* out */ bool* recording) = 0;
+    virtual HRESULT GetStatus (/* out */ BMDSwitcherRecordAVState* state, /* out */ BMDSwitcherRecordAVError* error) = 0;
+    virtual HRESULT SetFilename (/* in */ CFStringRef filename) = 0;
+    virtual HRESULT GetFilename (/* out */ CFStringRef* filename) = 0;
+    virtual HRESULT SetRecordInAllCameras (/* in */ bool recordInAllCameras) = 0;
+    virtual HRESULT GetRecordInAllCameras (/* out */ bool* recordInAllCameras) = 0;
+    virtual HRESULT DoesSupportISORecording (/* out */ bool* supportsISORecording) = 0;
+    virtual HRESULT SetRecordAllISOInputs (/* in */ bool recordAllISOInputs) = 0;
+    virtual HRESULT GetRecordAllISOInputs (/* out */ bool* recordAllISOInputs) = 0;
+    virtual HRESULT GetWorkingSetLimit (/* out */ uint32_t* workingSetLimit) = 0;
+    virtual HRESULT SetWorkingSetDisk (/* in */ uint32_t workingSetIndex, /* in */ BMDSwitcherRecordDiskId diskId) = 0;
+    virtual HRESULT GetWorkingSetDisk (/* in */ uint32_t workingSetIndex, /* out */ BMDSwitcherRecordDiskId* diskId) = 0;
+    virtual HRESULT GetActiveDiskIndex (/* out */ uint32_t* workingSetIndex) = 0;
+    virtual HRESULT RequestDuration (void) = 0;
+    virtual HRESULT GetDuration (/* out */ uint8_t* hours, /* out */ uint8_t* minutes, /* out */ uint8_t* seconds, /* out */ uint8_t* frames, /* out */ bool* dropFrame) = 0;
+    virtual HRESULT GetTotalRecordingTimeAvailable (/* out */ uint32_t* totalRecordingTimeAvailable) = 0;
+    virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherRecordAVCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherRecordAVCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherRecordAV () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherRecordAVCallback - RecordAV Callback Delegate */
+
+class BMD_PUBLIC IBMDSwitcherRecordAVCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherRecordAVEventType eventType) = 0;
+    virtual HRESULT NotifyWorkingSetChange (/* in */ uint32_t workingSetIndex, /* in */ BMDSwitcherRecordDiskId diskId) = 0;
+    virtual HRESULT NotifyDiskAvailability (/* in */ BMDSwitcherRecordDiskAvailabilityEventType eventType, /* in */ BMDSwitcherRecordDiskId diskId) = 0;
+    virtual HRESULT NotifyStatus (/* in */ BMDSwitcherRecordAVState stateType, /* in */ BMDSwitcherRecordAVError error) = 0;
+};
+
+/* Interface IBMDSwitcherStreamRTMP - Switcher Stream RTMP Object */
+
+class BMD_PUBLIC IBMDSwitcherStreamRTMP : public IUnknown
+{
+public:
+    virtual HRESULT StartStreaming (void) = 0;
+    virtual HRESULT StopStreaming (void) = 0;
+    virtual HRESULT IsStreaming (/* out */ bool* streaming) = 0;
+    virtual HRESULT GetStatus (/* out */ BMDSwitcherStreamRTMPState* state, /* out */ BMDSwitcherStreamRTMPError* error) = 0;
+    virtual HRESULT SetServiceName (/* in */ CFStringRef serviceName) = 0;
+    virtual HRESULT GetServiceName (/* out */ CFStringRef* serviceName) = 0;
+    virtual HRESULT SetUrl (/* in */ CFStringRef url) = 0;
+    virtual HRESULT GetUrl (/* out */ CFStringRef* url) = 0;
+    virtual HRESULT SetKey (/* in */ CFStringRef url) = 0;
+    virtual HRESULT GetKey (/* out */ CFStringRef* key) = 0;
+    virtual HRESULT SetVideoBitrates (/* in */ uint32_t lowBitrate, /* in */ uint32_t highBitrate) = 0;
+    virtual HRESULT GetVideoBitrates (/* out */ uint32_t* lowBitRate, /* out */ uint32_t* highBitRate) = 0;
+    virtual HRESULT SetAudioBitrates (/* in */ uint32_t lowBitrate, /* in */ uint32_t highBitrate) = 0;
+    virtual HRESULT GetAudioBitrates (/* out */ uint32_t* lowBitRate, /* out */ uint32_t* highBitRate) = 0;
+    virtual HRESULT RequestDuration (void) = 0;
+    virtual HRESULT GetDuration (/* out */ uint8_t* hours, /* out */ uint8_t* minutes, /* out */ uint8_t* seconds, /* out */ uint8_t* frames, /* out */ bool* dropFrame) = 0;
+    virtual HRESULT GetEncodingBitrate (/* out */ uint32_t* encodingBitrate) = 0;
+    virtual HRESULT GetCacheUsed (/* out */ double* cacheUsed) = 0;
+    virtual HRESULT SetAuthentication (/* in */ CFStringRef username, /* in */ CFStringRef password) = 0;
+    virtual HRESULT GetAuthentication (/* out */ CFStringRef* username, /* out */ CFStringRef* password) = 0;
+    virtual HRESULT SetLowLatency (/* in */ bool lowLatency) = 0;
+    virtual HRESULT GetLowLatency (/* out */ bool* lowLatency) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherStreamRTMPCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherStreamRTMPCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherStreamRTMP () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherStreamRTMPCallback - Stream RTMP Callback Delegate */
+
+class BMD_PUBLIC IBMDSwitcherStreamRTMPCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherStreamRTMPEventType eventType) = 0;
+    virtual HRESULT NotifyStatus (/* in */ BMDSwitcherStreamRTMPState stateType, /* in */ BMDSwitcherStreamRTMPError error) = 0;
 };
 
 /* Interface IBMDSwitcherCameraControlParameterIterator - Camera Control Parameter Iterator */

@@ -12,20 +12,26 @@
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */; };
 		333E3045161395CF0002287B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333E3044161395CF0002287B /* IOKit.framework */; };
-		335AB1BF15703EF4003EA2D2 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; };
-		335AB1C115703EF4003EA2D2 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; };
-		335AB1C315703EFA003EA2D2 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BB15703EF4003EA2D2 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		335AB1C415703EFA003EA2D2 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 335AB1BD15703EF4003EA2D2 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A91A812F1FAEA2DC00983D66 /* Utilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91A812D1FAEA2DC00983D66 /* Utilities.mm */; };
+		A91AF2DF2597C31C00E347C3 /* ConnectionView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2DE2597C31C00E347C3 /* ConnectionView.mm */; };
+		A91AF2E22597C3AC00E347C3 /* Switcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2E12597C3AC00E347C3 /* Switcher.mm */; };
+		A91AF2E62598045200E347C3 /* SwitcherCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2E52598045200E347C3 /* SwitcherCell.m */; };
+		A91AF2E9259828F400E347C3 /* OutlineView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2E8259828F400E347C3 /* OutlineView.mm */; };
 		A91EFE6B23D7519E00590AD0 /* OSCEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */; };
 		A91EFE7123D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A91EFE7023D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp */; };
 		A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */ = {isa = PBXBuildFile; fileRef = A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */; };
-		A98839421F8D913800F91789 /* OSCAddressPanel.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839411F8D913800F91789 /* OSCAddressPanel.mm */; };
+		A98839421F8D913800F91789 /* OSCAddressView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839411F8D913800F91789 /* OSCAddressView.mm */; };
 		A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839471F8E307100F91789 /* SettingsWindow.mm */; };
+		A9942E0125968E9100E77A10 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9942E0025968E9100E77A10 /* MainWindow.xib */; };
+		A9942E0425968FAB00E77A10 /* Window.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9942E0325968FAB00E77A10 /* Window.mm */; };
+		A9A9AA932594255A00890134 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9A9A9452594209100890134 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A9A9AA942594255A00890134 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9A9A9472594209100890134 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F790691F89B83C003ACBCF /* OSCReceiver.mm */; };
+		A9FB8B5A25943693003B4581 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A9A9452594209100890134 /* VVBasics.framework */; };
+		A9FB8B5B25943693003B4581 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A9A9472594209100890134 /* VVOSC.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,8 +41,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				335AB1C315703EFA003EA2D2 /* VVOSC.framework in CopyFiles */,
-				335AB1C415703EFA003EA2D2 /* VVBasics.framework in CopyFiles */,
+				A9A9AA932594255A00890134 /* VVBasics.framework in CopyFiles */,
+				A9A9AA942594255A00890134 /* VVOSC.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -48,31 +54,43 @@
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1857BF45194D41240053631F /* atemOSC.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = atemOSC.icns; sourceTree = "<group>"; };
 		18E8D87C1EA8DC6400F69290 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = AtemOSC/Images.xcassets; sourceTree = "<group>"; };
-		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		256AC3D80F4B6AC300CF3369 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		333E3044161395CF0002287B /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		335AB1BB15703EF4003EA2D2 /* VVOSC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVOSC.framework; sourceTree = "<group>"; };
-		335AB1BD15703EF4003EA2D2 /* VVBasics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VVBasics.framework; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* atemOSC-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "atemOSC-Info.plist"; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* atemOSC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = atemOSC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A91A812D1FAEA2DC00983D66 /* Utilities.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Utilities.mm; sourceTree = "<group>"; };
 		A91A812E1FAEA2DC00983D66 /* Utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
+		A91AF2DD2597C31C00E347C3 /* ConnectionView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ConnectionView.h; sourceTree = "<group>"; };
+		A91AF2DE2597C31C00E347C3 /* ConnectionView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ConnectionView.mm; sourceTree = "<group>"; };
+		A91AF2E02597C3AC00E347C3 /* Switcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Switcher.h; sourceTree = "<group>"; };
+		A91AF2E12597C3AC00E347C3 /* Switcher.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Switcher.mm; sourceTree = "<group>"; };
+		A91AF2E42598045200E347C3 /* SwitcherCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwitcherCell.h; sourceTree = "<group>"; };
+		A91AF2E52598045200E347C3 /* SwitcherCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SwitcherCell.m; sourceTree = "<group>"; };
+		A91AF2E7259828F400E347C3 /* OutlineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutlineView.h; sourceTree = "<group>"; };
+		A91AF2E8259828F400E347C3 /* OutlineView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OutlineView.mm; sourceTree = "<group>"; };
 		A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCEndpoint.m; sourceTree = "<group>"; };
 		A91EFE6A23D7519E00590AD0 /* OSCEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCEndpoint.h; sourceTree = "<group>"; };
 		A91EFE6F23D7559700590AD0 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDSwitcherAPI.h; sourceTree = "<group>"; };
 		A91EFE7023D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BMDSwitcherAPIDispatch.cpp; sourceTree = "<group>"; };
 		A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FeedbackMonitors.h; sourceTree = "<group>"; };
 		A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FeedbackMonitors.mm; sourceTree = "<group>"; };
-		A98839401F8D913800F91789 /* OSCAddressPanel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCAddressPanel.h; sourceTree = "<group>"; };
-		A98839411F8D913800F91789 /* OSCAddressPanel.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCAddressPanel.mm; sourceTree = "<group>"; };
+		A98839401F8D913800F91789 /* OSCAddressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCAddressView.h; sourceTree = "<group>"; };
+		A98839411F8D913800F91789 /* OSCAddressView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCAddressView.mm; sourceTree = "<group>"; };
 		A98839461F8E307100F91789 /* SettingsWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsWindow.h; sourceTree = "<group>"; };
 		A98839471F8E307100F91789 /* SettingsWindow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsWindow.mm; sourceTree = "<group>"; };
+		A9942E0025968E9100E77A10 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		A9942E0225968FAB00E77A10 /* Window.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Window.h; sourceTree = "<group>"; };
+		A9942E0325968FAB00E77A10 /* Window.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Window.mm; sourceTree = "<group>"; };
+		A9A9A81825941C8400890134 /* atemOSC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = atemOSC.entitlements; path = AtemOSC/atemOSC.entitlements; sourceTree = "<group>"; };
+		A9A9A9452594209100890134 /* VVBasics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VVBasics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A9A9A9472594209100890134 /* VVOSC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VVOSC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9F790691F89B83C003ACBCF /* OSCReceiver.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCReceiver.mm; sourceTree = "<group>"; };
 		A9F7906B1F89B857003ACBCF /* OSCReceiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCReceiver.h; sourceTree = "<group>"; };
+		A9FB8B5925943620003B4581 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,10 +98,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9FB8B5A25943693003B4581 /* VVBasics.framework in Frameworks */,
+				A9FB8B5B25943693003B4581 /* VVOSC.framework in Frameworks */,
 				333E3045161395CF0002287B /* IOKit.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
-				335AB1BF15703EF4003EA2D2 /* VVOSC.framework in Frameworks */,
-				335AB1C115703EF4003EA2D2 /* VVBasics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -93,20 +111,18 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				A91AF2E32598040700E347C3 /* User Interface */,
+				A91AF2D92597C07200E347C3 /* Entities */,
 				256AC3D80F4B6AC300CF3369 /* AppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */,
 				A98839461F8E307100F91789 /* SettingsWindow.h */,
 				A98839471F8E307100F91789 /* SettingsWindow.mm */,
-				A98839401F8D913800F91789 /* OSCAddressPanel.h */,
-				A98839411F8D913800F91789 /* OSCAddressPanel.mm */,
 				A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */,
 				A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */,
 				A9F7906B1F89B857003ACBCF /* OSCReceiver.h */,
 				A9F790691F89B83C003ACBCF /* OSCReceiver.mm */,
 				A91A812E1FAEA2DC00983D66 /* Utilities.h */,
 				A91A812D1FAEA2DC00983D66 /* Utilities.mm */,
-				A91EFE6A23D7519E00590AD0 /* OSCEndpoint.h */,
-				A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -115,8 +131,6 @@
 			isa = PBXGroup;
 			children = (
 				333E3044161395CF0002287B /* IOKit.framework */,
-				335AB1BB15703EF4003EA2D2 /* VVOSC.framework */,
-				335AB1BD15703EF4003EA2D2 /* VVBasics.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -143,6 +157,7 @@
 		29B97314FDCFA39411CA2CEA /* SwitcherPanel */ = {
 			isa = PBXGroup;
 			children = (
+				A9A9A81825941C8400890134 /* atemOSC.entitlements */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -170,6 +185,7 @@
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1857BF45194D41240053631F /* atemOSC.icns */,
 				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
+				A9942E0025968E9100E77A10 /* MainWindow.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -177,10 +193,40 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A9A9A9452594209100890134 /* VVBasics.framework */,
+				A9A9A9472594209100890134 /* VVOSC.framework */,
 				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A91AF2D92597C07200E347C3 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				A91EFE6A23D7519E00590AD0 /* OSCEndpoint.h */,
+				A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */,
+				A91AF2E02597C3AC00E347C3 /* Switcher.h */,
+				A91AF2E12597C3AC00E347C3 /* Switcher.mm */,
+			);
+			name = Entities;
+			sourceTree = "<group>";
+		};
+		A91AF2E32598040700E347C3 /* User Interface */ = {
+			isa = PBXGroup;
+			children = (
+				A98839401F8D913800F91789 /* OSCAddressView.h */,
+				A98839411F8D913800F91789 /* OSCAddressView.mm */,
+				A91AF2DD2597C31C00E347C3 /* ConnectionView.h */,
+				A91AF2DE2597C31C00E347C3 /* ConnectionView.mm */,
+				A9942E0225968FAB00E77A10 /* Window.h */,
+				A9942E0325968FAB00E77A10 /* Window.mm */,
+				A91AF2E42598045200E347C3 /* SwitcherCell.h */,
+				A91AF2E52598045200E347C3 /* SwitcherCell.m */,
+				A91AF2E7259828F400E347C3 /* OutlineView.h */,
+				A91AF2E8259828F400E347C3 /* OutlineView.mm */,
+			);
+			name = "User Interface";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -211,22 +257,26 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 1230;
 				TargetAttributes = {
 					8D1107260486CEB800E47090 = {
-						DevelopmentTeam = K5C6E7A2D6;
+						DevelopmentTeam = LRNWZB2D4D;
+						LastSwiftMigration = 1230;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "atemOSC" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 1;
 			knownRegions = (
 				English,
-				Japanese,
-				French,
-				German,
+				en,
+				fr,
+				ja,
+				de,
+				Base,
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* SwitcherPanel */;
 			projectDirPath = "";
@@ -245,6 +295,7 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				18E8D87D1EA8DC6400F69290 /* Images.xcassets in Resources */,
 				1857BF46194D41240053631F /* atemOSC.icns in Resources */,
+				A9942E0125968E9100E77A10 /* MainWindow.xib in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -260,11 +311,16 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				A91A812F1FAEA2DC00983D66 /* Utilities.mm in Sources */,
 				A91EFE6B23D7519E00590AD0 /* OSCEndpoint.m in Sources */,
-				A98839421F8D913800F91789 /* OSCAddressPanel.mm in Sources */,
+				A98839421F8D913800F91789 /* OSCAddressView.mm in Sources */,
+				A91AF2E62598045200E347C3 /* SwitcherCell.m in Sources */,
 				A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */,
 				A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */,
+				A91AF2E9259828F400E347C3 /* OutlineView.mm in Sources */,
 				A91EFE7123D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp in Sources */,
+				A91AF2DF2597C31C00E347C3 /* ConnectionView.mm in Sources */,
+				A91AF2E22597C3AC00E347C3 /* Switcher.mm in Sources */,
+				A9942E0425968FAB00E77A10 /* Window.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,7 +338,7 @@
 		1DDD58140DA1D0A300B32029 /* MainMenu.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				1DDD58150DA1D0A300B32029 /* English */,
+				A9FB8B5925943620003B4581 /* en */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -295,8 +351,15 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = AtemOSC/atemOSC.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = LRNWZB2D4D;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SYSTEM_APPS_DIR)/Blackmagic ATEM Switchers/Developer SDK/Mac OS X/Samples/SwitcherPanel\"",
@@ -312,10 +375,14 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				MARKETING_VERSION = 3.1.5;
-				PRODUCT_BUNDLE_IDENTIFIER = "cc.buechele.${PRODUCT_NAME:rfc1034identifier}";
+				MARKETING_VERSION = 4.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.atemosc.atemOSC;
 				PRODUCT_NAME = atemOSC;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "AtemOSC-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -324,8 +391,15 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = AtemOSC/atemOSC.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = LRNWZB2D4D;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SYSTEM_APPS_DIR)/Blackmagic ATEM Switchers/Developer SDK/Mac OS X/Samples/SwitcherPanel\"",
@@ -339,10 +413,13 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				MARKETING_VERSION = 3.1.5;
-				PRODUCT_BUNDLE_IDENTIFIER = "cc.buechele.${PRODUCT_NAME:rfc1034identifier}";
+				MARKETING_VERSION = 4.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.atemosc.atemOSC;
 				PRODUCT_NAME = atemOSC;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "AtemOSC-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -350,12 +427,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -381,12 +467,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;

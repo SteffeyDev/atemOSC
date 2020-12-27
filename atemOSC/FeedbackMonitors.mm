@@ -1,5 +1,5 @@
 #include "FeedbackMonitors.h"
-#import "AppDelegate.h"
+#import "Switcher.h"
 #import "Utilities.h"
 
 static inline bool    operator== (const REFIID& iid1, const REFIID& iid2)
@@ -78,41 +78,41 @@ HRESULT MixEffectBlockMonitor::Notify(BMDSwitcherMixEffectBlockEventType eventTy
 void MixEffectBlockMonitor::updateProgramButtonSelection() const
 {
 	BMDSwitcherInputId    programId;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetProgramInput(&programId);
+	switcher.mMixEffectBlock->GetProgramInput(&programId);
 	
-	for (auto const& it : static_cast<AppDelegate *>(appDel).mInputs)
+	for (auto const& it : switcher.mInputs)
 	{
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program/%lld",it.first]];
 		if (programId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 		
 		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program"]];
 		[newMsg2 addInt:(int)it.first];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg2];
+		[switcher.outPort sendThisMessage:newMsg2];
 	}
 }
 
 void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 {
 	BMDSwitcherInputId    previewId;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetPreviewInput(&previewId);
+	switcher.mMixEffectBlock->GetPreviewInput(&previewId);
 	
-	for (auto const& it : static_cast<AppDelegate *>(appDel).mInputs)
+	for (auto const& it : switcher.mInputs)
 	{
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview/%lld",it.first]];
 		if (previewId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 		
 		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview"]];
 		[newMsg2 addInt:(int)it.first];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg2];
+		[switcher.outPort sendThisMessage:newMsg2];
 	}
 }
 
 void MixEffectBlockMonitor::updateInTransitionState()
 {
 	bool inTransition;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetInTransition(&inTransition);
+	switcher.mMixEffectBlock->GetInTransition(&inTransition);
 	
 	if (inTransition == false)
 	{
@@ -130,7 +130,7 @@ void MixEffectBlockMonitor::updateInTransitionState()
 void MixEffectBlockMonitor::updateSliderPosition()
 {
 	double position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetTransitionPosition(&position);
+	switcher.mMixEffectBlock->GetTransitionPosition(&position);
 	
 	// Record when transition passes halfway so we can flip orientation of slider handle at the end of transition
 	mCurrentTransitionReachedHalfway_ = (position >= 0.50);
@@ -141,17 +141,17 @@ void MixEffectBlockMonitor::updateSliderPosition()
 	
 	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
 	[newMsg addFloat:1.0-sliderPosition/100];
-	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	[switcher.outPort sendThisMessage:newMsg];
 }
 
 void MixEffectBlockMonitor::updatePreviewTransitionEnabled() const
 {
 	bool position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetPreviewTransition(&position);
+	switcher.mMixEffectBlock->GetPreviewTransition(&position);
 	
 	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/preview"];
 	[newMsg addFloat: position ? 1.0 : 0.0];
-	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	[switcher.outPort sendThisMessage:newMsg];
 }
 
 float MixEffectBlockMonitor::sendStatus() const
@@ -168,13 +168,13 @@ float MixEffectBlockMonitor::sendStatus() const
 	updatePreviewTransitionEnabled();
 	
 	double position;
-	static_cast<AppDelegate *>(appDel).mMixEffectBlock->GetTransitionPosition(&position);
+	switcher.mMixEffectBlock->GetTransitionPosition(&position);
 	double sliderPosition = position * 100;
 	if (mMoveSliderDownwards)
 		sliderPosition = 100 - position * 100;
 	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
 	[newMsg addFloat:1.0-sliderPosition/100];
-	[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+	[switcher.outPort sendThisMessage:newMsg];
 
 	return 0.2;
 }
@@ -202,30 +202,30 @@ HRESULT InputMonitor::Notify(BMDSwitcherInputEventType eventType)
 
 void InputMonitor::updateLongName() const
 {
-	if (static_cast<AppDelegate *>(appDel).mInputs.count(inputId_) > 0)
+	if (switcher.mInputs.count(inputId_) > 0)
 	{
 		// Have to delay slightly, otherwise fetch gets old name
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 			NSString *name;
-			static_cast<AppDelegate *>(appDel).mInputs[inputId_]->GetLongName((CFStringRef*)&name);
+			switcher.mInputs[inputId_]->GetLongName((CFStringRef*)&name);
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/input/%lld/long-name", inputId_]];
 			[newMsg addString:name];
-			[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+			[[switcher outPort] sendThisMessage:newMsg];
 		});
 	}
 }
 
 void InputMonitor::updateShortName() const
 {
-	if (static_cast<AppDelegate *>(appDel).mInputs.count(inputId_) > 0)
+	if (switcher.mInputs.count(inputId_) > 0)
 	{
 		// Have to delay slightly, otherwise fetch gets old name
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
 			NSString *name;
-			static_cast<AppDelegate *>(appDel).mInputs[inputId_]->GetShortName((CFStringRef*)&name);
+			switcher.mInputs[inputId_]->GetShortName((CFStringRef*)&name);
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/input/%lld/short-name", inputId_]];
 			[newMsg addString:name];
-			[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+			[[switcher outPort] sendThisMessage:newMsg];
 		});
 	}
 }
@@ -242,14 +242,14 @@ float InputMonitor::sendStatus() const
 void DownstreamKeyerMonitor::updateDSKTie() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel dsk])
+	for(auto& key : [switcher dsk])
 	{
 		bool isTied;
 		key->GetTie(&isTied);
 
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/%d/tie",i]];
 		[newMsg addInt: isTied];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 
 		i++;
 	}
@@ -259,14 +259,14 @@ void DownstreamKeyerMonitor::updateDSKTie() const
 void DownstreamKeyerMonitor::updateDSKOnAir() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel dsk])
+	for(auto& key : [switcher dsk])
 	{
 		bool isOnAir;
 		key->GetOnAir(&isOnAir);
 
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/dsk/%d/on-air",i]];
 		[newMsg addInt: isOnAir];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 
 		i++;
 	}
@@ -307,14 +307,14 @@ float DownstreamKeyerMonitor::sendStatus() const
 void UpstreamKeyerMonitor::updateUSKOnAir() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		bool isOnAir;
 		key->GetOnAir(&isOnAir);
 
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air",i]];
 		[newMsg addInt: isOnAir];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 
 		i++;
 	}
@@ -323,28 +323,28 @@ void UpstreamKeyerMonitor::updateUSKOnAir() const
 void UpstreamKeyerMonitor::updateUSKInputFill() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		BMDSwitcherInputId inputId;
 		key->GetInputFill(&inputId);
 		
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/fill",i++]];
 		[newMsg addInt: static_cast<int>(inputId)];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 	}
 }
 
 void UpstreamKeyerMonitor::updateUSKInputCut() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		BMDSwitcherInputId inputId;
 		key->GetInputCut(&inputId);
 		
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/cut",i++]];
 		[newMsg addInt: static_cast<int>(inputId)];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 	}
 }
 
@@ -374,7 +374,7 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 void UpstreamKeyerMonitor::updateUSKType() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		BMDSwitcherKeyType type;
 		key->GetType(&type);
@@ -391,12 +391,12 @@ void UpstreamKeyerMonitor::updateUSKType() const
 		
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/type",i]];
 		[newMsg addString: typeStr];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 		
 		// Support for legacy clients like TouchOSC
 		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/type/%@",i++, typeStr]];
 		[newMsg2 addFloat: 1.0];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg2];
+		[switcher.outPort sendThisMessage:newMsg2];
 	}
 }
 
@@ -437,7 +437,7 @@ HRESULT UpstreamKeyerLumaParametersMonitor::Notify(BMDSwitcherKeyLumaParametersE
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaClipParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
@@ -447,14 +447,14 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaClipParameter() const
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/clip",i++]];
 			[newMsg addFloat:clip];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaGainParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
@@ -464,14 +464,14 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaGainParameter() const
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/gain",i++]];
 			[newMsg addFloat:gain];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaPreMultipliedParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
@@ -481,14 +481,14 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaPreMultipliedParameter() c
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/pre-multiplied",i++]];
 			[newMsg addBOOL:preMultiplied];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaInverseParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
@@ -498,7 +498,7 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaInverseParameter() const
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/inverse",i++]];
 			[newMsg addBOOL:inverse];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
@@ -542,7 +542,7 @@ HRESULT UpstreamKeyerChromaParametersMonitor::Notify(BMDSwitcherKeyChromaParamet
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaHueParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -552,14 +552,14 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaHueParameter() const
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/hue",i++]];
 			[newMsg addFloat:hue];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaGainParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -569,14 +569,14 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaGainParameter() const
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/gain",i++]];
 			[newMsg addFloat:gain];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaYSuppressParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -586,14 +586,14 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaYSuppressParameter() c
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/y-suppress",i++]];
 			[newMsg addFloat:ySuppress];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaLiftParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -603,14 +603,14 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaLiftParameter() const
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/lift",i++]];
 			[newMsg addFloat:lift];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaNarrowParameter() const
 {
 	int i = 1;
-	for(auto& key : [(AppDelegate *)appDel keyers])
+	for(auto& key : [switcher keyers])
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -620,7 +620,7 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaNarrowParameter() cons
 			
 			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/narrow",i++]];
 			[newMsg addBOOL:narrow];
-			[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+			[switcher.outPort sendThisMessage:newMsg];
 		}
 	}
 }
@@ -660,14 +660,14 @@ void TransitionParametersMonitor::updateTransitionParameters() const
 	uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
 
 	uint32_t currentTransitionSelection;
-	static_cast<AppDelegate *>(appDel).switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
+	switcher.switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
 
-	for (int i = 0; i <= ((int) reinterpret_cast<AppDelegate *>(appDel).keyers.size()); i++) {
+	for (int i = 0; i <= ((int) switcher.keyers.size()); i++) {
 		uint32_t requestedTransitionSelection = transitionSelections[i];
 		
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie",i]];
 		[newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
-		[static_cast<AppDelegate *>(appDel).outPort sendThisMessage:newMsg];
+		[switcher.outPort sendThisMessage:newMsg];
 	}
 }
 
@@ -705,7 +705,7 @@ void MacroPoolMonitor::updateMacroName(int index) const
 	if (![name isEqualToString:@""]) {
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/name", index]];
 		[newMsg addString:name];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
@@ -715,7 +715,7 @@ void MacroPoolMonitor::updateMacroDescription(int index) const
 	if (![description isEqualToString:@""]) {
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/description", index]];
 		[newMsg addString:description];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
@@ -726,7 +726,7 @@ void MacroPoolMonitor::updateNumberOfMacros() const
 	{
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/max-number"];
 		[newMsg addInt:(int)maxNumberOfMacros];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
@@ -735,7 +735,7 @@ void MacroPoolMonitor::updateMacroValidity(int index) const
 	int value = isMacroValid(index);
 	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/is-valid", index]];
 	[newMsg addInt:(int)value];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	[[switcher outPort] sendThisMessage:newMsg];
 }
 
 float MacroPoolMonitor::sendStatus() const
@@ -754,7 +754,7 @@ HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType
 {
 	if (eventType == bmdSwitcherEventTypeDisconnected)
 	{
-		[(AppDelegate *)appDel performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
+		[switcher performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
 	}
 	return S_OK;
 }
@@ -762,11 +762,11 @@ HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType
 float SwitcherMonitor::sendStatus() const
 {
 	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
-	[newMsg addFloat:[static_cast<AppDelegate *>(appDel) isConnectedToATEM] ? 1.0 : 0.0];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	[newMsg addFloat:[switcher isConnected] ? 1.0 : 0.0];
+	[[switcher outPort] sendThisMessage:newMsg];
 	newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
-	[newMsg addFloat:[static_cast<AppDelegate *>(appDel) isConnectedToATEM] ? 0.0 : 1.0];
-	[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+	[newMsg addFloat:[switcher isConnected] ? 0.0 : 1.0];
+	[[switcher outPort] sendThisMessage:newMsg];
 
 	return 0.01;
 }
@@ -796,25 +796,25 @@ HRESULT STDMETHODCALLTYPE AudioInputMonitor::LevelNotification (double left, dou
 
 void AudioInputMonitor::updateGain() const
 {
-	if (static_cast<AppDelegate *>(appDel).mAudioInputs.count(inputId_) > 0)
+	if (switcher.mAudioInputs.count(inputId_) > 0)
 	{
 		double gain;
-		static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetGain(&gain);
+		switcher.mAudioInputs[inputId_]->GetGain(&gain);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain", inputId_]];
 		[newMsg addFloat:(float)gain];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
 void AudioInputMonitor::updateBalance() const
 {
-	if (static_cast<AppDelegate *>(appDel).mAudioInputs.count(inputId_) > 0)
+	if (switcher.mAudioInputs.count(inputId_) > 0)
 	{
 		double balance;
-		static_cast<AppDelegate *>(appDel).mAudioInputs[inputId_]->GetBalance(&balance);
+		switcher.mAudioInputs[inputId_]->GetBalance(&balance);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance", inputId_]];
 		[newMsg addFloat:(float)balance];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
@@ -852,25 +852,25 @@ HRESULT STDMETHODCALLTYPE AudioMixerMonitor::ProgramOutLevelNotification (double
 
 void AudioMixerMonitor::updateGain() const
 {
-	if (static_cast<AppDelegate *>(appDel).mAudioMixer != nil)
+	if (switcher.mAudioMixer != nil)
 	{
 		double gain;
-		static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutGain(&gain);
+		switcher.mAudioMixer->GetProgramOutGain(&gain);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/gain"];
 		[newMsg addFloat:(float)gain];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
 void AudioMixerMonitor::updateBalance() const
 {
-	if (static_cast<AppDelegate *>(appDel).mAudioMixer != nil)
+	if (switcher.mAudioMixer != nil)
 	{
 		double balance;
-		static_cast<AppDelegate *>(appDel).mAudioMixer->GetProgramOutBalance(&balance);
+		switcher.mAudioMixer->GetProgramOutBalance(&balance);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/audio/output/balance"];
 		[newMsg addFloat:(float)balance];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
@@ -907,25 +907,25 @@ HRESULT STDMETHODCALLTYPE FairlightAudioSourceMonitor::OutputLevelNotification (
 
 void FairlightAudioSourceMonitor::updateFaderGain() const
 {
-	if (static_cast<AppDelegate *>(appDel).mFairlightAudioSources.count(sourceId_) > 0)
+	if (switcher.mFairlightAudioSources.count(sourceId_) > 0)
 	{
 		double gain;
-		static_cast<AppDelegate *>(appDel).mFairlightAudioSources[sourceId_]->GetFaderGain(&gain);
+		switcher.mFairlightAudioSources[sourceId_]->GetFaderGain(&gain);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/fairlight-audio/source/%lld/gain", sourceId_]];
 		[newMsg addFloat:(float)gain];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
 void FairlightAudioSourceMonitor::updatePan() const
 {
-	if (static_cast<AppDelegate *>(appDel).mFairlightAudioSources.count(sourceId_) > 0)
+	if (switcher.mFairlightAudioSources.count(sourceId_) > 0)
 	{
 		double pan;
-		static_cast<AppDelegate *>(appDel).mFairlightAudioSources[sourceId_]->GetPan(&pan);
+		switcher.mFairlightAudioSources[sourceId_]->GetPan(&pan);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/fairlight-audio/source/%lld/pan", sourceId_]];
 		[newMsg addFloat:(float)pan];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
@@ -960,13 +960,13 @@ HRESULT STDMETHODCALLTYPE FairlightAudioMixerMonitor::MasterOutLevelNotification
 
 void FairlightAudioMixerMonitor::updateGain() const
 {
-	if (static_cast<AppDelegate *>(appDel).mFairlightAudioMixer != nil)
+	if (switcher.mFairlightAudioMixer != nil)
 	{
 		double gain;
-		static_cast<AppDelegate *>(appDel).mFairlightAudioMixer->GetMasterOutFaderGain(&gain);
+		switcher.mFairlightAudioMixer->GetMasterOutFaderGain(&gain);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/fairlight-audio/output/gain"];
 		[newMsg addFloat:(float)gain];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
@@ -1015,48 +1015,48 @@ HRESULT HyperDeckMonitor::Notify (BMDSwitcherHyperDeckEventType eventType)
 
 void HyperDeckMonitor::updateCurrentClip() const
 {
-	if (static_cast<AppDelegate *>(appDel).mHyperdecks.count(hyperdeckId_) > 0)
+	if (switcher.mHyperdecks.count(hyperdeckId_) > 0)
 	{
 		BMDSwitcherHyperDeckClipId clipId;
-		static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentClip(&clipId);
+		switcher.mHyperdecks[hyperdeckId_]->GetCurrentClip(&clipId);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip", hyperdeckId_]];
 		[newMsg addInt:(int)clipId+1];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
 void HyperDeckMonitor::updateCurrentClipTime() const
 {
-	if (static_cast<AppDelegate *>(appDel).mHyperdecks.count(hyperdeckId_) > 0)
+	if (switcher.mHyperdecks.count(hyperdeckId_) > 0)
 	{
 		uint16_t hours;
 		uint8_t minutes, seconds, frames;
-		static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentClipTime(&hours, &minutes, &seconds, &frames);
+		switcher.mHyperdecks[hyperdeckId_]->GetCurrentClipTime(&hours, &minutes, &seconds, &frames);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/clip-time", hyperdeckId_]];
 		[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
 void HyperDeckMonitor::updateCurrentTimelineTime() const
 {
-	if (static_cast<AppDelegate *>(appDel).mHyperdecks.count(hyperdeckId_) > 0)
+	if (switcher.mHyperdecks.count(hyperdeckId_) > 0)
 	{
 		uint16_t hours;
 		uint8_t minutes, seconds, frames;
-		static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetCurrentTimelineTime(&hours, &minutes, &seconds, &frames);
+		switcher.mHyperdecks[hyperdeckId_]->GetCurrentTimelineTime(&hours, &minutes, &seconds, &frames);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/timeline-time", hyperdeckId_]];
 		[newMsg addString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]];
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
 
 void HyperDeckMonitor::updatePlayerState() const
 {
-	if (static_cast<AppDelegate *>(appDel).mHyperdecks.count(hyperdeckId_) > 0)
+	if (switcher.mHyperdecks.count(hyperdeckId_) > 0)
 	{
 		BMDSwitcherHyperDeckPlayerState state;
-		static_cast<AppDelegate *>(appDel).mHyperdecks[hyperdeckId_]->GetPlayerState(&state);
+		switcher.mHyperdecks[hyperdeckId_]->GetPlayerState(&state);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/hyperdeck/%lld/state", hyperdeckId_]];
 		switch (state)
 		{
@@ -1066,6 +1066,6 @@ void HyperDeckMonitor::updatePlayerState() const
 			case bmdSwitcherHyperDeckStateShuttle: [newMsg addString:@"shuttle"]; break;
 			case bmdSwitcherHyperDeckStateUnknown: [newMsg addString:@"unknown"]; break;
 		}
-		[[static_cast<AppDelegate *>(appDel) outPort] sendThisMessage:newMsg];
+		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }
