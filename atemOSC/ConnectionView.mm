@@ -15,6 +15,10 @@
 @synthesize nicknameTextField;
 @synthesize feedbackPortTextField;
 @synthesize feedbackIpAddressTextField;
+@synthesize connectButton;
+@synthesize connectAutomaticallyButton;
+
+@synthesize switcher;
 
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
@@ -42,6 +46,29 @@
 		[feedbackPortTextField setIntValue:switcher.feedbackPort];
 	else
 		[feedbackPortTextField setStringValue:@""];
+	
+	if (switcher.connectAutomatically)
+		[connectAutomaticallyButton setState:NSControlStateValueOn];
+	else
+		[connectAutomaticallyButton setState:NSControlStateValueOff];
+	
+	[connectButton setEnabled:[switcher ipAddress] != nil && ![switcher isConnected] && ![[switcher connectionStatus] isEqualToString: @"Connecting"] && [self isValidIPAddress:switcher.ipAddress]];
+}
+
+- (IBAction)connectButtonPressed:(id)sender {
+	if ([self isValidIPAddress:[ipAddressTextField stringValue]] && ![[switcher connectionStatus] isEqualToString:@"Connecting"])
+	{
+		[switcher setIpAddress: [ipAddressTextField stringValue]];
+		[switcher saveChanges];
+		[switcher connectBMD];
+	}
+	[connectButton setEnabled:NO];
+}
+
+- (IBAction)connectAutomaticallyButtonPressed:(id)sender
+{
+	[switcher setConnectAutomatically:[connectAutomaticallyButton state] == NSControlStateValueOn];
+	[switcher saveChanges];
 }
 
 - (void)reload
@@ -64,11 +91,28 @@
 	return success == 1;
 }
 
-- (void)controlTextDidEndEditing:(NSNotification *)aNotification
+- (void)controlTextDidChange:(NSNotification *)notification
+{
+	NSTextField* textField = (NSTextField *)[notification object];
+	
+	// Only allow connect if IP address is valid
+	if (textField == ipAddressTextField)
+	{
+		[[self connectButton] setEnabled:[self isValidIPAddress:[textField stringValue]]];
+	}
+	
+	// Prevent spaces in the nickname field
+	else if (textField == nicknameTextField)
+	{
+		[textField setStringValue:[[textField stringValue] stringByReplacingOccurrencesOfString:@" " withString:@""]];
+	}
+}
+
+- (void)controlTextDidEndEditing:(NSNotification *)notification
 {
 	BOOL validInput = YES;
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
-	NSTextField* textField = (NSTextField *)[aNotification object];
+	NSTextField* textField = (NSTextField *)[notification object];
 	
 	if (textField == feedbackIpAddressTextField)
 	{
@@ -115,7 +159,8 @@
 			else
 			{
 				[switcher setIpAddress: [textField stringValue]];
-				[switcher switcherDisconnected];
+				if ( [[[notification userInfo] objectForKey:@"NSTextMovement"] intValue] == NSReturnTextMovement )
+					[switcher connectBMD];
 			}
 		}
 		else if ([switcher isConnected] || ![[textField stringValue] isEqualToString:@""])
@@ -148,7 +193,7 @@
 		[switcher saveChanges];
 		
 		Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
-		[window refreshList];
+		[[window outlineView] refreshList];
 	}
 }
 

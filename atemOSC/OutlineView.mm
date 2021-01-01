@@ -30,6 +30,16 @@
 	return self;
 }
 
+- (void)refreshList
+{
+	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
+
+	for (Switcher *switcher : [appDel switchers])
+	{
+		[self reloadItem:switcher];
+	}
+}
+
 - (NSArray *) sectionHeaders
 {
 	return [NSArray arrayWithObject:@"Switchers"];
@@ -112,32 +122,7 @@
 	else if ([item isKindOfClass:[Switcher class]])
 	{
 		SwitcherCell *cell = [outlineView makeViewWithIdentifier:@"SwitcherCell" owner:self];
-		if ([item ipAddress] && [item nickname])
-			[[cell ipAddressNicknameTextField] setStringValue:[NSString stringWithFormat: @"%@ (%@)", [item ipAddress], [item nickname]]];
-		else if ([item ipAddress])
-			[[cell ipAddressNicknameTextField] setStringValue:[item ipAddress]];
-		else
-			[[cell ipAddressNicknameTextField] setStringValue:@"New Switcher"];
-		
-		[[cell productNameHeightConstraint] setActive:YES];
-		if ([item connecting])
-		{
-			[[cell connectionStatusTextField] setStringValue:@"Connecting"];
-			[[cell progressIndicator] startAnimation:self];
-		}
-		else
-		{
-			[[cell progressIndicator] stopAnimation:self];
-			if ([item isConnected])
-			{
-				[[cell productNameHeightConstraint] setActive:NO];
-				[[cell productNameTextField] setHidden:NO];
-				[[cell connectionStatusTextField] setStringValue:@"Connected"];
-			}
-			else
-				[[cell connectionStatusTextField] setStringValue:@"Not Connected"];
-		}
-
+		[cell updateFromSwitcher:item];
 		return cell;
 	}
 	return nil;
@@ -145,17 +130,15 @@
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification
 {
+	selectedRow = (long)[self selectedRow];
+	
 	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
 
-	OutlineView* outlineView = (OutlineView*) notification.object;
-	id item = [outlineView itemAtRow: [outlineView selectedRow]];
+	id item = [self itemAtRow: selectedRow];
 	if ([item isKindOfClass:[NSString class]] && [(NSString *)item isEqualToString:@"Add Switcher"])
 	{
-		[[appDel switchers] addObject:[[Switcher alloc] init]];
-		[outlineView reloadData];
-		NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:[[appDel switchers] count]];
-		[outlineView selectRowIndexes:indexes byExtendingSelection:NO];
+		[appDel addSwitcher];
 	} else if ([item isKindOfClass:[Switcher class]])
 	{
 		[[window connectionView] loadFromSwitcher:item];

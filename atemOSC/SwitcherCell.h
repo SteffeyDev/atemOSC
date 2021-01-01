@@ -6,16 +6,21 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "Switcher.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface SwitcherCell : NSTableCellView
+@interface SwitcherCell : NSTableCellView {
+	Switcher *switcher;
+}
 @property (assign) IBOutlet NSTextField *ipAddressNicknameTextField;
 @property (assign) IBOutlet NSTextField *productNameTextField;
 @property (assign) IBOutlet NSTextField *connectionStatusTextField;
 @property (assign) IBOutlet NSProgressIndicator *progressIndicator;
 @property (assign) IBOutlet NSLayoutConstraint *productNameHeightConstraint;
 - (IBAction)deleteButtonClicked:(id)sender;
+
+- (void) updateFromSwitcher:(Switcher*)switcher;
 
 @end
 

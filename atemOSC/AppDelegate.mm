@@ -45,15 +45,32 @@
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
-		
+	
+	// Load switchers from preferences
+	switchers = [[NSMutableArray alloc] init];
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	NSData *encodedObject = [defaults objectForKey:@"switchers"];
-	if (encodedObject != nil)
-		switchers = [NSKeyedUnarchiver unarchiveObjectWithData:encodedObject];
-	else
-		switchers = [[NSMutableArray alloc] initWithObjects:[[Switcher alloc] init], nil];
+	NSArray *uids = [defaults stringArrayForKey:@"switchers"];
+	for (NSString *uid : uids)
+	{
+		NSData *encodedObject = [defaults objectForKey:[NSString stringWithFormat:@"switcher-%@", uid]];
+		if (encodedObject != nil)
+		{
+			Switcher *switcher = [NSKeyedUnarchiver unarchiveObjectWithData:encodedObject];
+			[switchers addObject:switcher];
+		}
+	}
+
+	if ([switchers count] == 0)
+	{
+		[self addSwitcher];
+	}
 	[window loadSettingsFromPreferences];
-	[window refreshList];
+
+	dispatch_async(dispatch_get_main_queue(), ^{
+		[[window outlineView] reloadData];
+		NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:1];
+		[[window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
+	});
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
 	if (!mSwitcherDiscovery)
@@ -65,8 +82,8 @@
 	{
 		for (Switcher *switcher in switchers)
 		{
-			if ([switcher connectAutomatically])
-				[switcher switcherDisconnected];
+			if ([switcher connectAutomatically] && [switcher ipAddress])
+				[switcher connectBMD];
 		}
 		
 		manager = [[OSCManager alloc] init];
@@ -185,6 +202,48 @@
 	[[window logTextView] scrollRangeToVisible: NSMakeRange([window logTextView].string.length, 0)];
 	
 	[[window logTextView] setTextColor:[NSColor whiteColor]];
+}
+
+- (void) addSwitcher
+{
+	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
+
+	Switcher *newSwitcher = [[Switcher alloc] init];
+	CFUUIDRef UUID = CFUUIDCreate(kCFAllocatorDefault);
+	[newSwitcher setUid: (NSString *) CFUUIDCreateString(kCFAllocatorDefault,UUID)];
+	[newSwitcher saveChanges];
+	[switchers addObject:newSwitcher];
+	
+	NSMutableArray *uids = [[NSMutableArray alloc] init];
+	for (Switcher *switcher: switchers)
+	{
+		[uids addObject:[switcher uid]];
+	}
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	[defaults setValue:[NSArray arrayWithArray: uids] forKey:@"switchers"];
+	[defaults synchronize];
+	
+	[[window outlineView] reloadData];
+	NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:[switchers count]];
+	[[window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
+}
+
+- (void) removeSwitcher:(Switcher *)switcher
+{
+	Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
+	
+	[switchers removeObject: switcher];
+	[[window outlineView] reloadData];
+	
+	NSMutableArray *uids = [[NSMutableArray alloc] init];
+	for (Switcher *switcher: switchers)
+	{
+		[uids addObject:[switcher uid]];
+	}
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	[defaults setValue:[NSArray arrayWithArray: uids] forKey:@"switchers"];
+	[defaults removeObjectForKey:[NSString stringWithFormat:@"switcher-%@",switcher.uid]];
+	[defaults synchronize];
 }
 
 @end

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1857BF46194D41240053631F /* atemOSC.icns in Resources */ = {isa = PBXBuildFile; fileRef = 1857BF45194D41240053631F /* atemOSC.icns */; };
 		18E8D87D1EA8DC6400F69290 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18E8D87C1EA8DC6400F69290 /* Images.xcassets */; };
-		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */; };
 		333E3045161395CF0002287B /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 333E3044161395CF0002287B /* IOKit.framework */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
@@ -18,13 +17,12 @@
 		A91A812F1FAEA2DC00983D66 /* Utilities.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91A812D1FAEA2DC00983D66 /* Utilities.mm */; };
 		A91AF2DF2597C31C00E347C3 /* ConnectionView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2DE2597C31C00E347C3 /* ConnectionView.mm */; };
 		A91AF2E22597C3AC00E347C3 /* Switcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2E12597C3AC00E347C3 /* Switcher.mm */; };
-		A91AF2E62598045200E347C3 /* SwitcherCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2E52598045200E347C3 /* SwitcherCell.m */; };
+		A91AF2E62598045200E347C3 /* SwitcherCell.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2E52598045200E347C3 /* SwitcherCell.mm */; };
 		A91AF2E9259828F400E347C3 /* OutlineView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91AF2E8259828F400E347C3 /* OutlineView.mm */; };
-		A91EFE6B23D7519E00590AD0 /* OSCEndpoint.m in Sources */ = {isa = PBXBuildFile; fileRef = A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */; };
+		A91EFE6B23D7519E00590AD0 /* OSCEndpoint.mm in Sources */ = {isa = PBXBuildFile; fileRef = A91EFE6923D7519E00590AD0 /* OSCEndpoint.mm */; };
 		A91EFE7123D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A91EFE7023D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp */; };
 		A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */ = {isa = PBXBuildFile; fileRef = A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */; };
 		A98839421F8D913800F91789 /* OSCAddressView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839411F8D913800F91789 /* OSCAddressView.mm */; };
-		A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */ = {isa = PBXBuildFile; fileRef = A98839471F8E307100F91789 /* SettingsWindow.mm */; };
 		A9942E0125968E9100E77A10 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A9942E0025968E9100E77A10 /* MainWindow.xib */; };
 		A9942E0425968FAB00E77A10 /* Window.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9942E0325968FAB00E77A10 /* Window.mm */; };
 		A9A9AA932594255A00890134 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9A9A9452594209100890134 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -69,10 +67,10 @@
 		A91AF2E02597C3AC00E347C3 /* Switcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Switcher.h; sourceTree = "<group>"; };
 		A91AF2E12597C3AC00E347C3 /* Switcher.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Switcher.mm; sourceTree = "<group>"; };
 		A91AF2E42598045200E347C3 /* SwitcherCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SwitcherCell.h; sourceTree = "<group>"; };
-		A91AF2E52598045200E347C3 /* SwitcherCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SwitcherCell.m; sourceTree = "<group>"; };
+		A91AF2E52598045200E347C3 /* SwitcherCell.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SwitcherCell.mm; sourceTree = "<group>"; };
 		A91AF2E7259828F400E347C3 /* OutlineView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OutlineView.h; sourceTree = "<group>"; };
 		A91AF2E8259828F400E347C3 /* OutlineView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OutlineView.mm; sourceTree = "<group>"; };
-		A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OSCEndpoint.m; sourceTree = "<group>"; };
+		A91EFE6923D7519E00590AD0 /* OSCEndpoint.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCEndpoint.mm; sourceTree = "<group>"; };
 		A91EFE6A23D7519E00590AD0 /* OSCEndpoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSCEndpoint.h; sourceTree = "<group>"; };
 		A91EFE6F23D7559700590AD0 /* BMDSwitcherAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMDSwitcherAPI.h; sourceTree = "<group>"; };
 		A91EFE7023D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BMDSwitcherAPIDispatch.cpp; sourceTree = "<group>"; };
@@ -80,8 +78,6 @@
 		A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FeedbackMonitors.mm; sourceTree = "<group>"; };
 		A98839401F8D913800F91789 /* OSCAddressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCAddressView.h; sourceTree = "<group>"; };
 		A98839411F8D913800F91789 /* OSCAddressView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCAddressView.mm; sourceTree = "<group>"; };
-		A98839461F8E307100F91789 /* SettingsWindow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsWindow.h; sourceTree = "<group>"; };
-		A98839471F8E307100F91789 /* SettingsWindow.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SettingsWindow.mm; sourceTree = "<group>"; };
 		A9942E0025968E9100E77A10 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		A9942E0225968FAB00E77A10 /* Window.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Window.h; sourceTree = "<group>"; };
 		A9942E0325968FAB00E77A10 /* Window.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Window.mm; sourceTree = "<group>"; };
@@ -90,7 +86,6 @@
 		A9A9A9472594209100890134 /* VVOSC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VVOSC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9F790691F89B83C003ACBCF /* OSCReceiver.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCReceiver.mm; sourceTree = "<group>"; };
 		A9F7906B1F89B857003ACBCF /* OSCReceiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCReceiver.h; sourceTree = "<group>"; };
-		A9FB8B5925943620003B4581 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,8 +110,6 @@
 				A91AF2D92597C07200E347C3 /* Entities */,
 				256AC3D80F4B6AC300CF3369 /* AppDelegate.h */,
 				256AC3D90F4B6AC300CF3369 /* AppDelegate.mm */,
-				A98839461F8E307100F91789 /* SettingsWindow.h */,
-				A98839471F8E307100F91789 /* SettingsWindow.mm */,
 				A92D308C1F832B9200CCAC68 /* FeedbackMonitors.h */,
 				A92D308D1F832BA900CCAC68 /* FeedbackMonitors.mm */,
 				A9F7906B1F89B857003ACBCF /* OSCReceiver.h */,
@@ -184,7 +177,6 @@
 				8D1107310486CEB800E47090 /* atemOSC-Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1857BF45194D41240053631F /* atemOSC.icns */,
-				1DDD58140DA1D0A300B32029 /* MainMenu.xib */,
 				A9942E0025968E9100E77A10 /* MainWindow.xib */,
 			);
 			name = Resources;
@@ -205,7 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				A91EFE6A23D7519E00590AD0 /* OSCEndpoint.h */,
-				A91EFE6923D7519E00590AD0 /* OSCEndpoint.m */,
+				A91EFE6923D7519E00590AD0 /* OSCEndpoint.mm */,
 				A91AF2E02597C3AC00E347C3 /* Switcher.h */,
 				A91AF2E12597C3AC00E347C3 /* Switcher.mm */,
 			);
@@ -222,7 +214,7 @@
 				A9942E0225968FAB00E77A10 /* Window.h */,
 				A9942E0325968FAB00E77A10 /* Window.mm */,
 				A91AF2E42598045200E347C3 /* SwitcherCell.h */,
-				A91AF2E52598045200E347C3 /* SwitcherCell.m */,
+				A91AF2E52598045200E347C3 /* SwitcherCell.mm */,
 				A91AF2E7259828F400E347C3 /* OutlineView.h */,
 				A91AF2E8259828F400E347C3 /* OutlineView.mm */,
 			);
@@ -296,7 +288,6 @@
 				18E8D87D1EA8DC6400F69290 /* Images.xcassets in Resources */,
 				1857BF46194D41240053631F /* atemOSC.icns in Resources */,
 				A9942E0125968E9100E77A10 /* MainWindow.xib in Resources */,
-				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,12 +298,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A98839481F8E307100F91789 /* SettingsWindow.mm in Sources */,
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				A91A812F1FAEA2DC00983D66 /* Utilities.mm in Sources */,
-				A91EFE6B23D7519E00590AD0 /* OSCEndpoint.m in Sources */,
+				A91EFE6B23D7519E00590AD0 /* OSCEndpoint.mm in Sources */,
 				A98839421F8D913800F91789 /* OSCAddressView.mm in Sources */,
-				A91AF2E62598045200E347C3 /* SwitcherCell.m in Sources */,
+				A91AF2E62598045200E347C3 /* SwitcherCell.mm in Sources */,
 				A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */,
 				256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */,
 				A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */,
@@ -333,14 +323,6 @@
 				089C165DFE840E0CC02AAC07 /* English */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		1DDD58140DA1D0A300B32029 /* MainMenu.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				A9FB8B5925943620003B4581 /* en */,
-			);
-			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

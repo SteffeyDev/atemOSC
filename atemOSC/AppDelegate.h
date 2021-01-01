@@ -61,4 +61,7 @@
 
 - (void)logMessage:(NSString *)message;
 
+- (void)addSwitcher;
+- (void)removeSwitcher:(Switcher *)switcher;
+
 @end

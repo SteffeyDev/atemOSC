@@ -15,10 +15,14 @@
 @synthesize nickname;
 @synthesize feedbackIpAddress;
 @synthesize feedbackPort;
+@synthesize connectAutomatically;
+
+@synthesize uid;
 
 @synthesize isConnected;
+@synthesize connectionStatus;
+
 @synthesize outPort;
-@synthesize connecting;
 
 @synthesize productName;
 
@@ -47,6 +51,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
+	[encoder encodeObject:self.uid forKey:@"uid"];
 	[encoder encodeObject:self.ipAddress forKey:@"ipAddress"];
 	[encoder encodeObject:self.feedbackIpAddress forKey:@"feedbackIpAddress"];
 	[encoder encodeObject:[[NSNumber numberWithInt: self.feedbackPort] stringValue] forKey:@"feedbackPort"];
@@ -58,6 +63,7 @@
 {
 	if((self = [self init])) {
 		//decode properties, other class vars
+		self.uid = [decoder decodeObjectForKey:@"uid"];
 		self.ipAddress = [decoder decodeObjectForKey:@"ipAddress"];
 		self.feedbackIpAddress = [decoder decodeObjectForKey:@"feedbackIpAddress"];
 		self.feedbackPort = [[decoder decodeObjectForKey:@"feedbackPort"] intValue];
@@ -80,6 +86,9 @@
 	mAudioMixer = NULL;
 	
 	isConnected = FALSE;
+	connectionStatus = @"Not Connected";
+	
+	connectAutomatically = YES;
 	
 	return self;
 }
@@ -104,63 +113,96 @@
 
 - (void)connectBMD
 {
-	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
-
+	[self connectBMD: 5 toIpAddress:[ipAddress copy]];
+}
+- (void)connectBMD:(int)attemptsRemaining toIpAddress:(NSString *)ipAddress
+{
+	// Handle case when we run out of attempts or the IP address changes while trying to connect
+	if (attemptsRemaining <= 0 || ![ipAddress isEqualToString:[self ipAddress]])
+	{
+		return;
+	}
+	
 	dispatch_async(dispatch_get_main_queue(), ^{
-		
-		[self setConnecting: YES];
+		// AppDelegate can only be retrieved from main thread
+		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
-		[window refreshList];
-	});
-		
-	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
-	dispatch_async(queue, ^{
-		BMDSwitcherConnectToFailure            failReason;
-		
-		// Note that ConnectTo() can take several seconds to return, both for success or failure,
-		// depending upon hostname resolution and network response times, so it may be best to
-		// do this in a separate thread to prevent the main GUI thread blocking.
-		HRESULT hr = [appDel mSwitcherDiscovery]->ConnectTo((CFStringRef)[self ipAddress], &mSwitcher, &failReason);
-		if (SUCCEEDED(hr))
+
+		if (![[self connectionStatus] isEqualToString:@"Connecting"])
 		{
-			[self switcherConnected];
+			[self setConnectionStatus: @"Connecting"];
+			[[window outlineView] reloadItem:self];
 		}
-		else
-		{
-			NSString* reason;
-			switch (failReason)
+		
+		dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
+		dispatch_async(queue, ^{
+			BMDSwitcherConnectToFailure            failReason;
+			
+			// Note that ConnectTo() can take several seconds to return, both for success or failure,
+			// depending upon hostname resolution and network response times, so it may be best to
+			// do this in a separate thread to prevent the main GUI thread blocking.
+			HRESULT hr = [appDel mSwitcherDiscovery]->ConnectTo((CFStringRef)ipAddress, &mSwitcher, &failReason);
+			if (SUCCEEDED(hr))
 			{
-				case bmdSwitcherConnectToFailureNoResponse:
-					reason = @"No response from Switcher";
-					break;
-				case bmdSwitcherConnectToFailureIncompatibleFirmware:
-					reason = @"Switcher has incompatible firmware";
-					break;
-				case bmdSwitcherConnectToFailureCorruptData:
-					reason = @"Corrupt data was received during connection attempt";
-					break;
-				case bmdSwitcherConnectToFailureStateSync:
-					reason = @"State synchronisation failed during connection attempt";
-					break;
-				case bmdSwitcherConnectToFailureStateSyncTimedOut:
-					reason = @"State synchronisation timed out during connection attempt";
-					break;
-				default:
-					reason = @"Connection failed for unknown reason";
+				[self switcherConnected];
 			}
-			//Delay 2 seconds before everytime connect/reconnect
-			//Because the session ID from ATEM switcher will alive not more then 2 seconds
-			//After 2 second of idle, the session will be reset then reconnect won't cause error
-			double delayInSeconds = 2.0;
-			dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-			dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
-						   ^(void){
-							   //To run in background thread
-							   [self switcherDisconnected];
-						   });
-			[appDel logMessage:[NSString stringWithFormat:@"%@", reason]];
-		}
+			else
+			{
+				NSString* reason;
+				BOOL retry = YES;
+				switch (failReason)
+				{
+					case bmdSwitcherConnectToFailureNoResponse:
+						reason = @"No response from Switcher";
+						break;
+					case bmdSwitcherConnectToFailureIncompatibleFirmware:
+						reason = @"Switcher has incompatible firmware";
+						retry = NO;
+						break;
+					case bmdSwitcherConnectToFailureCorruptData:
+						reason = @"Corrupt data was received during connection attempt";
+						break;
+					case bmdSwitcherConnectToFailureStateSync:
+						reason = @"State synchronisation failed during connection attempt";
+						break;
+					case bmdSwitcherConnectToFailureStateSyncTimedOut:
+						reason = @"State synchronisation timed out during connection attempt";
+						break;
+					default:
+						reason = @"Connection failed for unknown reason";
+				}
+				if (attemptsRemaining > 1)
+				{
+					//Delay 2 seconds before everytime connect/reconnect
+					//Because the session ID from ATEM switcher will alive not more then 2 seconds
+					//After 2 second of idle, the session will be reset then reconnect won't cause error
+					double delayInSeconds = 2.0;
+					dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+					dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+								   ^(void){
+									   //To run in background thread
+									   [self connectBMD: attemptsRemaining-1 toIpAddress:ipAddress];
+								   });
+					if (retry)
+						[appDel logMessage:[NSString stringWithFormat:@"%@: %@, retrying %d more times", ipAddress, reason, attemptsRemaining-1]];
+					else
+						[appDel logMessage:[NSString stringWithFormat:@":%@: %@", ipAddress, reason]];
+				}
+				else
+				{
+					[appDel logMessage:[NSString stringWithFormat:@"%@: Failed to connect after 5 attempts", ipAddress]];
+					dispatch_async(dispatch_get_main_queue(), ^{
+						[self setConnectionStatus:@"Failed to Connect"];
+						[[window outlineView] reloadItem:self];
+						if ([[window connectionView] switcher] == self)
+							[[window connectionView] reload];
+					});
+				}
+			}
+		});
 	});
+		
+	
 }
 
 - (void)switcherConnected
@@ -170,8 +212,7 @@
 	HRESULT result;
 
 	[self setIsConnected: YES];
-	[self setConnecting: NO];
-
+	[self setConnectionStatus:@"Connected"];
 	
 	if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
 	{
@@ -198,9 +239,11 @@
 	[self setProductName:productName];
 	dispatch_async(dispatch_get_main_queue(), ^{
 		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
-		[window refreshList];
-		// Reload in case the switcher selected is this one (TODO: optimize)
-		[[window connectionView] reload];
+		[[window outlineView] reloadItem:self];
+		if ([[window connectionView] switcher] == self)
+		{
+			[[[window connectionView] productNameTextField] setStringValue:productName];
+		}
 	});
 	
 	mSwitcher->AddCallback(mSwitcherMonitor);
@@ -494,8 +537,8 @@
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
-		[window refreshList];
-		
+		[[window outlineView] reloadItem:self];
+
 		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 		if (appDel.activity)
 			[[NSProcessInfo processInfo] endActivity:appDel.activity];
@@ -514,7 +557,6 @@
 	}
 	
 	[self cleanUpConnection];
-	
 	[self connectBMD];
 }
 
@@ -706,7 +748,10 @@
 
 - (void)saveChanges
 {
-	
+	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+	NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:self];
+	[defaults setObject:encodedObject forKey:[NSString stringWithFormat:@"switcher-%@", self.uid]];
+	[defaults synchronize];
 }
 
 @end

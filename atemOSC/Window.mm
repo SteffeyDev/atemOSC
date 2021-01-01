@@ -45,10 +45,4 @@
 	[prefs synchronize];
 }
 
-- (void) refreshList
-{
-	[outlineView reloadData];
-}
-
-
 @end

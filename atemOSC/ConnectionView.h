@@ -11,7 +11,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ConnectionView : NSView<NSTextFieldDelegate> {
-	Switcher *switcher;
 }
 
 @property (assign) IBOutlet NSTextField *ipAddressTextField;
@@ -19,6 +18,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign) IBOutlet NSTextField *productNameTextField;
 @property (assign) IBOutlet NSTextField *feedbackIpAddressTextField;
 @property (assign) IBOutlet NSTextField *feedbackPortTextField;
+@property (assign) IBOutlet NSButton *connectButton;
+@property (assign) IBOutlet NSButton *connectAutomaticallyButton;
+@property (assign) Switcher *switcher;
+
+
+- (IBAction)connectButtonPressed:(id)sender;
+- (IBAction)connectAutomaticallyButtonPressed:(id)sender;
 
 
 - (void)loadFromSwitcher:(Switcher *)switcher;

@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 	std::vector<SendStatusInterface*>   mMonitors;
 }
 
+@property(nonatomic, retain) NSString *uid;
+
 @property(nonatomic, retain) NSString *ipAddress;
 @property(nonatomic, retain) NSString *feedbackIpAddress;
 @property(nonatomic) int feedbackPort;
@@ -42,9 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, assign) NSString *productName;
 
 
-@property (nonatomic)       bool                                     isConnected;
-@property (nonatomic)       bool                                     connecting;
-
+@property (nonatomic)         bool     isConnected;
+@property (nonatomic, assign) NSString *connectionStatus;
 
 @property (assign, readonly) OSCOutPort*                    outPort;
 

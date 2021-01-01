@@ -9,8 +9,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface OutlineView : NSOutlineView<NSOutlineViewDelegate, NSOutlineViewDataSource>
-
+@interface OutlineView : NSOutlineView<NSOutlineViewDelegate, NSOutlineViewDataSource> {
+	long selectedRow;
+}
+- (void)refreshList;
 @end
 
 NS_ASSUME_NONNULL_END
