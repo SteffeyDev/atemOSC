@@ -81,8 +81,8 @@
 			if ([name isEqual:@""])
 				name = @"Unnamed";
 			
-			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/preview/%ld",i+1,(long)id] toString:helpString];
-			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/program/%ld",i+1,(long)id] toString:helpString];
+			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/preview %ld",i+1,(long)id] toString:helpString];
+			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/program %ld",i+1,(long)id] toString:helpString];
 			
 			input->Release();
 			[name release];

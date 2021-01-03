@@ -52,9 +52,19 @@ atemOSC is a network proxy, listening for commands following the [OSC protocol](
 
 ## OSC API
 
-The full list of the OSC-addresses available for your switcher can be obtained by clicking the "Show OSC Addresses" button once you've connected atemOSC to your switcher. The list below is just an overview of what the addresses may look like for a generic switcher.
+The full list of the OSC-addresses available for your switcher can be obtained by going to the "OSC Addresses" tab once you've connected atemOSC to your switcher. The list below is just an overview of what the addresses may look like for a generic switcher.
+
+All addresses must start with `/atem/`.  atemOSC will ignore all OSC commands it receives whose address does not start with `/atem/`.
+
+### Multi-switcher support
+
+By default, all commands will be sent to the first connected switcher.  If you connect multiple switchers to atemOSC, you will need to provide a nickname for each switcher and use that nickname in the address to specify which switcher to send the command to.
+
+For example, `/atem/my-switcher-1/transition/auto` will trigger an automatic transition on the switcher whose nickname is `my-switcher-1`
 
 ### Program and Preview Selection
+
+By default, commands will be sent to the first mix effect block (M/E).  To send commands on other mix effect blocks, use the address: `/atem/me/$i/program <number>`, where `$i` is 1, 2, 3, or 4
 
  - **Black** `/atem/program 0`
 
@@ -91,6 +101,8 @@ Note: You can fetch the names of each input by sending the `/atem/send-status` c
 
 ### Transition Control
 
+By default, commands will be sent to the first mix effect block (M/E).  To send commands on other mix effect blocks, use the address: `/atem/me/$i/transition/...`, where `$i` is 1, 2, 3, or 4
+
  - **T-bar** `/atem/transition/bar <0-1>`
  - **Cut** `/atem/transition/cut`
  - **Auto** `/atem/transition/auto`
@@ -125,6 +137,8 @@ To set the transition type of the Auto transition:
 Feedback: Enabled for `/atem/transition/bar`
 
 ### Upstream Keyers
+
+By default, commands will be sent to the first mix effect block (M/E).  To send commands on other mix effect blocks, use the address: `/atem/me/$i/usk/...`, where `$i` is 1, 2, 3, or 4
 
  - **Set Tie BKGD** `/atem/usk/0/tie <true|false>`
      - Send a value of 1 to enable tie, and 0 to disable
@@ -305,9 +319,10 @@ Feedback: Enabled for `/atem/hyperdeck/$i/clip`.  The state of the HyperDeck is 
 
   - **Request all feedback available** `/atem/send-status`
      - This will query the switcher and send back the status for the program/preview, transition control, keyers, and macros
-  - **Request only Program/Preview/Bar status** `/atem/send-status/mix-effect-block`
+  - **Request only Program/Preview/Bar status** `/atem/me/$i/send-status`
+     - Where `$i` is an integer value specifying the M/E to get the status of
      - This will query the switcher and send back the status for only program/preview, bar, and preview
-  - e.g. This can be used when a new OSC client device is brought online, so that it gets the current status of the system
+  - This can be used when a new OSC client device is brought online, so that it gets the current status of the system
 
 ### Type Casting
 
@@ -329,7 +344,7 @@ Due to the limited capabilities of the TouchOSC client, atemOSC supports an alte
 
 #### Problem
 
-There are a lot of features that AtemOSC does not yet support, most noteably HyperDeck support and advanced USK settings.
+There are a lot of features that AtemOSC does not yet support, most noteably camera control and advanced USK settings.
 
 #### Solution
 
