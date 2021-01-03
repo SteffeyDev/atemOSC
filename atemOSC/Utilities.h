@@ -21,5 +21,7 @@ extern NSString* getDescriptionOfMacro(Switcher *s, uint32_t index);
 extern void activateChannel(Switcher *s, int me, int channel, bool program);
 extern bool stringIsNumber(NSString * str);
 extern NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx));
+extern NSString* getFeedbackAddress(Switcher *s, NSString *address);
+extern NSString* getFeedbackAddress(Switcher *s, NSString *address, int me);
 
 #endif /* Utilities_hpp */

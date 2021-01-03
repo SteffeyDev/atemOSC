@@ -186,3 +186,20 @@ NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx
     }];
     return result;
 }
+
+NSString *getFeedbackAddress(Switcher *s, NSString *address) {
+	// If a switcher nickname is set, they probably have multiple switchers connected
+	// and are thus using nicknames, so include nickname in the feedback address
+	if (s.nickname && s.nickname.length > 0)
+		return [NSString stringWithFormat:@"/atem/%@%@", s.nickname, address];
+	else
+		return [NSString stringWithFormat:@"/atem/%@", address];
+}
+
+NSString *getFeedbackAddress(Switcher *s, NSString *address, int me) {
+	// If there are multiple mix effect blocks on this switcher, include the block number in the feedback string
+	if ([s mMixEffectBlocks].size() > 1)
+		return getFeedbackAddress(s, [NSString stringWithFormat:@"/me/%d%@", me, address]);
+	else
+		return getFeedbackAddress(s, address);
+}
