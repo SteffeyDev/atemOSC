@@ -1059,6 +1059,13 @@
 		minute = [timeComponents[1] intValue];
 		second = [timeComponents[2] intValue];
 	}
+	else if (timeComponents.count == 4 && stringIsNumber(timeComponents[0]) && stringIsNumber(timeComponents[1]) && stringIsNumber(timeComponents[2]) && stringIsNumber(timeComponents[3]))
+	{
+		hour = [timeComponents[0] intValue];
+		minute = [timeComponents[1] intValue];
+		second = [timeComponents[2] intValue];
+		frame = [timeComponents[3] intValue];
+	}
 	else
 		[appDel logMessage:[NSString stringWithFormat:@"Invalid time '%@'. You must specify a time in the format HH:MM:SS (e.g. 00:00:05)", timeString]];
 	

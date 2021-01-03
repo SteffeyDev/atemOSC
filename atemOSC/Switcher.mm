@@ -182,14 +182,14 @@
 									   //To run in background thread
 									   [self connectBMD: attemptsRemaining-1 toIpAddress:ipAddress];
 								   });
-					[appDel logMessage:[NSString stringWithFormat:@"%@: %@, retrying %d more times", ipAddress, reason, attemptsRemaining-1]];
+					[self logMessage:[NSString stringWithFormat:@"%@, retrying %d more times", reason, attemptsRemaining-1]];
 				}
 				else
 				{
 					if (retry)
-						[appDel logMessage:[NSString stringWithFormat:@"%@: Failed to connect after 5 attempts", ipAddress]];
+						[self logMessage:@"Failed to connect after 5 attempts"];
 					else
-						[appDel logMessage:[NSString stringWithFormat:@"%@: %@", ipAddress, reason]];
+						[self logMessage:[NSString stringWithFormat:@"%@", reason]];
 					dispatch_async(dispatch_get_main_queue(), ^{
 						[self setConnectionStatus:@"Failed to Connect"];
 						[[window outlineView] reloadItem:self];
@@ -230,7 +230,7 @@
 	NSString* productName = @"N/A";
 	if (FAILED(mSwitcher->GetProductName((CFStringRef*)&productName)))
 	{
-		[appDel logMessage:@"Could not get switcher product name"];
+		[self logMessage:@"Could not get switcher product name"];
 	}
 	
 	[self setProductName:productName];
@@ -299,7 +299,7 @@
 			}
 			else
 			{
-				[appDel logMessage:@"[Debug] Could not create IBMDSwitcherKeyIterator iterator"];
+				[self logMessage:@"[Debug] Could not create IBMDSwitcherKeyIterator iterator"];
 			}
 			
 			meIndex++;
@@ -309,7 +309,7 @@
 	}
 	else
 	{
-		[appDel logMessage:@"[Debug] Could not create IBMDSwitcherMixEffectBlockIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherMixEffectBlockIterator iterator"];
 	}
 	
 	
@@ -347,7 +347,7 @@
 	}
 	else
 	{
-		[appDel logMessage:@"[Debug] Could not create IBMDSwitcherInputIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherInputIterator iterator"];
 	}
 	
 	//Downstream Keyer
@@ -365,7 +365,7 @@
 	}
 	else
 	{
-		[appDel logMessage:@"[Debug] Could not create IBMDSwitcherDownstreamKeyIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherDownstreamKeyIterator iterator"];
 	}
 	
 	// Media Players
@@ -382,13 +382,13 @@
 	}
 	else
 	{
-		[appDel logMessage:@"[Debug] Could not create IBMDSwitcherMediaPlayerIterator iterator"];
+		[self logMessage:@"[Debug] Could not create IBMDSwitcherMediaPlayerIterator iterator"];
 	}
 	
 	// get media pool
 	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherMediaPool, (void**)&mMediaPool)))
 	{
-		[appDel logMessage:@"[Debug] Could not get IBMDSwitcherMediaPool interface"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherMediaPool interface"];
 	}
 	
 	// get macro pool
@@ -398,13 +398,13 @@
 	}
 	else
 	{
-		[appDel logMessage:@"[Debug] Could not get IID_IBMDSwitcherMacroPool interface"];
+		[self logMessage:@"[Debug] Could not get IID_IBMDSwitcherMacroPool interface"];
 	}
 	
 	// get macro controller
 	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl)))
 	{
-		[appDel logMessage:@"[Debug] Could not get IID_IBMDSwitcherMacroControl interface"];
+		[self logMessage:@"[Debug] Could not get IID_IBMDSwitcherMacroControl interface"];
 	}
 	
 	// Super source
@@ -422,12 +422,12 @@
 		}
 		else
 		{
-			[appDel logMessage:@"[Debug] Could not create IBMDSwitcherSuperSourceBoxIterator iterator"];
+			[self logMessage:@"[Debug] Could not create IBMDSwitcherSuperSourceBoxIterator iterator"];
 		}
 	}
 	else
 	{
-		[appDel logMessage:@"[Debug] Could not get IBMDSwitcherInputSuperSource interface"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherInputSuperSource interface"];
 	}
 	
 	// Audio Mixer (Output)
@@ -455,12 +455,12 @@
 		}
 		else
 		{
-			[appDel logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
+			[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
 		}
 	}
 	else
 	{
-		[appDel logMessage:@"[Debug] Could not get IBMDSwitcherAudioMixer interface (If your switcher supports Fairlight audio, you can ignore this)"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherAudioMixer interface (If your switcher supports Fairlight audio, you can ignore this)"];
 	}
 	
 	// Fairlight Audio Mixer
@@ -494,7 +494,7 @@
 				}
 				else
 				{
-					[appDel logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherFairlightAudioSourceIterator iterator. code: %d", HRESULT_CODE(result)]];
+					[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherFairlightAudioSourceIterator iterator. code: %d", HRESULT_CODE(result)]];
 				}
 			}
 			audioInputIterator->Release();
@@ -502,12 +502,12 @@
 		}
 		else
 		{
-			[appDel logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherFairlightAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
+			[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherFairlightAudioInputIterator iterator. code: %d", HRESULT_CODE(result)]];
 		}
 	}
 	else
 	{
-		[appDel logMessage:@"[Debug] Could not get IBMDSwitcherFairlightAudioMixer interface (If your switcher does not support Fairlight audio, you can ignore this)"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherFairlightAudioMixer interface (If your switcher does not support Fairlight audio, you can ignore this)"];
 	}
 	
 	// Hyperdeck Setup
@@ -530,7 +530,7 @@
 	}
 	else
 	{
-		[appDel logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
+		[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
 	}
 }
 
@@ -715,15 +715,13 @@
 // wait times between sends
 - (void)sendStatus
 {
-	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
-
 	if ([self isConnected])
 	{
 		[self sendEachStatus:0];
 	}
 	else
 	{
-		[appDel logMessage:@"Cannot send status - Not connected to switcher"];
+		[self logMessage:@"Cannot send status - Not connected to switcher"];
 	}
 }
 
@@ -743,6 +741,12 @@
 	NSData *encodedObject = [NSKeyedArchiver archivedDataWithRootObject:self];
 	[defaults setObject:encodedObject forKey:[NSString stringWithFormat:@"switcher-%@", self.uid]];
 	[defaults synchronize];
+}
+
+- (void)logMessage:(NSString *)message
+{
+	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
+	[appDel logMessage:[NSString stringWithFormat:@"%@: %@", [self ipAddress], message]];
 }
 
 @end
