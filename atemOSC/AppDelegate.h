@@ -45,6 +45,9 @@
 	OSCReceiver*                mOscReceiver;
 	
 	IBOutlet OSCAddressPanel*   helpPanel;
+	
+	BOOL 						isActive;
+	NSMutableArray*				logBuffer; // for storing logs while in the background
 }
 
 @property (strong)         id                               activity;

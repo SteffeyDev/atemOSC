@@ -26,11 +26,11 @@
 
 @synthesize productName;
 
-@synthesize mMixEffectBlock;
-@synthesize mMixEffectBlockMonitor;
+@synthesize mMixEffectBlocks;
+@synthesize mMixEffectBlockMonitors;
+
 @synthesize keyers;
 @synthesize dsk;
-@synthesize switcherTransitionParameters;
 @synthesize mMediaPool;
 @synthesize mMediaPlayers;
 @synthesize mMacroPool;
@@ -78,7 +78,6 @@
 	self = [super init];
 	
 	mSwitcher = NULL;
-	mMixEffectBlock = NULL;
 	mMediaPool = NULL;
 	mMacroPool = NULL;
 	mSuperSource = NULL;
@@ -171,7 +170,7 @@
 					default:
 						reason = @"Connection failed for unknown reason";
 				}
-				if (attemptsRemaining > 1)
+				if (retry && attemptsRemaining > 1)
 				{
 					//Delay 2 seconds before everytime connect/reconnect
 					//Because the session ID from ATEM switcher will alive not more then 2 seconds
@@ -183,14 +182,14 @@
 									   //To run in background thread
 									   [self connectBMD: attemptsRemaining-1 toIpAddress:ipAddress];
 								   });
-					if (retry)
-						[appDel logMessage:[NSString stringWithFormat:@"%@: %@, retrying %d more times", ipAddress, reason, attemptsRemaining-1]];
-					else
-						[appDel logMessage:[NSString stringWithFormat:@":%@: %@", ipAddress, reason]];
+					[appDel logMessage:[NSString stringWithFormat:@"%@: %@, retrying %d more times", ipAddress, reason, attemptsRemaining-1]];
 				}
 				else
 				{
-					[appDel logMessage:[NSString stringWithFormat:@"%@: Failed to connect after 5 attempts", ipAddress]];
+					if (retry)
+						[appDel logMessage:[NSString stringWithFormat:@"%@: Failed to connect after 5 attempts", ipAddress]];
+					else
+						[appDel logMessage:[NSString stringWithFormat:@"%@: %@", ipAddress, reason]];
 					dispatch_async(dispatch_get_main_queue(), ^{
 						[self setConnectionStatus:@"Failed to Connect"];
 						[[window outlineView] reloadItem:self];
@@ -201,8 +200,6 @@
 			}
 		});
 	});
-		
-	
 }
 
 - (void)switcherConnected
@@ -252,25 +249,60 @@
 	IBMDSwitcherMixEffectBlockIterator* iterator = NULL;
 	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherMixEffectBlockIterator, (void**)&iterator)))
 	{
+		IBMDSwitcherMixEffectBlock* me = NULL;
+
 		// Use the first Mix Effect Block
-		if (S_OK == iterator->Next(&mMixEffectBlock))
+		int meIndex = 0;
+		while (S_OK == iterator->Next(&me))
 		{
-			mMixEffectBlock->AddCallback(mMixEffectBlockMonitor);
-			mMixEffectBlockMonitor->updateSliderPosition();
+			mMixEffectBlocks.push_back(me);
+			MixEffectBlockMonitor *monitor = new MixEffectBlockMonitor(self, meIndex);
+			me->AddCallback(monitor);
+			monitor->updateSliderPosition();
+			mMonitors.push_back(monitor);
+			mMixEffectBlockMonitors.insert(std::make_pair(meIndex, monitor));
 			
-			if (SUCCEEDED(mMixEffectBlock->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&switcherTransitionParameters)))
+			//Upstream Keyer
+			IBMDSwitcherKeyIterator* keyIterator = NULL;
+			IBMDSwitcherKey* key = NULL;
+			if (SUCCEEDED(me->CreateIterator(IID_IBMDSwitcherKeyIterator, (void**)&keyIterator)))
 			{
-				switcherTransitionParameters->AddCallback(mTransitionParametersMonitor);
+				keyers.insert(std::make_pair(meIndex, std::vector<IBMDSwitcherKey*>()));
+				while (S_OK == keyIterator->Next(&key))
+				{
+					keyers[meIndex].push_back(key);
+					UpstreamKeyerMonitor *uskMonitor = new UpstreamKeyerMonitor(self, meIndex);
+					key->AddCallback(uskMonitor);
+					mMonitors.push_back(uskMonitor);
+					mUpstreamKeyerMonitors.insert(std::make_pair(meIndex, uskMonitor));
+					
+					IBMDSwitcherKeyLumaParameters* lumaParams;
+					if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
+					{
+						UpstreamKeyerLumaParametersMonitor *lumaMonitor = new UpstreamKeyerLumaParametersMonitor(self, meIndex);
+						lumaParams->AddCallback(lumaMonitor);
+						mMonitors.push_back(lumaMonitor);
+						mUpstreamKeyerLumaParametersMonitors.insert(std::make_pair(meIndex, lumaMonitor));
+					}
+					
+					IBMDSwitcherKeyChromaParameters* chromaParams;
+					if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
+					{
+						UpstreamKeyerChromaParametersMonitor *chromaMonitor = new UpstreamKeyerChromaParametersMonitor(self, meIndex);
+						chromaParams->AddCallback(chromaMonitor);
+						mMonitors.push_back(chromaMonitor);
+						mUpstreamKeyerChromaParametersMonitors.insert(std::make_pair(meIndex, chromaMonitor));
+					}
+				}
+				keyIterator->Release();
+				keyIterator = NULL;
 			}
 			else
 			{
-				[appDel logMessage:@"[Debug] Could not get IBMDSwitcherTransitionParameters"];
+				[appDel logMessage:@"[Debug] Could not create IBMDSwitcherKeyIterator iterator"];
 			}
 			
-		}
-		else
-		{
-			[appDel logMessage:@"[Debug] Could not get the first IBMDSwitcherMixEffectBlock"];
+			meIndex++;
 		}
 		
 		iterator->Release();
@@ -317,34 +349,6 @@
 	{
 		[appDel logMessage:@"[Debug] Could not create IBMDSwitcherInputIterator iterator"];
 	}
-	
-	
-	//Upstream Keyer
-	IBMDSwitcherKeyIterator* keyIterator = NULL;
-	IBMDSwitcherKey* key = NULL;
-	if (SUCCEEDED(mMixEffectBlock->CreateIterator(IID_IBMDSwitcherKeyIterator, (void**)&keyIterator)))
-	{
-		while (S_OK == keyIterator->Next(&key))
-		{
-			keyers.push_back(key);
-			key->AddCallback(mUpstreamKeyerMonitor);
-			
-			IBMDSwitcherKeyLumaParameters* lumaParams;
-			if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
-				lumaParams->AddCallback(mUpstreamKeyerLumaParametersMonitor);
-			
-			IBMDSwitcherKeyChromaParameters* chromaParams;
-			if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
-				chromaParams->AddCallback(mUpstreamKeyerChromaParametersMonitor);
-		}
-		keyIterator->Release();
-		keyIterator = NULL;
-	}
-	else
-	{
-		[appDel logMessage:@"[Debug] Could not create IBMDSwitcherKeyIterator iterator"];
-	}
-	
 	
 	//Downstream Keyer
 	IBMDSwitcherDownstreamKeyIterator* dskIterator = NULL;
@@ -570,21 +574,35 @@
 		mSwitcherMonitor = NULL;
 	}
 	
-	if (mMixEffectBlock)
+	int me = 0;
+	for (auto const& it : mMixEffectBlocks)
 	{
-		mMixEffectBlock->RemoveCallback(mMixEffectBlockMonitor);
-		mMixEffectBlock->Release();
-		mMixEffectBlock = NULL;
-		mMixEffectBlockMonitor = NULL;
+		it->RemoveCallback(mMixEffectBlockMonitors.at(me));
+		it->Release();
+		
+		while (keyers[me].size())
+		{
+			keyers[me].back()->Release();
+			keyers[me].back()->RemoveCallback(mUpstreamKeyerMonitors[me]);
+			IBMDSwitcherKeyLumaParameters* lumaParams = nil;
+			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
+			if (lumaParams != nil)
+				lumaParams->RemoveCallback(mUpstreamKeyerLumaParametersMonitors[me]);
+			IBMDSwitcherKeyChromaParameters* chromaParams = nil;
+			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+			if (chromaParams != nil)
+				chromaParams->RemoveCallback(mUpstreamKeyerChromaParametersMonitors[me]);
+			keyers[me].pop_back();
+		}
+		
+		me++;
 	}
-	
-	if (switcherTransitionParameters)
-	{
-		switcherTransitionParameters->RemoveCallback(mTransitionParametersMonitor);
-		switcherTransitionParameters->Release();
-		switcherTransitionParameters = NULL;
-		mTransitionParametersMonitor = NULL;
-	}
+	mMixEffectBlocks.clear();
+	mMixEffectBlockMonitors.clear();
+	keyers.clear();
+	mUpstreamKeyerMonitors.clear();
+	mUpstreamKeyerLumaParametersMonitors.clear();
+	mUpstreamKeyerChromaParametersMonitors.clear();
 	
 	for (auto const& it : mInputs)
 	{
@@ -599,24 +617,7 @@
 		mSwitcherInputAuxList.back()->Release();
 		mSwitcherInputAuxList.pop_back();
 	}
-	
-	while (keyers.size())
-	{
-		keyers.back()->Release();
-		keyers.back()->RemoveCallback(mUpstreamKeyerMonitor);
-		IBMDSwitcherKeyLumaParameters* lumaParams = nil;
-		keyers.back()->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
-		if (lumaParams != nil)
-			lumaParams->RemoveCallback(mUpstreamKeyerLumaParametersMonitor);
-		IBMDSwitcherKeyChromaParameters* chromaParams = nil;
-		keyers.back()->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
-		if (chromaParams != nil)
-			chromaParams->RemoveCallback(mUpstreamKeyerChromaParametersMonitor);
-		keyers.pop_back();
-		mUpstreamKeyerMonitor = NULL;
-		mUpstreamKeyerLumaParametersMonitor = NULL;
-		mUpstreamKeyerChromaParametersMonitor = NULL;
-	}
+
 	
 	while (dsk.size())
 	{
@@ -701,16 +702,6 @@
 	mMonitors.push_back(mSwitcherMonitor);
 	mDownstreamKeyerMonitor = new DownstreamKeyerMonitor(self);
 	mMonitors.push_back(mDownstreamKeyerMonitor);
-	mUpstreamKeyerMonitor = new UpstreamKeyerMonitor(self);
-	mMonitors.push_back(mUpstreamKeyerMonitor);
-	mUpstreamKeyerLumaParametersMonitor = new UpstreamKeyerLumaParametersMonitor(self);
-	mMonitors.push_back(mUpstreamKeyerLumaParametersMonitor);
-	mUpstreamKeyerChromaParametersMonitor = new UpstreamKeyerChromaParametersMonitor(self);
-	mMonitors.push_back(mUpstreamKeyerChromaParametersMonitor);
-	mTransitionParametersMonitor = new TransitionParametersMonitor(self);
-	mMonitors.push_back(mTransitionParametersMonitor);
-	mMixEffectBlockMonitor = new MixEffectBlockMonitor(self);
-	mMonitors.push_back(mMixEffectBlockMonitor);
 	mMacroPoolMonitor = new MacroPoolMonitor(self);
 	mMonitors.push_back(mMacroPoolMonitor);
 	mAudioMixerMonitor = new AudioMixerMonitor(self);

@@ -25,11 +25,16 @@
 	NSDictionary *infoAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Monaco" traits:NSUnboldFontMask|NSUnitalicFontMask weight:5 size:12]};
 	NSDictionary *addressAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:5 size:12]};
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ", name] attributes:addressAttribute]];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\n", address] attributes:infoAttribute]];
+	if (switcher.nickname && switcher.nickname.length > 0)
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/%@/%@\n", switcher.nickname, address] attributes:infoAttribute]];
+	else
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/%@\n", address] attributes:infoAttribute]];
 }
 
 - (void)loadFromSwitcher:(Switcher *)switcher
 {
+	self->switcher = switcher;
+	
 	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 
 	[helpTextView setAlignment:NSLeftTextAlignment];
@@ -37,21 +42,18 @@
 	NSMutableAttributedString * helpString = [[NSMutableAttributedString alloc] initWithString:@""];
 	
 	[self addHeader:@"Polling" toString:helpString];
-	[self addEntry:@"Get Status" forAddress:@"/atem/send-status" toString:helpString];
+	[self addEntry:@"Get Status" forAddress:@"/send-status" toString:helpString];
 
 	[self addHeader:@"Transitions" toString:helpString];
-	[self addEntry:@"T-Bar" forAddress:@"/atem/transition/bar" toString:helpString];
-	[self addEntry:@"Cut" forAddress:@"/atem/transition/cut" toString:helpString];
-	[self addEntry:@"Auto-Cut" forAddress:@"/atem/transition/auto" toString:helpString];
-	[self addEntry:@"Fade-to-black" forAddress:@"/atem/transition/ftb" toString:helpString];
-	[self addEntry:@"Preview Transition" forAddress:@"/atem/transition/preview" toString:helpString];
-
-	[self addHeader:@"Transition type" toString:helpString];
-	[self addEntry:@"Set to Mix" forAddress:@"/atem/transition/set-type/mix" toString:helpString];
-	[self addEntry:@"Set to Dip" forAddress:@"/atem/transition/set-type/dip" toString:helpString];
-	[self addEntry:@"Set to Wipe" forAddress:@"/atem/transition/set-type/wipe" toString:helpString];
-	[self addEntry:@"Set to Stinger" forAddress:@"/atem/transition/set-type/sting" toString:helpString];
-	[self addEntry:@"Set to DVE" forAddress:@"/atem/transition/set-type/dve" toString:helpString];
+	for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
+	{
+		[self addEntry:@"T-Bar" forAddress:[NSString stringWithFormat: @"/me/%d/transition/bar", i+1] toString:helpString];
+		[self addEntry:@"Cut" forAddress:[NSString stringWithFormat: @"/me/%d/transition/cut", i+1] toString:helpString];
+		[self addEntry:@"Auto-Cut" forAddress:[NSString stringWithFormat: @"/me/%d/transition/auto", i+1] toString:helpString];
+		[self addEntry:@"Fade-to-black" forAddress:[NSString stringWithFormat: @"/me/%d/transition/ftb", i+1] toString:helpString];
+		[self addEntry:@"Preview Transition" forAddress:[NSString stringWithFormat: @"/me/%d/transition/preview", i+1] toString:helpString];
+		[self addEntry:@"Set Type" forAddress:[NSString stringWithFormat: @"/me/%d/transition/type <string: mix/dip/wipe/sting/dve>", i+1] toString:helpString];
+	}
 	
 	[self addHeader:@"Sources" toString:helpString];
 
@@ -68,42 +70,49 @@
 
 	while (S_OK == inputIterator->Next(&input))
 	{
-		NSString* name;
-		BMDSwitcherInputId id;
-		
-		input->GetInputId(&id);
-		input->GetLongName((CFStringRef*)&name);
-		
-		if ([name isEqual:@""])
-			name = @"Unnamed";
-		
-		[self addEntry:name forAddress:[NSString stringWithFormat:@"/atem/program/%ld",(long)id] toString:helpString];
-		
-		input->Release();
-		[name release];
+		for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
+		{
+			NSString* name;
+			BMDSwitcherInputId id;
+			
+			input->GetInputId(&id);
+			input->GetLongName((CFStringRef*)&name);
+			
+			if ([name isEqual:@""])
+				name = @"Unnamed";
+			
+			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/preview/%ld",i+1,(long)id] toString:helpString];
+			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/program/%ld",i+1,(long)id] toString:helpString];
+			
+			input->Release();
+			[name release];
+		}
 	}
 	inputIterator->Release();
 
 	[self addHeader:@"Upstream Keyers" toString:helpString];
-	[self addEntry:@"Set Tie BKGD" forAddress:@"/atem/usk/0/tie" toString:helpString];
-	[self addEntry:@"Toggle Tie BKGD" forAddress:@"/atem/usk/0/tie/toggle" toString:helpString];
-	for (int i = 0; i<[switcher keyers].size();i++)
+	for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
 	{
-		for (OSCEndpoint* endpoint : [switcher endpoints])
+		[self addEntry:@"Set Tie BKGD" forAddress:[NSString stringWithFormat:@"/me/%d/usk/0/tie", i+1] toString:helpString];
+		[self addEntry:@"Toggle Tie BKGD" forAddress:[NSString stringWithFormat:@"/me/%d/usk/0/tie/toggle", i+1] toString:helpString];
+		for (int j = 0; j<[switcher keyers][i].size();j++)
 		{
-			if ([[endpoint addressTemplate] containsString:@"/usk/"])
+			for (OSCEndpoint* endpoint : [appDel endpoints])
 			{
-				NSString *label = [[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
-				NSString *address = [[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
-				if (endpoint.valueType == OSCValInt)
-					address = [address stringByAppendingString:@" <int>"];
-				else if (endpoint.valueType == OSCValBool)
-					address = [address stringByAppendingString:@" <true|false>"];
-				else if (endpoint.valueType == OSCValFloat)
-					address = [address stringByAppendingString:@" <decimal>"];
-				else if (endpoint.valueType == OSCValString)
-					address = [address stringByAppendingString:@" <string>"];
-				[self addEntry:label forAddress:address toString:helpString];
+				if ([[endpoint addressTemplate] containsString:@"/usk/"])
+				{
+					NSString *label = [[[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(j+1)] stringValue]] stringByReplacingOccurrencesOfString:@"<me>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
+					NSString *address = [[[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(j+1)] stringValue]] stringByReplacingOccurrencesOfString:@"<me>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];;
+					if (endpoint.valueType == OSCValInt)
+						address = [address stringByAppendingString:@" <int>"];
+					else if (endpoint.valueType == OSCValBool)
+						address = [address stringByAppendingString:@" <true|false>"];
+					else if (endpoint.valueType == OSCValFloat)
+						address = [address stringByAppendingString:@" <decimal>"];
+					else if (endpoint.valueType == OSCValString)
+						address = [address stringByAppendingString:@" <string>"];
+					[self addEntry:label forAddress:address toString:helpString];
+				}
 			}
 		}
 	}
@@ -142,11 +151,11 @@
 
 			[self
 			 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Gain", it.first, inputTypeString]
-			 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/gain <float>", it.first]
+			 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/gain <float>", it.first]
 			 toString:helpString];
 			[self
 			 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Balance", it.first, inputTypeString]
-			 forAddress:[NSString stringWithFormat:@"/atem/audio/input/%lld/balance <float>", it.first]
+			 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/balance <float>", it.first]
 			 toString:helpString];
 		}
 	}
@@ -154,8 +163,8 @@
 	if ([switcher mAudioMixer] != nil)
 	{
 		[self addHeader:@"Audio Output (Mix)" toString:helpString];
-		[self addEntry:@"Audio Output Gain" forAddress:@"/atem/audio/output/gain <float>" toString:helpString];
-		[self addEntry:@"Audio Output Balance" forAddress:@"/atem/audio/output/balance <float>" toString:helpString];
+		[self addEntry:@"Audio Output Gain" forAddress:@"/audio/output/gain <float>" toString:helpString];
+		[self addEntry:@"Audio Output Balance" forAddress:@"/audio/output/balance <float>" toString:helpString];
 	}
 	
 	if ([switcher mFairlightAudioSources].size() > 0)
@@ -166,11 +175,11 @@
 		{
 			[self
 			 addEntry:[NSString stringWithFormat:@"Fairlight Audio Source %lld Gain", it.first]
-			 forAddress:[NSString stringWithFormat:@"/atem/fairlight-audio/source/%lld/gain <float>", it.first]
+			 forAddress:[NSString stringWithFormat:@"/fairlight-audio/source/%lld/gain <float>", it.first]
 			 toString:helpString];
 			[self
 			 addEntry:[NSString stringWithFormat:@"Fairlight Audio Source %lld Pan", it.first]
-			 forAddress:[NSString stringWithFormat:@"/atem/fairlight-audio/source/%lld/pan <float>", it.first]
+			 forAddress:[NSString stringWithFormat:@"/fairlight-audio/source/%lld/pan <float>", it.first]
 			 toString:helpString];
 		}
 	}
@@ -178,14 +187,14 @@
 	if ([switcher mFairlightAudioMixer] != nil)
 	{
 		[self addHeader:@"Fairlight Audio Output (Mix)" toString:helpString];
-		[self addEntry:@"Fairlight Audio Output Gain" forAddress:@"/atem/fairlight-audio/output/gain <float>" toString:helpString];
+		[self addEntry:@"Fairlight Audio Output Gain" forAddress:@"/fairlight-audio/output/gain <float>" toString:helpString];
 	}
 
 	[self addHeader:@"Aux Outputs" toString:helpString];
 	for (int i = 0; i<[switcher mSwitcherInputAuxList].size();i++)
 		[self
 		 addEntry:[NSString stringWithFormat:@"Set Aux %d to Source",i+1]
-		 forAddress:[NSString stringWithFormat:@"/atem/aux/%d\t<valid_program_source>",i+1]
+		 forAddress:[NSString stringWithFormat:@"/aux/%d\t<valid_program_source>",i+1]
 		 toString:helpString];
 
 	if ([switcher mMediaPlayers].size() > 0)
@@ -223,13 +232,13 @@
 			for (int j = 0; j < clipCount; j++)
 				[self
 				 addEntry:[NSString stringWithFormat:@"Set MP %d to Clip %d",i+1,j+1]
-				 forAddress:[NSString stringWithFormat:@"/atem/mplayer/%d/clip/%d",i+1,j+1]
+				 forAddress:[NSString stringWithFormat:@"/mplayer/%d/clip/%d",i+1,j+1]
 				 toString:helpString];
 
 			for (int j = 0; j < stillCount; j++)
 				[self
 				 addEntry:[NSString stringWithFormat:@"Set MP %d to Still %d",i+1,j+1]
-				 forAddress:[NSString stringWithFormat:@"/atem/mplayer/%d/still/%d",i+1,j+1]
+				 forAddress:[NSString stringWithFormat:@"/mplayer/%d/still/%d",i+1,j+1]
 				 toString:helpString];
 		}
 	}

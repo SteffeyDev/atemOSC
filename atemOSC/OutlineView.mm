@@ -33,7 +33,6 @@
 - (void)refreshList
 {
 	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
-
 	for (Switcher *switcher : [appDel switchers])
 	{
 		[self reloadItem:switcher];

@@ -27,7 +27,6 @@
 
 #import "AppDelegate.h"
 #include <libkern/OSAtomic.h>
-#import "SettingsWindow.h"
 #import "OSCReceiver.h"
 
 @implementation AppDelegate
@@ -41,6 +40,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	[self setupMenu];
+	isActive = YES;
 	
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
@@ -65,12 +65,6 @@
 		[self addSwitcher];
 	}
 	[window loadSettingsFromPreferences];
-
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[[window outlineView] reloadData];
-		NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:1];
-		[[window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
-	});
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
 	if (!mSwitcherDiscovery)
@@ -99,6 +93,37 @@
 	}
 	
 	[self checkForUpdate];
+}
+
+- (void)applicationWillBecomeActive:(NSNotification *)notification
+{
+	isActive = YES;
+
+	dispatch_async(dispatch_get_main_queue(), ^{
+		Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
+		if ([[window connectionView] switcher] != nil)
+		{
+			[[window outlineView] refreshList];
+			[[window connectionView] reload];
+		}
+		else
+		{
+			[[window outlineView] reloadData];
+			NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:1];
+			[[window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
+		}
+		
+		for (NSString *message : logBuffer)
+		{
+			[self appendMessage:message];
+		}
+		[logBuffer removeAllObjects];
+	});
+}
+
+- (void)applicationWillResignActive:(NSNotification *)notification
+{
+	isActive = NO;
 }
 
 - (void)setupMenu
@@ -177,30 +202,35 @@
 - (void)logMessage:(NSString *)message
 {
 	if (message) {
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[self appendMessage:message];
-		});
 		NSLog(@"%@", message);
+		
+		NSDate *now = [NSDate date];
+		NSDateFormatter *formatter = nil;
+		formatter = [[NSDateFormatter alloc] init];
+		[formatter setDateFormat:@"HH:mm:ss"];
+		
+		NSString *messageWithNewLine = [NSString stringWithFormat:@"[%@] %@\n", [formatter stringFromDate:now], message];
+		[formatter release];
+		
+		if (isActive)
+		{
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self appendMessage:messageWithNewLine];
+			});
+		}
+		else
+		{
+			if (logBuffer == nil) logBuffer = [[NSMutableArray alloc] init];
+			[logBuffer addObject:messageWithNewLine];
+		}
 	}
 }
 
 - (void)appendMessage:(NSString *)message
 {
 	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
-
-	NSDate *now = [NSDate date];
-	NSDateFormatter *formatter = nil;
-	formatter = [[NSDateFormatter alloc] init];
-	[formatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-	
-	NSString *messageWithNewLine = [NSString stringWithFormat:@"[%@] %@\n", [formatter stringFromDate:now], message];
-	[formatter release];
-	
-	// Append string to textview
-	[[window logTextView].textStorage appendAttributedString:[[NSAttributedString alloc]initWithString:messageWithNewLine]];
-	
+	[[window logTextView].textStorage appendAttributedString:[[NSAttributedString alloc]initWithString:message]];
 	[[window logTextView] scrollRangeToVisible: NSMakeRange([window logTextView].string.length, 0)];
-	
 	[[window logTextView] setTextColor:[NSColor whiteColor]];
 }
 

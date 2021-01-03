@@ -78,15 +78,15 @@ HRESULT MixEffectBlockMonitor::Notify(BMDSwitcherMixEffectBlockEventType eventTy
 void MixEffectBlockMonitor::updateProgramButtonSelection() const
 {
 	BMDSwitcherInputId    programId;
-	switcher.mMixEffectBlock->GetProgramInput(&programId);
+	switcher.mMixEffectBlocks[me_]->GetProgramInput(&programId);
 	
 	for (auto const& it : switcher.mInputs)
 	{
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program/%lld",it.first]];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/program/%lld",me_+1,it.first]];
 		if (programId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
 		[switcher.outPort sendThisMessage:newMsg];
 		
-		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/program"]];
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/program",me_+1]];
 		[newMsg2 addInt:(int)it.first];
 		[switcher.outPort sendThisMessage:newMsg2];
 	}
@@ -95,15 +95,15 @@ void MixEffectBlockMonitor::updateProgramButtonSelection() const
 void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 {
 	BMDSwitcherInputId    previewId;
-	switcher.mMixEffectBlock->GetPreviewInput(&previewId);
+	switcher.mMixEffectBlocks[me_]->GetPreviewInput(&previewId);
 	
 	for (auto const& it : switcher.mInputs)
 	{
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview/%lld",it.first]];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/preview/%lld",me_+1,it.first]];
 		if (previewId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
 		[switcher.outPort sendThisMessage:newMsg];
 		
-		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/preview"]];
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/preview",me_+1]];
 		[newMsg2 addInt:(int)it.first];
 		[switcher.outPort sendThisMessage:newMsg2];
 	}
@@ -112,7 +112,7 @@ void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 void MixEffectBlockMonitor::updateInTransitionState()
 {
 	bool inTransition;
-	switcher.mMixEffectBlock->GetInTransition(&inTransition);
+	switcher.mMixEffectBlocks[me_]->GetInTransition(&inTransition);
 	
 	if (inTransition == false)
 	{
@@ -130,7 +130,7 @@ void MixEffectBlockMonitor::updateInTransitionState()
 void MixEffectBlockMonitor::updateSliderPosition()
 {
 	double position;
-	switcher.mMixEffectBlock->GetTransitionPosition(&position);
+	switcher.mMixEffectBlocks[me_]->GetTransitionPosition(&position);
 	
 	// Record when transition passes halfway so we can flip orientation of slider handle at the end of transition
 	mCurrentTransitionReachedHalfway_ = (position >= 0.50);
@@ -139,7 +139,7 @@ void MixEffectBlockMonitor::updateSliderPosition()
 	if (mMoveSliderDownwards)
 		sliderPosition = 100 - position * 100;        // slider handle moving in opposite direction
 	
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/transition/bar",me_+1]];
 	[newMsg addFloat:1.0-sliderPosition/100];
 	[switcher.outPort sendThisMessage:newMsg];
 }
@@ -147,9 +147,9 @@ void MixEffectBlockMonitor::updateSliderPosition()
 void MixEffectBlockMonitor::updatePreviewTransitionEnabled() const
 {
 	bool position;
-	switcher.mMixEffectBlock->GetPreviewTransition(&position);
+	switcher.mMixEffectBlocks[me_]->GetPreviewTransition(&position);
 	
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/preview"];
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/transition/preview",me_+1]];
 	[newMsg addFloat: position ? 1.0 : 0.0];
 	[switcher.outPort sendThisMessage:newMsg];
 }
@@ -168,11 +168,11 @@ float MixEffectBlockMonitor::sendStatus() const
 	updatePreviewTransitionEnabled();
 	
 	double position;
-	switcher.mMixEffectBlock->GetTransitionPosition(&position);
+	switcher.mMixEffectBlocks[me_]->GetTransitionPosition(&position);
 	double sliderPosition = position * 100;
 	if (mMoveSliderDownwards)
 		sliderPosition = 100 - position * 100;
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/transition/bar"];
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/transition/bar",me_+1]];
 	[newMsg addFloat:1.0-sliderPosition/100];
 	[switcher.outPort sendThisMessage:newMsg];
 
@@ -307,12 +307,13 @@ float DownstreamKeyerMonitor::sendStatus() const
 void UpstreamKeyerMonitor::updateUSKOnAir() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		bool isOnAir;
 		key->GetOnAir(&isOnAir);
 
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/on-air",i]];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/on-air",me_+1,i]];
 		[newMsg addInt: isOnAir];
 		[switcher.outPort sendThisMessage:newMsg];
 
@@ -323,12 +324,13 @@ void UpstreamKeyerMonitor::updateUSKOnAir() const
 void UpstreamKeyerMonitor::updateUSKInputFill() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		BMDSwitcherInputId inputId;
 		key->GetInputFill(&inputId);
 		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/fill",i++]];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/source/fill",me_+1,i++]];
 		[newMsg addInt: static_cast<int>(inputId)];
 		[switcher.outPort sendThisMessage:newMsg];
 	}
@@ -337,12 +339,13 @@ void UpstreamKeyerMonitor::updateUSKInputFill() const
 void UpstreamKeyerMonitor::updateUSKInputCut() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		BMDSwitcherInputId inputId;
 		key->GetInputCut(&inputId);
 		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/source/cut",i++]];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/source/cut",me_+1,i++]];
 		[newMsg addInt: static_cast<int>(inputId)];
 		[switcher.outPort sendThisMessage:newMsg];
 	}
@@ -374,7 +377,8 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 void UpstreamKeyerMonitor::updateUSKType() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		BMDSwitcherKeyType type;
 		key->GetType(&type);
@@ -389,12 +393,12 @@ void UpstreamKeyerMonitor::updateUSKType() const
 		if (type == bmdSwitcherKeyTypeDVE)
 			typeStr = @"dve";
 		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/type",i]];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/type",me_+1,i]];
 		[newMsg addString: typeStr];
 		[switcher.outPort sendThisMessage:newMsg];
 		
 		// Support for legacy clients like TouchOSC
-		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/type/%@",i++, typeStr]];
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/type/%@",me_+1,i++, typeStr]];
 		[newMsg2 addFloat: 1.0];
 		[switcher.outPort sendThisMessage:newMsg2];
 	}
@@ -437,7 +441,8 @@ HRESULT UpstreamKeyerLumaParametersMonitor::Notify(BMDSwitcherKeyLumaParametersE
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaClipParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
@@ -445,7 +450,7 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaClipParameter() const
 			double clip;
 			lumaParams->GetClip(&clip);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/clip",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/luma/clip",me_+1,i++]];
 			[newMsg addFloat:clip];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -454,7 +459,8 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaClipParameter() const
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaGainParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
@@ -462,7 +468,7 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaGainParameter() const
 			double gain;
 			lumaParams->GetGain(&gain);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/gain",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/luma/gain",me_+1,i++]];
 			[newMsg addFloat:gain];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -471,7 +477,8 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaGainParameter() const
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaPreMultipliedParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
@@ -479,7 +486,7 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaPreMultipliedParameter() c
 			bool preMultiplied;
 			lumaParams->GetPreMultiplied(&preMultiplied);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/pre-multiplied",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/luma/pre-multiplied",me_+1,i++]];
 			[newMsg addBOOL:preMultiplied];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -488,7 +495,8 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaPreMultipliedParameter() c
 void UpstreamKeyerLumaParametersMonitor::updateUSKLumaInverseParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyLumaParameters* lumaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams)))
@@ -496,7 +504,7 @@ void UpstreamKeyerLumaParametersMonitor::updateUSKLumaInverseParameter() const
 			bool inverse;
 			lumaParams->GetInverse(&inverse);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/luma/inverse",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/luma/inverse",me_+1,i++]];
 			[newMsg addBOOL:inverse];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -542,7 +550,8 @@ HRESULT UpstreamKeyerChromaParametersMonitor::Notify(BMDSwitcherKeyChromaParamet
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaHueParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -550,7 +559,7 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaHueParameter() const
 			double hue;
 			chromaParams->GetHue(&hue);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/hue",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/chroma/hue",me_+1,i++]];
 			[newMsg addFloat:hue];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -559,7 +568,8 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaHueParameter() const
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaGainParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -567,7 +577,7 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaGainParameter() const
 			double gain;
 			chromaParams->GetGain(&gain);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/gain",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/chroma/gain",me_+1,i++]];
 			[newMsg addFloat:gain];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -576,7 +586,8 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaGainParameter() const
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaYSuppressParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -584,7 +595,7 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaYSuppressParameter() c
 			double ySuppress;
 			chromaParams->GetYSuppress(&ySuppress);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/y-suppress",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/chroma/y-suppress",me_+1,i++]];
 			[newMsg addFloat:ySuppress];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -593,7 +604,8 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaYSuppressParameter() c
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaLiftParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -601,7 +613,7 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaLiftParameter() const
 			double lift;
 			chromaParams->GetLift(&lift);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/lift",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/chroma/lift",me_+1,i++]];
 			[newMsg addFloat:lift];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -610,7 +622,8 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaLiftParameter() const
 void UpstreamKeyerChromaParametersMonitor::updateUSKChromaNarrowParameter() const
 {
 	int i = 1;
-	for(auto& key : [switcher keyers])
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for(auto& key : keyers)
 	{
 		IBMDSwitcherKeyChromaParameters* chromaParams;
 		if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams)))
@@ -618,7 +631,7 @@ void UpstreamKeyerChromaParametersMonitor::updateUSKChromaNarrowParameter() cons
 			bool narrow;
 			chromaParams->GetNarrow(&narrow);
 			
-			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/chroma/narrow",i++]];
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/chroma/narrow",me_+1,i++]];
 			[newMsg addBOOL:narrow];
 			[switcher.outPort sendThisMessage:newMsg];
 		}
@@ -657,17 +670,21 @@ HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEvent
 // Send OSC messages out when USK Tie is changed on switcher
 void TransitionParametersMonitor::updateTransitionParameters() const
 {
-	uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+	IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+	if (SUCCEEDED(switcher.mMixEffectBlocks[me_]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters)))
+	{
+		uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
 
-	uint32_t currentTransitionSelection;
-	switcher.switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
+		uint32_t currentTransitionSelection;
+		mTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
 
-	for (int i = 0; i <= ((int) switcher.keyers.size()); i++) {
-		uint32_t requestedTransitionSelection = transitionSelections[i];
-		
-		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/usk/%d/tie",i]];
-		[newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
-		[switcher.outPort sendThisMessage:newMsg];
+		for (int i = 0; i <= ((int) switcher.keyers.size()); i++) {
+			uint32_t requestedTransitionSelection = transitionSelections[i];
+			
+			OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/me/%d/usk/%d/tie",me_+1,i]];
+			[newMsg addInt: ((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection)];
+			[switcher.outPort sendThisMessage:newMsg];
+		}
 	}
 }
 
@@ -701,7 +718,7 @@ HRESULT MacroPoolMonitor::Notify (BMDSwitcherMacroPoolEventType eventType, uint3
 
 void MacroPoolMonitor::updateMacroName(int index) const
 {
-	NSString *name = getNameOfMacro(index);
+	NSString *name = getNameOfMacro(switcher, index);
 	if (![name isEqualToString:@""]) {
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/name", index]];
 		[newMsg addString:name];
@@ -711,7 +728,7 @@ void MacroPoolMonitor::updateMacroName(int index) const
 
 void MacroPoolMonitor::updateMacroDescription(int index) const
 {
-	NSString *description = getDescriptionOfMacro(index);
+	NSString *description = getDescriptionOfMacro(switcher, index);
 	if (![description isEqualToString:@""]) {
 		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/description", index]];
 		[newMsg addString:description];
@@ -721,7 +738,7 @@ void MacroPoolMonitor::updateMacroDescription(int index) const
 
 void MacroPoolMonitor::updateNumberOfMacros() const
 {
-	uint32_t maxNumberOfMacros = getMaxNumberOfMacros();
+	uint32_t maxNumberOfMacros = getMaxNumberOfMacros(switcher);
 	if (maxNumberOfMacros > 0)
 	{
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/max-number"];
@@ -732,7 +749,7 @@ void MacroPoolMonitor::updateNumberOfMacros() const
 
 void MacroPoolMonitor::updateMacroValidity(int index) const
 {
-	int value = isMacroValid(index);
+	int value = isMacroValid(switcher, index);
 	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/macros/%d/is-valid", index]];
 	[newMsg addInt:(int)value];
 	[[switcher outPort] sendThisMessage:newMsg];
@@ -740,7 +757,7 @@ void MacroPoolMonitor::updateMacroValidity(int index) const
 
 float MacroPoolMonitor::sendStatus() const
 {
-	uint32_t maxNumberOfMacros = getMaxNumberOfMacros();
+	uint32_t maxNumberOfMacros = getMaxNumberOfMacros(switcher);
 	for (int i = 0; i < maxNumberOfMacros; i++) {
 		updateMacroValidity(i);
 		updateMacroName(i);

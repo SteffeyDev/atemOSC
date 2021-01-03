@@ -11,24 +11,25 @@
 #import "FeedbackMonitors.h"
 #import <vector>
 #import <map>
+#import <list>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface Switcher : NSObject<NSCoding>
 {
-	std::map<BMDSwitcherInputId, InputMonitor*> mInputMonitors;
-	SwitcherMonitor*			        mSwitcherMonitor;
+	std::map<BMDSwitcherInputId, InputMonitor*>			mInputMonitors;
+	SwitcherMonitor*			        				mSwitcherMonitor;
 	std::map<BMDSwitcherHyperDeckId, HyperDeckMonitor*> mHyperdeckMonitors;
-	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
-	UpstreamKeyerMonitor*               mUpstreamKeyerMonitor;
-	UpstreamKeyerLumaParametersMonitor* mUpstreamKeyerLumaParametersMonitor;
-	UpstreamKeyerChromaParametersMonitor* mUpstreamKeyerChromaParametersMonitor;
-	TransitionParametersMonitor*        mTransitionParametersMonitor;
-	MacroPoolMonitor*       			mMacroPoolMonitor;
-	AudioMixerMonitor*                  mAudioMixerMonitor;
+	DownstreamKeyerMonitor*             				mDownstreamKeyerMonitor;
+	std::map<int, UpstreamKeyerMonitor*>				mUpstreamKeyerMonitors;
+	std::map<int, UpstreamKeyerLumaParametersMonitor*>	mUpstreamKeyerLumaParametersMonitors;
+	std::map<int, UpstreamKeyerChromaParametersMonitor*> mUpstreamKeyerChromaParametersMonitors;
+	std::map<int, TransitionParametersMonitor*>			mTransitionParametersMonitors;
+	MacroPoolMonitor*       							mMacroPoolMonitor;
+	AudioMixerMonitor*                  				mAudioMixerMonitor;
 	std::map<BMDSwitcherAudioInputId, AudioInputMonitor*> mAudioInputMonitors;
 	std::map<BMDSwitcherFairlightAudioSourceId, FairlightAudioSourceMonitor*> mFairlightAudioSourceMonitors;
-	FairlightAudioMixerMonitor*         mFairlightAudioMixerMonitor;
+	FairlightAudioMixerMonitor*         				mFairlightAudioMixerMonitor;
 
 	std::vector<SendStatusInterface*>   mMonitors;
 }
@@ -50,6 +51,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, readonly) OSCOutPort*                    outPort;
 
 @property (readonly)       IBMDSwitcher*				        	mSwitcher;
+@property (readonly)       std::vector<IBMDSwitcherMixEffectBlock*> mMixEffectBlocks;
+@property (readonly)	   std::map<int, MixEffectBlockMonitor *>	mMixEffectBlockMonitors;
+@property (readonly)       std::map<int, std::vector<IBMDSwitcherKey*> > keyers;
 @property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
 @property (readonly)       std::map<BMDSwitcherInputId, IBMDSwitcherInput*> mInputs;
 @property (readonly)       std::map<BMDSwitcherHyperDeckId, IBMDSwitcherHyperDeck*> mHyperdecks;
@@ -59,12 +63,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly)       IBMDSwitcherMacroControl*                mMacroControl;
 @property (readonly)       std::vector<IBMDSwitcherMediaPlayer*>    mMediaPlayers;
 @property (readonly)       IBMDSwitcherMediaPool*                   mMediaPool;
-@property (readonly)       std::vector<IBMDSwitcherKey*>            keyers;
 @property (readonly)       std::vector<IBMDSwitcherDownstreamKey*>  dsk;
 @property (readonly)       IBMDSwitcherKeyFlyParameters*	    	mDVEControl;
-@property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
-@property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
-@property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
 
 @property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherAudioInput*> mAudioInputs;
 @property (readonly)       IBMDSwitcherAudioMixer*                  mAudioMixer;

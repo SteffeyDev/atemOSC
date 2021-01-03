@@ -8,7 +8,9 @@
 #import <Cocoa/Cocoa.h>
 #import "Switcher.h"
 
-@interface OSCAddressView : NSView
+@interface OSCAddressView : NSView {
+	Switcher *switcher;
+}
 
 @property (assign) IBOutlet NSTextView *helpTextView;
 

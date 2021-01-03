@@ -41,7 +41,7 @@ private:
 class MixEffectBlockMonitor : public GenericMonitor<IBMDSwitcherMixEffectBlockCallback>, public SendStatusInterface
 {
 public:
-	MixEffectBlockMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	MixEffectBlockMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify(BMDSwitcherMixEffectBlockEventType eventType);
 	bool moveSliderDownwards() const;
 	bool mMoveSliderDownwards = false;
@@ -57,6 +57,7 @@ private:
 	void updatePreviewButtonSelection() const;
 	void updateInTransitionState();
 	bool mCurrentTransitionReachedHalfway_ = false;
+	int me_;
 };
 
 class InputMonitor : public GenericMonitor<IBMDSwitcherInputCallback>, public SendStatusInterface
@@ -93,7 +94,7 @@ private:
 class UpstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherKeyCallback>, public SendStatusInterface
 {
 public:
-	UpstreamKeyerMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	UpstreamKeyerMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify (BMDSwitcherKeyEventType eventType);
 	float sendStatus() const;
 
@@ -105,12 +106,13 @@ private:
 	void updateUSKInputFill() const;
 	void updateUSKInputCut() const;
 	void updateUSKType() const;
+	int me_;
 };
 
 class UpstreamKeyerLumaParametersMonitor : public GenericMonitor<IBMDSwitcherKeyLumaParametersCallback>, public SendStatusInterface
 {
 public:
-	UpstreamKeyerLumaParametersMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	UpstreamKeyerLumaParametersMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify (BMDSwitcherKeyLumaParametersEventType eventType);
 	float sendStatus() const;
 	
@@ -122,12 +124,13 @@ private:
 	void updateUSKLumaGainParameter() const;
 	void updateUSKLumaPreMultipliedParameter() const;
 	void updateUSKLumaInverseParameter() const;
+	int me_;
 };
 
 class UpstreamKeyerChromaParametersMonitor : public GenericMonitor<IBMDSwitcherKeyChromaParametersCallback>, public SendStatusInterface
 {
 public:
-	UpstreamKeyerChromaParametersMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	UpstreamKeyerChromaParametersMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify (BMDSwitcherKeyChromaParametersEventType eventType);
 	float sendStatus() const;
 	
@@ -140,12 +143,13 @@ private:
 	void updateUSKChromaYSuppressParameter() const;
 	void updateUSKChromaLiftParameter() const;
 	void updateUSKChromaNarrowParameter() const;
+	int me_;
 };
 
 class TransitionParametersMonitor : public GenericMonitor<IBMDSwitcherTransitionParametersCallback>, public SendStatusInterface
 {
 public:
-	TransitionParametersMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	TransitionParametersMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify (BMDSwitcherTransitionParametersEventType eventType);
 	float sendStatus() const;
 	
@@ -154,6 +158,7 @@ protected:
 	
 private:
 	void updateTransitionParameters() const;
+	int me_;
 };
 
 class MacroPoolMonitor : public GenericMonitor<IBMDSwitcherMacroPoolCallback>, public SendStatusInterface

@@ -18,11 +18,12 @@
 	NSLog(@"Setting up validators");
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
-		if ([s mMixEffectBlock])
+		int me = [[d objectForKey:@"<me>"] intValue];
+		if (me > 0 && me < [s mMixEffectBlocks].size())
 			return true;
-		[appDel logMessage:@"No mix effect block"];
+		[appDel logMessage:[NSString stringWithFormat:@"No mix effect block %d", me]];
 		return false;
-	} copy] forKey:@"/transition"];
+	} copy] forKey:@"/me/<me>"];
 
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
@@ -33,17 +34,12 @@
 	} copy] forKey:@"/dsk"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
 		NSString *address = [d objectForKey:@"address"];
-		
-		if (![s switcherTransitionParameters])
-		{
-			[appDel logMessage:@"No switcher transition parameters"];
-			return false;
-		}
-		
+
 		// Normal USK
-		if (key > 0 && key <= [s keyers].size())
+		if (key > 0 && key <= [s keyers][me-1].size())
 			return true;
 		
 		// Background
@@ -52,7 +48,7 @@
 		
 		[appDel logMessage:[NSString stringWithFormat:@"USK %d is not available on your switcher, valid USK values are 1 - %lu", key, [s keyers].size()]];
 		return false;
-	} copy] forKey:@"/usk"];
+	} copy] forKey:@"/me/<me>/usk"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int number = [[d objectForKey:@"<number>"] intValue];
@@ -143,44 +139,53 @@
 		[s sendStatus];
 	}];
 	
-	[self addEndpoint:@"/send-status/mix-effect-block" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		[s mMixEffectBlockMonitor]->sendStatus();
+	[self addEndpoint:@"/me/<me>/send-status" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		[s mMixEffectBlockMonitors][me-1]->sendStatus();
 	}];
 	
-	[self addEndpoint:@"/preview" valueType: OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		activateChannel([v intValue], false);
+	[self addEndpoint:@"/me/<me>/preview" valueType: OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		activateChannel(s, me, [v intValue], false);
 	}];
 	
-	[self addEndpoint:@"/program" valueType: OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		activateChannel([v intValue], true);
+	[self addEndpoint:@"/me/<me>/program" valueType: OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		activateChannel(s, me, [v intValue], true);
 	}];
 	
-	[self addEndpoint:@"/transition/bar" valueType: OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		if ([s mMixEffectBlockMonitor]->mMoveSliderDownwards)
-			[s mMixEffectBlock]->SetTransitionPosition([v floatValue]);
+	[self addEndpoint:@"/me/<me>/transition/bar" valueType: OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		if ([s mMixEffectBlockMonitors][me-1]->mMoveSliderDownwards)
+			[s mMixEffectBlocks][me-1]->SetTransitionPosition([v floatValue]);
 		else
-			[s mMixEffectBlock]->SetTransitionPosition(1.0-[v floatValue]);
+			[s mMixEffectBlocks][me-1]->SetTransitionPosition(1.0-[v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/transition/cut" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		[s mMixEffectBlock]->PerformCut();
+	[self addEndpoint:@"/me/<me>/transition/cut" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		[s mMixEffectBlocks][me-1]->PerformCut();
 	}];
 	
-	[self addEndpoint:@"/transition/auto" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		[s mMixEffectBlock]->PerformAutoTransition();
+	[self addEndpoint:@"/me/<me>/transition/auto" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		[s mMixEffectBlocks][me-1]->PerformAutoTransition();
 	}];
 	
-	[self addEndpoint:@"/transition/ftb" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		[s mMixEffectBlock]->PerformFadeToBlack();
+	[self addEndpoint:@"/me/<me>/transition/ftb" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		[s mMixEffectBlocks][me-1]->PerformFadeToBlack();
 	}];
 	
-	[self addEndpoint:@"/transition/preview" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		[s mMixEffectBlock]->SetPreviewTransition([v boolValue]);
+	[self addEndpoint:@"/me/<me>/transition/preview" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		[s mMixEffectBlocks][me-1]->SetPreviewTransition([v boolValue]);
 	}];
 	
-	[self addEndpoint:@"/transition/type" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/transition/type" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
-		[s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters);
+		[s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters);
 		
 		if ([[v stringValue] isEqualToString:@"mix"])
 			mTransitionParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleMix);
@@ -194,9 +199,10 @@
 			mTransitionParameters->SetNextTransitionStyle(bmdSwitcherTransitionStyleDVE);
 	}];
 	
-	[self addEndpoint:@"/transition/rate" label:@"Set rate for selected transition type (mix, dip, wipe, or DVE)" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/transition/rate" label:@"Set rate for selected transition type (mix, dip, wipe, or DVE)" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
-		[s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters);
+		[s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters);
 		BMDSwitcherTransitionStyle style=NULL;
 		mTransitionParameters->GetNextTransitionStyle(&style);
 		
@@ -207,210 +213,256 @@
 
 		switch (style) {
 			case bmdSwitcherTransitionStyleMix:
-				if (SUCCEEDED([s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionMixParameters, (void**)&mTransitionMixParameters)))
+				if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionMixParameters, (void**)&mTransitionMixParameters)))
 					mTransitionMixParameters->SetRate([v floatValue]);
 				break;
 			case bmdSwitcherTransitionStyleDip:
-				if (SUCCEEDED([s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionDipParameters)))
+				if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionDipParameters)))
 					mTransitionDipParameters->SetRate([v floatValue]);
 				break;
 			case bmdSwitcherTransitionStyleWipe:
-				if (SUCCEEDED([s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionWipeParameters)))
+				if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionWipeParameters)))
 					mTransitionWipeParameters->SetRate([v floatValue]);
 				break;
 			case bmdSwitcherTransitionStyleDVE:
-				if (SUCCEEDED([s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDVEParameters, (void**)&mTransitionDVEParameters)))
+				if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionDVEParameters, (void**)&mTransitionDVEParameters)))
 					mTransitionDVEParameters->SetRate([v floatValue]);
 				break;
 		}
 	}];
 	
-	[self addEndpoint:@"/transition/mix/rate" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/transition/mix/rate" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		IBMDSwitcherTransitionMixParameters* mTransitionMixParameters=NULL;
-		if (SUCCEEDED([s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionMixParameters, (void**)&mTransitionMixParameters)))
+		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionMixParameters, (void**)&mTransitionMixParameters)))
 			mTransitionMixParameters->SetRate([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/transition/dip/rate" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/transition/dip/rate" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		IBMDSwitcherTransitionDipParameters* mTransitionDipParameters=NULL;
-		if (SUCCEEDED([s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionDipParameters)))
+		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionDipParameters, (void**)&mTransitionDipParameters)))
 			mTransitionDipParameters->SetRate([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/transition/wipe/rate" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/transition/wipe/rate" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		IBMDSwitcherTransitionWipeParameters* mTransitionWipeParameters=NULL;
-		if (SUCCEEDED([s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionWipeParameters, (void**)&mTransitionWipeParameters)))
+		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionWipeParameters, (void**)&mTransitionWipeParameters)))
 			mTransitionWipeParameters->SetRate([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/transition/dve/rate" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/transition/dve/rate" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		IBMDSwitcherTransitionDVEParameters* mTransitionDVEParameters=NULL;
-		if (SUCCEEDED([s mMixEffectBlock]->QueryInterface(IID_IBMDSwitcherTransitionDVEParameters, (void**)&mTransitionDVEParameters)))
+		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionDVEParameters, (void**)&mTransitionDVEParameters)))
 			mTransitionDVEParameters->SetRate([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/tie" label:@"Set USK<key> Tie" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		int key = [[d objectForKey:@"<key>"] intValue];
-		[self changeTransitionSelection:key select:[v boolValue] forSwitcher:s];
+	[self addEndpoint:@"/me/<me>/usk/<key>/tie" label:@"Set USK<key> Tie" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters)))
+		{
+			int key = [[d objectForKey:@"<key>"] intValue];
+			[self changeTransitionSelection:key select:[v boolValue] forTransitionParameters:mTransitionParameters];
+		}
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/tie/toggle" label: @"Toggle USK<key> Tie" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		int key = [[d objectForKey:@"<key>"] intValue];
-		uint32_t currentTransitionSelection;
-		[s switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
-		
-		uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
-		uint32_t requestedTransitionSelection = transitionSelections[key];
-		
-		[self changeTransitionSelection:key select:!((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection) forSwitcher:s];
+	[self addEndpoint:@"/me/<me>/usk/<key>/tie/toggle" label: @"Toggle USK<key> Tie" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters)))
+		{
+			int key = [[d objectForKey:@"<key>"] intValue];
+			uint32_t currentTransitionSelection;
+			mTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
+			
+			uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
+			uint32_t requestedTransitionSelection = transitionSelections[key];
+			
+			[self changeTransitionSelection:key select:!((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection) forTransitionParameters:mTransitionParameters];
+		}
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/tie/set-next" label:@"Set Next-Transition State for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		int key = [[d objectForKey:@"<key>"] intValue];
-		bool isOnAir;
-		[s keyers][key-1]->GetOnAir(&isOnAir);
-		[self changeTransitionSelection:key select:([v boolValue] != isOnAir) forSwitcher:s];
+	[self addEndpoint:@"/me/<me>/usk/<key>/tie/set-next" label:@"Set Next-Transition State for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters)))
+		{
+			int key = [[d objectForKey:@"<key>"] intValue];
+			bool isOnAir;
+			[s keyers][me-1][key-1]->GetOnAir(&isOnAir);
+			[self changeTransitionSelection:key select:([v boolValue] != isOnAir) forTransitionParameters:mTransitionParameters];
+		}
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/on-air" label:@"Set USK<key> On Air" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		int key = [[d objectForKey:@"<key>"] intValue];
-		[s keyers][key-1]->SetOnAir([v boolValue]);
+	[self addEndpoint:@"/me/<me>/usk/<key>/on-air" label:@"Set USK<key> On Air" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters)))
+		{
+			int key = [[d objectForKey:@"<key>"] intValue];
+			[s keyers][me-1][key-1]->SetOnAir([v boolValue]);
+		}
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/on-air/toggle" label:@"Toggle USK<key> On Air" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/on-air/toggle" label:@"Toggle USK<key> On Air" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
 		bool onAir;
-		[s keyers][key-1]->GetOnAir(&onAir);
-		[s keyers][key-1]->SetOnAir(!onAir);
+		[s keyers][me-1][key-1]->GetOnAir(&onAir);
+		[s keyers][me-1][key-1]->SetOnAir(!onAir);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/source/fill" label:@"Set Fill Source for USK<key>" valueType:OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/source/fill" label:@"Set Fill Source for USK<key>" valueType:OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		[s keyers][key-1]->SetInputFill([v intValue]);
+		[s keyers][me-1][key-1]->SetInputFill([v intValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/source/cut" label:@"Set Cut Source for USK<key>" valueType:OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/source/cut" label:@"Set Cut Source for USK<key>" valueType:OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		[s keyers][key-1]->SetInputCut([v intValue]);
+		[s keyers][me-1][key-1]->SetInputCut([v intValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/type" label:@"Set USK<key> Type" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/type" label:@"Set USK<key> Type" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
 		if ([[v stringValue] isEqualToString:@"luma"])
-			[s keyers][key-1]->SetType(bmdSwitcherKeyTypeLuma);
+			[s keyers][me-1][key-1]->SetType(bmdSwitcherKeyTypeLuma);
 		else if ([[v stringValue] isEqualToString:@"chroma"])
-			[s keyers][key-1]->SetType(bmdSwitcherKeyTypeChroma);
+			[s keyers][me-1][key-1]->SetType(bmdSwitcherKeyTypeChroma);
 		else if ([[v stringValue] isEqualToString:@"pattern"])
-			[s keyers][key-1]->SetType(bmdSwitcherKeyTypePattern);
+			[s keyers][me-1][key-1]->SetType(bmdSwitcherKeyTypePattern);
 		else if ([[v stringValue] isEqualToString:@"dve"])
-			[s keyers][key-1]->SetType(bmdSwitcherKeyTypeDVE);
+			[s keyers][me-1][key-1]->SetType(bmdSwitcherKeyTypeDVE);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/luma/pre-multiplied" label:@"Set Pre-Multiplied Luma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/luma/pre-multiplied" label:@"Set Pre-Multiplied Luma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s andME:me])
 			lumaParams->SetPreMultiplied([v boolValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/luma/clip" label:@"Set Clip Luma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/luma/clip" label:@"Set Clip Luma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s andME:me])
 			lumaParams->SetClip([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/luma/gain" label:@"Set Gain Luma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/luma/gain" label:@"Set Gain Luma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s andME:me])
 			lumaParams->SetGain([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/luma/inverse" label:@"Set Inverse Luma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/luma/inverse" label:@"Set Inverse Luma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s andME:me])
 			lumaParams->SetInverse([v boolValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/chroma/hue" label:@"Set Hue Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/hue" label:@"Set Hue Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetHue([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/chroma/gain" label:@"Set Gain Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/gain" label:@"Set Gain Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetGain([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/chroma/y-suppress" label:@"Set Y-Suppress Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/y-suppress" label:@"Set Y-Suppress Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetYSuppress([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/chroma/lift" label:@"Set Lift Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/lift" label:@"Set Lift Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetLift([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/chroma/narrow" label:@"Set Narrow Chroma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/narrow" label:@"Set Narrow Chroma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetNarrow([v boolValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/enabled" label:@"Set Border Enabled DVE Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/enabled" label:@"Set Border Enabled DVE Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderEnabled([v boolValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/border-width-inner" label:@"Set Border Inner Width DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-width-inner" label:@"Set Border Inner Width DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderWidthIn([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/border-width-outer" label:@"Set Border Outer Width DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-width-outer" label:@"Set Border Outer Width DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderWidthOut([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/border-softness-inner" label:@"Set Border Inner Softness DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-softness-inner" label:@"Set Border Inner Softness DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderSoftnessIn([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/border-softness-outer" label:@"Set Border Outer Softness DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-softness-outer" label:@"Set Border Outer Softness DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderSoftnessOut([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/border-opacity" label:@"Set Border Opacity DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-opacity" label:@"Set Border Opacity DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderOpacity([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/border-hue" label:@"Set Border Hue DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-hue" label:@"Set Border Hue DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderHue([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/border-saturation" label:@"Set Border Saturation DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-saturation" label:@"Set Border Saturation DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderSaturation([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/usk/<key>/dve/border-luma" label:@"Set Border Luma DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-luma" label:@"Set Border Luma DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderLuma([v floatValue]);
 	}];
 	
@@ -566,11 +618,11 @@
 	}];
 	
 	[self addEndpoint:@"/macros/stop" label:@"Stop the currently active Macro (if any)" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		stopRunningMacro();
+		stopRunningMacro(s);
 	}];
 	
 	[self addEndpoint:@"/macros/max-number" label:@"Get the Maximum Number of Macros" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		uint32_t value = getMaxNumberOfMacros();
+		uint32_t value = getMaxNumberOfMacros(s);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/max-number"];
 		[newMsg addInt:(int)value];
 		[[s outPort] sendThisMessage:newMsg];
@@ -578,7 +630,7 @@
 	
 	[self addEndpoint:@"/macros/<index>/run" label:@"Run the Macro at <index>" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int macroIndex = [[d objectForKey:@"<index>"] intValue];
-		int value = runMacroAtIndex(macroIndex); // Try to run the valid Macro
+		int value = runMacroAtIndex(s, macroIndex); // Try to run the valid Macro
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/<index>/run"];
 		[newMsg addInt:(int)value];
 		[[s outPort] sendThisMessage:newMsg];
@@ -586,7 +638,7 @@
 	
 	[self addEndpoint:@"/macros/<index>/name" label:@"Get the Name of a Macro" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int macroIndex = [[d objectForKey:@"<index>"] intValue];
-		NSString *value = getNameOfMacro(macroIndex);
+		NSString *value = getNameOfMacro(s, macroIndex);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/<index>/name"];
 		[newMsg addString:(NSString *)value];
 		[[s outPort] sendThisMessage:newMsg];
@@ -594,7 +646,7 @@
 	
 	[self addEndpoint:@"/macros/<index>/description" label:@"Get the Description of a Macro" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int macroIndex = [[d objectForKey:@"<index>"] intValue];
-		NSString *value = getDescriptionOfMacro(macroIndex);
+		NSString *value = getDescriptionOfMacro(s, macroIndex);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/<index>/description"];
 		[newMsg addString:(NSString *)value];
 		[[s outPort] sendThisMessage:newMsg];
@@ -602,7 +654,7 @@
 	
 	[self addEndpoint:@"/macros/<index>/is-valid" label:@"Get whether the Macro at <index> is valid" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int macroIndex = [[d objectForKey:@"<index>"] intValue];
-		int value = isMacroValid(macroIndex) ? 1 : 0;
+		int value = isMacroValid(s, macroIndex) ? 1 : 0;
 		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/macros/<index>/is-valid"];
 		[newMsg addInt:(int)value];
 		[[s outPort] sendThisMessage:newMsg];
@@ -758,6 +810,12 @@
 {
 	NSMutableDictionary *currentLevel = endpointMap;
 	
+	// If they left out the /me/ portion of the address for the paths that need it, add it back in
+	NSArray *meSpecificAddresses = [[NSArray alloc] initWithObjects:@"program", @"preview", @"transition", @"usk", nil];
+	NSArray *me1Addresses = [[NSArray alloc] initWithObjects:@"me", @"1", nil];
+	if ([meSpecificAddresses containsObject:[addressComponents objectAtIndex:0]])
+		addressComponents = [me1Addresses arrayByAddingObjectsFromArray:addressComponents];
+	
 	// Go down tree of possible endpoints until one is found that matches
 	// Add paramaterized values as we go (ones that look like <something>)
 	for (int i = 0; i < [addressComponents count]; i++)
@@ -879,7 +937,7 @@
 		[args removeAllObjects];
 		endpoint = [self findEndpointForAddress:addressComponents whileUpdatingArgs:args andSettingFinalLevel:finalLevelSecondTry];
 	}
-	
+		
 	if (endpoint != nil)
 	{
 		NSLog(@"Found OSCEndpoint for address: %@", [m address]);
@@ -937,54 +995,49 @@
 	}
 }
 
-- (IBMDSwitcherKeyLumaParameters *) getUSKLumaParams:(int)t forSwitcher:(Switcher *)s
+- (IBMDSwitcherKeyLumaParameters *) getUSKLumaParams:(int)t forSwitcher:(Switcher *)s andME:(int)me
 {
-	IBMDSwitcherKey* key = [s keyers][t-1];
+	IBMDSwitcherKey* key = [s keyers][me-1][t-1];
 	IBMDSwitcherKeyLumaParameters* lumaParams;
 	key->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
 	return lumaParams;
 }
 
-- (IBMDSwitcherKeyChromaParameters *) getUSKChromaParams:(int)t forSwitcher:(Switcher *)s
+- (IBMDSwitcherKeyChromaParameters *) getUSKChromaParams:(int)t forSwitcher:(Switcher *)s andME:(int)me
 {
-	IBMDSwitcherKey* key = [s keyers][t-1];
+	IBMDSwitcherKey* key = [s keyers][me-1][t-1];
 	IBMDSwitcherKeyChromaParameters* chromaParams;
 	key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
 	return chromaParams;
 }
 
-- (IBMDSwitcherKeyDVEParameters *) getUSKDVEParams:(int)t forSwitcher:(Switcher *)s
+- (IBMDSwitcherKeyDVEParameters *) getUSKDVEParams:(int)t forSwitcher:(Switcher *)s andME:(int)me
 {
-	IBMDSwitcherKey* key = [s keyers][t-1];
+	IBMDSwitcherKey* key = [s keyers][me-1][t-1];
 	IBMDSwitcherKeyDVEParameters* dveParams;
 	key->QueryInterface(IID_IBMDSwitcherKeyDVEParameters, (void**)&dveParams);
 	return dveParams;
 }
 
-- (void) changeTransitionSelection:(int)t select:(bool) select forSwitcher:(Switcher *)s
+- (void) changeTransitionSelection:(int)t select:(bool) select forTransitionParameters:(IBMDSwitcherTransitionParameters *)switcherTransitionParameters
 {
-	if ([s switcherTransitionParameters] == nil)
-	{
-		return;
-	}
-	
 	uint32_t currentTransitionSelection;
-	[s switcherTransitionParameters]->GetNextTransitionSelection(&currentTransitionSelection);
+	switcherTransitionParameters->GetNextTransitionSelection(&currentTransitionSelection);
 	
 	uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
 	uint32_t requestedTransitionSelection = transitionSelections[t];
 	
 	if (select)
 	{
-		[s switcherTransitionParameters]->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
+		switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection | requestedTransitionSelection);
 	}
 	else
 	{
 		// If we are attempting to deselect the only bit set, then default to setting TransitionSelectionBackground
 		if ((currentTransitionSelection & ~requestedTransitionSelection) == 0)
-			[s switcherTransitionParameters]->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
+			switcherTransitionParameters->SetNextTransitionSelection(bmdSwitcherTransitionSelectionBackground);
 		else
-			[s switcherTransitionParameters]->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
+			switcherTransitionParameters->SetNextTransitionSelection(currentTransitionSelection & ~requestedTransitionSelection);
 	}
 }
 
