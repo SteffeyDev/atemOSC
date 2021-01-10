@@ -14,8 +14,11 @@
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     
-    // Drawing code here.
-}
+	[[[self connectionIndicator] layer] setCornerRadius:2];
+	if ([switcher isConnected])
+		[[[self connectionIndicator] layer] setBackgroundColor:[NSColor systemGreenColor].CGColor];
+	else
+		[[[self connectionIndicator] layer] setBackgroundColor:[NSColor systemRedColor].CGColor];}
 
 - (IBAction)deleteButtonClicked:(id)sender
 {
@@ -33,8 +36,7 @@
 	else
 		[[self ipAddressNicknameTextField] setStringValue:@"New Switcher"];
 	
-	[[self productNameHeightConstraint] setActive:YES];
-	
+		
 	if ([switcher connectionStatus] != nil)
 	{
 		[[self connectionStatusTextField] setStringValue:[switcher connectionStatus]];
@@ -47,8 +49,8 @@
 			[[self progressIndicator] stopAnimation:self];
 			if ([switcher isConnected])
 			{
-				[[self productNameHeightConstraint] setActive:NO];
-				[[self productNameTextField] setHidden:NO];
+				if ([switcher productName])
+					[[self productNameTextField] setStringValue:[switcher productName]];
 			}
 		}
 	}

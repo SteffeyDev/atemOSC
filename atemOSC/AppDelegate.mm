@@ -104,7 +104,7 @@
 		if ([[window connectionView] switcher] != nil)
 		{
 			[[window outlineView] refreshList];
-			[[window connectionView] reload];
+			[[window connectionView] loadFromSwitcher:[[window connectionView] switcher]];
 		}
 		else
 		{
@@ -260,6 +260,7 @@
 
 - (void) removeSwitcher:(Switcher *)switcher
 {
+	NSString *uid = [[switcher uid] copy];
 	Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
 	
 	[switchers removeObject: switcher];
@@ -272,7 +273,7 @@
 	}
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 	[defaults setValue:[NSArray arrayWithArray: uids] forKey:@"switchers"];
-	[defaults removeObjectForKey:[NSString stringWithFormat:@"switcher-%@",switcher.uid]];
+	[defaults removeObjectForKey:[NSString stringWithFormat:@"switcher-%@",uid]];
 	[defaults synchronize];
 }
 

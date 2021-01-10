@@ -73,8 +73,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly)       IBMDSwitcherFairlightAudioMixer*         mFairlightAudioMixer;
 
 - (void)connectBMD;
+- (void)disconnectBMD;
 - (void)switcherConnected;
-- (void)switcherDisconnected;
+- (void)switcherDisconnected:(BOOL)reconnect;
 - (void)cleanUpConnection;
 
 - (void)sendStatus;

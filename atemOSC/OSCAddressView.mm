@@ -26,9 +26,9 @@
 	NSDictionary *addressAttribute = @{NSFontAttributeName: [[NSFontManager sharedFontManager] fontWithFamily:@"Helvetica" traits:NSBoldFontMask weight:5 size:12]};
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"\t%@: ", name] attributes:addressAttribute]];
 	if (switcher.nickname && switcher.nickname.length > 0)
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/%@/%@\n", switcher.nickname, address] attributes:infoAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/%@%@\n", switcher.nickname, address] attributes:infoAttribute]];
 	else
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem/%@\n", address] attributes:infoAttribute]];
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem%@\n", address] attributes:infoAttribute]];
 }
 
 - (void)loadFromSwitcher:(Switcher *)switcher
@@ -316,9 +316,12 @@
 		}
 	}
 	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\nNote: Additional addresses are available that provide backward-compatibility with TouchOSC.  See the Readme on Github for details.\n\n"]];
+	if ([switcher mMixEffectBlocks].size() == 1)
+		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\nNote: Because this switcher only has one Mix Effect Block, you can omit the /me/1 in all commands if you would like.\n"]];
 	
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"We add support for addresses on an as-needed basis.  If you are in need of an additional address, open an issue on Github letting us know what it is.\n"]];
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nNote: Additional addresses are available that provide backward-compatibility with TouchOSC.  See the Readme on Github for details.\n"]];
+	
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nWe add support for addresses on an as-needed basis.  If you are in need of an additional address, open an issue on Github letting us know what it is.\n"]];
 
 	[helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
 	[[helpTextView textStorage] setAttributedString:helpString];

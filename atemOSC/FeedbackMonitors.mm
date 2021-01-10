@@ -1,6 +1,7 @@
 #include "FeedbackMonitors.h"
 #import "Switcher.h"
 #import "Utilities.h"
+#import "Window.h"
 
 static inline bool    operator== (const REFIID& iid1, const REFIID& iid2)
 {
@@ -227,6 +228,13 @@ void InputMonitor::updateShortName() const
 			[newMsg addString:name];
 			[[switcher outPort] sendThisMessage:newMsg];
 		});
+	}
+	
+	Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
+	if ([[window connectionView] switcher] == switcher)
+	{
+		[[window connectionView] loadFromSwitcher:switcher];
+		[[window addressesView] loadFromSwitcher:switcher];
 	}
 }
 
@@ -771,7 +779,7 @@ HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType
 {
 	if (eventType == bmdSwitcherEventTypeDisconnected)
 	{
-		[switcher performSelectorOnMainThread:@selector(switcherDisconnected) withObject:nil waitUntilDone:YES];
+		[switcher performSelectorOnMainThread:@selector(switcherDisconnected:) withObject:[NSNumber numberWithBool: YES] waitUntilDone:YES];
 	}
 	return S_OK;
 }

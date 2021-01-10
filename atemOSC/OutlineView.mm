@@ -37,6 +37,7 @@
 	{
 		[self reloadItem:switcher];
 	}
+	[self setNeedsLayout:YES];
 }
 
 - (NSArray *) sectionHeaders
@@ -96,11 +97,7 @@
 	if ([item isKindOfClass:[NSString class]])
 		return 17;
 	else if ([item isKindOfClass:[Switcher class]])
-	{
-		if ([item isConnected])
-			return 60;
-		return 45;
-	}
+		return 60;
 	return 0;
 }
 
@@ -143,6 +140,8 @@
 		[[window connectionView] loadFromSwitcher:item];
 		if ([item isConnected])
 			[[window addressesView] loadFromSwitcher:item];
+		else
+			[[[[[window addressesView] helpTextView] textStorage] mutableString] setString:@""];
 	}
 }
 

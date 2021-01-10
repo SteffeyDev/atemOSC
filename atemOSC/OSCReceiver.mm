@@ -19,7 +19,7 @@
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
-		if (me > 0 && me < [s mMixEffectBlocks].size())
+		if (me > 0 && me <= [s mMixEffectBlocks].size())
 			return true;
 		[appDel logMessage:[NSString stringWithFormat:@"No mix effect block %d", me]];
 		return false;
@@ -887,6 +887,7 @@
 	[appDel logMessage:[NSString stringWithFormat:@"Received OSC message: %@\tValue: %@", [m address], [m value]]];
 	
 	NSMutableArray *addressComponents = [[NSMutableArray alloc] initWithArray:[[m address] componentsSeparatedByString:@"/"]];
+	[addressComponents removeObjectAtIndex:0];
 	
 	// Remove initial /atem, all addresses will start with that
 	if (![[addressComponents objectAtIndex:0] isEqualToString:@"atem"])

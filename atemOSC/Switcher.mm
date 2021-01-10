@@ -131,6 +131,7 @@
 		{
 			[self setConnectionStatus: @"Connecting"];
 			[[window outlineView] reloadItem:self];
+			[[window outlineView] setNeedsLayout:YES];
 		}
 		
 		dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
@@ -193,8 +194,9 @@
 					dispatch_async(dispatch_get_main_queue(), ^{
 						[self setConnectionStatus:@"Failed to Connect"];
 						[[window outlineView] reloadItem:self];
+						[[window outlineView] setNeedsLayout:YES];
 						if ([[window connectionView] switcher] == self)
-							[[window connectionView] reload];
+							[[window connectionView] loadFromSwitcher:self];
 					});
 				}
 			}
@@ -202,19 +204,17 @@
 	});
 }
 
+- (void)disconnectBMD
+{
+	[self switcherDisconnected:NO];
+}
+
 - (void)switcherConnected
 {
-	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
-
 	HRESULT result;
 
 	[self setIsConnected: YES];
 	[self setConnectionStatus:@"Connected"];
-	
-	if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
-	{
-		appDel.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
-	}
 	
 	[self setupMonitors];
 	
@@ -235,11 +235,20 @@
 	
 	[self setProductName:productName];
 	dispatch_async(dispatch_get_main_queue(), ^{
+		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
+		
+		if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
+		{
+			appDel.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
+		}
+		
 		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
 		[[window outlineView] reloadItem:self];
+		[[window outlineView] setNeedsLayout:YES];
 		if ([[window connectionView] switcher] == self)
 		{
-			[[[window connectionView] productNameTextField] setStringValue:productName];
+			[[window connectionView] loadFromSwitcher:self];
+			[[window addressesView] loadFromSwitcher:self];
 		}
 	});
 	
@@ -534,20 +543,27 @@
 	}
 }
 
-- (void)switcherDisconnected
+- (void)switcherDisconnected:(BOOL)reconnect
 {
-
 	[self setIsConnected: NO];
+	[self setConnectionStatus:@"Disconnected"];
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
 		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
 		[[window outlineView] reloadItem:self];
+		[[window outlineView] setNeedsLayout:YES];
 
 		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 		if (appDel.activity)
 			[[NSProcessInfo processInfo] endActivity:appDel.activity];
 		
 		appDel.activity = nil;
+		
+		if ([[window connectionView] switcher] == self)
+		{
+			[[window connectionView] loadFromSwitcher:self];
+			[[window addressesView] loadFromSwitcher:self];
+		}
 	});
 	
 	if (outPort != nil)
@@ -561,7 +577,9 @@
 	}
 	
 	[self cleanUpConnection];
-	[self connectBMD];
+	
+	if (reconnect)
+		[self connectBMD];
 }
 
 - (void)cleanUpConnection

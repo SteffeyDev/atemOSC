@@ -28,7 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 - (void)loadFromSwitcher:(Switcher *)switcher;
-- (void)reload;
 
 @end
 

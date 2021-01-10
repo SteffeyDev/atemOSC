@@ -52,28 +52,54 @@
 	else
 		[connectAutomaticallyButton setState:NSControlStateValueOff];
 	
-	[connectButton setEnabled:[switcher ipAddress] != nil && ![switcher isConnected] && ![[switcher connectionStatus] isEqualToString: @"Connecting"] && [self isValidIPAddress:switcher.ipAddress]];
+	if ([[switcher connectionStatus] isEqualToString: @"Connecting"])
+	{
+		[ipAddressTextField setEnabled:NO];
+		[connectButton setEnabled:NO];
+		[connectButton setTitle:@"Connecting"];
+	}
+	else if ([switcher isConnected])
+	{
+		[ipAddressTextField setEnabled:NO];
+		[connectButton setEnabled:YES];
+		[connectButton setTitle:@"Disconnect"];
+		[productNameTextField setStringValue:[switcher productName]];
+	}
+	else if ([switcher ipAddress] != nil && [self isValidIPAddress:switcher.ipAddress])
+	{
+		[ipAddressTextField setEnabled:YES];
+		[connectButton setEnabled:YES];
+		[connectButton setTitle:@"Connect"];
+	}
+	else
+	{
+		[ipAddressTextField setEnabled:YES];
+		[connectButton setEnabled:NO];
+		[connectButton setTitle:@"Connect"];
+	}
 }
 
 - (IBAction)connectButtonPressed:(id)sender {
-	if ([self isValidIPAddress:[ipAddressTextField stringValue]] && ![[switcher connectionStatus] isEqualToString:@"Connecting"])
+	if ([switcher isConnected])
 	{
-		[switcher setIpAddress: [ipAddressTextField stringValue]];
-		[switcher saveChanges];
-		[switcher connectBMD];
+		[switcher disconnectBMD];
 	}
-	[connectButton setEnabled:NO];
+	else
+	{
+		if ([self isValidIPAddress:[ipAddressTextField stringValue]] && ![[switcher connectionStatus] isEqualToString:@"Connecting"])
+		{
+			[switcher setIpAddress: [ipAddressTextField stringValue]];
+			[switcher saveChanges];
+			[switcher connectBMD];
+		}
+		[connectButton setEnabled:NO];
+	}
 }
 
 - (IBAction)connectAutomaticallyButtonPressed:(id)sender
 {
 	[switcher setConnectAutomatically:[connectAutomaticallyButton state] == NSControlStateValueOn];
 	[switcher saveChanges];
-}
-
-- (void)reload
-{
-	[self loadFromSwitcher:switcher];
 }
 
 - (BOOL)isValidIPAddress:(NSString*) str
@@ -110,91 +136,45 @@
 
 - (void)controlTextDidEndEditing:(NSNotification *)notification
 {
-	BOOL validInput = YES;
-	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	NSTextField* textField = (NSTextField *)[notification object];
+	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
+	
+	if ((textField == feedbackIpAddressTextField || textField == ipAddressTextField) && ![self isValidIPAddress:[textField stringValue]])
+	{
+		NSAlert *alert = [[NSAlert alloc] init];
+		[alert setMessageText:@"Invalid IP Adress"];
+		[alert setInformativeText:@"Please enter a valid IPv4 Address for 'OSC Out IP Address'"];
+		[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
+		return;
+	}
 	
 	if (textField == feedbackIpAddressTextField)
 	{
-		if ([self isValidIPAddress:[textField stringValue]])
-		{
-			[switcher setFeedbackIpAddress: [textField stringValue]];
-			[switcher updateFeedback];
-		}
-		else
-		{
-			validInput = NO;
-			NSAlert *alert = [[NSAlert alloc] init];
-			[alert setMessageText:@"Invalid IP Adress"];
-			[alert setInformativeText:@"Please enter a valid IPv4 Address for 'OSC Out IP Address'"];
-			[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
-		}
+		[switcher setFeedbackIpAddress: [textField stringValue]];
+		[switcher updateFeedback];
 	}
 	
-	if (textField == ipAddressTextField)
+	else if (textField == ipAddressTextField)
 	{
-		if ([self isValidIPAddress:[textField stringValue]])
-		{
-			// If we are already connected, and they want to connect to a different one, we need to make sure they didn't just accidently bump the keyboard
-			if ([switcher isConnected] && ![[textField stringValue] isEqualToString:[prefs stringForKey:@"atem"]])
-			{
-				NSAlert *alert = [[NSAlert alloc] init];
-				[alert setMessageText:@"Switcher Currently Connected"];
-				[alert setInformativeText:[NSString stringWithFormat: @"Are you sure you want to disconnect from %@ and attempt to connect to %@?", [prefs stringForKey:@"atem"], [textField stringValue]]];
-				[alert addButtonWithTitle:@"Yes (Connect to New)"];
-				[alert addButtonWithTitle:@"No (Stay Connected)"];
-				[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:^(NSInteger returnCode)
-				 {
-					 if ( returnCode == NSAlertFirstButtonReturn )
-					 {
-						 [switcher setIpAddress: [textField stringValue]];
-						 [switcher switcherDisconnected];
-					 }
-					 else if ( returnCode == NSAlertSecondButtonReturn )
-					 {
-						 [ipAddressTextField setStringValue:switcher.ipAddress];
-					 }
-				 }];
-			}
-			else
-			{
-				[switcher setIpAddress: [textField stringValue]];
-				if ( [[[notification userInfo] objectForKey:@"NSTextMovement"] intValue] == NSReturnTextMovement )
-					[switcher connectBMD];
-			}
-		}
-		else if ([switcher isConnected] || ![[textField stringValue] isEqualToString:@""])
-		{
-			validInput = NO;
-			NSAlert *alert = [[NSAlert alloc] init];
-			[alert setMessageText:@"Invalid IP Adress"];
-			[alert setInformativeText:@"Please enter a valid IPv4 Address for 'Switcher IP Address'"];
-			[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
-			
-			if ([switcher isConnected])
-				[textField setStringValue:switcher.ipAddress];
-		}
+		[switcher setIpAddress: [textField stringValue]];
+		if ([[[notification userInfo] objectForKey:@"NSTextMovement"] intValue] == NSReturnTextMovement)
+			[switcher connectBMD];
 	}
 	
-	if (textField == feedbackPortTextField)
+	else if (textField == feedbackPortTextField)
 	{
 		[switcher setFeedbackPort: [textField intValue]];
 		[switcher updateFeedback];
 	}
 	
-	if (textField == nicknameTextField)
+	else if (textField == nicknameTextField)
 	{
 		[switcher setNickname: [textField stringValue]];
+		[[window addressesView] loadFromSwitcher:[self switcher]];
 	}
 	
-	// Only update if the input is valid and actually changed
-	if (validInput)
-	{
-		[switcher saveChanges];
-		
-		Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
-		[[window outlineView] refreshList];
-	}
+	[switcher saveChanges];
+	[[window outlineView] refreshList];
 }
 
 @end

@@ -17,7 +17,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign) IBOutlet NSTextField *productNameTextField;
 @property (assign) IBOutlet NSTextField *connectionStatusTextField;
 @property (assign) IBOutlet NSProgressIndicator *progressIndicator;
-@property (assign) IBOutlet NSLayoutConstraint *productNameHeightConstraint;
+@property (assign) IBOutlet NSView *connectionIndicator;
+
 - (IBAction)deleteButtonClicked:(id)sender;
 
 - (void) updateFromSwitcher:(Switcher*)switcher;
