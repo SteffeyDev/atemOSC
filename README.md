@@ -32,21 +32,21 @@ atemOSC is a network proxy, listening for commands following the [OSC protocol](
 
 **If you would like to control your switcher using a MIDI board or device**, consider pairing this software with [OSCulator](https://osculator.net) or [MidiPipe](http://www.subtlesoft.square7.net/MidiPipe.html).  If you would like to control AtemOSC directly using MIDI, comment on [Issue #111](https://github.com/SteffeyDev/atemOSC/issues/111) to let us know.
 
-**If you would like to control your switcher using a mobile device**, you can use [TouchOSC](https://hexler.net/products/touchosc) (see included layouts in [samples](https://github.com/SteffeyDev/atemOSC/tree/master/samples) folder) or Open Stage Control (https://openstagecontrol.ammd.net).
+**If you would like to control your switcher using a mobile device**, you can use [TouchOSC](https://hexler.net/products/touchosc) (see included layouts in [samples](https://github.com/SteffeyDev/atemOSC/tree/master/samples) folder) or [Open Stage Control](https://openstagecontrol.ammd.net).
 
 ## Videos & Guides
 
-**Usage with Ableton Live and OSCulator (MIDI) by Jake Gosselin**: https://www.youtube.com/watch?v=Xhbk1epkrLc
+**Usage with Ableton Live and OSCulator (MIDI) by Jake Gosselin**: [https://www.youtube.com/watch?v=Xhbk1epkrLc](https://www.youtube.com/watch?v=Xhbk1epkrLc)
 
-**Usage with QLab by Jack Phelan**: https://jackp.svbtle.com/atem-mini-qlab-and-osc
+**Usage with QLab by Jack Phelan**: [https://jackp.svbtle.com/atem-mini-qlab-and-osc](https://jackp.svbtle.com/atem-mini-qlab-and-osc)
 
-**Usage with TouchOSC by John Barker**: https://www.youtube.com/watch?v=jX7YI-DTMxM
+**Usage with TouchOSC by John Barker**: [https://www.youtube.com/watch?v=jX7YI-DTMxM](https://www.youtube.com/watch?v=jX7YI-DTMxM)
 
-**Usage with OSCulator (MIDI) by John Barker**: https://www.youtube.com/watch?v=HQm2KZYcPws&t=29s
+**Usage with OSCulator (MIDI) by John Barker**: [https://www.youtube.com/watch?v=HQm2KZYcPws&t=29s](https://www.youtube.com/watch?v=HQm2KZYcPws&t=29s)
 
-**Usage with OSCulator (MIDI) by Morgan Warf**: https://www.youtube.com/watch?v=ooaOz5Uytxs&t=252s
+**Usage with OSCulator (MIDI) by Morgan Warf**: [https://www.youtube.com/watch?v=ooaOz5Uytxs&t=252s](https://www.youtube.com/watch?v=ooaOz5Uytxs&t=252s)
 
-**Usage with ProPresenter and OSCulator (MIDI) by Tiffany Howard**: https://www.youtube.com/watch?v=dHwSHa8UWVw
+**Usage with ProPresenter and OSCulator (MIDI) by Tiffany Howard**: [https://www.youtube.com/watch?v=dHwSHa8UWVw](https://www.youtube.com/watch?v=dHwSHa8UWVw)
 
 ----------
 
