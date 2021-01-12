@@ -42,9 +42,9 @@ atemOSC is a network proxy, listening for commands following the [OSC protocol](
 
 **Usage with TouchOSC by John Barker**: [https://www.youtube.com/watch?v=jX7YI-DTMxM](https://www.youtube.com/watch?v=jX7YI-DTMxM)
 
-**Usage with OSCulator (MIDI) by John Barker**: [https://www.youtube.com/watch?v=HQm2KZYcPws&t=29s](https://www.youtube.com/watch?v=HQm2KZYcPws&t=29s)
+**Usage with OSCulator (MIDI) by John Barker**: [https://www.youtube.com/watch?v=HQm2KZYcPws](https://www.youtube.com/watch?v=HQm2KZYcPws)
 
-**Usage with OSCulator (MIDI) by Morgan Warf**: [https://www.youtube.com/watch?v=ooaOz5Uytxs&t=252s](https://www.youtube.com/watch?v=ooaOz5Uytxs&t=252s)
+**Usage with OSCulator (MIDI) by Morgan Warf**: [https://www.youtube.com/watch?v=ooaOz5Uytxs](https://www.youtube.com/watch?v=ooaOz5Uytxs)
 
 **Usage with ProPresenter and OSCulator (MIDI) by Tiffany Howard**: [https://www.youtube.com/watch?v=dHwSHa8UWVw](https://www.youtube.com/watch?v=dHwSHa8UWVw)
 
