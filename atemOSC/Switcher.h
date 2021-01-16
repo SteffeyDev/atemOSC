@@ -84,6 +84,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)saveChanges;
 - (void)updateFeedback;
 
+- (void)logMessage:(NSString *)message;
+
 @end
 
 NS_ASSUME_NONNULL_END

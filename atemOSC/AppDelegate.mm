@@ -64,7 +64,6 @@
 	{
 		[self addSwitcher];
 	}
-	[window loadSettingsFromPreferences];
 	
 	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
 	if (!mSwitcherDiscovery)
@@ -101,6 +100,8 @@
 
 	dispatch_async(dispatch_get_main_queue(), ^{
 		Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
+		[window loadSettingsFromPreferences];
+
 		if ([[window connectionView] switcher] != nil)
 		{
 			[[window outlineView] refreshList];

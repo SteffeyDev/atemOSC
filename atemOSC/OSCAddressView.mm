@@ -35,6 +35,12 @@
 {
 	self->switcher = switcher;
 	
+	if (![switcher isConnected])
+	{
+		[[[helpTextView textStorage] mutableString] setString:@""];
+		return;
+	}
+	
 	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 
 	[helpTextView setAlignment:NSLeftTextAlignment];
@@ -57,38 +63,23 @@
 	
 	[self addHeader:@"Sources" toString:helpString];
 
-	HRESULT result;
-	IBMDSwitcherInputIterator* inputIterator = NULL;
-	IBMDSwitcherInput* input = NULL;
-
-	result = [switcher mSwitcher]->CreateIterator(IID_IBMDSwitcherInputIterator, (void**)&inputIterator);
-	if (FAILED(result))
+	for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
 	{
-		NSLog(@"Could not create IBMDSwitcherInputIterator iterator");
-		return;
-	}
-
-	while (S_OK == inputIterator->Next(&input))
-	{
-		for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
+		for (auto const& it : [switcher mInputs])
 		{
 			NSString* name;
-			BMDSwitcherInputId id;
-			
-			input->GetInputId(&id);
-			input->GetLongName((CFStringRef*)&name);
+			it.second->GetLongName((CFStringRef*)&name);
 			
 			if ([name isEqual:@""])
 				name = @"Unnamed";
 			
-			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/preview %ld",i+1,(long)id] toString:helpString];
-			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/program %ld",i+1,(long)id] toString:helpString];
+			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/preview %lld",i+1,it.first] toString:helpString];
+			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/program %lld",i+1,it.first] toString:helpString];
 			
-			input->Release();
 			[name release];
 		}
 	}
-	inputIterator->Release();
+
 
 	[self addHeader:@"Upstream Keyers" toString:helpString];
 	for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
@@ -295,7 +286,7 @@
 		{
 			if (it.first == 0)
 				[self addHeader:@"HyperDecks" toString:helpString];
-			
+
 			for (OSCEndpoint* endpoint : [appDel endpoints])
 			{
 				if ([[endpoint addressTemplate] containsString:@"/hyperdeck/"])

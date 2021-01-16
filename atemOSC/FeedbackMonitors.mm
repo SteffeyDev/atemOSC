@@ -779,8 +779,13 @@ HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType
 {
 	if (eventType == bmdSwitcherEventTypeDisconnected)
 	{
-		[switcher performSelectorOnMainThread:@selector(switcherDisconnected:) withObject:[NSNumber numberWithBool: YES] waitUntilDone:YES];
+		[switcher switcherDisconnected:YES];
+		[switcher logMessage:@"[Debug] Switcher time code changed"];
 	}
+	else if (eventType == bmdSwitcherEventTypeTimeCodeChanged)
+		[switcher logMessage:@"[Debug] Switcher time code changed"];
+	else
+		[switcher logMessage:[NSString stringWithFormat:@"[Debug] Switcher unknown event occurred: %d", eventType]];
 	return S_OK;
 }
 

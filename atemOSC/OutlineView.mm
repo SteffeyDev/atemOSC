@@ -138,10 +138,7 @@
 	} else if ([item isKindOfClass:[Switcher class]])
 	{
 		[[window connectionView] loadFromSwitcher:item];
-		if ([item isConnected])
-			[[window addressesView] loadFromSwitcher:item];
-		else
-			[[[[[window addressesView] helpTextView] textStorage] mutableString] setString:@""];
+		[[window addressesView] loadFromSwitcher:item];
 	}
 }
 

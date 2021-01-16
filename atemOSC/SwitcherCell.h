@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign) IBOutlet NSTextField *connectionStatusTextField;
 @property (assign) IBOutlet NSProgressIndicator *progressIndicator;
 @property (assign) IBOutlet NSView *connectionIndicator;
+@property (assign) IBOutlet NSButton *deleteButton;
+
 
 - (IBAction)deleteButtonClicked:(id)sender;
 

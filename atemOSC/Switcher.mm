@@ -213,8 +213,7 @@
 {
 	HRESULT result;
 
-	[self setIsConnected: YES];
-	[self setConnectionStatus:@"Connected"];
+	[self setConnectionStatus:@"Connecting"];
 	
 	[self setupMonitors];
 	
@@ -234,23 +233,6 @@
 	}
 	
 	[self setProductName:productName];
-	dispatch_async(dispatch_get_main_queue(), ^{
-		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
-		
-		if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
-		{
-			appDel.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
-		}
-		
-		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
-		[[window outlineView] reloadItem:self];
-		[[window outlineView] setNeedsLayout:YES];
-		if ([[window connectionView] switcher] == self)
-		{
-			[[window connectionView] loadFromSwitcher:self];
-			[[window addressesView] loadFromSwitcher:self];
-		}
-	});
 	
 	mSwitcher->AddCallback(mSwitcherMonitor);
 	
@@ -541,6 +523,27 @@
 	{
 		[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
 	}
+	
+	[self setIsConnected: YES];
+	[self setConnectionStatus:@"Connected"];
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
+		
+		if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
+		{
+			appDel.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
+		}
+		
+		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
+		[[window outlineView] reloadItem:self];
+		[[window outlineView] setNeedsLayout:YES];
+		if ([[window connectionView] switcher] == self)
+		{
+			[[window connectionView] loadFromSwitcher:self];
+			[[window addressesView] loadFromSwitcher:self];
+		}
+	});
 }
 
 - (void)switcherDisconnected:(BOOL)reconnect

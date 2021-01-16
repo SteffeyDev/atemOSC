@@ -52,6 +52,7 @@
 	else
 		[connectAutomaticallyButton setState:NSControlStateValueOff];
 	
+	[productNameTextField setStringValue:@""];
 	if ([[switcher connectionStatus] isEqualToString: @"Connecting"])
 	{
 		[ipAddressTextField setEnabled:NO];

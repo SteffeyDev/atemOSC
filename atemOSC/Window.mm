@@ -23,8 +23,9 @@
 {
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 
-	if ([prefs integerForKey:@"incoming"])
-		[_incomingPortTextView setIntegerValue:[prefs integerForKey:@"incoming"]];
+	NSInteger port = [prefs integerForKey:@"incoming"];
+	if (port)
+		[_incomingPortTextView setIntegerValue:port];
 	else
 		[_incomingPortTextView setIntValue:3333];
 }
@@ -35,12 +36,12 @@
 	NSUserDefaults *prefs = [NSUserDefaults standardUserDefaults];
 	NSTextField* textField = (NSTextField *)[aNotification object];
 	
-	int newPort = [textField intValue];
-	[appDel incomingPortChanged:newPort];
-	[_incomingPortTextView setIntValue:newPort];
-	
 	if (textField == _incomingPortTextView)
+	{
+		int newPort = [textField intValue];
+		[appDel incomingPortChanged:newPort];
 		[prefs setInteger:newPort forKey:@"incoming"];
+	}
 
 	[prefs synchronize];
 }

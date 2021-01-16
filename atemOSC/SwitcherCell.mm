@@ -11,6 +11,8 @@
 
 @implementation SwitcherCell
 
+@synthesize deleteButton;
+
 - (void)drawRect:(NSRect)dirtyRect {
     [super drawRect:dirtyRect];
     
@@ -36,7 +38,7 @@
 	else
 		[[self ipAddressNicknameTextField] setStringValue:@"New Switcher"];
 	
-		
+	[deleteButton setEnabled:YES];
 	if ([switcher connectionStatus] != nil)
 	{
 		[[self connectionStatusTextField] setStringValue:[switcher connectionStatus]];
@@ -49,6 +51,7 @@
 			[[self progressIndicator] stopAnimation:self];
 			if ([switcher isConnected])
 			{
+				[deleteButton setEnabled:NO];
 				if ([switcher productName])
 					[[self productNameTextField] setStringValue:[switcher productName]];
 			}
