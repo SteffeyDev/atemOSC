@@ -321,6 +321,7 @@
 			mMonitors.push_back(monitor);
 			mInputMonitors.insert(std::make_pair(inputId, monitor));
 			
+			// Aux
 			IBMDSwitcherInputAux* auxObj;
 			result = input->QueryInterface(IID_IBMDSwitcherInputAux, (void**)&auxObj);
 			if (SUCCEEDED(result))
@@ -331,6 +332,34 @@
 				{
 					mSwitcherInputAuxList.push_back(auxObj);
 				}
+			}
+			
+			// Super source should only be active on one input, except occasionally on the Constellation 8K, which could have two.  We will ignore this for now until needed.
+			IBMDSwitcherInputSuperSource* ssObj;
+			if (SUCCEEDED(input->QueryInterface(IID_IBMDSwitcherInputSuperSource, (void**)&ssObj))) {
+				if (ssObj)
+				{
+					mSuperSource = ssObj;
+					IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
+					if (SUCCEEDED(ssObj->CreateIterator(IID_IBMDSwitcherSuperSourceBoxIterator, (void**)&superSourceIterator)))
+					{
+						IBMDSwitcherSuperSourceBox* superSourceBox = NULL;
+						while (S_OK == superSourceIterator->Next(&superSourceBox))
+						{
+							mSuperSourceBoxes.push_back(superSourceBox);
+						}
+						superSourceIterator->Release();
+						superSourceIterator = NULL;
+					}
+					else
+					{
+						[self logMessage:@"[Debug] Could not create IBMDSwitcherSuperSourceBoxIterator iterator"];
+					}
+				}
+			}
+			else
+			{
+				[self logMessage:@"[Debug] Could not get IBMDSwitcherInputSuperSource interface"];
 			}
 		}
 		inputIterator->Release();
@@ -396,29 +425,6 @@
 	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl)))
 	{
 		[self logMessage:@"[Debug] Could not get IID_IBMDSwitcherMacroControl interface"];
-	}
-	
-	// Super source
-	if (SUCCEEDED(mSwitcher->CreateIterator(IID_IBMDSwitcherInputSuperSource, (void**)&mSuperSource))) {
-		IBMDSwitcherSuperSourceBoxIterator* superSourceIterator = NULL;
-		if (SUCCEEDED(mSuperSource->CreateIterator(IID_IBMDSwitcherSuperSourceBoxIterator, (void**)&superSourceIterator)))
-		{
-			IBMDSwitcherSuperSourceBox* superSourceBox = NULL;
-			while (S_OK == superSourceIterator->Next(&superSourceBox))
-			{
-				mSuperSourceBoxes.push_back(superSourceBox);
-			}
-			superSourceIterator->Release();
-			superSourceIterator = NULL;
-		}
-		else
-		{
-			[self logMessage:@"[Debug] Could not create IBMDSwitcherSuperSourceBoxIterator iterator"];
-		}
-	}
-	else
-	{
-		[self logMessage:@"[Debug] Could not get IBMDSwitcherInputSuperSource interface"];
 	}
 	
 	// Audio Mixer (Output)
