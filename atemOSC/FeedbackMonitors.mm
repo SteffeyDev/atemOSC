@@ -81,15 +81,15 @@ void MixEffectBlockMonitor::updateProgramButtonSelection() const
 	BMDSwitcherInputId    programId;
 	switcher.mMixEffectBlocks[me_]->GetProgramInput(&programId);
 	
+	OSCMessage *consolidatedMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, @"/program", me_)];
+	[consolidatedMsg addInt:(int)programId];
+	[switcher.outPort sendThisMessage:consolidatedMsg];
+	
 	for (auto const& it : switcher.mInputs)
 	{
 		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/program/%lld",it.first], me_)];
 		if (programId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
 		[switcher.outPort sendThisMessage:newMsg];
-		
-		OSCMessage *newMsg2 = [OSCMessage createWithAddress:getFeedbackAddress(switcher, @"/program", me_)];
-		[newMsg2 addInt:(int)it.first];
-		[switcher.outPort sendThisMessage:newMsg2];
 	}
 }
 
@@ -98,15 +98,15 @@ void MixEffectBlockMonitor::updatePreviewButtonSelection() const
 	BMDSwitcherInputId    previewId;
 	switcher.mMixEffectBlocks[me_]->GetPreviewInput(&previewId);
 	
+	OSCMessage *consolidatedMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, @"/preview", me_)];
+	[consolidatedMsg addInt:(int)previewId];
+	[switcher.outPort sendThisMessage:consolidatedMsg];
+	
 	for (auto const& it : switcher.mInputs)
 	{
 		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/preview/%lld",it.first], me_)];
 		if (previewId==it.first) {[newMsg addFloat:1.0];} else {[newMsg addFloat:0.0];}
 		[switcher.outPort sendThisMessage:newMsg];
-		
-		OSCMessage *newMsg2 = [OSCMessage createWithAddress:getFeedbackAddress(switcher, @"/preview", me_)];
-		[newMsg2 addInt:(int)it.first];
-		[switcher.outPort sendThisMessage:newMsg2];
 	}
 }
 
