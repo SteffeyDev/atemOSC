@@ -34,78 +34,35 @@
 
 #import "FeedbackMonitors.h"
 #import "OSCEndpoint.h"
+#import "Window.h"
+#import "Switcher.h"
 
 @class OSCAddressPanel;
 @class OSCReceiver;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
-{
-	NSWindow *window;
-	
-	IBMDSwitcherDiscovery*		        mSwitcherDiscovery;
-	IBMDSwitcherKeyFlyParameters*	    mDVEControl;
-	SwitcherMonitor*			        mSwitcherMonitor;
-	DownstreamKeyerMonitor*             mDownstreamKeyerMonitor;
-	UpstreamKeyerMonitor*               mUpstreamKeyerMonitor;
-	UpstreamKeyerLumaParametersMonitor* mUpstreamKeyerLumaParametersMonitor;
-	UpstreamKeyerChromaParametersMonitor* mUpstreamKeyerChromaParametersMonitor;
-	TransitionParametersMonitor*        mTransitionParametersMonitor;
-	MacroPoolMonitor*       			mMacroPoolMonitor;
-	std::vector<SendStatusInterface*>   mMonitors;
-	
+{	
 	OSCReceiver*                mOscReceiver;
-	OSCManager*					manager;
-	
-	IBOutlet OSCAddressPanel*   helpPanel;
-	IBOutlet NSTextView*        logTextView;
+	Window*						window;
 }
 
-@property (readonly)       IBMDSwitcher*				        	mSwitcher;
-@property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
-@property (readonly)       std::map<BMDSwitcherInputId, IBMDSwitcherInput*> mInputs;
-@property (readonly)       std::map<BMDSwitcherInputId, InputMonitor*> mInputMonitors;
-@property (readonly)       std::map<BMDSwitcherHyperDeckId, IBMDSwitcherHyperDeck*> mHyperdecks;
-@property (readonly)       std::map<BMDSwitcherHyperDeckId, HyperDeckMonitor*> mHyperdeckMonitors;
-@property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
-@property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;
-@property (readonly)       IBMDSwitcherMacroPool*                   mMacroPool;
-@property (readonly)       IBMDSwitcherMacroControl*                mMacroControl;
-@property (assign, readonly) OSCInPort*                             inPort;
-@property (assign, readonly) OSCOutPort*                            outPort;
-@property (readonly)       std::vector<IBMDSwitcherMediaPlayer*>    mMediaPlayers;
-@property (readonly)       IBMDSwitcherMediaPool*                   mMediaPool;
-@property (readonly)       std::vector<IBMDSwitcherKey*>            keyers;
-@property (readonly)       std::vector<IBMDSwitcherDownstreamKey*>  dsk;
-@property (readonly)       IBMDSwitcherTransitionParameters*        switcherTransitionParameters;
-@property (readonly)       MixEffectBlockMonitor*                   mMixEffectBlockMonitor;
-@property (readonly)       IBMDSwitcherMixEffectBlock*              mMixEffectBlock;
+@property (strong) 		id		activity;
+@property (assign)		BOOL 	isActive;
 
-@property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherAudioInput*> mAudioInputs;
-@property (readonly)       std::map<BMDSwitcherAudioInputId, AudioInputMonitor*> mAudioInputMonitors;
-@property (readonly)       IBMDSwitcherAudioMixer*                  mAudioMixer;
-@property (readonly)       AudioMixerMonitor*                       mAudioMixerMonitor;
-
-@property (readonly)       std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> mFairlightAudioSources;
-@property (readonly)       std::map<BMDSwitcherFairlightAudioSourceId, FairlightAudioSourceMonitor*> mFairlightAudioSourceMonitors;
-@property (readonly)       IBMDSwitcherFairlightAudioMixer*         mFairlightAudioMixer;
-@property (readonly)       FairlightAudioMixerMonitor*              mFairlightAudioMixerMonitor;
-
-@property (readonly)       bool                                     isConnectedToATEM;
-@property (strong)         IBOutlet NSWindow*                       window;
-@property (strong)         id                                       activity;
 
 @property(nonatomic, retain) NSMutableArray<OSCEndpoint *> *endpoints;
+@property (assign, readonly) OSCInPort*                     inPort;
+@property (assign, readonly) OSCManager*					manager;
+@property (assign, readonly) IBMDSwitcherDiscovery*			mSwitcherDiscovery;
+@property(nonatomic, retain) NSMutableArray*				switchers;
 
-- (void)connectBMD;
-- (void)portChanged:(int)inPortValue out:(int)outPortValue ip:(NSString *)outIpStr;
+
+- (void)incomingPortChanged:(int)inPortValue;
 - (IBAction)githubPageButtonPressed:(id)sender;
 
-- (void)switcherConnected;
-- (void)switcherDisconnected;
-
-- (void)sendStatus;
-- (void)sendEachStatus:(int)nextMonitor;
-
 - (void)logMessage:(NSString *)message;
+
+- (void)addSwitcher;
+- (void)removeSwitcher:(Switcher *)switcher;
 
 @end

@@ -8,14 +8,14 @@
 #include "Utilities.h"
 #import "AppDelegate.h"
 
-bool isMacroValid(uint32_t index)
+bool isMacroValid(Switcher *s, uint32_t index)
 {
 	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	HRESULT result;
 	bool isValid;
-	if ([appDel mMacroPool])
+	if ([s mMacroPool])
 	{
-		result = [appDel mMacroPool]->IsValid(index, &isValid);
+		result = [s mMacroPool]->IsValid(index, &isValid);
 		switch (result)
 		{
 			case S_OK:
@@ -32,19 +32,19 @@ bool isMacroValid(uint32_t index)
 	return NO;
 }
 
-bool runMacroAtIndex(uint32_t index)
+bool runMacroAtIndex(Switcher *s, uint32_t index)
 {
 	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	HRESULT result;
-	if ([appDel mMacroControl])
+	if ([s mMacroControl])
 	{
-		if (!isMacroValid(index))
+		if (!isMacroValid(s, index))
 		{
 			[appDel logMessage:[NSString stringWithFormat:@"Could not run the Macro at index %d because it is not valid.", index]];
 			return NO;
 		}
 		
-		result = [appDel mMacroControl]->Run(index);
+		result = [s mMacroControl]->Run(index);
 		switch (result)
 		{
 			case S_OK:
@@ -64,13 +64,13 @@ bool runMacroAtIndex(uint32_t index)
 	return NO;
 }
 
-bool stopRunningMacro()
+bool stopRunningMacro(Switcher *s)
 {
 	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	HRESULT result;
-	if ([appDel mMacroControl])
+	if ([s mMacroControl])
 	{
-		result = [appDel mMacroControl]->StopRunning();
+		result = [s mMacroControl]->StopRunning();
 		switch (result)
 		{
 			case S_OK:
@@ -84,13 +84,13 @@ bool stopRunningMacro()
 	return NO;
 }
 
-uint32_t getMaxNumberOfMacros()
+uint32_t getMaxNumberOfMacros(Switcher *s)
 {
 	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	uint32_t maxNumberOfMacros = 0;
-	if ([appDel mMacroPool])
+	if ([s mMacroPool])
 	{
-		if (S_OK == [appDel mMacroPool]->GetMaxCount(&maxNumberOfMacros))
+		if (S_OK == [s mMacroPool]->GetMaxCount(&maxNumberOfMacros))
 			return maxNumberOfMacros;
 		else
 			[appDel logMessage:@"Could not get max the number of Macros available."];
@@ -98,12 +98,12 @@ uint32_t getMaxNumberOfMacros()
 	return maxNumberOfMacros;
 }
 
-NSString* getNameOfMacro(uint32_t index)
+NSString* getNameOfMacro(Switcher *s, uint32_t index)
 {
 	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	HRESULT result;
 	NSString *name = @"";
-	result = [appDel mMacroPool]->GetName(index, (CFStringRef*)&name);
+	result = [s mMacroPool]->GetName(index, (CFStringRef*)&name);
 	switch (result)
 	{
 		case S_OK:
@@ -120,12 +120,12 @@ NSString* getNameOfMacro(uint32_t index)
 	return name;
 }
 
-NSString* getDescriptionOfMacro(uint32_t index)
+NSString* getDescriptionOfMacro(Switcher *s, uint32_t index)
 {
 	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	HRESULT result;
 	NSString *description = @"";
-	result = [appDel mMacroPool]->GetDescription(index, (CFStringRef*)&description);
+	result = [s mMacroPool]->GetDescription(index, (CFStringRef*)&description);
 	switch (result)
 	{
 		case S_OK:
@@ -143,14 +143,13 @@ NSString* getDescriptionOfMacro(uint32_t index)
 }
 
 
-void activateChannel(int channel, bool program)
+void activateChannel(Switcher *s, int me, int channel, bool program)
 {
-	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	BMDSwitcherInputId InputId = channel;
 	if (program) {
 		@try
 		{
-			[appDel mMixEffectBlock]->SetProgramInput(InputId);
+			[s mMixEffectBlocks][me-1]->SetProgramInput(InputId);
 		}
 		@catch (NSException *exception)
 		{
@@ -163,7 +162,7 @@ void activateChannel(int channel, bool program)
 	{
 		@try
 		{
-			[appDel mMixEffectBlock]->SetPreviewInput(InputId);
+			[s mMixEffectBlocks][me-1]->SetPreviewInput(InputId);
 		}
 		@catch (NSException *exception)
 		{
@@ -186,4 +185,21 @@ NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx
         [result addObject:block(obj, idx)];
     }];
     return result;
+}
+
+NSString *getFeedbackAddress(Switcher *s, NSString *address) {
+	// If a switcher nickname is set, they probably have multiple switchers connected
+	// and are thus using nicknames, so include nickname in the feedback address
+	if (s.nickname && s.nickname.length > 0)
+		return [NSString stringWithFormat:@"/atem/%@%@", s.nickname, address];
+	else
+		return [NSString stringWithFormat:@"/atem/%@", address];
+}
+
+NSString *getFeedbackAddress(Switcher *s, NSString *address, int me) {
+	// If there are multiple mix effect blocks on this switcher, include the block number in the feedback string
+	if ([s mMixEffectBlocks].size() > 1)
+		return getFeedbackAddress(s, [NSString stringWithFormat:@"/me/%d%@", me, address]);
+	else
+		return getFeedbackAddress(s, address);
 }

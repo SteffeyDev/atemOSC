@@ -7,15 +7,16 @@
 
 #import <Foundation/Foundation.h>
 #import "VVOSC/VVOSC.h"
+#import "Switcher.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface OSCEndpoint : NSObject
-	@property(nonatomic) NSString *addressTemplate;
-	@property(nonatomic) NSString *helpText;
-	@property(nonatomic) NSString *label;
+	@property(nonatomic, assign) NSString *addressTemplate;
+	@property(nonatomic, assign) NSString *helpText;
+	@property(nonatomic, assign) NSString *label;
 	@property(nonatomic) OSCValueType valueType;
-	@property(nonatomic, copy) void (^handler)(NSDictionary *, OSCValue *);
+	@property(nonatomic, copy) void (^handler)(Switcher *s, NSDictionary *, OSCValue *);
 @end
 
 NS_ASSUME_NONNULL_END

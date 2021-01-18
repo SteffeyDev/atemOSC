@@ -1,0 +1,1040 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		9658764818CE5C2D003126BC /* Build Mac Frameworks */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 9658764B18CE5C2D003126BC /* Build configuration list for PBXAggregateTarget "Build Mac Frameworks" */;
+			buildPhases = (
+			);
+			dependencies = (
+				9658764D18CE5C39003126BC /* PBXTargetDependency */,
+				9658765118CE5C39003126BC /* PBXTargetDependency */,
+				9658765318CE5C39003126BC /* PBXTargetDependency */,
+			);
+			name = "Build Mac Frameworks";
+			productName = "Build Mac Frameworks";
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		1AA491C41940E36D0079B0FB /* VVBasicMacros.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA491C31940E36D0079B0FB /* VVBasicMacros.m */; };
+		1AD9E8E71E70899200497CB5 /* VVMStopwatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 1AD9E8E51E70899200497CB5 /* VVMStopwatch.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1AD9E8E91E70899200497CB5 /* VVMStopwatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD9E8E61E70899200497CB5 /* VVMStopwatch.m */; };
+		5107014210E14BF200A67653 /* MutNRLockDict.h in Headers */ = {isa = PBXBuildFile; fileRef = 5107014010E14BF200A67653 /* MutNRLockDict.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5107014310E14BF200A67653 /* MutNRLockDict.m in Sources */ = {isa = PBXBuildFile; fileRef = 5107014110E14BF200A67653 /* MutNRLockDict.m */; };
+		961745FF100F879000FB60E6 /* VVMIDI.h in Headers */ = {isa = PBXBuildFile; fileRef = 961745FE100F879000FB60E6 /* VVMIDI.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9617460A100F87B300FB60E6 /* VVMIDIManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 96174604100F87B300FB60E6 /* VVMIDIManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9617460B100F87B300FB60E6 /* VVMIDINode.h in Headers */ = {isa = PBXBuildFile; fileRef = 96174605100F87B300FB60E6 /* VVMIDINode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9617460C100F87B300FB60E6 /* VVMIDIMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 96174606100F87B300FB60E6 /* VVMIDIMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9617460D100F87B300FB60E6 /* VVMIDINode.m in Sources */ = {isa = PBXBuildFile; fileRef = 96174607100F87B300FB60E6 /* VVMIDINode.m */; };
+		9617460E100F87B300FB60E6 /* VVMIDIMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 96174608100F87B300FB60E6 /* VVMIDIMessage.m */; };
+		9617460F100F87B300FB60E6 /* VVMIDIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96174609100F87B300FB60E6 /* VVMIDIManager.m */; };
+		96174626100F887E00FB60E6 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 961EA8ED100E8565007E6C25 /* VVBasics.framework */; };
+		96174627100F888C00FB60E6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		96174644100F88EF00FB60E6 /* CoreMIDI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9617463E100F88EC00FB60E6 /* CoreMIDI.framework */; };
+		961EA925100E876F007E6C25 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		961EA957100E8834007E6C25 /* MutLockArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 961EA947100E8834007E6C25 /* MutLockArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		961EA958100E8834007E6C25 /* MutLockDict.m in Sources */ = {isa = PBXBuildFile; fileRef = 961EA948100E8834007E6C25 /* MutLockDict.m */; };
+		961EA959100E8834007E6C25 /* MutLockDict.h in Headers */ = {isa = PBXBuildFile; fileRef = 961EA949100E8834007E6C25 /* MutLockDict.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		961EA95A100E8834007E6C25 /* VVThreadLoop.m in Sources */ = {isa = PBXBuildFile; fileRef = 961EA94A100E8834007E6C25 /* VVThreadLoop.m */; };
+		961EA95B100E8834007E6C25 /* VVThreadLoop.h in Headers */ = {isa = PBXBuildFile; fileRef = 961EA94B100E8834007E6C25 /* VVThreadLoop.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		961EA95C100E8834007E6C25 /* MutLockArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 961EA94C100E8834007E6C25 /* MutLockArray.m */; };
+		961EA95D100E8834007E6C25 /* VVStopwatch.m in Sources */ = {isa = PBXBuildFile; fileRef = 961EA94D100E8834007E6C25 /* VVStopwatch.m */; };
+		961EA95E100E8834007E6C25 /* VVStopwatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 961EA94E100E8834007E6C25 /* VVStopwatch.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		961EA960100E8834007E6C25 /* VVBasicMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 961EA950100E8834007E6C25 /* VVBasicMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		961EA961100E8834007E6C25 /* ObjectHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 961EA951100E8834007E6C25 /* ObjectHolder.m */; };
+		961EA962100E8834007E6C25 /* ObjectHolder.h in Headers */ = {isa = PBXBuildFile; fileRef = 961EA952100E8834007E6C25 /* ObjectHolder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		961EA965100E8834007E6C25 /* MutNRLockArray.m in Sources */ = {isa = PBXBuildFile; fileRef = 961EA955100E8834007E6C25 /* MutNRLockArray.m */; };
+		961EA966100E8834007E6C25 /* MutNRLockArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 961EA956100E8834007E6C25 /* MutNRLockArray.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9621356914C7086C00E76C81 /* VVAssertionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 9621356714C7086C00E76C81 /* VVAssertionHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9621356A14C7086C00E76C81 /* VVAssertionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 9621356814C7086C00E76C81 /* VVAssertionHandler.m */; };
+		9628D0F0100E8A5200C3944E /* OSCAddressSpace.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D0EE100E8A5200C3944E /* OSCAddressSpace.m */; };
+		9628D0F1100E8A5200C3944E /* OSCAddressSpace.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D0EF100E8A5200C3944E /* OSCAddressSpace.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D113100E8A6700C3944E /* OSCZeroConfManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D0FC100E8A6700C3944E /* OSCZeroConfManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D114100E8A6700C3944E /* OSCZeroConfDomain.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D0FD100E8A6700C3944E /* OSCZeroConfDomain.m */; };
+		9628D115100E8A6700C3944E /* OSCBundle.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D0FE100E8A6700C3944E /* OSCBundle.m */; };
+		9628D116100E8A6700C3944E /* OSCValue.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D0FF100E8A6700C3944E /* OSCValue.m */; };
+		9628D117100E8A6700C3944E /* OSCOutPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D100100E8A6700C3944E /* OSCOutPort.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D118100E8A6700C3944E /* OSCZeroConfDomain.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D101100E8A6700C3944E /* OSCZeroConfDomain.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D119100E8A6700C3944E /* OSCPacket.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D102100E8A6700C3944E /* OSCPacket.m */; };
+		9628D11A100E8A6700C3944E /* OSCStringAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D103100E8A6700C3944E /* OSCStringAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D11B100E8A6700C3944E /* OSCBundle.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D104100E8A6700C3944E /* OSCBundle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D11C100E8A6700C3944E /* OSCPacket.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D105100E8A6700C3944E /* OSCPacket.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D11D100E8A6700C3944E /* OSCMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D106100E8A6700C3944E /* OSCMessage.m */; };
+		9628D11E100E8A6700C3944E /* OSCZeroConfManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D107100E8A6700C3944E /* OSCZeroConfManager.m */; };
+		9628D11F100E8A6700C3944E /* OSCStringAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D108100E8A6700C3944E /* OSCStringAdditions.m */; };
+		9628D120100E8A6700C3944E /* OSCInPort.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D109100E8A6700C3944E /* OSCInPort.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D121100E8A6700C3944E /* OSCNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D10A100E8A6700C3944E /* OSCNode.m */; };
+		9628D122100E8A6700C3944E /* OSCMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D10B100E8A6700C3944E /* OSCMessage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D123100E8A6700C3944E /* OSCOutPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D10C100E8A6700C3944E /* OSCOutPort.m */; };
+		9628D124100E8A6700C3944E /* OSCManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D10D100E8A6700C3944E /* OSCManager.m */; };
+		9628D126100E8A6700C3944E /* OSCNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D10F100E8A6700C3944E /* OSCNode.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D127100E8A6700C3944E /* OSCValue.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D110100E8A6700C3944E /* OSCValue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9628D128100E8A6700C3944E /* OSCInPort.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628D111100E8A6700C3944E /* OSCInPort.m */; };
+		9628D129100E8A6700C3944E /* OSCManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9628D112100E8A6700C3944E /* OSCManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9647274316D41BF400888157 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9652676F108C29AC00A2906D /* SystemConfiguration.framework */; };
+		9658C26118F86BCF004A6BCF /* VVSysVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = 9658C25F18F86BCF004A6BCF /* VVSysVersion.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9658C26218F86BCF004A6BCF /* VVSysVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 9658C26018F86BCF004A6BCF /* VVSysVersion.m */; };
+		9664239B100E9C1200630C6D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
+		969FCE9E120DB9DA0067E617 /* lgpl-3.0.txt in Headers */ = {isa = PBXBuildFile; fileRef = 969FCE94120DB9A10067E617 /* lgpl-3.0.txt */; settings = {ATTRIBUTES = (Public, ); }; };
+		969FCE9F120DB9E20067E617 /* lgpl-3.0.txt in Headers */ = {isa = PBXBuildFile; fileRef = 969FCE94120DB9A10067E617 /* lgpl-3.0.txt */; settings = {ATTRIBUTES = (Public, ); }; };
+		969FCEA0120DB9EF0067E617 /* lgpl-3.0.txt in Headers */ = {isa = PBXBuildFile; fileRef = 969FCE94120DB9A10067E617 /* lgpl-3.0.txt */; settings = {ATTRIBUTES = (Public, ); }; };
+		96A24EB5100F7E5800F21F0F /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 961EA8ED100E8565007E6C25 /* VVBasics.framework */; };
+		96A99138108D674400895DC1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9652676F108C29AC00A2906D /* SystemConfiguration.framework */; };
+		96BF10A9100E95200079A2E6 /* VVBasics.h in Headers */ = {isa = PBXBuildFile; fileRef = 96BF10A8100E95200079A2E6 /* VVBasics.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		96BF10AE100E95330079A2E6 /* VVOSC.h in Headers */ = {isa = PBXBuildFile; fileRef = 96BF10AD100E95330079A2E6 /* VVOSC.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		96C2F2141017815F004E19B0 /* OSCConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 96C2F2131017815F004E19B0 /* OSCConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		96ED419910628A5500D8373F /* VVCURLDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 96ED419710628A5500D8373F /* VVCURLDL.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		96ED419A10628A5500D8373F /* VVCURLDL.m in Sources */ = {isa = PBXBuildFile; fileRef = 96ED419810628A5500D8373F /* VVCURLDL.m */; };
+		96F2F59D12D0B9ED003715F3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96A99011108CEA2600895DC1 /* Foundation.framework */; };
+		A9A9AAB92594274B00890134 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = A9A9AAB32594274B00890134 /* LICENSE */; };
+		A9A9AABA2594274B00890134 /* MAZeroingWeakRef.m in Sources */ = {isa = PBXBuildFile; fileRef = A9A9AAB52594274B00890134 /* MAZeroingWeakRef.m */; };
+		A9A9AABB2594274B00890134 /* MAZeroingWeakRef.h in Headers */ = {isa = PBXBuildFile; fileRef = A9A9AAB62594274B00890134 /* MAZeroingWeakRef.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A9A9AABC2594274B00890134 /* MAZeroingWeakRefNativeZWRNotAllowedTable.h in Headers */ = {isa = PBXBuildFile; fileRef = A9A9AAB72594274B00890134 /* MAZeroingWeakRefNativeZWRNotAllowedTable.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A9A9AABD2594274B00890134 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = A9A9AAB82594274B00890134 /* README.markdown */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		96174622100F886F00FB60E6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 961EA8EC100E8565007E6C25;
+			remoteInfo = VVBasics;
+		};
+		9658764C18CE5C39003126BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 961EA8EC100E8565007E6C25;
+			remoteInfo = VVBasics;
+		};
+		9658765018CE5C39003126BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 961745F3100F86B400FB60E6;
+			remoteInfo = VVMIDI;
+		};
+		9658765218CE5C39003126BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9628D0C4100E89F700C3944E;
+			remoteInfo = VVOSC;
+		};
+		96A24EB8100F7E6A00F21F0F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 961EA8EC100E8565007E6C25;
+			remoteInfo = VVBasics;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		1AA491C31940E36D0079B0FB /* VVBasicMacros.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVBasicMacros.m; path = VVBasics/src/VVBasicMacros.m; sourceTree = "<group>"; };
+		1AD9E8E51E70899200497CB5 /* VVMStopwatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVMStopwatch.h; path = VVBasics/src/VVMStopwatch.h; sourceTree = "<group>"; };
+		1AD9E8E61E70899200497CB5 /* VVMStopwatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVMStopwatch.m; path = VVBasics/src/VVMStopwatch.m; sourceTree = "<group>"; };
+		32DBCF5E0370ADEE00C91783 /* VVOpenSource_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VVOpenSource_Prefix.pch; sourceTree = "<group>"; };
+		5107014010E14BF200A67653 /* MutNRLockDict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutNRLockDict.h; path = VVBasics/src/MutNRLockDict.h; sourceTree = "<group>"; };
+		5107014110E14BF200A67653 /* MutNRLockDict.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutNRLockDict.m; path = VVBasics/src/MutNRLockDict.m; sourceTree = "<group>"; };
+		961745F4100F86B400FB60E6 /* VVMIDI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VVMIDI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		961745F5100F86B400FB60E6 /* VVMIDI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "VVMIDI-Info.plist"; path = "VVMIDI/FrameworkSrc/VVMIDI-Info.plist"; sourceTree = "<group>"; };
+		961745FE100F879000FB60E6 /* VVMIDI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVMIDI.h; path = VVMIDI/VVMIDI.h; sourceTree = "<group>"; };
+		96174604100F87B300FB60E6 /* VVMIDIManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVMIDIManager.h; path = VVMIDI/FrameworkSrc/VVMIDIManager.h; sourceTree = "<group>"; };
+		96174605100F87B300FB60E6 /* VVMIDINode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVMIDINode.h; path = VVMIDI/FrameworkSrc/VVMIDINode.h; sourceTree = "<group>"; };
+		96174606100F87B300FB60E6 /* VVMIDIMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVMIDIMessage.h; path = VVMIDI/FrameworkSrc/VVMIDIMessage.h; sourceTree = "<group>"; };
+		96174607100F87B300FB60E6 /* VVMIDINode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVMIDINode.m; path = VVMIDI/FrameworkSrc/VVMIDINode.m; sourceTree = "<group>"; };
+		96174608100F87B300FB60E6 /* VVMIDIMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVMIDIMessage.m; path = VVMIDI/FrameworkSrc/VVMIDIMessage.m; sourceTree = "<group>"; };
+		96174609100F87B300FB60E6 /* VVMIDIManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVMIDIManager.m; path = VVMIDI/FrameworkSrc/VVMIDIManager.m; sourceTree = "<group>"; };
+		9617463E100F88EC00FB60E6 /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = /System/Library/Frameworks/CoreMIDI.framework; sourceTree = "<absolute>"; };
+		961EA8ED100E8565007E6C25 /* VVBasics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VVBasics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		961EA8EE100E8565007E6C25 /* VVBasics-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "VVBasics-Info.plist"; sourceTree = "<group>"; };
+		961EA947100E8834007E6C25 /* MutLockArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutLockArray.h; path = VVBasics/src/MutLockArray.h; sourceTree = "<group>"; };
+		961EA948100E8834007E6C25 /* MutLockDict.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutLockDict.m; path = VVBasics/src/MutLockDict.m; sourceTree = "<group>"; };
+		961EA949100E8834007E6C25 /* MutLockDict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutLockDict.h; path = VVBasics/src/MutLockDict.h; sourceTree = "<group>"; };
+		961EA94A100E8834007E6C25 /* VVThreadLoop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVThreadLoop.m; path = VVBasics/src/VVThreadLoop.m; sourceTree = "<group>"; };
+		961EA94B100E8834007E6C25 /* VVThreadLoop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVThreadLoop.h; path = VVBasics/src/VVThreadLoop.h; sourceTree = "<group>"; };
+		961EA94C100E8834007E6C25 /* MutLockArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutLockArray.m; path = VVBasics/src/MutLockArray.m; sourceTree = "<group>"; };
+		961EA94D100E8834007E6C25 /* VVStopwatch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVStopwatch.m; path = VVBasics/src/VVStopwatch.m; sourceTree = "<group>"; };
+		961EA94E100E8834007E6C25 /* VVStopwatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVStopwatch.h; path = VVBasics/src/VVStopwatch.h; sourceTree = "<group>"; };
+		961EA950100E8834007E6C25 /* VVBasicMacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVBasicMacros.h; path = VVBasics/src/VVBasicMacros.h; sourceTree = "<group>"; };
+		961EA951100E8834007E6C25 /* ObjectHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObjectHolder.m; path = VVBasics/src/ObjectHolder.m; sourceTree = "<group>"; };
+		961EA952100E8834007E6C25 /* ObjectHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObjectHolder.h; path = VVBasics/src/ObjectHolder.h; sourceTree = "<group>"; };
+		961EA955100E8834007E6C25 /* MutNRLockArray.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutNRLockArray.m; path = VVBasics/src/MutNRLockArray.m; sourceTree = "<group>"; };
+		961EA956100E8834007E6C25 /* MutNRLockArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutNRLockArray.h; path = VVBasics/src/MutNRLockArray.h; sourceTree = "<group>"; };
+		9621356714C7086C00E76C81 /* VVAssertionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVAssertionHandler.h; path = VVBasics/src/VVAssertionHandler.h; sourceTree = "<group>"; };
+		9621356814C7086C00E76C81 /* VVAssertionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVAssertionHandler.m; path = VVBasics/src/VVAssertionHandler.m; sourceTree = "<group>"; };
+		9628D0C5100E89F700C3944E /* VVOSC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = VVOSC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9628D0C6100E89F700C3944E /* VVOSC-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "VVOSC-Info.plist"; path = "VVOSC/FrameworkSrc/VVOSC-Info.plist"; sourceTree = "<group>"; };
+		9628D0EE100E8A5200C3944E /* OSCAddressSpace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCAddressSpace.m; path = VVOSC/FrameworkSrc/OSCAddressSpace.m; sourceTree = "<group>"; };
+		9628D0EF100E8A5200C3944E /* OSCAddressSpace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCAddressSpace.h; path = VVOSC/FrameworkSrc/OSCAddressSpace.h; sourceTree = "<group>"; };
+		9628D0FC100E8A6700C3944E /* OSCZeroConfManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCZeroConfManager.h; path = VVOSC/FrameworkSrc/OSCZeroConfManager.h; sourceTree = "<group>"; };
+		9628D0FD100E8A6700C3944E /* OSCZeroConfDomain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCZeroConfDomain.m; path = VVOSC/FrameworkSrc/OSCZeroConfDomain.m; sourceTree = "<group>"; };
+		9628D0FE100E8A6700C3944E /* OSCBundle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCBundle.m; path = VVOSC/FrameworkSrc/OSCBundle.m; sourceTree = "<group>"; };
+		9628D0FF100E8A6700C3944E /* OSCValue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCValue.m; path = VVOSC/FrameworkSrc/OSCValue.m; sourceTree = "<group>"; };
+		9628D100100E8A6700C3944E /* OSCOutPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCOutPort.h; path = VVOSC/FrameworkSrc/OSCOutPort.h; sourceTree = "<group>"; };
+		9628D101100E8A6700C3944E /* OSCZeroConfDomain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCZeroConfDomain.h; path = VVOSC/FrameworkSrc/OSCZeroConfDomain.h; sourceTree = "<group>"; };
+		9628D102100E8A6700C3944E /* OSCPacket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCPacket.m; path = VVOSC/FrameworkSrc/OSCPacket.m; sourceTree = "<group>"; };
+		9628D103100E8A6700C3944E /* OSCStringAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCStringAdditions.h; path = VVOSC/FrameworkSrc/OSCStringAdditions.h; sourceTree = "<group>"; };
+		9628D104100E8A6700C3944E /* OSCBundle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCBundle.h; path = VVOSC/FrameworkSrc/OSCBundle.h; sourceTree = "<group>"; };
+		9628D105100E8A6700C3944E /* OSCPacket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCPacket.h; path = VVOSC/FrameworkSrc/OSCPacket.h; sourceTree = "<group>"; };
+		9628D106100E8A6700C3944E /* OSCMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCMessage.m; path = VVOSC/FrameworkSrc/OSCMessage.m; sourceTree = "<group>"; };
+		9628D107100E8A6700C3944E /* OSCZeroConfManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCZeroConfManager.m; path = VVOSC/FrameworkSrc/OSCZeroConfManager.m; sourceTree = "<group>"; };
+		9628D108100E8A6700C3944E /* OSCStringAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCStringAdditions.m; path = VVOSC/FrameworkSrc/OSCStringAdditions.m; sourceTree = "<group>"; };
+		9628D109100E8A6700C3944E /* OSCInPort.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCInPort.h; path = VVOSC/FrameworkSrc/OSCInPort.h; sourceTree = "<group>"; };
+		9628D10A100E8A6700C3944E /* OSCNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCNode.m; path = VVOSC/FrameworkSrc/OSCNode.m; sourceTree = "<group>"; };
+		9628D10B100E8A6700C3944E /* OSCMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCMessage.h; path = VVOSC/FrameworkSrc/OSCMessage.h; sourceTree = "<group>"; };
+		9628D10C100E8A6700C3944E /* OSCOutPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCOutPort.m; path = VVOSC/FrameworkSrc/OSCOutPort.m; sourceTree = "<group>"; };
+		9628D10D100E8A6700C3944E /* OSCManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCManager.m; path = VVOSC/FrameworkSrc/OSCManager.m; sourceTree = "<group>"; };
+		9628D10F100E8A6700C3944E /* OSCNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCNode.h; path = VVOSC/FrameworkSrc/OSCNode.h; sourceTree = "<group>"; };
+		9628D110100E8A6700C3944E /* OSCValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCValue.h; path = VVOSC/FrameworkSrc/OSCValue.h; sourceTree = "<group>"; };
+		9628D111100E8A6700C3944E /* OSCInPort.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OSCInPort.m; path = VVOSC/FrameworkSrc/OSCInPort.m; sourceTree = "<group>"; };
+		9628D112100E8A6700C3944E /* OSCManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCManager.h; path = VVOSC/FrameworkSrc/OSCManager.h; sourceTree = "<group>"; };
+		9652676F108C29AC00A2906D /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = /System/Library/Frameworks/SystemConfiguration.framework; sourceTree = "<absolute>"; };
+		9658C25F18F86BCF004A6BCF /* VVSysVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVSysVersion.h; path = VVBasics/src/VVSysVersion.h; sourceTree = "<group>"; };
+		9658C26018F86BCF004A6BCF /* VVSysVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVSysVersion.m; path = VVBasics/src/VVSysVersion.m; sourceTree = "<group>"; };
+		969FCE94120DB9A10067E617 /* lgpl-3.0.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "lgpl-3.0.txt"; sourceTree = "<group>"; };
+		96A99011108CEA2600895DC1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		96BF10A8100E95200079A2E6 /* VVBasics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVBasics.h; path = VVBasics/VVBasics.h; sourceTree = "<group>"; };
+		96BF10AD100E95330079A2E6 /* VVOSC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVOSC.h; path = VVOSC/VVOSC.h; sourceTree = "<group>"; };
+		96C2F2131017815F004E19B0 /* OSCConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OSCConstants.h; path = VVOSC/FrameworkSrc/OSCConstants.h; sourceTree = "<group>"; };
+		96ED419710628A5500D8373F /* VVCURLDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VVCURLDL.h; path = VVBasics/src/VVCURLDL.h; sourceTree = "<group>"; };
+		96ED419810628A5500D8373F /* VVCURLDL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VVCURLDL.m; path = VVBasics/src/VVCURLDL.m; sourceTree = "<group>"; };
+		A9A9AAB32594274B00890134 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		A9A9AAB52594274B00890134 /* MAZeroingWeakRef.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MAZeroingWeakRef.m; sourceTree = "<group>"; };
+		A9A9AAB62594274B00890134 /* MAZeroingWeakRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAZeroingWeakRef.h; sourceTree = "<group>"; };
+		A9A9AAB72594274B00890134 /* MAZeroingWeakRefNativeZWRNotAllowedTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MAZeroingWeakRefNativeZWRNotAllowedTable.h; sourceTree = "<group>"; };
+		A9A9AAB82594274B00890134 /* README.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		961745F2100F86B400FB60E6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96174626100F887E00FB60E6 /* VVBasics.framework in Frameworks */,
+				96174627100F888C00FB60E6 /* Cocoa.framework in Frameworks */,
+				96174644100F88EF00FB60E6 /* CoreMIDI.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		961EA8EB100E8565007E6C25 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				961EA925100E876F007E6C25 /* Cocoa.framework in Frameworks */,
+				96A99138108D674400895DC1 /* SystemConfiguration.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9628D0C3100E89F700C3944E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9664239B100E9C1200630C6D /* Cocoa.framework in Frameworks */,
+				96A24EB5100F7E5800F21F0F /* VVBasics.framework in Frameworks */,
+				96F2F59D12D0B9ED003715F3 /* Foundation.framework in Frameworks */,
+				9647274316D41BF400888157 /* SystemConfiguration.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				961EA8ED100E8565007E6C25 /* VVBasics.framework */,
+				9628D0C5100E89F700C3944E /* VVOSC.framework */,
+				961745F4100F86B400FB60E6 /* VVMIDI.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* VVOpenSource */ = {
+			isa = PBXGroup;
+			children = (
+				A9A9AAB12594272B00890134 /* EXTERNAL CODE */,
+				966D3E9718634FF000A7BE9E /* Mac Frameworks */,
+				32C88DFF0371C24200C91783 /* Other Sources */,
+				96ACD7221706416300138AE6 /* Frameworks */,
+				034768DFFF38A50411DB9C8B /* Products */,
+			);
+			name = VVOpenSource;
+			sourceTree = "<group>";
+		};
+		32C88DFF0371C24200C91783 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				969FCE94120DB9A10067E617 /* lgpl-3.0.txt */,
+				32DBCF5E0370ADEE00C91783 /* VVOpenSource_Prefix.pch */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		96174601100F879900FB60E6 /* VVMIDI framework */ = {
+			isa = PBXGroup;
+			children = (
+				961745F5100F86B400FB60E6 /* VVMIDI-Info.plist */,
+				961745FE100F879000FB60E6 /* VVMIDI.h */,
+				96174606100F87B300FB60E6 /* VVMIDIMessage.h */,
+				96174608100F87B300FB60E6 /* VVMIDIMessage.m */,
+				96174605100F87B300FB60E6 /* VVMIDINode.h */,
+				96174607100F87B300FB60E6 /* VVMIDINode.m */,
+				96174604100F87B300FB60E6 /* VVMIDIManager.h */,
+				96174609100F87B300FB60E6 /* VVMIDIManager.m */,
+			);
+			name = "VVMIDI framework";
+			sourceTree = "<group>";
+		};
+		961EA8F2100E85CB007E6C25 /* VVBasics framework */ = {
+			isa = PBXGroup;
+			children = (
+				961EA8EE100E8565007E6C25 /* VVBasics-Info.plist */,
+				96BF10A8100E95200079A2E6 /* VVBasics.h */,
+				961EA950100E8834007E6C25 /* VVBasicMacros.h */,
+				1AA491C31940E36D0079B0FB /* VVBasicMacros.m */,
+				968D939A1072A4AE00FE7527 /* Threads & Thread-safe classes */,
+				961EA94E100E8834007E6C25 /* VVStopwatch.h */,
+				961EA94D100E8834007E6C25 /* VVStopwatch.m */,
+				96ED419710628A5500D8373F /* VVCURLDL.h */,
+				96ED419810628A5500D8373F /* VVCURLDL.m */,
+				9658C25F18F86BCF004A6BCF /* VVSysVersion.h */,
+				9658C26018F86BCF004A6BCF /* VVSysVersion.m */,
+				1AD9E8E51E70899200497CB5 /* VVMStopwatch.h */,
+				1AD9E8E61E70899200497CB5 /* VVMStopwatch.m */,
+			);
+			name = "VVBasics framework";
+			sourceTree = "<group>";
+		};
+		9628D0CA100E8A0100C3944E /* VVOSC framework */ = {
+			isa = PBXGroup;
+			children = (
+				9628D0C6100E89F700C3944E /* VVOSC-Info.plist */,
+				96BF10AD100E95330079A2E6 /* VVOSC.h */,
+				9628D16F100E8A9000C3944E /* basic data types */,
+				9628D112100E8A6700C3944E /* OSCManager.h */,
+				9628D10D100E8A6700C3944E /* OSCManager.m */,
+				9628D109100E8A6700C3944E /* OSCInPort.h */,
+				9628D111100E8A6700C3944E /* OSCInPort.m */,
+				9628D100100E8A6700C3944E /* OSCOutPort.h */,
+				9628D10C100E8A6700C3944E /* OSCOutPort.m */,
+				9628D170100E8AE100C3944E /* address space */,
+				9628D171100E8AF400C3944E /* bonjour */,
+			);
+			name = "VVOSC framework";
+			sourceTree = "<group>";
+		};
+		9628D16F100E8A9000C3944E /* basic data types */ = {
+			isa = PBXGroup;
+			children = (
+				96C2F2131017815F004E19B0 /* OSCConstants.h */,
+				9628D103100E8A6700C3944E /* OSCStringAdditions.h */,
+				9628D108100E8A6700C3944E /* OSCStringAdditions.m */,
+				9628D110100E8A6700C3944E /* OSCValue.h */,
+				9628D0FF100E8A6700C3944E /* OSCValue.m */,
+				9628D10B100E8A6700C3944E /* OSCMessage.h */,
+				9628D106100E8A6700C3944E /* OSCMessage.m */,
+				9628D104100E8A6700C3944E /* OSCBundle.h */,
+				9628D0FE100E8A6700C3944E /* OSCBundle.m */,
+				9628D105100E8A6700C3944E /* OSCPacket.h */,
+				9628D102100E8A6700C3944E /* OSCPacket.m */,
+			);
+			name = "basic data types";
+			sourceTree = "<group>";
+		};
+		9628D170100E8AE100C3944E /* address space */ = {
+			isa = PBXGroup;
+			children = (
+				9628D10F100E8A6700C3944E /* OSCNode.h */,
+				9628D10A100E8A6700C3944E /* OSCNode.m */,
+				9628D0EF100E8A5200C3944E /* OSCAddressSpace.h */,
+				9628D0EE100E8A5200C3944E /* OSCAddressSpace.m */,
+			);
+			name = "address space";
+			sourceTree = "<group>";
+		};
+		9628D171100E8AF400C3944E /* bonjour */ = {
+			isa = PBXGroup;
+			children = (
+				9628D0FC100E8A6700C3944E /* OSCZeroConfManager.h */,
+				9628D107100E8A6700C3944E /* OSCZeroConfManager.m */,
+				9628D101100E8A6700C3944E /* OSCZeroConfDomain.h */,
+				9628D0FD100E8A6700C3944E /* OSCZeroConfDomain.m */,
+			);
+			name = bonjour;
+			sourceTree = "<group>";
+		};
+		966D3E9718634FF000A7BE9E /* Mac Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				961EA8F2100E85CB007E6C25 /* VVBasics framework */,
+				96174601100F879900FB60E6 /* VVMIDI framework */,
+				9628D0CA100E8A0100C3944E /* VVOSC framework */,
+			);
+			name = "Mac Frameworks";
+			sourceTree = "<group>";
+		};
+		968D939A1072A4AE00FE7527 /* Threads & Thread-safe classes */ = {
+			isa = PBXGroup;
+			children = (
+				961EA94B100E8834007E6C25 /* VVThreadLoop.h */,
+				961EA94A100E8834007E6C25 /* VVThreadLoop.m */,
+				9621356714C7086C00E76C81 /* VVAssertionHandler.h */,
+				9621356814C7086C00E76C81 /* VVAssertionHandler.m */,
+				961EA949100E8834007E6C25 /* MutLockDict.h */,
+				961EA948100E8834007E6C25 /* MutLockDict.m */,
+				961EA947100E8834007E6C25 /* MutLockArray.h */,
+				961EA94C100E8834007E6C25 /* MutLockArray.m */,
+				961EA952100E8834007E6C25 /* ObjectHolder.h */,
+				961EA951100E8834007E6C25 /* ObjectHolder.m */,
+				961EA956100E8834007E6C25 /* MutNRLockArray.h */,
+				961EA955100E8834007E6C25 /* MutNRLockArray.m */,
+				5107014010E14BF200A67653 /* MutNRLockDict.h */,
+				5107014110E14BF200A67653 /* MutNRLockDict.m */,
+			);
+			name = "Threads & Thread-safe classes";
+			sourceTree = "<group>";
+		};
+		96ACD7221706416300138AE6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */,
+				9617463E100F88EC00FB60E6 /* CoreMIDI.framework */,
+				96A99011108CEA2600895DC1 /* Foundation.framework */,
+				9652676F108C29AC00A2906D /* SystemConfiguration.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A9A9AAB12594272B00890134 /* EXTERNAL CODE */ = {
+			isa = PBXGroup;
+			children = (
+				A9A9AAB22594274B00890134 /* MAZeroingWeakRef */,
+			);
+			name = "EXTERNAL CODE";
+			sourceTree = "<group>";
+		};
+		A9A9AAB22594274B00890134 /* MAZeroingWeakRef */ = {
+			isa = PBXGroup;
+			children = (
+				A9A9AAB32594274B00890134 /* LICENSE */,
+				A9A9AAB42594274B00890134 /* Source */,
+				A9A9AAB82594274B00890134 /* README.markdown */,
+			);
+			name = MAZeroingWeakRef;
+			path = external/MAZeroingWeakRef;
+			sourceTree = "<group>";
+		};
+		A9A9AAB42594274B00890134 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				A9A9AAB52594274B00890134 /* MAZeroingWeakRef.m */,
+				A9A9AAB62594274B00890134 /* MAZeroingWeakRef.h */,
+				A9A9AAB72594274B00890134 /* MAZeroingWeakRefNativeZWRNotAllowedTable.h */,
+			);
+			path = Source;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		961745EF100F86B400FB60E6 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				969FCE9F120DB9E20067E617 /* lgpl-3.0.txt in Headers */,
+				961745FF100F879000FB60E6 /* VVMIDI.h in Headers */,
+				9617460A100F87B300FB60E6 /* VVMIDIManager.h in Headers */,
+				9617460B100F87B300FB60E6 /* VVMIDINode.h in Headers */,
+				9617460C100F87B300FB60E6 /* VVMIDIMessage.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		961EA8E8100E8565007E6C25 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				969FCE9E120DB9DA0067E617 /* lgpl-3.0.txt in Headers */,
+				961EA957100E8834007E6C25 /* MutLockArray.h in Headers */,
+				961EA959100E8834007E6C25 /* MutLockDict.h in Headers */,
+				961EA95B100E8834007E6C25 /* VVThreadLoop.h in Headers */,
+				961EA95E100E8834007E6C25 /* VVStopwatch.h in Headers */,
+				961EA960100E8834007E6C25 /* VVBasicMacros.h in Headers */,
+				961EA962100E8834007E6C25 /* ObjectHolder.h in Headers */,
+				961EA966100E8834007E6C25 /* MutNRLockArray.h in Headers */,
+				96BF10A9100E95200079A2E6 /* VVBasics.h in Headers */,
+				96ED419910628A5500D8373F /* VVCURLDL.h in Headers */,
+				5107014210E14BF200A67653 /* MutNRLockDict.h in Headers */,
+				9621356914C7086C00E76C81 /* VVAssertionHandler.h in Headers */,
+				A9A9AABB2594274B00890134 /* MAZeroingWeakRef.h in Headers */,
+				A9A9AABC2594274B00890134 /* MAZeroingWeakRefNativeZWRNotAllowedTable.h in Headers */,
+				1AD9E8E71E70899200497CB5 /* VVMStopwatch.h in Headers */,
+				9658C26118F86BCF004A6BCF /* VVSysVersion.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9628D0C0100E89F700C3944E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				969FCEA0120DB9EF0067E617 /* lgpl-3.0.txt in Headers */,
+				9628D0F1100E8A5200C3944E /* OSCAddressSpace.h in Headers */,
+				9628D113100E8A6700C3944E /* OSCZeroConfManager.h in Headers */,
+				9628D117100E8A6700C3944E /* OSCOutPort.h in Headers */,
+				9628D118100E8A6700C3944E /* OSCZeroConfDomain.h in Headers */,
+				9628D11A100E8A6700C3944E /* OSCStringAdditions.h in Headers */,
+				9628D11B100E8A6700C3944E /* OSCBundle.h in Headers */,
+				9628D11C100E8A6700C3944E /* OSCPacket.h in Headers */,
+				9628D120100E8A6700C3944E /* OSCInPort.h in Headers */,
+				9628D122100E8A6700C3944E /* OSCMessage.h in Headers */,
+				9628D126100E8A6700C3944E /* OSCNode.h in Headers */,
+				9628D127100E8A6700C3944E /* OSCValue.h in Headers */,
+				9628D129100E8A6700C3944E /* OSCManager.h in Headers */,
+				96BF10AE100E95330079A2E6 /* VVOSC.h in Headers */,
+				96C2F2141017815F004E19B0 /* OSCConstants.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		961745F3100F86B400FB60E6 /* VVMIDI */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 961745F8100F86B500FB60E6 /* Build configuration list for PBXNativeTarget "VVMIDI" */;
+			buildPhases = (
+				961745EF100F86B400FB60E6 /* Headers */,
+				961745F0100F86B400FB60E6 /* Resources */,
+				961745F1100F86B400FB60E6 /* Sources */,
+				961745F2100F86B400FB60E6 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96174623100F886F00FB60E6 /* PBXTargetDependency */,
+			);
+			name = VVMIDI;
+			productName = VVMIDI;
+			productReference = 961745F4100F86B400FB60E6 /* VVMIDI.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		961EA8EC100E8565007E6C25 /* VVBasics-mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 961EA8F1100E8566007E6C25 /* Build configuration list for PBXNativeTarget "VVBasics-mac" */;
+			buildPhases = (
+				961EA8E8100E8565007E6C25 /* Headers */,
+				961EA8E9100E8565007E6C25 /* Resources */,
+				961EA8EA100E8565007E6C25 /* Sources */,
+				961EA8EB100E8565007E6C25 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "VVBasics-mac";
+			productName = VVBasics;
+			productReference = 961EA8ED100E8565007E6C25 /* VVBasics.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		9628D0C4100E89F700C3944E /* VVOSC-mac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9628D0C9100E89F800C3944E /* Build configuration list for PBXNativeTarget "VVOSC-mac" */;
+			buildPhases = (
+				9628D0C0100E89F700C3944E /* Headers */,
+				9628D0C1100E89F700C3944E /* Resources */,
+				9628D0C2100E89F700C3944E /* Sources */,
+				9628D0C3100E89F700C3944E /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				96A24EB9100F7E6A00F21F0F /* PBXTargetDependency */,
+			);
+			name = "VVOSC-mac";
+			productName = VVOSC;
+			productReference = 9628D0C5100E89F700C3944E /* VVOSC.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					961EA8EC100E8565007E6C25 = {
+						DevelopmentTeam = LRNWZB2D4D;
+						ProvisioningStyle = Automatic;
+					};
+					9628D0C4100E89F700C3944E = {
+						DevelopmentTeam = LRNWZB2D4D;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VVOpenSource" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = en;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+				Base,
+				ja,
+				de,
+				fr,
+			);
+			mainGroup = 0867D691FE84028FC02AAC07 /* VVOpenSource */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				9658764818CE5C2D003126BC /* Build Mac Frameworks */,
+				961EA8EC100E8565007E6C25 /* VVBasics-mac */,
+				961745F3100F86B400FB60E6 /* VVMIDI */,
+				9628D0C4100E89F700C3944E /* VVOSC-mac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		961745F0100F86B400FB60E6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		961EA8E9100E8565007E6C25 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A9A9AABD2594274B00890134 /* README.markdown in Resources */,
+				A9A9AAB92594274B00890134 /* LICENSE in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9628D0C1100E89F700C3944E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		961745F1100F86B400FB60E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9617460D100F87B300FB60E6 /* VVMIDINode.m in Sources */,
+				9617460E100F87B300FB60E6 /* VVMIDIMessage.m in Sources */,
+				9617460F100F87B300FB60E6 /* VVMIDIManager.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		961EA8EA100E8565007E6C25 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				961EA958100E8834007E6C25 /* MutLockDict.m in Sources */,
+				961EA95A100E8834007E6C25 /* VVThreadLoop.m in Sources */,
+				A9A9AABA2594274B00890134 /* MAZeroingWeakRef.m in Sources */,
+				961EA95C100E8834007E6C25 /* MutLockArray.m in Sources */,
+				961EA95D100E8834007E6C25 /* VVStopwatch.m in Sources */,
+				961EA961100E8834007E6C25 /* ObjectHolder.m in Sources */,
+				961EA965100E8834007E6C25 /* MutNRLockArray.m in Sources */,
+				96ED419A10628A5500D8373F /* VVCURLDL.m in Sources */,
+				1AA491C41940E36D0079B0FB /* VVBasicMacros.m in Sources */,
+				5107014310E14BF200A67653 /* MutNRLockDict.m in Sources */,
+				9621356A14C7086C00E76C81 /* VVAssertionHandler.m in Sources */,
+				9658C26218F86BCF004A6BCF /* VVSysVersion.m in Sources */,
+				1AD9E8E91E70899200497CB5 /* VVMStopwatch.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9628D0C2100E89F700C3944E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9628D0F0100E8A5200C3944E /* OSCAddressSpace.m in Sources */,
+				9628D114100E8A6700C3944E /* OSCZeroConfDomain.m in Sources */,
+				9628D115100E8A6700C3944E /* OSCBundle.m in Sources */,
+				9628D116100E8A6700C3944E /* OSCValue.m in Sources */,
+				9628D119100E8A6700C3944E /* OSCPacket.m in Sources */,
+				9628D11D100E8A6700C3944E /* OSCMessage.m in Sources */,
+				9628D11E100E8A6700C3944E /* OSCZeroConfManager.m in Sources */,
+				9628D11F100E8A6700C3944E /* OSCStringAdditions.m in Sources */,
+				9628D121100E8A6700C3944E /* OSCNode.m in Sources */,
+				9628D123100E8A6700C3944E /* OSCOutPort.m in Sources */,
+				9628D124100E8A6700C3944E /* OSCManager.m in Sources */,
+				9628D128100E8A6700C3944E /* OSCInPort.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		96174623100F886F00FB60E6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 961EA8EC100E8565007E6C25 /* VVBasics-mac */;
+			targetProxy = 96174622100F886F00FB60E6 /* PBXContainerItemProxy */;
+		};
+		9658764D18CE5C39003126BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 961EA8EC100E8565007E6C25 /* VVBasics-mac */;
+			targetProxy = 9658764C18CE5C39003126BC /* PBXContainerItemProxy */;
+		};
+		9658765118CE5C39003126BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 961745F3100F86B400FB60E6 /* VVMIDI */;
+			targetProxy = 9658765018CE5C39003126BC /* PBXContainerItemProxy */;
+		};
+		9658765318CE5C39003126BC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9628D0C4100E89F700C3944E /* VVOSC-mac */;
+			targetProxy = 9658765218CE5C39003126BC /* PBXContainerItemProxy */;
+		};
+		96A24EB9100F7E6A00F21F0F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 961EA8EC100E8565007E6C25 /* VVBasics-mac */;
+			targetProxy = 96A24EB8100F7E6A00F21F0F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91B208733DA50010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEFINES_MODULE = NO;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(PROJECT_DIR)/build";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IBC_WARNINGS = NO;
+				INSTALL_PATH = /;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		1DEB91B308733DA50010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				DEFINES_MODULE = NO;
+				DEPLOYMENT_LOCATION = YES;
+				DSTROOT = "$(PROJECT_DIR)/build";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_VERSION = "";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IBC_WARNINGS = NO;
+				INSTALL_PATH = /;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		961745F6100F86B500FB60E6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "./VVMIDI/FrameworkSrc/VVMIDI-Info.plist";
+				INSTALL_PATH = "@rpath";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:identifier}";
+				PRODUCT_NAME = VVMIDI;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		961745F7100F86B500FB60E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "./VVMIDI/FrameworkSrc/VVMIDI-Info.plist";
+				INSTALL_PATH = "@rpath";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.${PRODUCT_NAME:identifier}";
+				PRODUCT_NAME = VVMIDI;
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		961EA8EF100E8566007E6C25 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = LRNWZB2D4D;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "VVBasics-Info.plist";
+				INSTALL_PATH = "@rpath";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-lcurl";
+				PRODUCT_BUNDLE_IDENTIFIER = com.peters.VVBasics;
+				PRODUCT_NAME = VVBasics;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		961EA8F0100E8566007E6C25 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = LRNWZB2D4D;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "VVBasics-Info.plist";
+				INSTALL_PATH = "@rpath";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-lcurl";
+				PRODUCT_BUNDLE_IDENTIFIER = com.peters.VVBasics;
+				PRODUCT_NAME = VVBasics;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		9628D0C7100E89F800C3944E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = LRNWZB2D4D;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "./VVOSC/FrameworkSrc/VVOSC-Info.plist";
+				INSTALL_PATH = "@rpath";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.peters.VVOSC;
+				PRODUCT_NAME = VVOSC;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		9628D0C8100E89F800C3944E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = LRNWZB2D4D;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 1;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "./VVOSC/FrameworkSrc/VVOSC-Info.plist";
+				INSTALL_PATH = "@rpath";
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.peters.VVOSC;
+				PRODUCT_NAME = VVOSC;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		9658764918CE5C2D003126BC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		9658764A18CE5C2D003126BC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "VVOpenSource" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91B208733DA50010E9CD /* Debug */,
+				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		961745F8100F86B500FB60E6 /* Build configuration list for PBXNativeTarget "VVMIDI" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				961745F6100F86B500FB60E6 /* Debug */,
+				961745F7100F86B500FB60E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		961EA8F1100E8566007E6C25 /* Build configuration list for PBXNativeTarget "VVBasics-mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				961EA8EF100E8566007E6C25 /* Debug */,
+				961EA8F0100E8566007E6C25 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9628D0C9100E89F800C3944E /* Build configuration list for PBXNativeTarget "VVOSC-mac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9628D0C7100E89F800C3944E /* Debug */,
+				9628D0C8100E89F800C3944E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9658764B18CE5C2D003126BC /* Build configuration list for PBXAggregateTarget "Build Mac Frameworks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9658764918CE5C2D003126BC /* Debug */,
+				9658764A18CE5C2D003126BC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

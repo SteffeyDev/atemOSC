@@ -47,7 +47,7 @@ static void	InitBMDSwitcherAPI (void)
 		gBundleRef = CFBundleCreate(kCFAllocatorDefault, bundleURL);
 		if (gBundleRef != NULL)
 		{
-			gCreateDiscoveryFunc = (CreateDiscoveryFunc)CFBundleGetFunctionPointerForName(gBundleRef, CFSTR("GetBMDSwitcherDiscoveryInstance_0006"));
+			gCreateDiscoveryFunc = (CreateDiscoveryFunc)CFBundleGetFunctionPointerForName(gBundleRef, CFSTR("GetBMDSwitcherDiscoveryInstance_0007"));
 		}
 		CFRelease(bundleURL);
 	}

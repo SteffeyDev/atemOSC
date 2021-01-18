@@ -10,15 +10,18 @@
 
 #include <stdio.h>
 #import "BMDSwitcherAPI.h"
+#import "Switcher.h"
 
-extern bool isMacroValid(uint32_t index);
-extern bool runMacroAtIndex(uint32_t index);
-extern bool stopRunningMacro();
-extern uint32_t getMaxNumberOfMacros();
-extern NSString* getNameOfMacro(uint32_t index);
-extern NSString* getDescriptionOfMacro(uint32_t index);
-extern void activateChannel(int channel, bool program);
+extern bool isMacroValid(Switcher *s, uint32_t index);
+extern bool runMacroAtIndex(Switcher *s, uint32_t index);
+extern bool stopRunningMacro(Switcher *s);
+extern uint32_t getMaxNumberOfMacros(Switcher *s);
+extern NSString* getNameOfMacro(Switcher *s, uint32_t index);
+extern NSString* getDescriptionOfMacro(Switcher *s, uint32_t index);
+extern void activateChannel(Switcher *s, int me, int channel, bool program);
 extern bool stringIsNumber(NSString * str);
 extern NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx));
+extern NSString* getFeedbackAddress(Switcher *s, NSString *address);
+extern NSString* getFeedbackAddress(Switcher *s, NSString *address, int me);
 
 #endif /* Utilities_hpp */

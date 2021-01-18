@@ -3,6 +3,8 @@
 #import <list>
 #import <vector>
 
+@class Switcher;
+
 #ifndef SwitcherMonitor_h
 #define SwitcherMonitor_h
 
@@ -22,14 +24,14 @@ template <class T=IUnknown>
 class GenericMonitor : public T
 {
 public:
-	GenericMonitor(void *delegate) : appDel(delegate), mRefCount(1) { }
+	GenericMonitor(Switcher *_switcher) : switcher(_switcher), mRefCount(1) { }
 	HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, LPVOID *ppv);
 	ULONG STDMETHODCALLTYPE AddRef(void);
 	ULONG STDMETHODCALLTYPE Release(void);
 	
 protected:
 	virtual ~GenericMonitor() { }
-	void *appDel;
+	Switcher *switcher;
 	
 private:
 	int mRefCount;
@@ -39,7 +41,7 @@ private:
 class MixEffectBlockMonitor : public GenericMonitor<IBMDSwitcherMixEffectBlockCallback>, public SendStatusInterface
 {
 public:
-	MixEffectBlockMonitor(void *delegate) : GenericMonitor(delegate) { }
+	MixEffectBlockMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify(BMDSwitcherMixEffectBlockEventType eventType);
 	bool moveSliderDownwards() const;
 	bool mMoveSliderDownwards = false;
@@ -55,12 +57,13 @@ private:
 	void updatePreviewButtonSelection() const;
 	void updateInTransitionState();
 	bool mCurrentTransitionReachedHalfway_ = false;
+	int me_;
 };
 
 class InputMonitor : public GenericMonitor<IBMDSwitcherInputCallback>, public SendStatusInterface
 {
 public:
-	InputMonitor(void *delegate, BMDSwitcherInputId inputId) : GenericMonitor(delegate), inputId_(inputId) { }
+	InputMonitor(Switcher *switcher, BMDSwitcherInputId inputId) : GenericMonitor(switcher), inputId_(inputId) { }
 	HRESULT Notify(BMDSwitcherInputEventType eventType);
 	float sendStatus() const;
 	
@@ -76,7 +79,7 @@ private:
 class DownstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherDownstreamKeyCallback>, public SendStatusInterface
 {
 public:
-	DownstreamKeyerMonitor(void *delegate) : GenericMonitor(delegate) { }
+	DownstreamKeyerMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
 	HRESULT Notify (BMDSwitcherDownstreamKeyEventType eventType);
 	float sendStatus() const;
 	
@@ -91,7 +94,7 @@ private:
 class UpstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherKeyCallback>, public SendStatusInterface
 {
 public:
-	UpstreamKeyerMonitor(void *delegate) : GenericMonitor(delegate) { }
+	UpstreamKeyerMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify (BMDSwitcherKeyEventType eventType);
 	float sendStatus() const;
 
@@ -103,12 +106,13 @@ private:
 	void updateUSKInputFill() const;
 	void updateUSKInputCut() const;
 	void updateUSKType() const;
+	int me_;
 };
 
 class UpstreamKeyerLumaParametersMonitor : public GenericMonitor<IBMDSwitcherKeyLumaParametersCallback>, public SendStatusInterface
 {
 public:
-	UpstreamKeyerLumaParametersMonitor(void *delegate) : GenericMonitor(delegate) { }
+	UpstreamKeyerLumaParametersMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify (BMDSwitcherKeyLumaParametersEventType eventType);
 	float sendStatus() const;
 	
@@ -120,12 +124,13 @@ private:
 	void updateUSKLumaGainParameter() const;
 	void updateUSKLumaPreMultipliedParameter() const;
 	void updateUSKLumaInverseParameter() const;
+	int me_;
 };
 
 class UpstreamKeyerChromaParametersMonitor : public GenericMonitor<IBMDSwitcherKeyChromaParametersCallback>, public SendStatusInterface
 {
 public:
-	UpstreamKeyerChromaParametersMonitor(void *delegate) : GenericMonitor(delegate) { }
+	UpstreamKeyerChromaParametersMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify (BMDSwitcherKeyChromaParametersEventType eventType);
 	float sendStatus() const;
 	
@@ -138,12 +143,13 @@ private:
 	void updateUSKChromaYSuppressParameter() const;
 	void updateUSKChromaLiftParameter() const;
 	void updateUSKChromaNarrowParameter() const;
+	int me_;
 };
 
 class TransitionParametersMonitor : public GenericMonitor<IBMDSwitcherTransitionParametersCallback>, public SendStatusInterface
 {
 public:
-	TransitionParametersMonitor(void *delegate) : GenericMonitor(delegate) { }
+	TransitionParametersMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify (BMDSwitcherTransitionParametersEventType eventType);
 	float sendStatus() const;
 	
@@ -152,12 +158,13 @@ protected:
 	
 private:
 	void updateTransitionParameters() const;
+	int me_;
 };
 
 class MacroPoolMonitor : public GenericMonitor<IBMDSwitcherMacroPoolCallback>, public SendStatusInterface
 {
 public:
-	MacroPoolMonitor(void *delegate) : GenericMonitor(delegate) { }
+	MacroPoolMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
 	HRESULT Notify (BMDSwitcherMacroPoolEventType eventType, uint32_t index, IBMDSwitcherTransferMacro* macroTransfer);
 	float sendStatus() const;
 	
@@ -175,7 +182,7 @@ private:
 class SwitcherMonitor : public GenericMonitor<IBMDSwitcherCallback>, public SendStatusInterface
 {
 public:
-	SwitcherMonitor(void *delegate) : GenericMonitor(delegate) { }
+	SwitcherMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
 	HRESULT STDMETHODCALLTYPE Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode);
 	float sendStatus() const;
 	
@@ -187,7 +194,7 @@ protected:
 class AudioInputMonitor : public GenericMonitor<IBMDSwitcherAudioInputCallback>, public SendStatusInterface
 {
 public:
-	AudioInputMonitor(void *delegate, BMDSwitcherAudioInputId inputId) : GenericMonitor(delegate), inputId_(inputId) { }
+	AudioInputMonitor(Switcher *switcher, BMDSwitcherAudioInputId inputId) : GenericMonitor(switcher), inputId_(inputId) { }
 	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherAudioInputEventType eventType);
 	HRESULT STDMETHODCALLTYPE LevelNotification (double left, double right, double peakLeft, double peakRight);
 	float sendStatus() const;
@@ -205,7 +212,7 @@ private:
 class AudioMixerMonitor : public GenericMonitor<IBMDSwitcherAudioMixerCallback>, public SendStatusInterface
 {
 public:
-	AudioMixerMonitor(void *delegate) : GenericMonitor(delegate) { }
+	AudioMixerMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
 	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherAudioMixerEventType eventType);
 	HRESULT STDMETHODCALLTYPE ProgramOutLevelNotification (double left, double right, double peakLeft, double peakRight);
 	float sendStatus() const;
@@ -222,7 +229,7 @@ private:
 class FairlightAudioSourceMonitor : public GenericMonitor<IBMDSwitcherFairlightAudioSourceCallback>, public SendStatusInterface
 {
 public:
-	FairlightAudioSourceMonitor(void *delegate, BMDSwitcherFairlightAudioSourceId sourceId) : GenericMonitor(delegate), sourceId_(sourceId) { }
+	FairlightAudioSourceMonitor(Switcher *switcher, BMDSwitcherFairlightAudioSourceId sourceId) : GenericMonitor(switcher), sourceId_(sourceId) { }
 	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherFairlightAudioSourceEventType eventType);
 	HRESULT STDMETHODCALLTYPE OutputLevelNotification (uint32_t numLevels, const double* levels, uint32_t numPeakLevels, const double* peakLevels);
 	float sendStatus() const;
@@ -240,7 +247,7 @@ private:
 class FairlightAudioMixerMonitor : public GenericMonitor<IBMDSwitcherFairlightAudioMixerCallback>, public SendStatusInterface
 {
 public:
-	FairlightAudioMixerMonitor(void *delegate) : GenericMonitor(delegate) { }
+	FairlightAudioMixerMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
 	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherFairlightAudioMixerEventType eventType);
     HRESULT STDMETHODCALLTYPE MasterOutLevelNotification (uint32_t numLevels, const double* levels, uint32_t numPeakLevels, const double* peakLevels);
 
@@ -257,7 +264,7 @@ private:
 class HyperDeckMonitor : public GenericMonitor<IBMDSwitcherHyperDeckCallback>, public SendStatusInterface
 {
 public:
-	HyperDeckMonitor(void *delegate, BMDSwitcherHyperDeckId hyperdeckId) : GenericMonitor(delegate), hyperdeckId_(hyperdeckId) { }
+	HyperDeckMonitor(Switcher *switcher, BMDSwitcherHyperDeckId hyperdeckId) : GenericMonitor(switcher), hyperdeckId_(hyperdeckId) { }
 	HRESULT Notify(BMDSwitcherHyperDeckEventType eventType);
 	HRESULT NotifyError(BMDSwitcherHyperDeckErrorType eventType) { }
 	float sendStatus() const;
