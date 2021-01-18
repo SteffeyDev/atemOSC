@@ -36,6 +36,7 @@
 @synthesize manager;
 @synthesize mSwitcherDiscovery;
 @synthesize switchers;
+@synthesize isActive;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -45,6 +46,7 @@
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
+	self->window = window;
 	
 	// Load switchers from preferences
 	switchers = [[NSMutableArray alloc] init];
@@ -99,7 +101,6 @@
 	isActive = YES;
 
 	dispatch_async(dispatch_get_main_queue(), ^{
-		Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
 		[window loadSettingsFromPreferences];
 
 		if ([[window connectionView] switcher] != nil)
@@ -114,11 +115,7 @@
 			[[window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
 		}
 		
-		for (NSString *message : logBuffer)
-		{
-			[self appendMessage:message];
-		}
-		[logBuffer removeAllObjects];
+		[[window logView] flushMessages];
 	});
 }
 
@@ -200,45 +197,8 @@
 }
 
 
-- (void)logMessage:(NSString *)message
-{
-	if (message) {
-		NSLog(@"%@", message);
-		
-		NSDate *now = [NSDate date];
-		NSDateFormatter *formatter = nil;
-		formatter = [[NSDateFormatter alloc] init];
-		[formatter setDateFormat:@"HH:mm:ss"];
-		
-		NSString *messageWithNewLine = [NSString stringWithFormat:@"[%@] %@\n", [formatter stringFromDate:now], message];
-		[formatter release];
-		
-		if (isActive)
-		{
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[self appendMessage:messageWithNewLine];
-			});
-		}
-		else
-		{
-			if (logBuffer == nil) logBuffer = [[NSMutableArray alloc] init];
-			[logBuffer addObject:messageWithNewLine];
-		}
-	}
-}
-
-- (void)appendMessage:(NSString *)message
-{
-	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
-	[[window logTextView].textStorage appendAttributedString:[[NSAttributedString alloc]initWithString:message]];
-	[[window logTextView] scrollRangeToVisible: NSMakeRange([window logTextView].string.length, 0)];
-	[[window logTextView] setTextColor:[NSColor whiteColor]];
-}
-
 - (void) addSwitcher
 {
-	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
-
 	Switcher *newSwitcher = [[Switcher alloc] init];
 	CFUUIDRef UUID = CFUUIDCreate(kCFAllocatorDefault);
 	[newSwitcher setUid: (NSString *) CFUUIDCreateString(kCFAllocatorDefault,UUID)];
@@ -262,7 +222,6 @@
 - (void) removeSwitcher:(Switcher *)switcher
 {
 	NSString *uid = [[switcher uid] copy];
-	Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
 	
 	[switchers removeObject: switcher];
 	[[window outlineView] reloadData];
@@ -276,6 +235,11 @@
 	[defaults setValue:[NSArray arrayWithArray: uids] forKey:@"switchers"];
 	[defaults removeObjectForKey:[NSString stringWithFormat:@"switcher-%@",uid]];
 	[defaults synchronize];
+}
+
+- (void)logMessage:(NSString *)message;
+{
+	[[window logView] logMessage:message toForeground:isActive];
 }
 
 @end

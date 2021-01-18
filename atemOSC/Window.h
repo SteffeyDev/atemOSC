@@ -9,15 +9,17 @@
 #import "ConnectionView.h"
 #import "OSCAddressView.h"
 #import "OutlineView.h"
+#import "LogView.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface Window : NSWindow<NSTextFieldDelegate, NSOutlineViewDelegate, NSOutlineViewDataSource>
 @property (assign) IBOutlet OutlineView *outlineView;
-@property (assign) IBOutlet NSTextView *logTextView;
 @property (assign) IBOutlet NSTextField *incomingPortTextView;
 @property (assign) IBOutlet ConnectionView *connectionView;
 @property (assign) IBOutlet OSCAddressView *addressesView;
+@property (assign) IBOutlet LogView *logView;
+
 
 - (void)loadSettingsFromPreferences;
 

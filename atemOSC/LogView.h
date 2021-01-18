@@ -9,7 +9,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LogView : NSVisualEffectView
+@interface LogView : NSVisualEffectView {
+	NSMutableString*		basicLog; // no debug info
+	NSMutableString*		fullLog; // normal and debug log
+}
+
+@property (assign) IBOutlet NSTextView *logTextView;
+@property (assign) IBOutlet NSButton *debugCheckbox;
+
+- (IBAction)debugChanged:(id)sender;
+
+
+-(void)flushMessages;
+- (void)logMessage:(NSString *)message toForeground:(BOOL)active;
 
 @end
 

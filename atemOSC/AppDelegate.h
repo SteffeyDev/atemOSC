@@ -43,14 +43,12 @@
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 {	
 	OSCReceiver*                mOscReceiver;
-	
-	IBOutlet OSCAddressPanel*   helpPanel;
-	
-	BOOL 						isActive;
-	NSMutableArray*				logBuffer; // for storing logs while in the background
+	Window*						window;
 }
 
-@property (strong)         id                               activity;
+@property (strong) 		id		activity;
+@property (assign)		BOOL 	isActive;
+
 
 @property(nonatomic, retain) NSMutableArray<OSCEndpoint *> *endpoints;
 @property (assign, readonly) OSCInPort*                     inPort;

@@ -451,7 +451,7 @@
 	}
 	else
 	{
-		[self logMessage:@"[Debug] Could not get IBMDSwitcherAudioMixer interface (If your switcher supports Fairlight audio, you can ignore this)"];
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherAudioMixer interface"];
 	}
 	
 	// Fairlight Audio Mixer

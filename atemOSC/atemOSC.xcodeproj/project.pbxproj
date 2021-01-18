@@ -27,7 +27,7 @@
 		A9942E0425968FAB00E77A10 /* Window.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9942E0325968FAB00E77A10 /* Window.mm */; };
 		A9A9AA932594255A00890134 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9A9A9452594209100890134 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9A9AA942594255A00890134 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9A9A9472594209100890134 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		A9D0B4DF259FCE5D00FF0733 /* LogView.m in Sources */ = {isa = PBXBuildFile; fileRef = A9D0B4DE259FCE5D00FF0733 /* LogView.m */; };
+		A9D0B4DF259FCE5D00FF0733 /* LogView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9D0B4DE259FCE5D00FF0733 /* LogView.mm */; };
 		A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F790691F89B83C003ACBCF /* OSCReceiver.mm */; };
 		A9FB8B5A25943693003B4581 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A9A9452594209100890134 /* VVBasics.framework */; };
 		A9FB8B5B25943693003B4581 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A9A9472594209100890134 /* VVOSC.framework */; };
@@ -86,7 +86,7 @@
 		A9A9A9452594209100890134 /* VVBasics.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VVBasics.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9A9A9472594209100890134 /* VVOSC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = VVOSC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9D0B4DD259FCE5D00FF0733 /* LogView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogView.h; sourceTree = "<group>"; };
-		A9D0B4DE259FCE5D00FF0733 /* LogView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LogView.m; sourceTree = "<group>"; };
+		A9D0B4DE259FCE5D00FF0733 /* LogView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LogView.mm; sourceTree = "<group>"; };
 		A9F790691F89B83C003ACBCF /* OSCReceiver.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OSCReceiver.mm; sourceTree = "<group>"; };
 		A9F7906B1F89B857003ACBCF /* OSCReceiver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OSCReceiver.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -221,7 +221,7 @@
 				A91AF2E7259828F400E347C3 /* OutlineView.h */,
 				A91AF2E8259828F400E347C3 /* OutlineView.mm */,
 				A9D0B4DD259FCE5D00FF0733 /* LogView.h */,
-				A9D0B4DE259FCE5D00FF0733 /* LogView.m */,
+				A9D0B4DE259FCE5D00FF0733 /* LogView.mm */,
 			);
 			name = "User Interface";
 			sourceTree = "<group>";
@@ -312,7 +312,7 @@
 				256AC3DA0F4B6AC300CF3369 /* AppDelegate.mm in Sources */,
 				A92D308F1F832BA900CCAC68 /* FeedbackMonitors.mm in Sources */,
 				A91AF2E9259828F400E347C3 /* OutlineView.mm in Sources */,
-				A9D0B4DF259FCE5D00FF0733 /* LogView.m in Sources */,
+				A9D0B4DF259FCE5D00FF0733 /* LogView.mm in Sources */,
 				A91EFE7123D7559700590AD0 /* BMDSwitcherAPIDispatch.cpp in Sources */,
 				A91AF2DF2597C31C00E347C3 /* ConnectionView.mm in Sources */,
 				A91AF2E22597C3AC00E347C3 /* Switcher.mm in Sources */,

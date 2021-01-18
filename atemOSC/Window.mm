@@ -17,7 +17,6 @@
 @synthesize outlineView;
 @synthesize connectionView;
 @synthesize addressesView;
-@synthesize logTextView;
 
 - (void)loadSettingsFromPreferences
 {
