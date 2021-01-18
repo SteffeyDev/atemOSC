@@ -940,7 +940,7 @@ void FairlightAudioSourceMonitor::updateFaderGain() const
 	if (switcher.mFairlightAudioSources.count(sourceId_) > 0)
 	{
 		double gain;
-		switcher.mFairlightAudioSources[sourceId_]->GetFaderGain(&gain);
+		switcher.mFairlightAudioSources[inputId_][sourceId_]->GetFaderGain(&gain);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/fairlight-audio/source/%lld/gain", sourceId_])];
 		[newMsg addFloat:(float)gain];
 		[[switcher outPort] sendThisMessage:newMsg];
@@ -952,7 +952,7 @@ void FairlightAudioSourceMonitor::updatePan() const
 	if (switcher.mFairlightAudioSources.count(sourceId_) > 0)
 	{
 		double pan;
-		switcher.mFairlightAudioSources[sourceId_]->GetPan(&pan);
+		switcher.mFairlightAudioSources[inputId_][sourceId_]->GetPan(&pan);
 		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/fairlight-audio/source/%lld/pan", sourceId_])];
 		[newMsg addFloat:(float)pan];
 		[[switcher outPort] sendThisMessage:newMsg];

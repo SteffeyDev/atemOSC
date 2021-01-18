@@ -225,11 +225,11 @@ private:
 	void updateBalance() const;
 };
 
-// Callback class to monitor fairlight audio inputs
+// Callback class to monitor fairlight audio sources
 class FairlightAudioSourceMonitor : public GenericMonitor<IBMDSwitcherFairlightAudioSourceCallback>, public SendStatusInterface
 {
 public:
-	FairlightAudioSourceMonitor(Switcher *switcher, BMDSwitcherFairlightAudioSourceId sourceId) : GenericMonitor(switcher), sourceId_(sourceId) { }
+	FairlightAudioSourceMonitor(Switcher *switcher, BMDSwitcherFairlightAudioSourceId sourceId, BMDSwitcherAudioInputId inputId) : GenericMonitor(switcher), sourceId_(sourceId), inputId_(inputId) { }
 	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherFairlightAudioSourceEventType eventType);
 	HRESULT STDMETHODCALLTYPE OutputLevelNotification (uint32_t numLevels, const double* levels, uint32_t numPeakLevels, const double* peakLevels);
 	float sendStatus() const;
@@ -240,6 +240,7 @@ protected:
 private:
 	void updateFaderGain() const;
 	void updatePan() const;
+	BMDSwitcherAudioInputId  inputId_;
 	BMDSwitcherFairlightAudioSourceId  sourceId_;
 };
 

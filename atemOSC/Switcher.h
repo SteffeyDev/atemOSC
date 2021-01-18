@@ -28,7 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 	MacroPoolMonitor*       							mMacroPoolMonitor;
 	AudioMixerMonitor*                  				mAudioMixerMonitor;
 	std::map<BMDSwitcherAudioInputId, AudioInputMonitor*> mAudioInputMonitors;
-	std::map<BMDSwitcherFairlightAudioSourceId, FairlightAudioSourceMonitor*> mFairlightAudioSourceMonitors;
+	std::map<BMDSwitcherAudioInputId, std::map<BMDSwitcherFairlightAudioSourceId, FairlightAudioSourceMonitor*> > mFairlightAudioSourceMonitors;
+
 	FairlightAudioMixerMonitor*         				mFairlightAudioMixerMonitor;
 
 	std::vector<SendStatusInterface*>   mMonitors;
@@ -69,7 +70,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherAudioInput*> mAudioInputs;
 @property (readonly)       IBMDSwitcherAudioMixer*                  mAudioMixer;
 
-@property (readonly)       std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> mFairlightAudioSources;
+@property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherFairlightAudioInput*> mFairlightAudioInputs;
+@property (readonly)       std::map<BMDSwitcherAudioInputId, std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> > mFairlightAudioSources;
 @property (readonly)       IBMDSwitcherFairlightAudioMixer*         mFairlightAudioMixer;
 
 - (void)connectBMD;

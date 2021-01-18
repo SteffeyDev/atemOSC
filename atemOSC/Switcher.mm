@@ -44,6 +44,7 @@
 @synthesize mAudioMixer;
 
 @synthesize mFairlightAudioSources;
+@synthesize mFairlightAudioInputs;
 @synthesize mFairlightAudioMixer;
 
 @synthesize mSwitcher;
@@ -471,7 +472,13 @@
 			IBMDSwitcherFairlightAudioInput* audioInput = NULL;
 			while (S_OK == audioInputIterator->Next(&audioInput))
 			{
+				BMDSwitcherAudioInputId inputId;
+				audioInput->GetId(&inputId);
+				mFairlightAudioInputs.insert(std::make_pair(inputId, audioInput));
+				
 				// Audio Sources
+				std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> sourceMap;
+				std::map<BMDSwitcherFairlightAudioSourceId, FairlightAudioSourceMonitor*> monitorMap;
 				IBMDSwitcherFairlightAudioSourceIterator* audioSourceIterator = NULL;
 				if (SUCCEEDED(audioInput->CreateIterator(IID_IBMDSwitcherFairlightAudioSourceIterator, (void**)&audioSourceIterator)))
 				{
@@ -480,11 +487,11 @@
 					{
 						BMDSwitcherFairlightAudioSourceId sourceId;
 						audioSource->GetId(&sourceId);
-						mFairlightAudioSources.insert(std::make_pair(sourceId, audioSource));
-						FairlightAudioSourceMonitor *monitor = new FairlightAudioSourceMonitor(self, sourceId);
+						sourceMap.insert(std::make_pair(sourceId, audioSource));
+						FairlightAudioSourceMonitor *monitor = new FairlightAudioSourceMonitor(self, sourceId, inputId);
 						audioSource->AddCallback(monitor);
 						mMonitors.push_back(monitor);
-						mFairlightAudioSourceMonitors.insert(std::make_pair(sourceId, monitor));
+						monitorMap.insert(std::make_pair(sourceId, monitor));
 					}
 					audioSourceIterator->Release();
 					audioSourceIterator = NULL;
@@ -493,6 +500,8 @@
 				{
 					[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherFairlightAudioSourceIterator iterator. code: %d", HRESULT_CODE(result)]];
 				}
+				mFairlightAudioSources.insert(std::make_pair(inputId, sourceMap));
+				mFairlightAudioSourceMonitors.insert(std::make_pair(inputId, monitorMap));
 			}
 			audioInputIterator->Release();
 			audioInputIterator = NULL;
@@ -704,10 +713,14 @@
 		mFairlightAudioMixerMonitor = NULL;
 	}
 	
-	for (auto const& it : mFairlightAudioSources)
+	for (auto const& input : mFairlightAudioInputs)
 	{
-		it.second->RemoveCallback(mFairlightAudioSourceMonitors.at(it.first));
-		it.second->Release();
+		for (auto const& it : mFairlightAudioSources[input.first])
+		{
+			it.second->RemoveCallback(mFairlightAudioSourceMonitors[input.first].at(it.first));
+			it.second->Release();
+		}
+		input.second->Release();
 	}
 	mFairlightAudioSources.clear();
 	mFairlightAudioSourceMonitors.clear();

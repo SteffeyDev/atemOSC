@@ -23,7 +23,7 @@
 			return true;
 		[appDel logMessage:[NSString stringWithFormat:@"No mix effect block %d", me]];
 		return false;
-	} copy] forKey:@"/me/<me>"];
+	} copy] forKey:@"/me"];
 
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
@@ -74,12 +74,13 @@
 	} copy] forKey:@"/audio/output"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
-		int number = [[d objectForKey:@"<number>"] intValue];
-		if ([s mFairlightAudioSources].count(number) > 0)
+		int inputNumber = [[d objectForKey:@"<input>"] intValue];
+		int sourceNumber = [[d objectForKey:@"<source>"] intValue];
+		if ([s mFairlightAudioSources].count(inputNumber) > 0 && [s mFairlightAudioSources][inputNumber].count(sourceNumber) > 0)
 			return true;
-		[appDel logMessage:[NSString stringWithFormat:@"Invalid source %d. Please choose a valid Fairlight audio source number from the list in Help > OSC addresses.", number]];
+		[appDel logMessage:[NSString stringWithFormat:@"Invalid audio input %d & source %d. Please choose a valid Fairlight audio source number from the list in Help > OSC addresses.", inputNumber, sourceNumber]];
 		return false;
-	} copy] forKey:@"/fairlight-audio/source"];
+	} copy] forKey:@"/fairlight-audio/input/<input>/source/<source>"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		if ([s mFairlightAudioMixer])
@@ -684,14 +685,16 @@
 		[s mAudioMixer]->SetProgramOutBalance([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/fairlight-audio/source/<number>/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		BMDSwitcherFairlightAudioSourceId sourceNumber = [[d objectForKey:@"<number>"] intValue];
-		[s mFairlightAudioSources][sourceNumber]->SetFaderGain([v floatValue]);
+	[self addEndpoint:@"/fairlight-audio/input/<input>/source/<source>/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+		BMDSwitcherFairlightAudioSourceId sourceNumber = [[d objectForKey:@"<source>"] intValue];
+		[s mFairlightAudioSources][inputNumber][sourceNumber]->SetFaderGain([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/fairlight-audio/source/<number>/pan" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/fairlight-audio/input/<input>/source/<source>/pan" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
 		BMDSwitcherFairlightAudioSourceId sourceNumber = [[d objectForKey:@"<number>"] intValue];
-		[s mFairlightAudioSources][sourceNumber]->SetPan([v floatValue]);
+		[s mFairlightAudioSources][inputNumber][sourceNumber]->SetPan([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/fairlight-audio/output/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {

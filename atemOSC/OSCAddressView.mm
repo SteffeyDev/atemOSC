@@ -158,20 +158,39 @@
 		[self addEntry:@"Audio Output Balance" forAddress:@"/audio/output/balance <float>" toString:helpString];
 	}
 	
-	if ([switcher mFairlightAudioSources].size() > 0)
+	if ([switcher mFairlightAudioInputs].size() > 0)
 	{
-		[self addHeader:@"Fairlight Audio Sources" toString:helpString];
+		[self addHeader:@"Fairlight Audio Inputs & Sources" toString:helpString];
 		
-		for (auto const& it : [switcher mFairlightAudioSources])
+		for (auto const& input : [switcher mFairlightAudioInputs])
 		{
-			[self
-			 addEntry:[NSString stringWithFormat:@"Fairlight Audio Source %lld Gain", it.first]
-			 forAddress:[NSString stringWithFormat:@"/fairlight-audio/source/%lld/gain <float>", it.first]
-			 toString:helpString];
-			[self
-			 addEntry:[NSString stringWithFormat:@"Fairlight Audio Source %lld Pan", it.first]
-			 forAddress:[NSString stringWithFormat:@"/fairlight-audio/source/%lld/pan <float>", it.first]
-			 toString:helpString];
+			BMDSwitcherFairlightAudioInputType inputType;
+			[switcher mFairlightAudioInputs].at(input.first)->GetType(&inputType);
+			NSString *inputTypeString;
+			if (inputType == bmdSwitcherFairlightAudioInputTypeMADI)
+				inputTypeString = @"MADI";
+			else if (inputType == bmdSwitcherFairlightAudioInputTypeAudioIn)
+				inputTypeString = @"external audio-in";
+			else if (inputType == bmdSwitcherFairlightAudioInputTypeMediaPlayer)
+				inputTypeString = @"media player";
+			else if (inputType == bmdSwitcherFairlightAudioInputTypeEmbeddedWithVideo)
+				inputTypeString = @"camera audio";
+
+			for (auto const& it : [switcher mFairlightAudioSources])
+			{
+				BMDSwitcherFairlightAudioSourceType sourceType;
+				[switcher mFairlightAudioSources].at(input.first).at(it.first)->GetSourceType(&sourceType);
+				NSString *sourceTypeString = sourceType == bmdSwitcherFairlightAudioSourceTypeMono ? @"@mono" : @"stereo";
+				
+				[self
+				 addEntry:[NSString stringWithFormat:@"Fairlight Audio Input %lld (%@) Source %lld (%@) Gain", input.first, inputTypeString, it.first, sourceTypeString]
+				 forAddress:[NSString stringWithFormat:@"/fairlight-audio/input/%lld/source/%lld/gain <float>", input.first, it.first]
+				 toString:helpString];
+				[self
+				 addEntry:[NSString stringWithFormat:@"Fairlight Audio Input %lld (%@) Source %lld (%@) Pan", input.first, inputTypeString, it.first, sourceTypeString]
+				 forAddress:[NSString stringWithFormat:@"/fairlight-audio/input/%lld/source/%lld/pan <float>", input.first, it.first]
+				 toString:helpString];
+			}
 		}
 	}
 
