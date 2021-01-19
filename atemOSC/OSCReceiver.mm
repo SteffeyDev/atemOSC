@@ -741,6 +741,16 @@
 		[self setHyperDeckTime:hyperdeckNumber-1 time:[v stringValue] clip:NO forSwitcher:s];
 	}];
 	
+	[self addEndpoint:@"/hyperdeck/<number>/single-clip" label:@"HyperDeck <number> Set Single Clip Playback" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[s mHyperdecks][hyperdeckNumber-1]->SetSingleClipPlayback([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/hyperdeck/<number>/loop" label:@"HyperDeck <number> Set Looped Playback" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
+		[s mHyperdecks][hyperdeckNumber-1]->SetLoopedPlayback([v boolValue]);
+	}];
+	
 	// Recursively build the tree from the list
 	// This allows for O(1) calls to find the handler for the address instead of O(n)
 	for (OSCEndpoint *endpoint in [appDel endpoints])

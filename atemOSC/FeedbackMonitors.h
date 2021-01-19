@@ -278,6 +278,8 @@ private:
 	void updateCurrentClipTime() const;
 	void updateCurrentTimelineTime() const;
 	void updatePlayerState() const;
+	void updateSingleClipPlayback() const;
+	void updateLoopedPlayback() const;
 	BMDSwitcherHyperDeckId  hyperdeckId_;
 };
 

@@ -1015,8 +1015,10 @@ float HyperDeckMonitor::sendStatus() const
 	updateCurrentClipTime();
 	updateCurrentTimelineTime();
 	updatePlayerState();
+	updateSingleClipPlayback();
+	updateLoopedPlayback();
 	
-	return 0.03;
+	return 0.05;
 }
 
 HRESULT HyperDeckMonitor::Notify (BMDSwitcherHyperDeckEventType eventType)
@@ -1034,6 +1036,12 @@ HRESULT HyperDeckMonitor::Notify (BMDSwitcherHyperDeckEventType eventType)
 			break;
 		case bmdSwitcherHyperDeckEventTypePlayerStateChanged:
 			updatePlayerState();
+			break;
+		case bmdSwitcherHyperDeckEventTypeSingleClipPlaybackChanged:
+			updateSingleClipPlayback();
+			break;
+		case bmdSwitcherHyperDeckEventTypeLoopedPlaybackChanged:
+			updateLoopedPlayback();
 			break;
 		default:
 			// ignore other property changes not used for this app
@@ -1096,6 +1104,30 @@ void HyperDeckMonitor::updatePlayerState() const
 			case bmdSwitcherHyperDeckStateShuttle: [newMsg addString:@"shuttle"]; break;
 			case bmdSwitcherHyperDeckStateUnknown: [newMsg addString:@"unknown"]; break;
 		}
+		[[switcher outPort] sendThisMessage:newMsg];
+	}
+}
+
+void HyperDeckMonitor::updateSingleClipPlayback() const
+{
+	if (switcher.mHyperdecks.count(hyperdeckId_) > 0)
+	{
+		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/single-clip", hyperdeckId_])];
+		bool singleClipPlayback;
+		switcher.mHyperdecks[hyperdeckId_]->GetSingleClipPlayback(&singleClipPlayback);
+		[newMsg addBOOL:singleClipPlayback];
+		[[switcher outPort] sendThisMessage:newMsg];
+	}
+}
+
+void HyperDeckMonitor::updateLoopedPlayback() const
+{
+	if (switcher.mHyperdecks.count(hyperdeckId_) > 0)
+	{
+		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/loop", hyperdeckId_])];
+		bool loopPlayback;
+		switcher.mHyperdecks[hyperdeckId_]->GetLoopedPlayback(&loopPlayback);
+		[newMsg addBOOL:loopPlayback];
 		[[switcher outPort] sendThisMessage:newMsg];
 	}
 }

@@ -312,8 +312,10 @@ Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/
      - Where `$x` is a string in the format 'hh:mm:ss' (h = hour, m = minute, s = second)
      - e.g. `/atem/hyperdeck/1/clip-time 00:05:00` = jump 5 minutes into the clip
  - **Jump to timeline time $x on HyperDeck $i** `/atem/hyperdeck/$i/timeline-time $x`
+ - **Turn on/off single-clip playback mode on HyperDeck $i** `/atem/hyperdeck/$i/single-clip <true|false>`
+ - **Turn on/off looped playback mode on HyperDeck $i** `/atem/hyperdeck/$i/loop <true|false>`
 
-Feedback: Enabled for `/atem/hyperdeck/$i/clip`.  The state of the HyperDeck is available as a string value at `/atem/hyperdeck/$i/state`, and is sent out automatically when the state changes. State options are `play`, `record`, `shuttle`, `idle`, or `unknown`.
+Feedback: Enabled for `clip`, `clip-time`, `timeline-time`, `state`, `single-clip`, and `loop`.  The state of the HyperDeck is available as a string value at `/atem/hyperdeck/$i/state`, and is sent out automatically when the state changes. State will be one of `play`, `record`, `shuttle`, `idle`, or `unknown`.
 
 ### Other
 
