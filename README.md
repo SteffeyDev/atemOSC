@@ -234,7 +234,7 @@ Supports both standard and Fairlight audio mixers.
      - e.g. `/atem/audio/input/2/balance 0.4`
      - For Fairlight audio input in dual mono mode, will set balance for both left & right.  To control the left and right channels individually, use the addresses `/atem/audio/input/$i/left/balance` and `/atem/audio/input/$i/right/balance`.
  - **Change Mix Option for Audio Input $i** `/atem/audio/input/$i/mix <string>`
-     - Where `$x` is 'on', 'off', or 'afv' (audio follow video)
+     - Where `<string>` is 'on', 'off', or 'afv' (audio follow video)
      - e.g. `/atem/audio/input/2/mix 'afv'`
      - For Fairlight audio input in dual mono mode, will set mix option for both left & right.  To control the left and right channels individually, use the addresses `/atem/audio/input/$i/left/mix` and `/atem/audio/input/$i/right/mix`.
  - **Change Gain for Audio Output (Mix)** `/atem/audio/output/gain $x`
