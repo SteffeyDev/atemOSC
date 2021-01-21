@@ -352,7 +352,7 @@ You are free to open an issue or comment on and existing issue, but the quickest
 A lot of MIDI controls send two signals when a button is pressed, one signal when you press down, and another when you release. If you connect the button the `/atem/transition/auto` or `cut`, atemOSC recieves both events and attempts to send the transition command to the switcher twice. This can cause buggy behavior or just not work at all.
 
 #### Solution
-Tune your MIDI software to send only one of the two signals, either ok button press (rising edge) or button release (falling edge). See #120 for instructions for OSCulator.
+Tune your MIDI software to send only one of the two signals, either ok button press (rising edge) or button release (falling edge). See [#120](https://github.com/SteffeyDev/atemOSC/issues/120) for instructions for OSCulator.
 
 -----------
 
