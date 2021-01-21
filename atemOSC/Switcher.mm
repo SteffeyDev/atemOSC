@@ -95,20 +95,22 @@
 
 - (void)updateFeedback
 {
-	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
+	dispatch_async(dispatch_get_main_queue(), ^{
+		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 
-	if (feedbackIpAddress != nil && feedbackPort > 0)
-	{
-		if (outPort == nil)
-			outPort = [appDel.manager createNewOutputToAddress:feedbackIpAddress atPort:feedbackPort withLabel:@"atemOSC"];
-		else
+		if (feedbackIpAddress != nil && feedbackPort > 0)
 		{
-			if (![feedbackIpAddress isEqualToString: [outPort addressString]])
-				[outPort setAddressString:feedbackIpAddress];
-			if (feedbackPort != [outPort port])
-				[outPort setPort:feedbackPort];
+			if (outPort == nil)
+				outPort = [appDel.manager createNewOutputToAddress:feedbackIpAddress atPort:feedbackPort withLabel:@"atemOSC"];
+			else
+			{
+				if (![feedbackIpAddress isEqualToString: [outPort addressString]])
+					[outPort setAddressString:feedbackIpAddress];
+				if (feedbackPort != [outPort port])
+					[outPort setPort:feedbackPort];
+			}
 		}
-	}
+	});
 }
 
 - (void)connectBMD
@@ -358,10 +360,6 @@
 					}
 				}
 			}
-			else
-			{
-				[self logMessage:@"[Debug] Could not get IBMDSwitcherInputSuperSource interface"];
-			}
 		}
 		inputIterator->Release();
 		inputIterator = NULL;
@@ -559,6 +557,8 @@
 			[[window addressesView] loadFromSwitcher:self];
 		}
 	});
+	
+	[self logMessage:@"Connected to switcher"];
 }
 
 - (void)switcherDisconnected:(BOOL)reconnect

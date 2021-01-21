@@ -126,7 +126,7 @@ To set the transition type of the Auto transition:
  - **Wipe** `/atem/transition/wipe/rate <float>`
  - **DVE** `/atem/transition/dve/rate <float>`
 
- Feedback: None
+Feedback: Enabled for `/atem/transition/bar`
 
 ### Auxiliary Source Selection
 
@@ -134,7 +134,7 @@ To set the transition type of the Auto transition:
      - Where `$x` is an integer value that is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
      - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
 
-Feedback: Enabled for `/atem/transition/bar`
+ Feedback: None
 
 ### Upstream Keyers
 
@@ -223,35 +223,25 @@ Feedback: Enabled for '/atem/dsk/$i/on-air' and '/atem/dsk/$i/tie'
 
 ### Audio
 
+Supports both standard and Fairlight audio mixers.
+
  - **Change Gain for Audio Input $i** `/atem/audio/input/$i/gain $x`
      - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
      - e.g. `/atem/audio/input/2/gain -30.0`
+     - For Fairlight audio input in dual mono mode, will set gain for both left & right.  To control the left and right channels individually, use the addresses `/atem/audio/input/$i/left/gain` and `/atem/audio/input/$i/right/gain`.
  - **Change Balance for Audio Input $i** `/atem/audio/input/$i/balance $x`
      - Where `$x` is the balance, `-1.0` for full left up to `1.0` for full right
      - e.g. `/atem/audio/input/2/balance 0.4`
+     - For Fairlight audio input in dual mono mode, will set balance for both left & right.  To control the left and right channels individually, use the addresses `/atem/audio/input/$i/left/balance` and `/atem/audio/input/$i/right/balance`.
  - **Change Gain for Audio Output (Mix)** `/atem/audio/output/gain $x`
      - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
      - e.g. `/atem/audio/output/gain -30.0`
  - **Change Balance for Audio Output** `/atem/audio/output/balance $x`
      - Where `$x` is the balance, `-1.0` for full left up to `1.0` for full right
      - e.g. `/atem/audio/output/balance 0.4`
+     - Not supported for Fairlight audio mixer
 
 Feedback: Enabled for all values
-
-### Fairlight Audio
-
- - **Change Gain for Fairlight Audio Source $i** `/atem/fairlight-audio/source/$i/gain $x`
-     - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
-     - e.g. `/atem/fairlight-audio/source/2/gain -30.0`
- - **Change Pan for Fairlight Audio Source $i** `/atem/fairlight-audio/source/$i/pan $x`
-     - Where `$x` is the pan, `-1.0` for full left up to `1.0` for full right
-     - e.g. `/atem/fairlight-audio/source/2/pan 0.4`
- - **Change Gain for Fairlight Audio Output (Mix)** `/atem/fairlight-audio/output/gain $x`
-     - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
-     - e.g. `/atem/fairlight-audio/output/gain -30.0`
-
-Feedback: Enabled for all values
-
 
 ### Media Players
 

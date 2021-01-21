@@ -941,9 +941,16 @@ void FairlightAudioSourceMonitor::updateFaderGain() const
 	{
 		double gain;
 		switcher.mFairlightAudioSources[inputId_][sourceId_]->GetFaderGain(&gain);
-		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/fairlight-audio/source/%lld/gain", sourceId_])];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/audio/input/%lld/gain", inputId_])];
 		[newMsg addFloat:(float)gain];
 		[[switcher outPort] sendThisMessage:newMsg];
+		
+		NSString *address = @"/audio/input/%lld/left/gain";
+		if (sourceId_ == switcher.mFairlightAudioSources[inputId_].end()->first)
+			address = @"/audio/input/%lld/right/gain";
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:address, inputId_])];
+		[newMsg2 addFloat:(float)gain];
+		[[switcher outPort] sendThisMessage:newMsg2];
 	}
 }
 
@@ -953,9 +960,16 @@ void FairlightAudioSourceMonitor::updatePan() const
 	{
 		double pan;
 		switcher.mFairlightAudioSources[inputId_][sourceId_]->GetPan(&pan);
-		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/fairlight-audio/source/%lld/pan", sourceId_])];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/audio/input/%lld/balance", inputId_])];
 		[newMsg addFloat:(float)pan];
 		[[switcher outPort] sendThisMessage:newMsg];
+		
+		NSString *address = @"/audio/input/%lld/left/balance";
+		if (sourceId_ == switcher.mFairlightAudioSources[inputId_].end()->first)
+			address = @"/audio/input/%lld/right/balance";
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:address, inputId_])];
+		[newMsg2 addFloat:(float)pan];
+		[[switcher outPort] sendThisMessage:newMsg2];
 	}
 }
 
@@ -994,7 +1008,7 @@ void FairlightAudioMixerMonitor::updateGain() const
 	{
 		double gain;
 		switcher.mFairlightAudioMixer->GetMasterOutFaderGain(&gain);
-		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/fairlight-audio/output/gain"];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/audio/output/gain"];
 		[newMsg addFloat:(float)gain];
 		[[switcher outPort] sendThisMessage:newMsg];
 	}

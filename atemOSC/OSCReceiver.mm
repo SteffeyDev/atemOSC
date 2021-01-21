@@ -60,34 +60,18 @@
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int number = [[d objectForKey:@"<number>"] intValue];
-		if ([s mAudioInputs].count(number) > 0)
+		if ([s mAudioInputs].count(number) > 0 || [s mFairlightAudioInputs].count(number) > 0)
 			return true;
-		[appDel logMessage:[NSString stringWithFormat:@"Invalid input %d. Please choose a valid audio input number from the list in Help > OSC addresses.", number]];
+		[appDel logMessage:[NSString stringWithFormat:@"Invalid input %d. Please choose a valid audio input number from the list in the Addresses tab.", number]];
 		return false;
 	} copy] forKey:@"/audio/input"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
-		if ([s mAudioMixer])
+		if ([s mAudioMixer] || [s mFairlightAudioMixer])
 			return true;
 		[appDel logMessage:@"No audio mixer"];
 		return false;
 	} copy] forKey:@"/audio/output"];
-	
-	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
-		int inputNumber = [[d objectForKey:@"<input>"] intValue];
-		int sourceNumber = [[d objectForKey:@"<source>"] intValue];
-		if ([s mFairlightAudioSources].count(inputNumber) > 0 && [s mFairlightAudioSources][inputNumber].count(sourceNumber) > 0)
-			return true;
-		[appDel logMessage:[NSString stringWithFormat:@"Invalid audio input %d & source %d. Please choose a valid Fairlight audio source number from the list in Help > OSC addresses.", inputNumber, sourceNumber]];
-		return false;
-	} copy] forKey:@"/fairlight-audio/input/<input>/source/<source>"];
-	
-	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
-		if ([s mFairlightAudioMixer])
-			return true;
-		[appDel logMessage:@"No Fairlight audio mixer"];
-		return false;
-	} copy] forKey:@"/fairlight-audio/output"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int mplayer = [[d objectForKey:@"<player>"] intValue];
@@ -669,36 +653,82 @@
 	
 	[self addEndpoint:@"/audio/input/<number>/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
-		[s mAudioInputs][inputNumber]->SetGain([v floatValue]);
+		if ([s mAudioMixer])
+			[s mAudioInputs][inputNumber]->SetGain([v floatValue]);
+		else if ([s mFairlightAudioMixer])
+		{
+			// Set gain on all sources (only one in stereo mode or two in dual mono mode)
+			std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> sources = [s mFairlightAudioSources][inputNumber];
+			for (auto const& it : sources)
+				it.second->SetFaderGain([v floatValue]);
+		}
 	}];
 	
+	[self addEndpoint:@"/audio/input/<input>/left/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+		if ([s mAudioMixer])
+			[appDel logMessage:@"Address /left/gain is not supported for this audio mixer"];
+		else if ([s mFairlightAudioMixer])
+		{
+			[s mFairlightAudioSources][inputNumber].begin()->second->SetFaderGain([v floatValue]);
+		}
+	}];
+	
+	[self addEndpoint:@"/audio/input/<input>/right/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+		if ([s mAudioMixer])
+			[appDel logMessage:@"Address /right/gain is not supported for this audio mixer"];
+		else if ([s mFairlightAudioMixer])
+		{
+			[s mFairlightAudioSources][inputNumber].end()->second->SetFaderGain([v floatValue]);
+		}
+	}];
+		
 	[self addEndpoint:@"/audio/input/<number>/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
-		[s mAudioInputs][inputNumber]->SetBalance([v floatValue]);
+		if ([s mAudioMixer])
+			[s mAudioInputs][inputNumber]->SetBalance([v floatValue]);
+		else
+		{
+			// Set balance on all sources (only one in stereo mode or two in dual mono mode)
+			std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> sources = [s mFairlightAudioSources][inputNumber];
+			for (auto const& it : sources)
+				it.second->SetPan([v floatValue]);
+		}
+	}];
+	
+	[self addEndpoint:@"/audio/input/<input>/left/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+		if ([s mAudioMixer])
+			[appDel logMessage:@"Address /left/balance is not supported for this audio mixer"];
+		else if ([s mFairlightAudioMixer])
+		{
+			[s mFairlightAudioSources][inputNumber].begin()->second->SetPan([v floatValue]);
+		}
+	}];
+	
+	[self addEndpoint:@"/audio/input/<input>/right/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+		if ([s mAudioMixer])
+			[appDel logMessage:@"Address /right/balance is not supported for this audio mixer"];
+		else if ([s mFairlightAudioMixer])
+		{
+			[s mFairlightAudioSources][inputNumber].end()->second->SetPan([v floatValue]);
+		}
 	}];
 	
 	[self addEndpoint:@"/audio/output/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		[s mAudioMixer]->SetProgramOutGain([v floatValue]);
+		if ([s mAudioMixer])
+			[s mAudioMixer]->SetProgramOutGain([v floatValue]);
+		else if ([s mFairlightAudioMixer])
+			[s mFairlightAudioMixer]->SetMasterOutFaderGain([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/audio/output/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		[s mAudioMixer]->SetProgramOutBalance([v floatValue]);
-	}];
-	
-	[self addEndpoint:@"/fairlight-audio/input/<input>/source/<source>/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
-		BMDSwitcherFairlightAudioSourceId sourceNumber = [[d objectForKey:@"<source>"] intValue];
-		[s mFairlightAudioSources][inputNumber][sourceNumber]->SetFaderGain([v floatValue]);
-	}];
-	
-	[self addEndpoint:@"/fairlight-audio/input/<input>/source/<source>/pan" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
-		BMDSwitcherFairlightAudioSourceId sourceNumber = [[d objectForKey:@"<number>"] intValue];
-		[s mFairlightAudioSources][inputNumber][sourceNumber]->SetPan([v floatValue]);
-	}];
-	
-	[self addEndpoint:@"/fairlight-audio/output/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		[s mFairlightAudioMixer]->SetMasterOutFaderGain([v floatValue]);
+		if ([s mAudioMixer])
+			[s mAudioMixer]->SetProgramOutBalance([v floatValue]);
+		else if ([s mFairlightAudioMixer])
+			[appDel logMessage:@"Output balance not supported for Fairlight audio mixer"];
 	}];
 	
 	[self addEndpoint:@"/hyperdeck/<number>/play" label:@"HyperDeck <number> Play" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
