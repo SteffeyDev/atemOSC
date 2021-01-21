@@ -811,6 +811,9 @@ HRESULT STDMETHODCALLTYPE AudioInputMonitor::Notify (BMDSwitcherAudioInputEventT
 		case bmdSwitcherAudioInputEventTypeBalanceChanged:
 			updateBalance();
 			break;
+		case bmdSwitcherAudioInputEventTypeMixOptionChanged:
+			updateMixOption();
+			break;
 		default:
 			// ignore other property changes not used for this app
 			break;
@@ -848,12 +851,34 @@ void AudioInputMonitor::updateBalance() const
 	}
 }
 
+void AudioInputMonitor::updateMixOption() const
+{
+	if (switcher.mAudioInputs.count(inputId_) > 0)
+	{
+		BMDSwitcherAudioMixOption mix;
+		switcher.mAudioInputs[inputId_]->GetMixOption(&mix);
+		
+		NSString *mixOptionString = @"";
+		if (mix == bmdSwitcherAudioMixOptionAudioFollowVideo)
+			mixOptionString = @"afv";
+		else if (mix == bmdSwitcherAudioMixOptionOn)
+			mixOptionString = @"on";
+		else if (mix == bmdSwitcherAudioMixOptionOff)
+			mixOptionString = @"off";
+
+		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix", inputId_])];
+		[newMsg addString:mixOptionString];
+		[[switcher outPort] sendThisMessage:newMsg];
+	}
+}
+
 float AudioInputMonitor::sendStatus() const
 {
 	updateGain();
 	updateBalance();
+	updateMixOption();
 
-	return 0.02;
+	return 0.03;
 }
 
 
@@ -922,6 +947,9 @@ HRESULT STDMETHODCALLTYPE FairlightAudioSourceMonitor::Notify (BMDSwitcherFairli
 		case bmdSwitcherFairlightAudioSourceEventTypePanChanged:
 			updatePan();
 			break;
+		case bmdSwitcherFairlightAudioSourceEventTypeMixOptionChanged:
+			updateMixOption();
+			break;
 		default:
 			// ignore other property changes not used for this app
 			break;
@@ -937,10 +965,11 @@ HRESULT STDMETHODCALLTYPE FairlightAudioSourceMonitor::OutputLevelNotification (
 
 void FairlightAudioSourceMonitor::updateFaderGain() const
 {
-	if (switcher.mFairlightAudioSources.count(sourceId_) > 0)
+	if (switcher.mFairlightAudioSources.count(inputId_) > 0)
 	{
 		double gain;
 		switcher.mFairlightAudioSources[inputId_][sourceId_]->GetFaderGain(&gain);
+		
 		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/audio/input/%lld/gain", inputId_])];
 		[newMsg addFloat:(float)gain];
 		[[switcher outPort] sendThisMessage:newMsg];
@@ -956,10 +985,11 @@ void FairlightAudioSourceMonitor::updateFaderGain() const
 
 void FairlightAudioSourceMonitor::updatePan() const
 {
-	if (switcher.mFairlightAudioSources.count(sourceId_) > 0)
+	if (switcher.mFairlightAudioSources.count(inputId_) > 0)
 	{
 		double pan;
 		switcher.mFairlightAudioSources[inputId_][sourceId_]->GetPan(&pan);
+		
 		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/audio/input/%lld/balance", inputId_])];
 		[newMsg addFloat:(float)pan];
 		[[switcher outPort] sendThisMessage:newMsg];
@@ -973,12 +1003,41 @@ void FairlightAudioSourceMonitor::updatePan() const
 	}
 }
 
+void FairlightAudioSourceMonitor::updateMixOption() const
+{
+	if (switcher.mFairlightAudioSources.count(inputId_) > 0)
+	{
+		BMDSwitcherFairlightAudioMixOption mix;
+		switcher.mFairlightAudioSources[inputId_][sourceId_]->GetMixOption(&mix);
+		
+		NSString *mixOptionString = @"";
+		if (mix == bmdSwitcherFairlightAudioMixOptionAudioFollowVideo)
+			mixOptionString = @"afv";
+		else if (mix == bmdSwitcherFairlightAudioMixOptionOn)
+			mixOptionString = @"on";
+		else if (mix == bmdSwitcherFairlightAudioMixOptionOff)
+			mixOptionString = @"off";
+
+		OSCMessage *newMsg = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix", inputId_])];
+		[newMsg addString:mixOptionString];
+		[[switcher outPort] sendThisMessage:newMsg];
+		
+		NSString *address = @"/audio/input/%lld/left/mix";
+		if (sourceId_ == switcher.mFairlightAudioSources[inputId_].end()->first)
+			address = @"/audio/input/%lld/right/mix";
+		OSCMessage *newMsg2 = [OSCMessage createWithAddress:getFeedbackAddress(switcher, [NSString stringWithFormat:address, inputId_])];
+		[newMsg2 addString:mixOptionString];
+		[[switcher outPort] sendThisMessage:newMsg2];
+	}
+}
+
 float FairlightAudioSourceMonitor::sendStatus() const
 {
 	updateFaderGain();
 	updatePan();
+	updateMixOption();
 
-	return 0.02;
+	return 0.03;
 }
 
 

@@ -717,6 +717,63 @@
 		}
 	}];
 	
+	[self addEndpoint:@"/audio/input/<number>/mix" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
+		if ([s mAudioMixer])
+		{
+			if ([[v stringValue] isEqualToString:@"afv"])
+				[s mAudioInputs][inputNumber]->SetMixOption(bmdSwitcherAudioMixOptionAudioFollowVideo);
+			else if ([[v stringValue] isEqualToString:@"on"])
+				[s mAudioInputs][inputNumber]->SetMixOption(bmdSwitcherAudioMixOptionOn);
+			else if ([[v stringValue] isEqualToString:@"off"])
+				[s mAudioInputs][inputNumber]->SetMixOption(bmdSwitcherAudioMixOptionOff);
+		}
+		else if ([s mFairlightAudioMixer])
+		{
+			// Set gain on all sources (only one in stereo mode or two in dual mono mode)
+			std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> sources = [s mFairlightAudioSources][inputNumber];
+			for (auto const& it : sources)
+			{
+				if ([[v stringValue] isEqualToString:@"afv"])
+					it.second->SetMixOption(bmdSwitcherFairlightAudioMixOptionAudioFollowVideo);
+				else if ([[v stringValue] isEqualToString:@"on"])
+					it.second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOn);
+				else if ([[v stringValue] isEqualToString:@"off"])
+					it.second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOff);
+			}
+		}
+	}];
+	
+	[self addEndpoint:@"/audio/input/<number>/left/mix" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
+		if ([s mAudioMixer])
+			[appDel logMessage:@"Address /left/mix is not supported for this audio mixer"];
+		else if ([s mFairlightAudioMixer])
+		{
+			if ([[v stringValue] isEqualToString:@"afv"])
+				[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionAudioFollowVideo);
+			else if ([[v stringValue] isEqualToString:@"on"])
+				[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOn);
+			else if ([[v stringValue] isEqualToString:@"off"])
+				[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOff);
+		}
+	}];
+	
+	[self addEndpoint:@"/audio/input/<number>/right/mix" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
+		if ([s mAudioMixer])
+			[appDel logMessage:@"Address /right/mix is not supported for this audio mixer"];
+		else if ([s mFairlightAudioMixer])
+		{
+			if ([[v stringValue] isEqualToString:@"afv"])
+				[s mFairlightAudioSources][inputNumber].end()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionAudioFollowVideo);
+			else if ([[v stringValue] isEqualToString:@"on"])
+				[s mFairlightAudioSources][inputNumber].end()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOn);
+			else if ([[v stringValue] isEqualToString:@"off"])
+				[s mFairlightAudioSources][inputNumber].end()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOff);
+		}
+	}];
+	
 	[self addEndpoint:@"/audio/output/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		if ([s mAudioMixer])
 			[s mAudioMixer]->SetProgramOutGain([v floatValue]);

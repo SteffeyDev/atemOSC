@@ -148,6 +148,10 @@
 			 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Balance", it.first, inputTypeString]
 			 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/balance <float>", it.first]
 			 toString:helpString];
+			[self
+			 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%s) Mix Option", it.first, inputTypeString]
+			 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/mix <string> = 'afv' | 'on' | 'off'", it.first]
+			 toString:helpString];
 		}
 	}
 
@@ -184,6 +188,10 @@
 			 addEntry: [NSString stringWithFormat:@"Audio Input %lld (%@) Balance (all sources)", input.first, inputTypeString]
 			 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/balance <float>", input.first]
 			 toString:helpString];
+			[self
+			 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%@) Mix Option (all sources)", input.first, inputTypeString]
+			 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/mix <string> = 'afv' | 'on' | 'off'", input.first]
+			 toString:helpString];
 			
 			if ([switcher mFairlightAudioSources].at(input.first).size() == 2)
 			{
@@ -192,16 +200,24 @@
 				 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/left/gain <float>", input.first]
 				 toString:helpString];
 				[self
-				 addEntry: [NSString stringWithFormat:@"Audio Input %lld (%@) Balance (left sources)", input.first, inputTypeString]
+				 addEntry: [NSString stringWithFormat:@"Audio Input %lld (%@) Balance (left source)", input.first, inputTypeString]
 				 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/left/balance <float>", input.first]
+				 toString:helpString];
+				[self
+				 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%@) Mix Option (left source)", input.first, inputTypeString]
+				 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/left/mix <string> = 'afv' | 'on' | 'off'", input.first]
 				 toString:helpString];
 				[self
 				 addEntry: [NSString stringWithFormat:@"Audio Input %lld (%@) Gain (right source)", input.first, inputTypeString]
 				 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/right/gain <float>", input.first]
 				 toString:helpString];
 				[self
-				 addEntry: [NSString stringWithFormat:@"Audio Input %lld (%@) Balance (right sources)", input.first, inputTypeString]
+				 addEntry: [NSString stringWithFormat:@"Audio Input %lld (%@) Balance (right source)", input.first, inputTypeString]
 				 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/right/balance <float>", input.first]
+				 toString:helpString];
+				[self
+				 addEntry:[NSString stringWithFormat:@"Audio Input %lld (%@) Mix Option (right source)", input.first, inputTypeString]
+				 forAddress:[NSString stringWithFormat:@"/audio/input/%lld/right/mix <string> = 'afv' | 'on' | 'off'", input.first]
 				 toString:helpString];
 			}
 		}

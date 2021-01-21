@@ -205,6 +205,7 @@ protected:
 private:
 	void updateGain() const;
 	void updateBalance() const;
+	void updateMixOption() const;
 	BMDSwitcherAudioInputId  inputId_;
 };
 
@@ -240,6 +241,7 @@ protected:
 private:
 	void updateFaderGain() const;
 	void updatePan() const;
+	void updateMixOption() const;
 	BMDSwitcherAudioInputId  inputId_;
 	BMDSwitcherFairlightAudioSourceId  sourceId_;
 };
