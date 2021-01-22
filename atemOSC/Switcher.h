@@ -12,6 +12,7 @@
 #import <vector>
 #import <map>
 #import <list>
+@class AppDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -33,6 +34,8 @@ NS_ASSUME_NONNULL_BEGIN
 	FairlightAudioMixerMonitor*         				mFairlightAudioMixerMonitor;
 
 	std::vector<SendStatusInterface*>   mMonitors;
+	
+	AppDelegate *appDel;
 }
 
 @property(nonatomic, retain) NSString *uid;
@@ -73,6 +76,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherFairlightAudioInput*> mFairlightAudioInputs;
 @property (readonly)       std::map<BMDSwitcherAudioInputId, std::map<BMDSwitcherFairlightAudioSourceId, IBMDSwitcherFairlightAudioSource*> > mFairlightAudioSources;
 @property (readonly)       IBMDSwitcherFairlightAudioMixer*         mFairlightAudioMixer;
+
+- (void)setAppDelegate:(AppDelegate *)appDel;
 
 - (void)connectBMD;
 - (void)disconnectBMD;

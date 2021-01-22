@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LogView : NSVisualEffectView {
 	NSMutableString*		basicLog; // no debug info
 	NSMutableString*		fullLog; // normal and debug log
+	BOOL					debugMode;
 }
 
 @property (assign) IBOutlet NSTextView *logTextView;

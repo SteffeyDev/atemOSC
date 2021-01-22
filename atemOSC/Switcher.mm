@@ -93,24 +93,25 @@
 	return self;
 }
 
+- (void)setAppDelegate:(AppDelegate *)appDel
+{
+	self->appDel = appDel;
+}
+
 - (void)updateFeedback
 {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
-
-		if (feedbackIpAddress != nil && feedbackPort > 0)
+	if (feedbackIpAddress != nil && feedbackPort > 0)
+	{
+		if (outPort == nil)
+			outPort = [appDel.manager createNewOutputToAddress:feedbackIpAddress atPort:feedbackPort withLabel:@"atemOSC"];
+		else
 		{
-			if (outPort == nil)
-				outPort = [appDel.manager createNewOutputToAddress:feedbackIpAddress atPort:feedbackPort withLabel:@"atemOSC"];
-			else
-			{
-				if (![feedbackIpAddress isEqualToString: [outPort addressString]])
-					[outPort setAddressString:feedbackIpAddress];
-				if (feedbackPort != [outPort port])
-					[outPort setPort:feedbackPort];
-			}
+			if (![feedbackIpAddress isEqualToString: [outPort addressString]])
+				[outPort setAddressString:feedbackIpAddress];
+			if (feedbackPort != [outPort port])
+				[outPort setPort:feedbackPort];
 		}
-	});
+	}
 }
 
 - (void)connectBMD
@@ -126,84 +127,82 @@
 	}
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
-		// AppDelegate can only be retrieved from main thread
-		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
-
-		if (![[self connectionStatus] isEqualToString:@"Connecting"])
+		if (![[self connectionStatus] isEqualToString:@"Connecting"] && ![self isConnected])
 		{
 			[self setConnectionStatus: @"Connecting"];
 			[[window outlineView] reloadItem:self];
 			[[window outlineView] setNeedsLayout:YES];
 		}
+	});
+	
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
+	dispatch_async(queue, ^{
+		BMDSwitcherConnectToFailure            failReason;
 		
-		dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0ul);
-		dispatch_async(queue, ^{
-			BMDSwitcherConnectToFailure            failReason;
-			
-			// Note that ConnectTo() can take several seconds to return, both for success or failure,
-			// depending upon hostname resolution and network response times, so it may be best to
-			// do this in a separate thread to prevent the main GUI thread blocking.
-			HRESULT hr = [appDel mSwitcherDiscovery]->ConnectTo((CFStringRef)ipAddress, &mSwitcher, &failReason);
-			if (SUCCEEDED(hr))
+		// Note that ConnectTo() can take several seconds to return, both for success or failure,
+		// depending upon hostname resolution and network response times, so it may be best to
+		// do this in a separate thread to prevent the main GUI thread blocking.
+		HRESULT hr = [appDel mSwitcherDiscovery]->ConnectTo((CFStringRef)ipAddress, &mSwitcher, &failReason);
+		if (SUCCEEDED(hr))
+		{
+			[self switcherConnected];
+		}
+		else
+		{
+			NSString* reason;
+			BOOL retry = YES;
+			switch (failReason)
 			{
-				[self switcherConnected];
+				case bmdSwitcherConnectToFailureNoResponse:
+					reason = @"No response from Switcher";
+					break;
+				case bmdSwitcherConnectToFailureIncompatibleFirmware:
+					reason = @"Switcher has incompatible firmware";
+					retry = NO;
+					break;
+				case bmdSwitcherConnectToFailureCorruptData:
+					reason = @"Corrupt data was received during connection attempt";
+					break;
+				case bmdSwitcherConnectToFailureStateSync:
+					reason = @"State synchronisation failed during connection attempt";
+					break;
+				case bmdSwitcherConnectToFailureStateSyncTimedOut:
+					reason = @"State synchronisation timed out during connection attempt";
+					break;
+				default:
+					reason = @"Connection failed for unknown reason";
+			}
+			if (retry && attemptsRemaining > 1)
+			{
+				//Delay 2 seconds before everytime connect/reconnect
+				//Because the session ID from ATEM switcher will alive not more then 2 seconds
+				//After 2 second of idle, the session will be reset then reconnect won't cause error
+				double delayInSeconds = 2.0;
+				dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+				dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
+							   ^(void){
+								   //To run in background thread
+								   [self connectBMD: attemptsRemaining-1 toIpAddress:ipAddress];
+							   });
+				[self logMessage:[NSString stringWithFormat:@"%@, retrying %d more times", reason, attemptsRemaining-1]];
 			}
 			else
 			{
-				NSString* reason;
-				BOOL retry = YES;
-				switch (failReason)
-				{
-					case bmdSwitcherConnectToFailureNoResponse:
-						reason = @"No response from Switcher";
-						break;
-					case bmdSwitcherConnectToFailureIncompatibleFirmware:
-						reason = @"Switcher has incompatible firmware";
-						retry = NO;
-						break;
-					case bmdSwitcherConnectToFailureCorruptData:
-						reason = @"Corrupt data was received during connection attempt";
-						break;
-					case bmdSwitcherConnectToFailureStateSync:
-						reason = @"State synchronisation failed during connection attempt";
-						break;
-					case bmdSwitcherConnectToFailureStateSyncTimedOut:
-						reason = @"State synchronisation timed out during connection attempt";
-						break;
-					default:
-						reason = @"Connection failed for unknown reason";
-				}
-				if (retry && attemptsRemaining > 1)
-				{
-					//Delay 2 seconds before everytime connect/reconnect
-					//Because the session ID from ATEM switcher will alive not more then 2 seconds
-					//After 2 second of idle, the session will be reset then reconnect won't cause error
-					double delayInSeconds = 2.0;
-					dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-					dispatch_after(popTime, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
-								   ^(void){
-									   //To run in background thread
-									   [self connectBMD: attemptsRemaining-1 toIpAddress:ipAddress];
-								   });
-					[self logMessage:[NSString stringWithFormat:@"%@, retrying %d more times", reason, attemptsRemaining-1]];
-				}
+				if (retry)
+					[self logMessage:@"Failed to connect after 5 attempts"];
 				else
-				{
-					if (retry)
-						[self logMessage:@"Failed to connect after 5 attempts"];
-					else
-						[self logMessage:[NSString stringWithFormat:@"%@", reason]];
-					dispatch_async(dispatch_get_main_queue(), ^{
-						[self setConnectionStatus:@"Failed to Connect"];
-						[[window outlineView] reloadItem:self];
-						[[window outlineView] setNeedsLayout:YES];
-						if ([[window connectionView] switcher] == self)
-							[[window connectionView] loadFromSwitcher:self];
-					});
-				}
+					[self logMessage:[NSString stringWithFormat:@"%@", reason]];
+				dispatch_async(dispatch_get_main_queue(), ^{
+					Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
+					[self setConnectionStatus:@"Failed to Connect"];
+					[[window outlineView] reloadItem:self];
+					[[window outlineView] setNeedsLayout:YES];
+					if ([[window connectionView] switcher] == self)
+						[[window connectionView] loadFromSwitcher:self];
+				});
 			}
-		});
+		}
 	});
 }
 
@@ -541,8 +540,6 @@
 	[self setConnectionStatus:@"Connected"];
 	
 	dispatch_async(dispatch_get_main_queue(), ^{
-		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
-		
 		if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
 		{
 			appDel.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
@@ -571,7 +568,6 @@
 		[[window outlineView] reloadItem:self];
 		[[window outlineView] setNeedsLayout:YES];
 
-		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 		if (appDel.activity)
 			[[NSProcessInfo processInfo] endActivity:appDel.activity];
 		
@@ -785,7 +781,6 @@
 
 - (void)logMessage:(NSString *)message
 {
-	AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
 	[appDel logMessage:[NSString stringWithFormat:@"%@: %@", [self ipAddress], message]];
 }
 

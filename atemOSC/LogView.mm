@@ -25,6 +25,7 @@
 		[self setState:NSVisualEffectStateActive];
 		self->fullLog = [[NSMutableString alloc] init];
 		self->basicLog = [[NSMutableString alloc] init];
+		self->debugMode = false;
 		return self;
 	}
 	return nil;
@@ -48,7 +49,7 @@
 		if (![message containsString:@"[Debug]"])
 			[basicLog appendString:messageWithNewLine];
 
-		if (active && (![message containsString:@"[Debug]"] || [[self debugCheckbox] state]))
+		if (active && (![message containsString:@"[Debug]"] || debugMode))
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[[self logTextView].textStorage appendAttributedString:attributedMessage];
@@ -74,6 +75,7 @@
 }
 
 - (IBAction)debugChanged:(id)sender {
+	self->debugMode = [[self debugCheckbox] state];
 	[self flushMessages];
 }
 

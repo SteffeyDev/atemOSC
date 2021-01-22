@@ -45,8 +45,6 @@
 	
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
-	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
-	self->window = window;
 	
 	// Load switchers from preferences
 	switchers = [[NSMutableArray alloc] init];
@@ -58,6 +56,7 @@
 		if (encodedObject != nil)
 		{
 			Switcher *switcher = [NSKeyedUnarchiver unarchiveObjectWithData:encodedObject];
+			[switcher setAppDelegate:self];
 			[switchers addObject:switcher];
 		}
 	}
@@ -101,6 +100,11 @@
 	isActive = YES;
 
 	dispatch_async(dispatch_get_main_queue(), ^{
+		if (!self->window)
+		{
+			Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
+			self->window = window;
+		}
 		[window loadSettingsFromPreferences];
 
 		if ([[window connectionView] switcher] != nil)
@@ -200,6 +204,7 @@
 - (void) addSwitcher
 {
 	Switcher *newSwitcher = [[Switcher alloc] init];
+	[newSwitcher setAppDelegate:self];
 	CFUUIDRef UUID = CFUUIDCreate(kCFAllocatorDefault);
 	[newSwitcher setUid: (NSString *) CFUUIDCreateString(kCFAllocatorDefault,UUID)];
 	[newSwitcher saveChanges];
