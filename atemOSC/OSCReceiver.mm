@@ -664,8 +664,8 @@
 		}
 	}];
 	
-	[self addEndpoint:@"/audio/input/<input>/left/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+	[self addEndpoint:@"/audio/input/<number>/left/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
 		if ([s mAudioMixer])
 			[appDel logMessage:@"Address /left/gain is not supported for this audio mixer"];
 		else if ([s mFairlightAudioMixer])
@@ -674,8 +674,8 @@
 		}
 	}];
 	
-	[self addEndpoint:@"/audio/input/<input>/right/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+	[self addEndpoint:@"/audio/input/<number>/right/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
 		if ([s mAudioMixer])
 			[appDel logMessage:@"Address /right/gain is not supported for this audio mixer"];
 		else if ([s mFairlightAudioMixer])
@@ -697,8 +697,8 @@
 		}
 	}];
 	
-	[self addEndpoint:@"/audio/input/<input>/left/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+	[self addEndpoint:@"/audio/input/<number>/left/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
 		if ([s mAudioMixer])
 			[appDel logMessage:@"Address /left/balance is not supported for this audio mixer"];
 		else if ([s mFairlightAudioMixer])
@@ -707,8 +707,8 @@
 		}
 	}];
 	
-	[self addEndpoint:@"/audio/input/<input>/right/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<input>"] intValue];
+	[self addEndpoint:@"/audio/input/<number>/right/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
 		if ([s mAudioMixer])
 			[appDel logMessage:@"Address /right/balance is not supported for this audio mixer"];
 		else if ([s mFairlightAudioMixer])
