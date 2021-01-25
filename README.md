@@ -315,6 +315,7 @@ Feedback: Enabled for `clip`, `clip-time`, `timeline-time`, `state`, `single-cli
 
   - **Request all feedback available** `/atem/send-status`
      - This will query the switcher and send back the status for the program/preview, transition control, keyers, and macros
+     - atemOSC will also `/atem/led/green` with a float value of 1.0 if connected and 0.0 if disconnected, and `/atem/led/red` with the inverse float value.  These `led` messages are also sent whenever the connection status changes.
   - **Request only Program/Preview/Bar status** `/atem/me/$i/send-status`
      - Where `$i` is an integer value specifying the M/E to get the status of
      - This will query the switcher and send back the status for only program/preview, bar, and preview

@@ -791,10 +791,13 @@ HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType
 
 float SwitcherMonitor::sendStatus() const
 {
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/led/green"];
+	NSString *nicknamePart = @"";
+	if ([switcher nickname])
+		nicknamePart = [[switcher nickname] stringByAppendingString:@"/"];
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/%@led/green", nicknamePart]];
 	[newMsg addFloat:[switcher isConnected] ? 1.0 : 0.0];
 	[[switcher outPort] sendThisMessage:newMsg];
-	newMsg = [OSCMessage createWithAddress:@"/led/red"];
+	newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/%@led/red", nicknamePart]];
 	[newMsg addFloat:[switcher isConnected] ? 0.0 : 1.0];
 	[[switcher outPort] sendThisMessage:newMsg];
 

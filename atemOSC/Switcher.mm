@@ -221,10 +221,13 @@
 	
 	[self updateFeedback];
 	
-	OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
+	NSString *nicknamePart = @"";
+	if ([self nickname])
+		nicknamePart = [[self nickname] stringByAppendingString:@"/"];
+	OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/%@led/green", nicknamePart]];
 	[newMsg addFloat:1.0];
 	[outPort sendThisMessage:newMsg];
-	newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
+	newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/%@led/red", nicknamePart]];
 	[newMsg addFloat:0.0];
 	[outPort sendThisMessage:newMsg];
 	
@@ -582,10 +585,13 @@
 	
 	if (outPort != nil)
 	{
-		OSCMessage *newMsg = [OSCMessage createWithAddress:@"/atem/led/green"];
+		NSString *nicknamePart = @"";
+		if ([self nickname])
+			nicknamePart = [[self nickname] stringByAppendingString:@"/"];
+		OSCMessage *newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/%@led/green", nicknamePart]];
 		[newMsg addFloat:0.0];
 		[outPort sendThisMessage:newMsg];
-		newMsg = [OSCMessage createWithAddress:@"/atem/led/red"];
+		newMsg = [OSCMessage createWithAddress:[NSString stringWithFormat:@"/atem/%@led/red", nicknamePart]];
 		[newMsg addFloat:1.0];
 		[outPort sendThisMessage:newMsg];
 	}
