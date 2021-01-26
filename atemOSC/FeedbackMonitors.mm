@@ -933,6 +933,24 @@ float FairlightAudioSourceMonitor::sendStatus() const
 	return 0.03;
 }
 
+HRESULT STDMETHODCALLTYPE FairlightAudioInputMonitor::Notify (BMDSwitcherFairlightAudioInputEventType eventType)
+{
+	switch (eventType)
+	{
+		// Go ahead and re-load all fairlight interfaces on config change so that we get any new sources for this input
+		case bmdSwitcherFairlightAudioInputEventTypeConfigurationChanged:
+			[switcher loadFairlightAudio];
+			break;
+		case bmdSwitcherFairlightAudioInputEventTypeCurrentExternalPortTypeChanged:
+			[switcher loadFairlightAudio];
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	
+	return S_OK;
+}
 
 HRESULT STDMETHODCALLTYPE FairlightAudioMixerMonitor::Notify (BMDSwitcherFairlightAudioMixerEventType eventType)
 {

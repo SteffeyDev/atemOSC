@@ -246,6 +246,21 @@ private:
 	BMDSwitcherFairlightAudioSourceId  sourceId_;
 };
 
+// Callback class to monitor fairlight audio inputs
+class FairlightAudioInputMonitor : public GenericMonitor<IBMDSwitcherFairlightAudioInputCallback>, public SendStatusInterface
+{
+public:
+	FairlightAudioInputMonitor(Switcher *switcher, BMDSwitcherAudioInputId inputId) : GenericMonitor(switcher), inputId_(inputId) { }
+	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherFairlightAudioInputEventType eventType);
+	float sendStatus() const {};
+	
+protected:
+	virtual ~FairlightAudioInputMonitor() { }
+	
+private:
+	BMDSwitcherAudioInputId  inputId_;
+};
+
 // Callback class to monitor fairlight audio mixer
 class FairlightAudioMixerMonitor : public GenericMonitor<IBMDSwitcherFairlightAudioMixerCallback>, public SendStatusInterface
 {

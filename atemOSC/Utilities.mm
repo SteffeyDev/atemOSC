@@ -215,3 +215,8 @@ void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me) 
 	else
 		sendFeedbackMessage(s, address, val);
 }
+
+std::vector<IBMDSwitcherFairlightAudioSource*> getFairlightAudioSources(Switcher *s, uint32_t inputId)
+{
+	
+}

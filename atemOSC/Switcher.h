@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 	MacroPoolMonitor*       							mMacroPoolMonitor;
 	AudioMixerMonitor*                  				mAudioMixerMonitor;
 	std::map<BMDSwitcherAudioInputId, AudioInputMonitor*> mAudioInputMonitors;
+	std::map<BMDSwitcherAudioInputId, FairlightAudioInputMonitor*> mFairlightAudioInputMonitors;
 	std::map<BMDSwitcherAudioInputId, std::map<BMDSwitcherFairlightAudioSourceId, FairlightAudioSourceMonitor*> > mFairlightAudioSourceMonitors;
 
 	FairlightAudioMixerMonitor*         				mFairlightAudioMixerMonitor;
@@ -90,6 +91,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)saveChanges;
 - (void)updateFeedback;
+
+- (void)loadFairlightAudio;
 
 - (void)logMessage:(NSString *)message;
 
