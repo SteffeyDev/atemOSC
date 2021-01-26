@@ -187,19 +187,21 @@ NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx
     return result;
 }
 
+// address will start with a forward slash
 void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val) {
 	// If a switcher nickname is set, they probably have multiple switchers connected
 	// and are thus using nicknames, so include nickname in the feedback address
 	if (s.nickname && s.nickname.length > 0)
 		address = [NSString stringWithFormat:@"/atem/%@%@", s.nickname, address];
 	else
-		address = [NSString stringWithFormat:@"/atem/%@", address];
+		address = [NSString stringWithFormat:@"/atem%@", address];
 	
 	OSCMessage *msg = [OSCMessage createWithAddress:address];
 	[msg addValue:val];
 	[s.outPort sendThisMessage:msg];
 }
 
+// address will start with a forward slash
 void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me) {
 	// If there are multiple mix effect blocks on this switcher, include the block number in the feedback string
 	if ([s mMixEffectBlocks].size() > 1)
