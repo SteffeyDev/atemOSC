@@ -45,7 +45,12 @@
 
 	[helpTextView setAlignment:NSLeftTextAlignment];
 	
-	NSMutableAttributedString * helpString = [[NSMutableAttributedString alloc] initWithString:@""];
+	NSMutableAttributedString * helpString = [[NSMutableAttributedString alloc] initWithString:@"This nothing more then a exhaustive list of supported OSC addresses for this switcher.  For usage notes and instructions, see the "];
+	
+	NSMutableAttributedString * docsLink = [[NSMutableAttributedString alloc] initWithString:@"online documentation"];
+	[docsLink addAttribute: NSLinkAttributeName value: @"http://www.atemosc.com" range: NSMakeRange(0, docsLink.length)];
+	[helpString appendAttributedString:docsLink];
+	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@".\n\n"]];
 	
 	[self addHeader:@"Polling" toString:helpString];
 	[self addEntry:@"Get Status" forAddress:@"/send-status" toString:helpString];
