@@ -367,7 +367,7 @@
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nWe add support for addresses on an as-needed basis.  If you are in need of an additional address, open an issue on Github letting us know what it is.\n"]];
 
-	[helpString addAttribute:NSForegroundColorAttributeName value:[NSColor whiteColor] range:NSMakeRange(0,helpString.length)];
+	[helpString addAttribute:NSForegroundColorAttributeName value:[helpTextView textColor] range:NSMakeRange(0,helpString.length)];
 	[[helpTextView textStorage] setAttributedString:helpString];
 }
 
