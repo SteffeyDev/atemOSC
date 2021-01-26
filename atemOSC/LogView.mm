@@ -42,9 +42,9 @@
 		[formatter setDateFormat:@"HH:mm:ss"];
 		
 		NSString *messageWithNewLine = [NSString stringWithFormat:@"[%@] %@\n", [formatter stringFromDate:now], message];
-		NSAttributedString *attributedMessage = [[NSAttributedString alloc]initWithString:messageWithNewLine];
 		[formatter release];
-		
+		NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc]initWithString:messageWithNewLine];
+
 		[fullLog appendString:messageWithNewLine];
 		if (![message containsString:@"[Debug]"])
 			[basicLog appendString:messageWithNewLine];
@@ -52,9 +52,12 @@
 		if (active && (![message containsString:@"[Debug]"] || debugMode))
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
+				NSColor *color = [[self logTextView] textColor];
 				[[self logTextView].textStorage appendAttributedString:attributedMessage];
 				[[self logTextView] scrollRangeToVisible: NSMakeRange([self logTextView].string.length, 0)];
-				[[self logTextView] setTextColor:[NSColor whiteColor]];
+				
+				// Need to set color to original color, because adding attributed string resets the text color to black for some reason
+				[[self logTextView] setTextColor:color];
 			});
 		}
 	}
@@ -62,6 +65,7 @@
 
 - (void)flushMessages
 {
+	NSColor *color = [[self logTextView] textColor];
 	if ([[self debugCheckbox] state])
 	{
 		[[[self logTextView] textStorage] setAttributedString:[[NSAttributedString alloc] initWithString:fullLog]];
@@ -71,7 +75,7 @@
 		[[[self logTextView] textStorage] setAttributedString:[[NSAttributedString alloc] initWithString:basicLog]];
 	}
 	[[self logTextView] scrollRangeToVisible: NSMakeRange([self logTextView].string.length, 0)];
-	[[self logTextView] setTextColor:[NSColor whiteColor]];
+	[[self logTextView] setTextColor:color];
 }
 
 - (IBAction)debugChanged:(id)sender {
