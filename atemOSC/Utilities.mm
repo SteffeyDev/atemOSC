@@ -187,19 +187,29 @@ NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx
     return result;
 }
 
-NSString *getFeedbackAddress(Switcher *s, NSString *address) {
+void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val) {
 	// If a switcher nickname is set, they probably have multiple switchers connected
 	// and are thus using nicknames, so include nickname in the feedback address
 	if (s.nickname && s.nickname.length > 0)
-		return [NSString stringWithFormat:@"/atem/%@%@", s.nickname, address];
+		address = [NSString stringWithFormat:@"/atem/%@%@", s.nickname, address];
 	else
-		return [NSString stringWithFormat:@"/atem/%@", address];
+		address = [NSString stringWithFormat:@"/atem/%@", address];
+	
+	OSCMessage *msg = [OSCMessage createWithAddress:address];
+	[msg addValue:val];
+	[s.outPort sendThisMessage:msg];
 }
 
-NSString *getFeedbackAddress(Switcher *s, NSString *address, int me) {
+void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me) {
 	// If there are multiple mix effect blocks on this switcher, include the block number in the feedback string
 	if ([s mMixEffectBlocks].size() > 1)
-		return getFeedbackAddress(s, [NSString stringWithFormat:@"/me/%d%@", me, address]);
+	{
+		sendFeedbackMessage(s, [NSString stringWithFormat:@"/me/%d%@", me, address], val);
+		
+		// If the first me, send message with no /me for backward compatability
+		if (me == 1)
+			sendFeedbackMessage(s, address, val);
+	}
 	else
-		return getFeedbackAddress(s, address);
+		sendFeedbackMessage(s, address, val);
 }
