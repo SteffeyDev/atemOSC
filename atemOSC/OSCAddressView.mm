@@ -46,11 +46,10 @@
 	[helpTextView setAlignment:NSLeftTextAlignment];
 	
 	NSMutableAttributedString * helpString = [[NSMutableAttributedString alloc] initWithString:@"This nothing more then a exhaustive list of supported OSC addresses for this switcher.  For usage notes and instructions, see the "];
-	
-	NSMutableAttributedString * docsLink = [[NSMutableAttributedString alloc] initWithString:@"online documentation"];
-	[docsLink addAttribute: NSLinkAttributeName value: @"http://www.atemosc.com" range: NSMakeRange(0, docsLink.length)];
+		
+	NSMutableAttributedString * docsLink = [[NSMutableAttributedString alloc] initWithString:@"online documentation.\n\n"];
+	[docsLink addAttribute: NSLinkAttributeName value: @"http://www.atemosc.com" range: NSMakeRange(0, docsLink.length-3)];
 	[helpString appendAttributedString:docsLink];
-	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@".\n\n"]];
 	
 	[self addHeader:@"Polling" toString:helpString];
 	[self addEntry:@"Get Status" forAddress:@"/send-status" toString:helpString];
@@ -58,30 +57,31 @@
 	[self addHeader:@"Transitions" toString:helpString];
 	for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
 	{
-		[self addEntry:@"T-Bar" forAddress:[NSString stringWithFormat: @"/me/%d/transition/bar", i+1] toString:helpString];
-		[self addEntry:@"Cut" forAddress:[NSString stringWithFormat: @"/me/%d/transition/cut", i+1] toString:helpString];
-		[self addEntry:@"Auto-Cut" forAddress:[NSString stringWithFormat: @"/me/%d/transition/auto", i+1] toString:helpString];
-		[self addEntry:@"Fade-to-black" forAddress:[NSString stringWithFormat: @"/me/%d/transition/ftb", i+1] toString:helpString];
-		[self addEntry:@"Preview Transition" forAddress:[NSString stringWithFormat: @"/me/%d/transition/preview", i+1] toString:helpString];
-		[self addEntry:@"Set Type" forAddress:[NSString stringWithFormat: @"/me/%d/transition/type <string: mix/dip/wipe/sting/dve>", i+1] toString:helpString];
+		NSString *meString = [switcher mMixEffectBlocks].size() == 1 ? @"" : [NSString stringWithFormat:@"/me/%d", i+1];
+		[self addEntry:@"T-Bar" forAddress:[NSString stringWithFormat: @"%@/transition/bar", meString] toString:helpString];
+		[self addEntry:@"Cut" forAddress:[NSString stringWithFormat: @"%@/transition/cut", meString] toString:helpString];
+		[self addEntry:@"Auto-Cut" forAddress:[NSString stringWithFormat: @"%@/transition/auto", meString] toString:helpString];
+		[self addEntry:@"Fade-to-black" forAddress:[NSString stringWithFormat: @"%@/transition/ftb", meString] toString:helpString];
+		[self addEntry:@"Preview Transition" forAddress:[NSString stringWithFormat: @"%@/transition/preview", meString] toString:helpString];
+		[self addEntry:@"Set Type" forAddress:[NSString stringWithFormat: @"%@/transition/type <string: mix/dip/wipe/sting/dve>", meString] toString:helpString];
 	}
 	
 	[self addHeader:@"Sources" toString:helpString];
 
 	for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
 	{
+		NSString *meString = [switcher mMixEffectBlocks].size() == 1 ? @"" : [NSString stringWithFormat:@"/me/%d", i+1];
 		for (auto const& it : [switcher mInputs])
 		{
-			NSString* name;
-			it.second->GetLongName((CFStringRef*)&name);
+			CFStringRef nameRef;
+			it.second->GetLongName(&nameRef);
+			NSString *name = (__bridge NSString*)nameRef;
 			
 			if ([name isEqual:@""])
 				name = @"Unnamed";
 			
-			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/preview %lld",i+1,it.first] toString:helpString];
-			[self addEntry:name forAddress:[NSString stringWithFormat:@"/me/%d/program %lld",i+1,it.first] toString:helpString];
-			
-			[name release];
+			[self addEntry:name forAddress:[NSString stringWithFormat:@"%@/preview %lld",meString,it.first] toString:helpString];
+			[self addEntry:name forAddress:[NSString stringWithFormat:@"%@/program %lld",meString,it.first] toString:helpString];
 		}
 	}
 
@@ -89,8 +89,9 @@
 	[self addHeader:@"Upstream Keyers" toString:helpString];
 	for (int i = 0; i<[switcher mMixEffectBlocks].size(); i++)
 	{
-		[self addEntry:@"Set Tie BKGD" forAddress:[NSString stringWithFormat:@"/me/%d/usk/0/tie", i+1] toString:helpString];
-		[self addEntry:@"Toggle Tie BKGD" forAddress:[NSString stringWithFormat:@"/me/%d/usk/0/tie/toggle", i+1] toString:helpString];
+		NSString *meString = [switcher mMixEffectBlocks].size() == 1 ? @"" : [NSString stringWithFormat:@"/me/%d", i+1];
+		[self addEntry:@"Set Tie BKGD" forAddress:[NSString stringWithFormat:@"%@/usk/0/tie", meString] toString:helpString];
+		[self addEntry:@"Toggle Tie BKGD" forAddress:[NSString stringWithFormat:@"%@/usk/0/tie/toggle", meString] toString:helpString];
 		for (int j = 0; j<[switcher keyers][i].size();j++)
 		{
 			for (OSCEndpoint* endpoint : [appDel endpoints])
@@ -360,14 +361,12 @@
 		}
 	}
 	
-	if ([switcher mMixEffectBlocks].size() == 1)
-		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\n\nNote: Because this switcher only has one Mix Effect Block, you can omit the /me/1 in all commands if you would like.\n"]];
-	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nNote: Additional addresses are available that provide backward-compatibility with TouchOSC.  See the Readme on Github for details.\n"]];
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nWe add support for addresses on an as-needed basis.  If you are in need of an additional address, open an issue on Github letting us know what it is.\n"]];
 
-	[helpString addAttribute:NSForegroundColorAttributeName value:[helpTextView textColor] range:NSMakeRange(0,helpString.length)];
+	if ([helpTextView textColor])
+		[helpString addAttribute:NSForegroundColorAttributeName value:[helpTextView textColor] range:NSMakeRange(0,helpString.length)];
 	[[helpTextView textStorage] setAttributedString:helpString];
 }
 

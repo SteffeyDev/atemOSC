@@ -143,7 +143,8 @@
 		// Note that ConnectTo() can take several seconds to return, both for success or failure,
 		// depending upon hostname resolution and network response times, so it may be best to
 		// do this in a separate thread to prevent the main GUI thread blocking.
-		HRESULT hr = [appDel mSwitcherDiscovery]->ConnectTo((CFStringRef)ipAddress, &mSwitcher, &failReason);
+		IBMDSwitcherDiscovery *switcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
+		HRESULT hr = switcherDiscovery->ConnectTo((__bridge CFStringRef)ipAddress, &self->mSwitcher, &failReason);
 		if (SUCCEEDED(hr))
 		{
 			[self switcherConnected];
@@ -231,11 +232,14 @@
 	[newMsg addFloat:0.0];
 	[outPort sendThisMessage:newMsg];
 	
-	NSString* productName = @"N/A";
-	if (FAILED(mSwitcher->GetProductName((CFStringRef*)&productName)))
+	CFStringRef productNameRef;
+	NSString* productName;
+	if (FAILED(mSwitcher->GetProductName(&productNameRef)))
 	{
 		[self logMessage:@"Could not get switcher product name"];
+		productName = @"N/A";
 	}
+	productName = (__bridge NSString*)productNameRef;
 	
 	[self setProductName:productName];
 	
@@ -492,7 +496,7 @@
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if ([[NSProcessInfo processInfo] respondsToSelector:@selector(beginActivityWithOptions:reason:)])
 		{
-			appDel.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
+			self->appDel.activity = [[NSProcessInfo processInfo] beginActivityWithOptions:0x00FFFFFF reason:@"receiving OSC messages"];
 		}
 		
 		Window* window = (Window *) [[NSApplication sharedApplication] mainWindow];
@@ -603,10 +607,10 @@
 		[[window outlineView] reloadItem:self];
 		[[window outlineView] setNeedsLayout:YES];
 
-		if (appDel.activity)
-			[[NSProcessInfo processInfo] endActivity:appDel.activity];
+		if (self->appDel.activity)
+			[[NSProcessInfo processInfo] endActivity:self->appDel.activity];
 		
-		appDel.activity = nil;
+		self->appDel.activity = nil;
 		
 		if ([[window connectionView] switcher] == self)
 		{

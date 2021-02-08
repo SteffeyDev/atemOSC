@@ -144,9 +144,24 @@
 	{
 		NSAlert *alert = [[NSAlert alloc] init];
 		[alert setMessageText:@"Invalid IP Adress"];
-		[alert setInformativeText:@"Please enter a valid IPv4 Address for 'OSC Out IP Address'"];
+		[alert setInformativeText:@"Please enter a valid IPv4 Address"];
 		[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
 		return;
+	}
+	
+	if (textField == feedbackIpAddressTextField || textField == feedbackPortTextField)
+	{
+		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
+		if ([[feedbackIpAddressTextField stringValue] isEqualToString:@"127.0.0.1"] && [feedbackPortTextField intValue] == [[appDel inPort] port])
+		{
+			NSAlert *alert = [[NSAlert alloc] init];
+			[alert setMessageText:@"Invalid Feedback Address"];
+			[alert setInformativeText:@"Can't send feedback to localhost on the same port atemOSC is listening on"];
+			[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
+			[feedbackPortTextField setIntValue:switcher.feedbackPort];
+			[feedbackIpAddressTextField setStringValue:switcher.feedbackIpAddress];
+			return;
+		}
 	}
 	
 	if (textField == feedbackIpAddressTextField)

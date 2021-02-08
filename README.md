@@ -58,7 +58,9 @@ All addresses must start with `/atem/`.  atemOSC will ignore all OSC commands it
 
 ### Multi-switcher support
 
-By default, all commands will be sent to the first connected switcher.  If you connect multiple switchers to atemOSC, you will need to provide a nickname for each switcher and use that nickname in the address to specify which switcher to send the command to.
+If you only want to connect to a single ATEM switcher, leave the nickname field blank and use the addresses below as normal. By default, all commands without a nickname will be sent to the first switcher with no nickname.
+
+If you connect multiple switchers to atemOSC, you will need to provide a nickname for each switcher and use that nickname in the address to specify which switcher to send the command to. If you add a nickname to a switcher, you **must** send the nickname in the address, and all feedback messages will contain the nickname in the address.
 
 For example, `/atem/my-switcher-1/transition/auto` will trigger an automatic transition on the switcher whose nickname is `my-switcher-1`
 
@@ -236,6 +238,7 @@ Supports both standard and Fairlight audio mixers.
  - **Change Mix Option for Audio Input $i** `/atem/audio/input/$i/mix <string>`
      - Where `<string>` is 'on', 'off', or 'afv' (audio follow video)
      - e.g. `/atem/audio/input/2/mix 'afv'`
+     - Also supports sending mix option in address (e.g. `/atem/audio/input/$i/mix/afv`)
      - For Fairlight audio input in dual mono mode, will set mix option for both left & right.  To control the left and right channels individually, use the addresses `/atem/audio/input/$i/left/mix` and `/atem/audio/input/$i/right/mix`.
  - **Change Gain for Audio Output (Mix)** `/atem/audio/output/gain $x`
      - Where `$x` is the gain in decibels (dB), ranging from `-60` to `6`
@@ -355,6 +358,14 @@ A lot of MIDI controls send two signals when a button is pressed, one signal whe
 #### Solution
 Tune your MIDI software to send only one of the two signals, either ok button press (rising edge) or button release (falling edge). See [#120](https://github.com/SteffeyDev/atemOSC/issues/120) for instructions for OSCulator.
 
+### I want to send feedback messages to multiple devices with different IP address
+
+#### Problem
+Occasionally, you may want to send output messages to many devices on the same network, but this does not seem possible because the feedback IP address field only accepts one IP address
+
+#### Solution
+Set the IP address to be the broadcast address for your network.  This will cause feedback messages to be sent to every device on the network.  For a typical network, the broadcast address is calculated by replacing the last octet with `255` (e.g. for a `192.168.1.x` network, the broadcast address is `192.168.1.255`).  However, the broadcast address may be different if the subnet mask is not `255.255.255.0`.  You may be able to use [this subnet calculator](https://remotemonitoringsystems.ca/broadcast.php) to calculate the broadcast address for your network.
+
 -----------
 
 ## Contributing
@@ -370,6 +381,14 @@ I welcome pull requests, but recommend that you open an issue first so that we c
  ----------
 
 ## Developer Resources
+
+### Build and run app locally
+
+1. Download and install XCode
+2. Clone repository or download the repository ZIP
+3. Double click the .xcworkspace file to open in XCode
+4. Click on the project, go to the "Signing & Capabilities" tab, change the Team to your personal team, and change Signing Certificate to “Sign to Run Locally”
+5. Click the play button in the top left to run
 
 ### Find what line a crash occured on given a crash report (on MacOS)
 

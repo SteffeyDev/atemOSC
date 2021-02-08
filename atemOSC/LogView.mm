@@ -42,7 +42,6 @@
 		[formatter setDateFormat:@"HH:mm:ss"];
 		
 		NSString *messageWithNewLine = [NSString stringWithFormat:@"[%@] %@\n", [formatter stringFromDate:now], message];
-		[formatter release];
 		NSMutableAttributedString *attributedMessage = [[NSMutableAttributedString alloc]initWithString:messageWithNewLine];
 
 		[fullLog appendString:messageWithNewLine];

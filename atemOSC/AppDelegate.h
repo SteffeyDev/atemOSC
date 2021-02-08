@@ -32,12 +32,10 @@
 
 #import <Cocoa/Cocoa.h>
 
-#import "FeedbackMonitors.h"
 #import "OSCEndpoint.h"
 #import "Window.h"
 #import "Switcher.h"
 
-@class OSCAddressPanel;
 @class OSCReceiver;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
@@ -46,16 +44,13 @@
 	Window*						window;
 }
 
-@property (strong) 		id		activity;
+@property (retain) 		id		activity;
 @property (assign)		BOOL 	isActive;
 
-
-@property(nonatomic, retain) NSMutableArray<OSCEndpoint *> *endpoints;
-@property (assign, readonly) OSCInPort*                     inPort;
-@property (assign, readonly) OSCManager*					manager;
-@property (assign, readonly) IBMDSwitcherDiscovery*			mSwitcherDiscovery;
-@property(nonatomic, retain) NSMutableArray*				switchers;
-
+@property (retain) NSMutableArray<OSCEndpoint *>* endpoints;
+@property (retain) OSCInPort*                   inPort;
+@property (retain) OSCManager*					manager;
+@property (retain) NSMutableArray*				switchers;
 
 - (void)incomingPortChanged:(int)inPortValue;
 - (IBAction)githubPageButtonPressed:(id)sender;

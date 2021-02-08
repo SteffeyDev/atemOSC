@@ -23,6 +23,5 @@ extern bool stringIsNumber(NSString * str);
 extern NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx));
 void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val);
 void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me);
-std::vector<IBMDSwitcherFairlightAudioSource*> getFairlightAudioSources(Switcher *s, uint32_t inputId);
 
 #endif /* Utilities_hpp */

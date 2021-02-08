@@ -34,7 +34,6 @@
 @synthesize endpoints;
 @synthesize inPort;
 @synthesize manager;
-@synthesize mSwitcherDiscovery;
 @synthesize switchers;
 @synthesize isActive;
 
@@ -66,11 +65,12 @@
 		[self addSwitcher];
 	}
 	
-	mSwitcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
-	if (!mSwitcherDiscovery)
+	// Create switcher discovery instance here just to check if SDK is working
+	IBMDSwitcherDiscovery *switcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
+	if (!switcherDiscovery)
 	{
 		NSBeginAlertSheet(@"Could not create Switcher Discovery Instance.\nATEM Switcher Software may not be installed.\n",
-						  @"OK", nil, nil, window, self, @selector(sheetDidEndShouldTerminate:returnCode:contextInfo:), NULL, window, @"");
+						  @"OK", nil, nil, window, self, @selector(sheetDidEndShouldTerminate:returnCode:contextInfo:), nil, nil, @"");
 	}
 	else
 	{
@@ -105,21 +105,21 @@
 			Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
 			self->window = window;
 		}
-		[window loadSettingsFromPreferences];
+		[self->window loadSettingsFromPreferences];
 
-		if ([[window connectionView] switcher] != nil)
+		if ([[self->window connectionView] switcher] != nil)
 		{
-			[[window outlineView] refreshList];
-			[[window connectionView] loadFromSwitcher:[[window connectionView] switcher]];
+			[[self->window outlineView] refreshList];
+			[[self->window connectionView] loadFromSwitcher:[[self->window connectionView] switcher]];
 		}
 		else
 		{
-			[[window outlineView] reloadData];
+			[[self->window outlineView] reloadData];
 			NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:1];
-			[[window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
+			[[self->window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
 		}
 		
-		[[window logView] flushMessages];
+		[[self->window logView] flushMessages];
 	});
 }
 
@@ -206,7 +206,7 @@
 	Switcher *newSwitcher = [[Switcher alloc] init];
 	[newSwitcher setAppDelegate:self];
 	CFUUIDRef UUID = CFUUIDCreate(kCFAllocatorDefault);
-	[newSwitcher setUid: (NSString *) CFUUIDCreateString(kCFAllocatorDefault,UUID)];
+	[newSwitcher setUid: (NSString *) CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault,UUID))];
 	[newSwitcher saveChanges];
 	[switchers addObject:newSwitcher];
 	

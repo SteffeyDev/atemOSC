@@ -5,6 +5,7 @@
 @implementation OSCReceiver
 
 @synthesize endpointMap;
+@synthesize endpointPrefixList;
 @synthesize validators;
 
 - (instancetype) initWithDelegate:(AppDelegate *) delegate
@@ -17,11 +18,13 @@
 	
 	NSLog(@"Setting up validators");
 	
+	__weak typeof(appDel) weakAppDel = appDel;
+	__weak typeof(self) weakSelf = self;
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		if (me > 0 && me <= [s mMixEffectBlocks].size())
 			return true;
-		[appDel logMessage:[NSString stringWithFormat:@"No mix effect block %d", me]];
+		[weakAppDel logMessage:[NSString stringWithFormat:@"No mix effect block %d", me]];
 		return false;
 	} copy] forKey:@"/me"];
 
@@ -29,7 +32,7 @@
 		int key = [[d objectForKey:@"<key>"] intValue];
 		if (key > 0 && key <= [s dsk].size())
 			return true;
-		[appDel logMessage:[NSString stringWithFormat:@"DSK %d is not available on your switcher, valid DSK values are 1 - %lu", key, [s dsk].size()]];
+		[weakAppDel logMessage:[NSString stringWithFormat:@"DSK %d is not available on your switcher, valid DSK values are 1 - %lu", key, [s dsk].size()]];
 		return false;
 	} copy] forKey:@"/dsk"];
 	
@@ -46,7 +49,7 @@
 		if (key == 0 && [address containsString:@"tie"])
 			return true;
 		
-		[appDel logMessage:[NSString stringWithFormat:@"USK %d is not available on your switcher, valid USK values are 1 - %lu", key, [s keyers].size()]];
+		[weakAppDel logMessage:[NSString stringWithFormat:@"USK %d is not available on your switcher, valid USK values are 1 - %lu", key, [s keyers].size()]];
 		return false;
 	} copy] forKey:@"/me/<me>/usk"];
 	
@@ -54,22 +57,37 @@
 		int number = [[d objectForKey:@"<number>"] intValue];
 		if ([s mHyperdecks].count(number-1) > 0)
 			return true;
-		[appDel logMessage:[NSString stringWithFormat:@"Hyperdeck %d is not available on your switcher, valid Hyperdecks are 1 - %lu", number, [s mHyperdecks].size()]];
+		[weakAppDel logMessage:[NSString stringWithFormat:@"Hyperdeck %d is not available on your switcher, valid Hyperdecks are 1 - %lu", number, [s mHyperdecks].size()]];
 		return false;
 	} copy] forKey:@"/hyperdeck"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int number = [[d objectForKey:@"<number>"] intValue];
+		NSString *address = [d objectForKey:@"address"];
 		if ([s mAudioInputs].count(number) > 0 || [s mFairlightAudioInputs].count(number) > 0)
+		{
+			if ([address containsString:@"/left/"] || [address containsString:@"/right/"])
+			{
+				if ([s mFairlightAudioMixer])
+				{
+					if ([s mFairlightAudioSources][number].size() > 0)
+						return true;
+					[weakAppDel logMessage:[NSString stringWithFormat:@"No sources available for input %@", address]];
+					return false;
+				}
+				[weakAppDel logMessage:[NSString stringWithFormat:@"Address %@ is not supported for this audio mixer", address]];
+				return false;
+			}
 			return true;
-		[appDel logMessage:[NSString stringWithFormat:@"Invalid input %d. Please choose a valid audio input number from the list in the Addresses tab.", number]];
+		}
+		[weakAppDel logMessage:[NSString stringWithFormat:@"Invalid input %d. Please choose a valid audio input number from the list in the Addresses tab.", number]];
 		return false;
 	} copy] forKey:@"/audio/input"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		if ([s mAudioMixer] || [s mFairlightAudioMixer])
 			return true;
-		[appDel logMessage:@"No audio mixer"];
+		[weakAppDel logMessage:@"No audio mixer"];
 		return false;
 	} copy] forKey:@"/audio/output"];
 	
@@ -78,13 +96,13 @@
 
 		if (![s mMediaPool])
 		{
-			[appDel logMessage:@"No media pool\n"];
+			[weakAppDel logMessage:@"No media pool\n"];
 			return false;
 		}
 		
 		if ([s mMediaPlayers].size() < mplayer || mplayer < 0)
 		{
-			[appDel logMessage:[NSString stringWithFormat:@"No media player %d", mplayer]];
+			[weakAppDel logMessage:[NSString stringWithFormat:@"No media player %d", mplayer]];
 			return false;
 		}
 		return true;
@@ -95,13 +113,13 @@
 
 		if (![s mSuperSource])
 		{
-			[appDel logMessage:@"No super source"];
+			[weakAppDel logMessage:@"No super source"];
 			return false;
 		}
 		
 		if ([s mSuperSourceBoxes].size() < key)
 		{
-			[appDel logMessage:[NSString stringWithFormat:@"No super source box %d", key]];
+			[weakAppDel logMessage:[NSString stringWithFormat:@"No super source box %d", key]];
 			return false;
 		}
 		
@@ -112,7 +130,7 @@
 		int auxToChange = [[d objectForKey:@"<key>"] intValue];
 		if (auxToChange > 0 && auxToChange-1 < [s mSwitcherInputAuxList].size())
 			return true;
-		[appDel logMessage:[NSString stringWithFormat:@"Aux number %d not available on your switcher", auxToChange]];
+		[weakAppDel logMessage:[NSString stringWithFormat:@"Aux number %d not available on your switcher", auxToChange]];
 		return false;
 	} copy] forKey:@"/aux"];
 	
@@ -250,7 +268,7 @@
 		if (SUCCEEDED([s mMixEffectBlocks][me-1]->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters)))
 		{
 			int key = [[d objectForKey:@"<key>"] intValue];
-			[self changeTransitionSelection:key select:[v boolValue] forTransitionParameters:mTransitionParameters];
+			[weakSelf changeTransitionSelection:key select:[v boolValue] forTransitionParameters:mTransitionParameters];
 		}
 	}];
 	
@@ -266,7 +284,7 @@
 			uint32_t transitionSelections[5] = { bmdSwitcherTransitionSelectionBackground, bmdSwitcherTransitionSelectionKey1, bmdSwitcherTransitionSelectionKey2, bmdSwitcherTransitionSelectionKey3, bmdSwitcherTransitionSelectionKey4 };
 			uint32_t requestedTransitionSelection = transitionSelections[key];
 			
-			[self changeTransitionSelection:key select:!((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection) forTransitionParameters:mTransitionParameters];
+			[weakSelf changeTransitionSelection:key select:!((requestedTransitionSelection & currentTransitionSelection) == requestedTransitionSelection) forTransitionParameters:mTransitionParameters];
 		}
 	}];
 	
@@ -278,7 +296,7 @@
 			int key = [[d objectForKey:@"<key>"] intValue];
 			bool isOnAir;
 			[s keyers][me-1][key-1]->GetOnAir(&isOnAir);
-			[self changeTransitionSelection:key select:([v boolValue] != isOnAir) forTransitionParameters:mTransitionParameters];
+			[weakSelf changeTransitionSelection:key select:([v boolValue] != isOnAir) forTransitionParameters:mTransitionParameters];
 		}
 	}];
 	
@@ -328,126 +346,126 @@
 	[self addEndpoint:@"/me/<me>/usk/<key>/luma/pre-multiplied" label:@"Set Pre-Multiplied Luma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [weakSelf getUSKLumaParams:key forSwitcher:s andME:me])
 			lumaParams->SetPreMultiplied([v boolValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/luma/clip" label:@"Set Clip Luma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [weakSelf getUSKLumaParams:key forSwitcher:s andME:me])
 			lumaParams->SetClip([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/luma/gain" label:@"Set Gain Luma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [weakSelf getUSKLumaParams:key forSwitcher:s andME:me])
 			lumaParams->SetGain([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/luma/inverse" label:@"Set Inverse Luma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyLumaParameters* lumaParams = [self getUSKLumaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyLumaParameters* lumaParams = [weakSelf getUSKLumaParams:key forSwitcher:s andME:me])
 			lumaParams->SetInverse([v boolValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/hue" label:@"Set Hue Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [weakSelf getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetHue([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/gain" label:@"Set Gain Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [weakSelf getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetGain([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/y-suppress" label:@"Set Y-Suppress Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [weakSelf getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetYSuppress([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/lift" label:@"Set Lift Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [weakSelf getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetLift([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/narrow" label:@"Set Narrow Chroma Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyChromaParameters* chromaParams = [self getUSKChromaParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyChromaParameters* chromaParams = [weakSelf getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetNarrow([v boolValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/enabled" label:@"Set Border Enabled DVE Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderEnabled([v boolValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-width-inner" label:@"Set Border Inner Width DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderWidthIn([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-width-outer" label:@"Set Border Outer Width DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderWidthOut([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-softness-inner" label:@"Set Border Inner Softness DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderSoftnessIn([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-softness-outer" label:@"Set Border Outer Softness DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderSoftnessOut([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-opacity" label:@"Set Border Opacity DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderOpacity([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-hue" label:@"Set Border Hue DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderHue([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-saturation" label:@"Set Border Saturation DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderSaturation([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/border-luma" label:@"Set Border Luma DVE Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if (IBMDSwitcherKeyDVEParameters* dveParams = [self getUSKDVEParams:key forSwitcher:s andME:me])
+		if (IBMDSwitcherKeyDVEParameters* dveParams = [weakSelf getUSKDVEParams:key forSwitcher:s andME:me])
 			dveParams->SetBorderLuma([v floatValue]);
 	}];
 	
@@ -666,22 +684,12 @@
 	
 	[self addEndpoint:@"/audio/input/<number>/left/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
-		if ([s mAudioMixer])
-			[appDel logMessage:@"Address /left/gain is not supported for this audio mixer"];
-		else if ([s mFairlightAudioMixer])
-		{
-			[s mFairlightAudioSources][inputNumber].begin()->second->SetFaderGain([v floatValue]);
-		}
+		[s mFairlightAudioSources][inputNumber].begin()->second->SetFaderGain([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/audio/input/<number>/right/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
-		if ([s mAudioMixer])
-			[appDel logMessage:@"Address /right/gain is not supported for this audio mixer"];
-		else if ([s mFairlightAudioMixer])
-		{
-			[s mFairlightAudioSources][inputNumber].end()->second->SetFaderGain([v floatValue]);
-		}
+		std::prev([s mFairlightAudioSources][inputNumber].end())->second->SetFaderGain([v floatValue]);
 	}];
 		
 	[self addEndpoint:@"/audio/input/<number>/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
@@ -699,22 +707,12 @@
 	
 	[self addEndpoint:@"/audio/input/<number>/left/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
-		if ([s mAudioMixer])
-			[appDel logMessage:@"Address /left/balance is not supported for this audio mixer"];
-		else if ([s mFairlightAudioMixer])
-		{
-			[s mFairlightAudioSources][inputNumber].begin()->second->SetPan([v floatValue]);
-		}
+		[s mFairlightAudioSources][inputNumber].begin()->second->SetPan([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/audio/input/<number>/right/balance" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
-		if ([s mAudioMixer])
-			[appDel logMessage:@"Address /right/balance is not supported for this audio mixer"];
-		else if ([s mFairlightAudioMixer])
-		{
-			[s mFairlightAudioSources][inputNumber].end()->second->SetPan([v floatValue]);
-		}
+		std::prev([s mFairlightAudioSources][inputNumber].end())->second->SetPan([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/audio/input/<number>/mix" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
@@ -746,32 +744,22 @@
 	
 	[self addEndpoint:@"/audio/input/<number>/left/mix" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
-		if ([s mAudioMixer])
-			[appDel logMessage:@"Address /left/mix is not supported for this audio mixer"];
-		else if ([s mFairlightAudioMixer])
-		{
-			if ([[v stringValue] isEqualToString:@"afv"])
-				[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionAudioFollowVideo);
-			else if ([[v stringValue] isEqualToString:@"on"])
-				[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOn);
-			else if ([[v stringValue] isEqualToString:@"off"])
-				[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOff);
-		}
+		if ([[v stringValue] isEqualToString:@"afv"])
+			[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionAudioFollowVideo);
+		else if ([[v stringValue] isEqualToString:@"on"])
+			[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOn);
+		else if ([[v stringValue] isEqualToString:@"off"])
+			[s mFairlightAudioSources][inputNumber].begin()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOff);
 	}];
 	
 	[self addEndpoint:@"/audio/input/<number>/right/mix" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherAudioInputId inputNumber = [[d objectForKey:@"<number>"] intValue];
-		if ([s mAudioMixer])
-			[appDel logMessage:@"Address /right/mix is not supported for this audio mixer"];
-		else if ([s mFairlightAudioMixer])
-		{
-			if ([[v stringValue] isEqualToString:@"afv"])
-				[s mFairlightAudioSources][inputNumber].end()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionAudioFollowVideo);
-			else if ([[v stringValue] isEqualToString:@"on"])
-				[s mFairlightAudioSources][inputNumber].end()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOn);
-			else if ([[v stringValue] isEqualToString:@"off"])
-				[s mFairlightAudioSources][inputNumber].end()->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOff);
-		}
+		if ([[v stringValue] isEqualToString:@"afv"])
+			std::prev([s mFairlightAudioSources][inputNumber].end())->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionAudioFollowVideo);
+		else if ([[v stringValue] isEqualToString:@"on"])
+			std::prev([s mFairlightAudioSources][inputNumber].end())->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOn);
+		else if ([[v stringValue] isEqualToString:@"off"])
+			std::prev([s mFairlightAudioSources][inputNumber].end())->second->SetMixOption(bmdSwitcherFairlightAudioMixOptionOff);
 	}];
 	
 	[self addEndpoint:@"/audio/output/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
@@ -785,7 +773,7 @@
 		if ([s mAudioMixer])
 			[s mAudioMixer]->SetProgramOutBalance([v floatValue]);
 		else if ([s mFairlightAudioMixer])
-			[appDel logMessage:@"Output balance not supported for Fairlight audio mixer"];
+			[weakAppDel logMessage:@"Output balance not supported for Fairlight audio mixer"];
 	}];
 	
 	[self addEndpoint:@"/hyperdeck/<number>/play" label:@"HyperDeck <number> Play" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
@@ -820,12 +808,12 @@
 	
 	[self addEndpoint:@"/hyperdeck/<number>/clip-time" label:@"HyperDeck <number> Set Clip Time" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
-		[self setHyperDeckTime:hyperdeckNumber-1 time:[v stringValue] clip:YES forSwitcher:s];
+		[weakSelf setHyperDeckTime:hyperdeckNumber-1 time:[v stringValue] clip:YES forSwitcher:s];
 	}];
 	
 	[self addEndpoint:@"/hyperdeck/<number>/timeline-time" label:@"HyperDeck <number> Set Timeline Time" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
-		[self setHyperDeckTime:hyperdeckNumber-1 time:[v stringValue] clip:NO forSwitcher:s];
+		[weakSelf setHyperDeckTime:hyperdeckNumber-1 time:[v stringValue] clip:NO forSwitcher:s];
 	}];
 	
 	[self addEndpoint:@"/hyperdeck/<number>/single-clip" label:@"HyperDeck <number> Set Single Clip Playback" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
@@ -838,10 +826,16 @@
 		[s mHyperdecks][hyperdeckNumber-1]->SetLoopedPlayback([v boolValue]);
 	}];
 	
+	endpointPrefixList = [[NSMutableSet alloc] init];
+	
 	// Recursively build the tree from the list
 	// This allows for O(1) calls to find the handler for the address instead of O(n)
 	for (OSCEndpoint *endpoint in [appDel endpoints])
+	{
 		[self buildMapLevel:endpointMap endpoint:endpoint index:0];
+		[endpointPrefixList addObject:[[[endpoint addressTemplate] componentsSeparatedByString:@"/"] objectAtIndex:1]];
+		[endpointPrefixList addObject:[[[[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"/me/<me>" withString:@""] componentsSeparatedByString:@"/"] objectAtIndex:1]];
+	}
 
 	// Turn on for debugging
 	//[self printLevel:endpointMap index:0];
@@ -992,24 +986,53 @@
 	// Remove initial /atem, all addresses will start with that
 	if (![[addressComponents objectAtIndex:0] isEqualToString:@"atem"])
 	{
-		[appDel logMessage:[NSString stringWithFormat:@"All addresses must start with '/atem'. Invalid command: %@", [m address]]];
+		[appDel logMessage:[NSString stringWithFormat:@"[Error] All addresses must start with '/atem'. Invalid command: %@", [m address]]];
 		return;
 	}
 	[addressComponents removeObjectAtIndex:0];
 	
-	// Find the switcher to route the requests to (default to first)
-	Switcher *switcher = [[appDel switchers] objectAtIndex:0];
-	for (Switcher *s : [appDel switchers])
+	NSString *nickname = nil;
+	if (![endpointPrefixList containsObject:[addressComponents objectAtIndex:0]])
 	{
-		if ([[addressComponents objectAtIndex:0] isEqualToString:[s nickname]])
+		nickname = [addressComponents objectAtIndex:0];
+	}
+	
+	// Find the switcher to route the requests to
+	Switcher *switcher = nil;
+	if (nickname != nil)
+	{
+		for (Switcher *s : [appDel switchers])
 		{
-			switcher = s;
-			[addressComponents removeObjectAtIndex:0];
+			if ([[addressComponents objectAtIndex:0] isEqualToString:[s nickname]])
+			{
+				switcher = s;
+				[addressComponents removeObjectAtIndex:0];
+			}
+		}
+		if (!switcher)
+			return [appDel logMessage:[NSString stringWithFormat:@"[Error] No switcher has the nickname '%@', and no command starts with this string", nickname]];
+	}
+	else
+	{
+		// If no nickname included in address or nickname does not match any switcher, default to first switcher with no nickname
+		for (Switcher *s : [appDel switchers])
+		{
+			if (!s.nickname || s.nickname.length == 0)
+			{
+				if (switcher != nil)
+					return [appDel logMessage:[NSString stringWithFormat:@"[Error] Multiple switchers with no nickname, so not sure where to route message.  If you connect multiple switchers, you must assign nicknames so that messages can be routed correctly."]];
+				else
+					switcher = s;
+			}
+		}
+		if (!switcher)
+		{
+			return [appDel logMessage:[NSString stringWithFormat:@"[Error] Could not determine switcher for command '%@'.  If your switcher has a nickname, you must either include the nickname in the address, or delete the nickname if this is the only switcher connected.", [m address]]];
 		}
 	}
 	
 	if (![switcher isConnected])
-		return [appDel logMessage:[NSString stringWithFormat:@"Cannot process command %@ because switcher at address %@ is not connected", [m address], [switcher ipAddress]]];
+		return [appDel logMessage:[NSString stringWithFormat:@"[Error] Cannot process command '%@' because switcher at address %@ is not connected", [m address], [switcher ipAddress]]];
 	
 	NSMutableDictionary *args = [[NSMutableDictionary alloc] init];
 	[args setValue:[m address] forKey:@"address"];
@@ -1043,27 +1066,33 @@
 	{
 		NSLog(@"Found OSCEndpoint for address: %@", [m address]);
 		
-		if (value == nil && endpoint.valueType != OSCValNil)
-			return [appDel logMessage:[NSString stringWithFormat:@"Value required for %@, but no value given", [m address]]];
-		
 		OSCValueType neededType = endpoint.valueType;
 		OSCValueType actualType = [value type];
-		if (actualType != neededType)
+		
+		if (value == nil || actualType == OSCValNil)
 		{
-			// Transform value if needed to match desired type
-			// This is needed for compatibility with TouchOSC mostly, which can only send floats that need to be converted to ints and bools
-			if (neededType == OSCValInt && actualType == OSCValFloat)
-				value = [OSCValue createWithInt:(int)[[m value] floatValue]];
-			else if (neededType == OSCValFloat && actualType == OSCValInt)
-				value = [OSCValue createWithFloat:(float)[[m value] intValue]];
-			else if (neededType == OSCValBool && actualType == OSCValFloat)
-				value = [OSCValue createWithBool:[[m value] floatValue] == 1.0];
-			else if (neededType == OSCValBool && actualType == OSCValInt)
-				value = [OSCValue createWithBool:[[m value] intValue] == 1];
-			else if (neededType == OSCValNil)
-				[appDel logMessage:[NSString stringWithFormat:@"Unecessary value passed for %@, but running regardless", [m address]]];
-			else
-				return [appDel logMessage:[NSString stringWithFormat:@"Incorrect value type for %@", [m address]]];
+			if (neededType != OSCValNil)
+				return [appDel logMessage:[NSString stringWithFormat:@"[Error] Value required for %@, but no value given", [m address]]];
+		}
+		else
+		{
+			if (actualType != neededType)
+			{
+				// Transform value if needed to match desired type
+				// This is needed for compatibility with TouchOSC mostly, which can only send floats that need to be converted to ints and bools
+				if (neededType == OSCValInt && actualType == OSCValFloat)
+					value = [OSCValue createWithInt:(int)[[m value] floatValue]];
+				else if (neededType == OSCValFloat && actualType == OSCValInt)
+					value = [OSCValue createWithFloat:(float)[[m value] intValue]];
+				else if (neededType == OSCValBool && actualType == OSCValFloat)
+					value = [OSCValue createWithBool:[[m value] floatValue] == 1.0];
+				else if (neededType == OSCValBool && actualType == OSCValInt)
+					value = [OSCValue createWithBool:[[m value] intValue] == 1];
+				else if (neededType == OSCValNil)
+					[appDel logMessage:[NSString stringWithFormat:@"Unecessary value passed for %@, but running regardless", [m address]]];
+				else
+					return [appDel logMessage:[NSString stringWithFormat:@"[Error] Incorrect value type for %@", [m address]]];
+			}
 		}
 				
 		// Pass validation if needed (relatively small number of validators should ensure this is performant)

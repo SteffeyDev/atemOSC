@@ -188,9 +188,9 @@ void InputMonitor::updateLongName() const
 	{
 		// Have to delay slightly, otherwise fetch gets old name
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-			NSString *name;
-			switcher.mInputs[inputId_]->GetLongName((CFStringRef*)&name);
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/input/%lld/long-name", inputId_], [OSCValue createWithString:name]);
+			CFStringRef name;
+			switcher.mInputs[inputId_]->GetLongName(&name);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/input/%lld/long-name", inputId_], [OSCValue createWithString:(__bridge NSString*)name]);
 		});
 	}
 }
@@ -201,9 +201,9 @@ void InputMonitor::updateShortName() const
 	{
 		// Have to delay slightly, otherwise fetch gets old name
 		dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.2 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-			NSString *name;
-			switcher.mInputs[inputId_]->GetShortName((CFStringRef*)&name);
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/input/%lld/short-name", inputId_], [OSCValue createWithString:name]);
+			CFStringRef name;
+			switcher.mInputs[inputId_]->GetShortName(&name);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/input/%lld/short-name", inputId_], [OSCValue createWithString:(__bridge NSString*)name]);
 
 		});
 	}
@@ -878,7 +878,7 @@ void FairlightAudioSourceMonitor::updateFaderGain() const
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/gain", inputId_], [OSCValue createWithFloat:(float)gain]);
 		
 		NSString *address = @"/audio/input/%lld/left/gain";
-		if (sourceId_ == switcher.mFairlightAudioSources[inputId_].end()->first)
+		if (sourceId_ == std::prev(switcher.mFairlightAudioSources[inputId_].end())->first)
 			address = @"/audio/input/%lld/right/gain";
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:address, inputId_], [OSCValue createWithFloat:(float)gain]);
 	}
@@ -894,7 +894,7 @@ void FairlightAudioSourceMonitor::updatePan() const
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/balance", inputId_], [OSCValue createWithFloat:(float)pan]);
 		
 		NSString *address = @"/audio/input/%lld/left/balance";
-		if (sourceId_ == switcher.mFairlightAudioSources[inputId_].end()->first)
+		if (sourceId_ == std::prev(switcher.mFairlightAudioSources[inputId_].end())->first)
 			address = @"/audio/input/%lld/right/balance";
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:address, inputId_], [OSCValue createWithFloat:(float)pan]);
 	}
@@ -918,7 +918,7 @@ void FairlightAudioSourceMonitor::updateMixOption() const
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix", inputId_], [OSCValue createWithString:mixOptionString]);
 		
 		NSString *address = @"/audio/input/%lld/left/mix";
-		if (sourceId_ == switcher.mFairlightAudioSources[inputId_].end()->first)
+		if (sourceId_ == std::prev(switcher.mFairlightAudioSources[inputId_].end())->first)
 			address = @"/audio/input/%lld/right/mix";
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:address, inputId_], [OSCValue createWithString:mixOptionString]);
 	}

@@ -12,8 +12,9 @@
 	AppDelegate *appDel;
 }
 
-@property(nonatomic, retain) NSMutableDictionary *endpointMap;
-@property(nonatomic, retain) NSMutableDictionary<NSString *, bool (^)(Switcher *s, NSDictionary *, OSCValue *)> *validators;
+@property (retain) NSMutableDictionary *endpointMap;
+@property (retain) NSMutableSet<NSString*> *endpointPrefixList;
+@property (retain) NSMutableDictionary<NSString *, bool (^)(Switcher *s, NSDictionary *, OSCValue *)> *validators;
 
 - (instancetype) initWithDelegate:(AppDelegate *)delegate;
 - (void) receivedOSCMessage:(OSCMessage *)m;

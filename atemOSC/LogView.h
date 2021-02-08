@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (IBAction)debugChanged:(id)sender;
 
 
--(void)flushMessages;
+- (void)flushMessages;
 - (void)logMessage:(NSString *)message toForeground:(BOOL)active;
 
 @end

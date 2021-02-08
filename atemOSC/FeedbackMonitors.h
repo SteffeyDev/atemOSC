@@ -252,7 +252,7 @@ class FairlightAudioInputMonitor : public GenericMonitor<IBMDSwitcherFairlightAu
 public:
 	FairlightAudioInputMonitor(Switcher *switcher, BMDSwitcherAudioInputId inputId) : GenericMonitor(switcher), inputId_(inputId) { }
 	HRESULT STDMETHODCALLTYPE Notify (BMDSwitcherFairlightAudioInputEventType eventType);
-	float sendStatus() const {};
+	float sendStatus() const { return 0.0; };
 	
 protected:
 	virtual ~FairlightAudioInputMonitor() { }
@@ -284,7 +284,7 @@ class HyperDeckMonitor : public GenericMonitor<IBMDSwitcherHyperDeckCallback>, p
 public:
 	HyperDeckMonitor(Switcher *switcher, BMDSwitcherHyperDeckId hyperdeckId) : GenericMonitor(switcher), hyperdeckId_(hyperdeckId) { }
 	HRESULT Notify(BMDSwitcherHyperDeckEventType eventType);
-	HRESULT NotifyError(BMDSwitcherHyperDeckErrorType eventType) { }
+	HRESULT NotifyError(BMDSwitcherHyperDeckErrorType eventType) { return 1; }
 	float sendStatus() const;
 	
 protected:

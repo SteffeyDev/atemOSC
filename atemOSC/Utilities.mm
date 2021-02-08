@@ -102,12 +102,12 @@ NSString* getNameOfMacro(Switcher *s, uint32_t index)
 {
 	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	HRESULT result;
-	NSString *name = @"";
-	result = [s mMacroPool]->GetName(index, (CFStringRef*)&name);
+	CFStringRef name = NULL;
+	result = [s mMacroPool]->GetName(index, &name);
 	switch (result)
 	{
 		case S_OK:
-			return name;
+			return (__bridge NSString *)name;
 		case E_INVALIDARG:
 			[appDel logMessage:[NSString stringWithFormat:@"Could not get the name of the Macro at index %d because the index is invalid.", index]];
 			break;
@@ -117,19 +117,19 @@ NSString* getNameOfMacro(Switcher *s, uint32_t index)
 		default:
 			[appDel logMessage:[NSString stringWithFormat:@"Could not get the name of the Macro at index %d.", index]];
 	}
-	return name;
+	return (__bridge NSString *)name;
 }
 
 NSString* getDescriptionOfMacro(Switcher *s, uint32_t index)
 {
 	AppDelegate * appDel = static_cast<AppDelegate *>([[NSApplication sharedApplication] delegate]);
 	HRESULT result;
-	NSString *description = @"";
-	result = [s mMacroPool]->GetDescription(index, (CFStringRef*)&description);
+	CFStringRef description;
+	result = [s mMacroPool]->GetDescription(index, &description);
 	switch (result)
 	{
 		case S_OK:
-			return description;
+			return (__bridge NSString *)description;
 		case E_INVALIDARG:
 			[appDel logMessage:[NSString stringWithFormat:@"Could not get the description of the Macro at index %d because the index is invalid.", index]];
 			break;
@@ -139,7 +139,7 @@ NSString* getDescriptionOfMacro(Switcher *s, uint32_t index)
 		default:
 			[appDel logMessage:[NSString stringWithFormat:@"Could not get the description of the Macro at index %d.", index]];
 	}
-	return description;
+	return (__bridge NSString *)description;
 }
 
 
@@ -214,9 +214,4 @@ void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me) 
 	}
 	else
 		sendFeedbackMessage(s, address, val);
-}
-
-std::vector<IBMDSwitcherFairlightAudioSource*> getFairlightAudioSources(Switcher *s, uint32_t inputId)
-{
-	
 }
