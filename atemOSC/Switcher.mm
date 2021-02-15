@@ -102,8 +102,10 @@
 {
 	if (feedbackIpAddress != nil && feedbackPort > 0)
 	{
+		// Make sure each out port has a unique label, otherwise createNewOutputToAddress will return nil
+		NSString *label = [NSString stringWithFormat:@"atemOSC (%@)", self.nickname != nil ? self.nickname : self.ipAddress];
 		if (outPort == nil)
-			outPort = [appDel.manager createNewOutputToAddress:feedbackIpAddress atPort:feedbackPort withLabel:@"atemOSC"];
+			outPort = [appDel.manager createNewOutputToAddress:feedbackIpAddress atPort:feedbackPort withLabel:label];
 		else
 		{
 			if (![feedbackIpAddress isEqualToString: [outPort addressString]])

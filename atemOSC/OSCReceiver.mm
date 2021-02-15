@@ -1014,20 +1014,29 @@
 	}
 	else
 	{
-		// If no nickname included in address or nickname does not match any switcher, default to first switcher with no nickname
+		// If no nickname included in address or nickname does not match any switcher, default to first connected switcher with no nickname
 		for (Switcher *s : [appDel switchers])
 		{
-			if (!s.nickname || s.nickname.length == 0)
+			if ((!s.nickname || s.nickname.length == 0) && s.isConnected)
 			{
 				if (switcher != nil)
-					return [appDel logMessage:[NSString stringWithFormat:@"[Error] Multiple switchers with no nickname, so not sure where to route message.  If you connect multiple switchers, you must assign nicknames so that messages can be routed correctly."]];
+					return [appDel logMessage:[NSString stringWithFormat:@"[Error] Multiple connected switchers with no nickname, so not sure where to route message.  If you connect multiple switchers, you must assign nicknames so that messages can be routed correctly."]];
 				else
 					switcher = s;
 			}
 		}
 		if (!switcher)
 		{
-			return [appDel logMessage:[NSString stringWithFormat:@"[Error] Could not determine switcher for command '%@'.  If your switcher has a nickname, you must either include the nickname in the address, or delete the nickname if this is the only switcher connected.", [m address]]];
+			BOOL anySwitcherConnected = NO;
+			for (Switcher *s : [appDel switchers])
+			{
+				if (s.isConnected)
+					anySwitcherConnected = YES;
+			}
+			if (anySwitcherConnected)
+				return [appDel logMessage:[NSString stringWithFormat:@"[Error] Could not determine switcher for command '%@'.  If your switcher has a nickname, you must either include the nickname in the address, or delete the nickname if this is the only switcher connected.", [m address]]];
+			else
+				return [appDel logMessage:[NSString stringWithFormat:@"[Error] Cannot process command '%@' because no switcher is connected", [m address]]];
 		}
 	}
 	

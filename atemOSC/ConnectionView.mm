@@ -185,6 +185,19 @@
 	
 	else if (textField == nicknameTextField)
 	{
+		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
+		for (Switcher *s : [appDel switchers])
+		{
+			if (s.nickname != nil && [textField stringValue].length > 0 && [s.nickname isEqualToString: [textField stringValue]])
+			{
+				NSAlert *alert = [[NSAlert alloc] init];
+				[alert setMessageText:@"Duplicate Nickname"];
+				[alert setInformativeText:@"Please assign a unique nickname to each switcher"];
+				[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
+				[textField setStringValue:switcher.nickname];
+				return;
+			}
+		}
 		[switcher setNickname: [textField stringValue]];
 		[[window addressesView] loadFromSwitcher:[self switcher]];
 	}
