@@ -29,6 +29,31 @@ if [[ -z "${AUTOMATIC_RELEASE_GITHUB_TOKEN}" ]] ; then
 fi
 
 #
+# Check if notarization creds exist
+#
+if [[ -z "${APPLE_DEVELOPER_EMAIL}" ]] ; then
+	echo -e "${RED_COLOR}You must specify your Apple Developer Account email${NO_COLOR}"
+	echo -e "EXPORT your email to an environment variable, for example:"
+	echo -e "\techo 'export APPLE_DEVELOPER_EMAIL=\"example@test.com\"' >> ~/.bashrc"
+	exit 1
+fi
+if [[ -z "${APPLE_DEVELOPER_PASSWORD}" ]] ; then
+	echo -e "${RED_COLOR}You must specify your Apple Developer Account password${NO_COLOR}"
+	echo -e "EXPORT your password to an environment variable, for example:"
+	echo -e "\techo 'export APPLE_DEVELOPER_PASSWORD=\"my-secret-password\"' >> ~/.bashrc"
+	echo -e "You can also store your password in a keychain entry and use the following instead:"
+	echo -e "\techo 'export APPLE_DEVELOPER_PASSWORD=\"@keychain:MY_ENTRY_NAME\"' >> ~/.bashrc"
+	exit 1
+fi
+if [[ -z "${APPLE_DEVELOPER_TEAM_SHORTNAME}" ]] ; then
+	echo -e "${RED_COLOR}You must specify your Apple Developer Account team shortname for the team you would like to use${NO_COLOR}"
+  echo -e "Run the command: xcrun altool --list-providers -u $APPLE_DEVELOPER_EMAIL -p $APPLE_DEVELOPER_PASSWORD"
+	echo -e "EXPORT the team shortname to an environment variable, for example:"
+	echo -e "\techo 'export APPLE_DEVELOPER_TEAM_SHORTNAME=\"ABCD1234\"' >> ~/.bashrc"
+	exit 1
+fi
+
+#
 # Check if Homebrew is installed
 #
 echo "Checking for Homebrew"
@@ -112,39 +137,55 @@ if [[ $? != 0 ]] ; then
 	exit 1
 fi
 
+# Create tag if needed
+if [ $(git tag -l "v$VERSION" | wc -l | xargs) -eq 0 ]; then
+  git tag -a "v$VERSION" -m "v$VERSION"
+  git push --tags
+fi
+
+#
+# Creating directory to work in
+#
+rm -rf temp_output
+mkdir -p temp_output
+cd temp_output
+
+if [[ -z $1 ]] ; then
+  echo -e "Pass in the path to the notarized atemOSC.app file as the first argument"
+  exit 1
+fi
+cp -R "$1" .
+
 #
 # Generating DMG
 #
-if [ -f atemOSC-*.dmg ] ; then
-	echo -e "${RED_COLOR}DMG file already exists. Please remove and try again.${NO_COLOR}"
-	echo -e "${GREY_COLOR}$(find atemOSC-*.dmg)${NO_COLOR}"
-	exit 1
-fi
 echo "Generating DMG"
 create-dmg 'atemOSC.app' || true
 if [[ $? != 0 ]] ; then
-	if [ -f atemOSC-*.dmg ] ; then
-		echo -e "${RED_COLOR}Could not generate DMG.${NO_COLOR}"
-		exit 1
-	fi
+  echo -e "${RED_COLOR}Could not generate DMG.${NO_COLOR}"
+  exit 1
 fi
-FILENAME=$(find atemOSC-*.dmg)
+FILENAME=$(find "atemOSC "*.dmg)
+mv "$FILENAME" "${FILENAME// /_}"
+FILENAME=$(find atemOSC_*.dmg)
+NEXT_RELEASE=$(echo $FILENAME | sed -E 's/atemOSC_(.*).dmg/\1/')
 echo -e "Generated: ${GREY_COLOR}${FILENAME}${NO_COLOR}"
 
 #
-# Get version details
+# Notarization
 #
-if [ -z "$(git tag)" ]
-  then
-    echo -e "This seems to be your first release. Congratulations!"
-  else
-    echo -e "The last tagged release was ${GREY_COLOR}$(git describe --tags --abbrev=0)${NO_COLOR}."
+echo "Uploading app for notarization. This may take a minute."
+BUNDLE_ID=$(cat atemOSC/atemOSC.xcodeproj/project.pbxproj | grep PRODUCT_BUNDLE_IDENTIFIER | head -n 1 | xargs | cut -d" " -f3 | cut -d";" -f1)
+xcrun altool --notarize-app --primary-bundle-id "$BUNDLE_ID" --username $APPLE_DEVELOPER_EMAIL --password $APPLE_DEVELOPER_PASSWORD --asc-provider $APPLE_DEVELOPER_TEAM_SHORTNAME --file $FILENAME
+if [[ $? != 0 ]] ; then
+  echo -e "${RED_COLOR}Error uploading for notarization.${NO_COLOR}"
+  exit 1
 fi
-SUGGESTED_VERSION=$(find atemOSC-*.dmg | sed -E 's/atemOSC-(.*).dmg/\1/')
+echo "Run command to check notarization status: xcrun altool --notarization-history 0 -u $APPLE_DEVELOPER_EMAIL -p $APPLE_DEVELOPER_PASSWORD --asc-provider $APPLE_DEVELOPER_TEAM_SHORTNAME"
 
-read -e -p "What version would you like to release? (${SUGGESTED_VERSION}) " NEXT_RELEASE
-NEXT_RELEASE="${NEXT_RELEASE:-${SUGGESTED_VERSION}}"
-
+#
+# GitHub Release
+#
 echo "Generating v${NEXT_RELEASE}"
 
 RELEASE=$(curl --silent -H "Content-Type: application/json" -X POST --data "$(GENERATE_POST_BODY)" "https://api.github.com/repos/${REPOSITORY}/releases?access_token=${AUTOMATIC_RELEASE_GITHUB_TOKEN}")
@@ -158,5 +199,8 @@ echo "Uploading DMG file"
 
 ASSET=$(curl --silent --data-binary @"$FILENAME" -H "Authorization: token $AUTOMATIC_RELEASE_GITHUB_TOKEN" -H "Content-Type: application/octet-stream" $ASSET_URL)
 
+# Cleaning up
+cd -
+rm -rf temp_output
 
 echo "✅  Release draft generated. Visit ${EDIT_URL}"
