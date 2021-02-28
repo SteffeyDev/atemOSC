@@ -1050,7 +1050,7 @@ void HyperDeckMonitor::updateCurrentClipTime() const
 		uint16_t hours;
 		uint8_t minutes, seconds, frames;
 		switcher.mHyperdecks[hyperdeckId_]->GetCurrentClipTime(&hours, &minutes, &seconds, &frames);
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/clip-time", hyperdeckId_], [OSCValue createWithString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/clip-time", hyperdeckId_], [OSCValue createWithString:[NSString stringWithFormat:@"%d:%d:%d:%d", hours, minutes, seconds, frames]]);
 	}
 }
 
@@ -1062,7 +1062,7 @@ void HyperDeckMonitor::updateCurrentTimelineTime() const
 		uint8_t minutes, seconds, frames;
 		switcher.mHyperdecks[hyperdeckId_]->GetCurrentTimelineTime(&hours, &minutes, &seconds, &frames);
 
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/timeline-time", hyperdeckId_], [OSCValue createWithString:[NSString stringWithFormat:@"%d:%d:%d", hours, minutes, seconds]]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/timeline-time", hyperdeckId_], [OSCValue createWithString:[NSString stringWithFormat:@"%d:%d:%d:%d", hours, minutes, seconds, frames]]);
 	}
 }
 

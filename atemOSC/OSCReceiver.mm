@@ -1206,7 +1206,7 @@
 		frame = [timeComponents[3] intValue];
 	}
 	else
-		[appDel logMessage:[NSString stringWithFormat:@"Invalid time '%@'. You must specify a time in the format HH:MM:SS (e.g. 00:00:05)", timeString]];
+		[appDel logMessage:[NSString stringWithFormat:@"Invalid time '%@'. You must specify a time in the format HH:MM:SS:FF (e.g. 00:00:05:00)", timeString]];
 	
 	HRESULT status;
 	if (clipTime)
