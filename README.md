@@ -25,7 +25,12 @@ atemOSC is a network proxy, listening for commands following the [OSC protocol](
 
 **If you would like to control your switcher using a MIDI board or device**, consider pairing this software with [OSCulator](https://osculator.net) or [MidiPipe](http://www.subtlesoft.square7.net/MidiPipe.html).  If you would like to control AtemOSC directly using MIDI, comment on [Issue #111](https://github.com/SteffeyDev/atemOSC/issues/111) to let us know.
 
-**If you would like to control your switcher using a mobile device**, you can use [TouchOSC](https://hexler.net/products/touchosc) (see included layouts in [samples](https://github.com/SteffeyDev/atemOSC/tree/master/samples) folder) or [Open Stage Control](https://openstagecontrol.ammd.net).
+**If you would like to control your switcher using a mobile device**, you can use [TouchOSC](https://hexler.net/products/touchosc) or [Open Stage Control](https://openstagecontrol.ammd.net).
+
+ - Open Stage Control Layout by Peter Steffey: [https://github.com/SteffeyDev/atemOSC/blob/master/samples/open-stage-control.json](https://github.com/SteffeyDev/atemOSC/blob/master/samples/open-stage-control.json)
+ - TouchOSC Layout (iPad) by Peter Steffey: [https://github.com/SteffeyDev/atemOSC/blob/master/samples/ipad-layout.touchosc](https://github.com/SteffeyDev/atemOSC/blob/master/samples/ipad-layout.touchosc)
+ - TouchOSC Layout (iPad) by mkcologne: [https://github.com/mkcologne/atemMiniTouchOSC](https://github.com/mkcologne/atemMiniTouchOSC)
+ - TouchOSC Layout (iPhone): [https://github.com/SteffeyDev/atemOSC/blob/master/samples/iphone-layout.touchosc](https://github.com/SteffeyDev/atemOSC/blob/master/samples/iphone-layout.touchosc)
 
 ## Videos & Guides
 
