@@ -1,6 +1,4 @@
-# atemOSC
-
-A macOS application to control ATEM video switchers with [OSC](http://opensoundcontrol.org/introduction-osc).
+atemOSC is a network proxy, listening for commands following the [OSC protocol](http://opensoundcontrol.org/introduction-osc) and executing those commands on Blackmagic ATEM video switchers.  
 
 <img alt="atemOSC Screenshot" src="https://github.com/SteffeyDev/atemOSC/raw/master/atemOSC.png" width="70%">
 
@@ -15,7 +13,7 @@ Download older or pre-release versions:
 
 ## Setup and Usage
 
-atemOSC is a network proxy, listening for commands following the [OSC protocol](http://opensoundcontrol.org/introduction-osc) and executing those commands on Blackmagic ATEM video switchers.  After launching the application, enter the IP address of the switcher and which local port to listen on (default 3333), and then send OSC commands to the IP address of the computer running atemOSC that port.  If you set an outgoing IP address and port, atemOSC will send status updates and feedback OSC messages to the IP address and port you specified.
+After launching the application, enter the IP address of the switcher and which local port to listen on (default 3333), and then send OSC commands to the IP address of the computer running atemOSC that port.  If you set an outgoing IP address and port, atemOSC will send status updates and feedback OSC messages to the IP address and port you specified.
 
 **If you are sending atemOSC messages from a queueing software or translation software on the same computer that atemOSC is running on**, make sure to send messages to `127.0.0.1` (localhost) on the port that atemOSC is listening on.
 
