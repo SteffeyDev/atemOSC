@@ -1,5 +1,5 @@
 /* -LICENSE-START-
-** Copyright (c) 2020 Blackmagic Design
+** Copyright (c) 2021 Blackmagic Design
 **
 ** Permission is hereby granted, free of charge, to any person or organization
 ** obtaining a copy of the software and accompanying documentation covered by
@@ -84,15 +84,17 @@ BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSourceCallback     = /* E9331BC4-
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSource             = /* D8D1D78D-0B9F-4300-9734-AE8DA35A8ECA */ { 0xD8,0xD1,0xD7,0x8D,0x0B,0x9F,0x43,0x00,0x97,0x34,0xAE,0x8D,0xA3,0x5A,0x8E,0xCA };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSourceIterator     = /* 050233A3-3244-46B0-A7CD-EF37A869ACDD */ { 0x05,0x02,0x33,0xA3,0x32,0x44,0x46,0xB0,0xA7,0xCD,0xEF,0x37,0xA8,0x69,0xAC,0xDD };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAnalogAudioInputCallback = /* A9B917B9-46C7-474D-BD86-75CC34D71AF8 */ { 0xA9,0xB9,0x17,0xB9,0x46,0xC7,0x47,0x4D,0xBD,0x86,0x75,0xCC,0x34,0xD7,0x1A,0xF8 };
-BMD_CONST REFIID IID_IBMDSwitcherFairlightAnalogAudioInput        = /* C3F347F3-49BB-4832-835C-E329FBF5707E */ { 0xC3,0xF3,0x47,0xF3,0x49,0xBB,0x48,0x32,0x83,0x5C,0xE3,0x29,0xFB,0xF5,0x70,0x7E };
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAnalogAudioInput        = /* 7103C039-96F5-46C0-B2AF-A7FFFFFBB4F2 */ { 0x71,0x03,0xC0,0x39,0x96,0xF5,0x46,0xC0,0xB2,0xAF,0xA7,0xFF,0xFF,0xFB,0xB4,0xF2 };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputCallback      = /* 25F66467-A6BB-4813-B214-158D0FF8653C */ { 0x25,0xF6,0x64,0x67,0xA6,0xBB,0x48,0x13,0xB2,0x14,0x15,0x8D,0x0F,0xF8,0x65,0x3C };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInput              = /* 96748040-89C2-44F3-BCC0-124BDB9E378F */ { 0x96,0x74,0x80,0x40,0x89,0xC2,0x44,0xF3,0xBC,0xC0,0x12,0x4B,0xDB,0x9E,0x37,0x8F };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioInputIterator      = /* 019DABB8-EF1A-4BB6-9460-6972C5AD2B07 */ { 0x01,0x9D,0xAB,0xB8,0xEF,0x1A,0x4B,0xB6,0x94,0x60,0x69,0x72,0xC5,0xAD,0x2B,0x07 };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioHeadphoneOutputCallback = /* 13492CC6-F496-4CDE-8355-3645DE38A6F1 */ { 0x13,0x49,0x2C,0xC6,0xF4,0x96,0x4C,0xDE,0x83,0x55,0x36,0x45,0xDE,0x38,0xA6,0xF1 };
-BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioHeadphoneOutput    = /* A9E5FB7D-A436-4179-9F3F-FF2BD5580830 */ { 0xA9,0xE5,0xFB,0x7D,0xA4,0x36,0x41,0x79,0x9F,0x3F,0xFF,0x2B,0xD5,0x58,0x08,0x30 };
-BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioHeadphoneOutputIterator = /* 63EED6B1-D574-4312-90B4-F6DEBC290701 */ { 0x63,0xEE,0xD6,0xB1,0xD5,0x74,0x43,0x12,0x90,0xB4,0xF6,0xDE,0xBC,0x29,0x07,0x01 };
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioHeadphoneOutput    = /* 8111B131-A6AF-4B1D-AE26-F60E085B52D4 */ { 0x81,0x11,0xB1,0x31,0xA6,0xAF,0x4B,0x1D,0xAE,0x26,0xF6,0x0E,0x08,0x5B,0x52,0xD4 };
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioHeadphoneOutputIterator = /* 3F65B11C-B00E-4D65-AD82-AC58E2EF1ED9 */ { 0x3F,0x65,0xB1,0x1C,0xB0,0x0E,0x4D,0x65,0xAD,0x82,0xAC,0x58,0xE2,0xEF,0x1E,0xD9 };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioMixerCallback      = /* 071AFA58-5005-4BC9-A240-50656BFB2DFE */ { 0x07,0x1A,0xFA,0x58,0x50,0x05,0x4B,0xC9,0xA2,0x40,0x50,0x65,0x6B,0xFB,0x2D,0xFE };
 BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioMixer              = /* BC625428-D969-4512-9462-8AF8B65F0B21 */ { 0xBC,0x62,0x54,0x28,0xD9,0x69,0x45,0x12,0x94,0x62,0x8A,0xF8,0xB6,0x5F,0x0B,0x21 };
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSoloCallback       = /* EFA5F39D-667D-43C3-BC6A-B3F208FA1B16 */ { 0xEF,0xA5,0xF3,0x9D,0x66,0x7D,0x43,0xC3,0xBC,0x6A,0xB3,0xF2,0x08,0xFA,0x1B,0x16 };
+BMD_CONST REFIID IID_IBMDSwitcherFairlightAudioSolo               = /* 4B32277E-3ADA-431E-9530-3A0BCF5CDB4F */ { 0x4B,0x32,0x27,0x7E,0x3A,0xDA,0x43,0x1E,0x95,0x30,0x3A,0x0B,0xCF,0x5C,0xDB,0x4F };
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParametersCallback        = /* AB31E347-5177-4595-8E52-650BF9B08B7F */ { 0xAB,0x31,0xE3,0x47,0x51,0x77,0x45,0x95,0x8E,0x52,0x65,0x0B,0xF9,0xB0,0x8B,0x7F };
 BMD_CONST REFIID IID_IBMDSwitcherKeyLumaParameters                = /* EE88B575-6044-4372-B1D6-9733AF342DCA */ { 0xEE,0x88,0xB5,0x75,0x60,0x44,0x43,0x72,0xB1,0xD6,0x97,0x33,0xAF,0x34,0x2D,0xCA };
 BMD_CONST REFIID IID_IBMDSwitcherKeyChromaParametersCallback      = /* FE3F97EC-5F2D-4E47-AA7A-38962F9CB3CE */ { 0xFE,0x3F,0x97,0xEC,0x5F,0x2D,0x4E,0x47,0xAA,0x7A,0x38,0x96,0x2F,0x9C,0xB3,0xCE };
@@ -173,9 +175,9 @@ BMD_CONST REFIID IID_IBMDSwitcherSaveRecall                       = /* 7C8B477A-
 BMD_CONST REFIID IID_IBMDSwitcherRecordDiskIterator               = /* 777B5A46-83EF-4615-9722-146C79436927 */ { 0x77,0x7B,0x5A,0x46,0x83,0xEF,0x46,0x15,0x97,0x22,0x14,0x6C,0x79,0x43,0x69,0x27 };
 BMD_CONST REFIID IID_IBMDSwitcherRecordDisk                       = /* 2F2046BD-E6FC-4CC0-8689-94454F027997 */ { 0x2F,0x20,0x46,0xBD,0xE6,0xFC,0x4C,0xC0,0x86,0x89,0x94,0x45,0x4F,0x02,0x79,0x97 };
 BMD_CONST REFIID IID_IBMDSwitcherRecordDiskCallback               = /* B83041FC-3091-472B-B6A3-9D753692BF29 */ { 0xB8,0x30,0x41,0xFC,0x30,0x91,0x47,0x2B,0xB6,0xA3,0x9D,0x75,0x36,0x92,0xBF,0x29 };
-BMD_CONST REFIID IID_IBMDSwitcherRecordAV                         = /* 43C5A333-3DF4-4DF2-8F81-0A994CE63315 */ { 0x43,0xC5,0xA3,0x33,0x3D,0xF4,0x4D,0xF2,0x8F,0x81,0x0A,0x99,0x4C,0xE6,0x33,0x15 };
+BMD_CONST REFIID IID_IBMDSwitcherRecordAV                         = /* 916580BA-8655-4195-8138-EA038981A1FE */ { 0x91,0x65,0x80,0xBA,0x86,0x55,0x41,0x95,0x81,0x38,0xEA,0x03,0x89,0x81,0xA1,0xFE };
 BMD_CONST REFIID IID_IBMDSwitcherRecordAVCallback                 = /* 0DD309AE-D406-460D-B4AA-4D9EF2D31DE2 */ { 0x0D,0xD3,0x09,0xAE,0xD4,0x06,0x46,0x0D,0xB4,0xAA,0x4D,0x9E,0xF2,0xD3,0x1D,0xE2 };
-BMD_CONST REFIID IID_IBMDSwitcherStreamRTMP                       = /* 89A72582-A54B-40B6-9CFB-9B750D6C5DD9 */ { 0x89,0xA7,0x25,0x82,0xA5,0x4B,0x40,0xB6,0x9C,0xFB,0x9B,0x75,0x0D,0x6C,0x5D,0xD9 };
+BMD_CONST REFIID IID_IBMDSwitcherStreamRTMP                       = /* 30CC3D23-DE0A-48CE-B46F-854D0C630549 */ { 0x30,0xCC,0x3D,0x23,0xDE,0x0A,0x48,0xCE,0xB4,0x6F,0x85,0x4D,0x0C,0x63,0x05,0x49 };
 BMD_CONST REFIID IID_IBMDSwitcherStreamRTMPCallback               = /* 0A7F37FF-3195-4EF2-82C9-AA3751906059 */ { 0x0A,0x7F,0x37,0xFF,0x31,0x95,0x4E,0xF2,0x82,0xC9,0xAA,0x37,0x51,0x90,0x60,0x59 };
 BMD_CONST REFIID IID_IBMDSwitcherCameraControlParameterIterator   = /* 6B6E289F-0847-480A-A0BD-E8FB78A5505A */ { 0x6B,0x6E,0x28,0x9F,0x08,0x47,0x48,0x0A,0xA0,0xBD,0xE8,0xFB,0x78,0xA5,0x50,0x5A };
 BMD_CONST REFIID IID_IBMDSwitcherCameraControlCallback            = /* 90337CAC-9376-4A62-A58F-10936130970B */ { 0x90,0x33,0x7C,0xAC,0x93,0x76,0x4A,0x62,0xA5,0x8F,0x10,0x93,0x61,0x30,0x97,0x0B };
@@ -255,6 +257,8 @@ enum _BMDSwitcherInputAvailability {
     bmdSwitcherInputAvailabilityMixEffectBlock1                  = 0x00000002,
     bmdSwitcherInputAvailabilityMixEffectBlock2                  = 0x00000080,
     bmdSwitcherInputAvailabilityMixEffectBlock3                  = 0x00000100,
+    bmdSwitcherInputAvailabilityAux1Output                       = 0x00001000,
+    bmdSwitcherInputAvailabilityAux2Output                       = 0x00002000,
     bmdSwitcherInputAvailabilityAuxOutputs                       = 0x00000004,
     bmdSwitcherInputAvailabilityMultiView                        = 0x00000008,
     bmdSwitcherInputAvailabilitySuperSourceArt                   = 0x00000010,
@@ -636,6 +640,14 @@ enum _BMDSwitcherFairlightAudioSourceEventType {
     bmdSwitcherFairlightAudioSourceEventTypeIsMixedInChanged     = /* 'imiC' */ 0x696D6943
 };
 
+/* Enum BMDSwitcherFairlightAudioSoloEventType - Used in IBMDSwitcherFairlightAudioSoloCallback */
+
+typedef uint32_t BMDSwitcherFairlightAudioSoloEventType;
+enum _BMDSwitcherFairlightAudioSoloEventType {
+    bmdSwitcherFairlightAudioSoloEventTypeSoloChanged            = /* 'fasC' */ 0x66617343,
+    bmdSwitcherFairlightAudioSoloEventTypeSoloInputChanged       = /* 'fsiC' */ 0x66736943
+};
+
 /* Enum BMDSwitcherFairlightAudioSourceType - Fairlight Audio Source Type */
 
 typedef uint32_t BMDSwitcherFairlightAudioSourceType;
@@ -665,7 +677,8 @@ enum _BMDSwitcherFairlightAudioInputEventType {
 
 typedef uint32_t BMDSwitcherFairlightAnalogAudioInputEventType;
 enum _BMDSwitcherFairlightAnalogAudioInputEventType {
-    bmdSwitcherFairlightAnalogAudioInputEventTypeLevelChanged    = /* 'aalC' */ 0x61616C43
+    bmdSwitcherFairlightAnalogAudioInputEventTypeLevelChanged    = /* 'aalC' */ 0x61616C43,
+    bmdSwitcherFairlightAnalogAudioInputEventTypePowerModeChanged = /* 'aamC' */ 0x61616D43
 };
 
 /* Enum BMDSwitcherFairlightAudioAnalogInputLevel - Fairlight Analog Audio Input Level */
@@ -675,6 +688,14 @@ enum _BMDSwitcherFairlightAudioAnalogInputLevel {
     bmdSwitcherFairlightAudioAnalogInputLevelMicrophone          = 0x00000001,
     bmdSwitcherFairlightAudioAnalogInputLevelConsumerLine        = 0x00000002,
     bmdSwitcherFairlightAudioAnalogInputLevelProLine             = 0x00000004
+};
+
+/* Enum BMDSwitcherFairlightAudioAnalogInputMicPowerMode - Fairlight Analog Audio Input Microphone Power Mode */
+
+typedef uint32_t BMDSwitcherFairlightAudioAnalogInputMicPowerMode;
+enum _BMDSwitcherFairlightAudioAnalogInputMicPowerMode {
+    bmdSwitcherFairlightAudioAnalogInputMicPowerModeNoPower      = 0x00000001,
+    bmdSwitcherFairlightAudioAnalogInputMicPowerModePlugInPower  = 0x00000002
 };
 
 /* Enum BMDSwitcherFairlightAudioInputType - Fairlight Audio Input Type */
@@ -703,7 +724,9 @@ enum _BMDSwitcherFairlightAudioHeadphoneOutputEventType {
     bmdSwitcherFairlightAudioHeadphoneOutputEventTypeGainChanged = /* 'hogC' */ 0x686F6743,
     bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputMasterOutGainChanged = /* 'homC' */ 0x686F6D43,
     bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputTalkbackGainChanged = /* 'hotC' */ 0x686F7443,
-    bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputSidetoneGainChanged = /* 'hosC' */ 0x686F7343
+    bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputSidetoneGainChanged = /* 'hosC' */ 0x686F7343,
+    bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputMasterOutMuteChanged = /* 'hmoC' */ 0x686D6F43,
+    bmdSwitcherFairlightAudioHeadphoneOutputEventTypeInputTalkbackMuteChanged = /* 'htoC' */ 0x68746F43
 };
 
 /* Enum BMDSwitcherFairlightAudioMixerEventType - Used in IBMDSwitcherFairlightAudioMixerCallback */
@@ -1177,7 +1200,8 @@ typedef uint32_t BMDSwitcherRecordAVEventType;
 enum _BMDSwitcherRecordAVEventType {
     bmdSwitcherRecordAVEventTypeFilenameChanged                  = /* 'rmfc' */ 0x726D6663,
     bmdSwitcherRecordAVEventTypeRecordInAllCamerasChanged        = /* 'racc' */ 0x72616363,
-    bmdSwitcherRecordAVEventTypeDurationChanged                  = /* 'rmdc' */ 0x726D6463,
+    bmdSwitcherRecordAVEventTypeTimecodeChanged                  = /* 'rmdc' */ 0x726D6463,
+    bmdSwitcherRecordAVEventTypeDurationChanged                  = /* 'rduc' */ 0x72647563,
     bmdSwitcherRecordAVEventTypeActiveDiskIndexChanged           = /* 'rmac' */ 0x726D6163,
     bmdSwitcherRecordAVEventTypeTotalRecordingTimeAvailableChanged = /* 'rmtc' */ 0x726D7463,
     bmdSwitcherRecordAVEventTypeRecordAllISOInputsChanged        = /* 'isra' */ 0x69737261
@@ -1224,7 +1248,8 @@ enum _BMDSwitcherStreamRTMPEventType {
     bmdSwitcherStreamRTMPEventTypeAudioBitratesChanged           = /* 'rabc' */ 0x72616263,
     bmdSwitcherStreamRTMPEventTypeEncodingBitrateChanged         = /* 'rsec' */ 0x72736563,
     bmdSwitcherStreamRTMPEventTypeCacheUsedChanged               = /* 'rscc' */ 0x72736363,
-    bmdSwitcherStreamRTMPEventTypeDurationChanged                = /* 'rsdc' */ 0x72736463,
+    bmdSwitcherStreamRTMPEventTypeTimecodeChanged                = /* 'rsdc' */ 0x72736463,
+    bmdSwitcherStreamRTMPEventTypeDurationChanged                = /* 'rsdu' */ 0x72736475,
     bmdSwitcherStreamRTMPEventTypeAuthenticationChanged          = /* 'rsac' */ 0x72736163,
     bmdSwitcherStreamRTMPEventTypeLowLatencyChanged              = /* 'lltc' */ 0x6C6C7463
 };
@@ -1473,6 +1498,8 @@ class IBMDSwitcherFairlightAudioHeadphoneOutput;
 class IBMDSwitcherFairlightAudioHeadphoneOutputIterator;
 class IBMDSwitcherFairlightAudioMixerCallback;
 class IBMDSwitcherFairlightAudioMixer;
+class IBMDSwitcherFairlightAudioSoloCallback;
+class IBMDSwitcherFairlightAudioSolo;
 class IBMDSwitcherKeyLumaParametersCallback;
 class IBMDSwitcherKeyLumaParameters;
 class IBMDSwitcherKeyChromaParametersCallback;
@@ -2048,6 +2075,9 @@ public:
     virtual HRESULT GetSupportedInputLevels (/* out */ BMDSwitcherFairlightAudioAnalogInputLevel* levels) = 0;
     virtual HRESULT GetInputLevel (/* out */ BMDSwitcherFairlightAudioAnalogInputLevel* level) = 0;
     virtual HRESULT SetInputLevel (/* in */ BMDSwitcherFairlightAudioAnalogInputLevel level) = 0;
+    virtual HRESULT GetSupportedMicPowerModes (/* out */ BMDSwitcherFairlightAudioAnalogInputMicPowerMode* powerModes) = 0;
+    virtual HRESULT GetMicPowerMode (/* out */ BMDSwitcherFairlightAudioAnalogInputMicPowerMode* powerMode) = 0;
+    virtual HRESULT SetMicPowerMode (/* in */ BMDSwitcherFairlightAudioAnalogInputMicPowerMode powerMode) = 0;
     virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAnalogAudioInputCallback* callback) = 0;
     virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAnalogAudioInputCallback* callback) = 0;
 
@@ -2113,12 +2143,20 @@ protected:
 class BMD_PUBLIC IBMDSwitcherFairlightAudioHeadphoneOutput : public IUnknown
 {
 public:
+    virtual HRESULT DoesSupportSolo (/* out */ bool* supportsSolo) = 0;
+    virtual HRESULT DoesSupportMute (/* out */ bool* supportsMute) = 0;
     virtual HRESULT GetGain (/* out */ double* decibel) = 0;
     virtual HRESULT SetGain (/* in */ double decibel) = 0;
     virtual HRESULT GetInputMasterOutGain (/* out */ double* decibel) = 0;
     virtual HRESULT SetInputMasterOutGain (/* in */ double decibel) = 0;
+    virtual HRESULT GetInputMasterOutMute (/* out */ bool* muteMaster) = 0;
+    virtual HRESULT SetInputMasterOutMute (/* in */ bool muteMaster) = 0;
+    virtual HRESULT DoesSupportTalkback (/* out */ bool* supportsTalkback) = 0;
     virtual HRESULT GetInputTalkbackGain (/* out */ double* decibel) = 0;
     virtual HRESULT SetInputTalkbackGain (/* in */ double decibel) = 0;
+    virtual HRESULT GetInputTalkbackMute (/* out */ bool* muteTalkback) = 0;
+    virtual HRESULT SetInputTalkbackMute (/* in */ bool muteTalkback) = 0;
+    virtual HRESULT DoesSupportSidetone (/* out */ bool* supportsSidetone) = 0;
     virtual HRESULT GetInputSidetoneGain (/* out */ double* decibel) = 0;
     virtual HRESULT SetInputSidetoneGain (/* in */ double decibel) = 0;
     virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioHeadphoneOutputCallback* callback) = 0;
@@ -2172,6 +2210,33 @@ public:
 
 protected:
     virtual ~IBMDSwitcherFairlightAudioMixer () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioSoloCallback - Fairlight Audio Solo Callback Delegate */
+
+class BMD_PUBLIC IBMDSwitcherFairlightAudioSoloCallback : public IUnknown
+{
+public:
+    virtual HRESULT Notify (/* in */ BMDSwitcherFairlightAudioSoloEventType eventType) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioSoloCallback () {} // call Release method to drop reference count
+};
+
+/* Interface IBMDSwitcherFairlightAudioSolo - Fairlight Audio Solo Object */
+
+class BMD_PUBLIC IBMDSwitcherFairlightAudioSolo : public IUnknown
+{
+public:
+    virtual HRESULT GetSolo (/* out */ bool* solo) = 0;
+    virtual HRESULT SetSolo (/* in */ bool solo) = 0;
+    virtual HRESULT GetSoloInput (/* out */ BMDSwitcherAudioInputId* audioInput, /* out */ BMDSwitcherFairlightAudioSourceId* audioSource) = 0;
+    virtual HRESULT SetSoloInput (/* in */ BMDSwitcherAudioInputId audioInput, /* in */ BMDSwitcherFairlightAudioSourceId audioSource) = 0;
+    virtual HRESULT AddCallback (/* in */ IBMDSwitcherFairlightAudioSoloCallback* callback) = 0;
+    virtual HRESULT RemoveCallback (/* in */ IBMDSwitcherFairlightAudioSoloCallback* callback) = 0;
+
+protected:
+    virtual ~IBMDSwitcherFairlightAudioSolo () {} // call Release method to drop reference count
 };
 
 /* Interface IBMDSwitcherKeyLumaParametersCallback - Luma Key Parameters Callback */
@@ -3665,7 +3730,8 @@ public:
     virtual HRESULT GetWorkingSetDisk (/* in */ uint32_t workingSetIndex, /* out */ BMDSwitcherRecordDiskId* diskId) = 0;
     virtual HRESULT GetActiveDiskIndex (/* out */ uint32_t* workingSetIndex) = 0;
     virtual HRESULT RequestDuration (void) = 0;
-    virtual HRESULT GetDuration (/* out */ uint8_t* hours, /* out */ uint8_t* minutes, /* out */ uint8_t* seconds, /* out */ uint8_t* frames, /* out */ bool* dropFrame) = 0;
+    virtual HRESULT GetDuration (/* out */ uint64_t* duration) = 0;
+    virtual HRESULT GetTimecode (/* out */ uint8_t* hours, /* out */ uint8_t* minutes, /* out */ uint8_t* seconds, /* out */ uint8_t* frames, /* out */ bool* dropFrame) = 0;
     virtual HRESULT GetTotalRecordingTimeAvailable (/* out */ uint32_t* totalRecordingTimeAvailable) = 0;
     virtual HRESULT CreateIterator (/* in */ REFIID iid, /* out */ LPVOID* ppv) = 0;
     virtual HRESULT AddCallback (/* in */ IBMDSwitcherRecordAVCallback* callback) = 0;
@@ -3706,7 +3772,8 @@ public:
     virtual HRESULT SetAudioBitrates (/* in */ uint32_t lowBitrate, /* in */ uint32_t highBitrate) = 0;
     virtual HRESULT GetAudioBitrates (/* out */ uint32_t* lowBitRate, /* out */ uint32_t* highBitRate) = 0;
     virtual HRESULT RequestDuration (void) = 0;
-    virtual HRESULT GetDuration (/* out */ uint8_t* hours, /* out */ uint8_t* minutes, /* out */ uint8_t* seconds, /* out */ uint8_t* frames, /* out */ bool* dropFrame) = 0;
+    virtual HRESULT GetDuration (/* out */ uint64_t* duration) = 0;
+    virtual HRESULT GetTimecode (/* out */ uint8_t* hours, /* out */ uint8_t* minutes, /* out */ uint8_t* seconds, /* out */ uint8_t* frames, /* out */ bool* dropFrame) = 0;
     virtual HRESULT GetEncodingBitrate (/* out */ uint32_t* encodingBitrate) = 0;
     virtual HRESULT GetCacheUsed (/* out */ double* cacheUsed) = 0;
     virtual HRESULT SetAuthentication (/* in */ CFStringRef username, /* in */ CFStringRef password) = 0;
