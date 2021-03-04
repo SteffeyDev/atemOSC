@@ -246,6 +246,11 @@ Supports both standard and Fairlight audio mixers.
 
 Feedback: Enabled for all values
 
+Additional TouchOSC feedback - Every time the mix changes, 3 messages are sent:
+ - `/atem/audio/input/$i/mix/afv` with a float value of 1.0 if the current audio mode is AFV, or 0.0 otherwise
+ - `/atem/audio/input/$i/mix/on` with a float value of 1.0 if the current audio mode is ON, or 0.0 otherwise
+ - `/atem/audio/input/$i/mix/off` with a float value of 1.0 if the current audio mode is OFF, or 0.0 otherwise
+
 ### Media Players
 
  - **Set Media Player $i source to Clip $x** `/atem/mplayer/$i/clip $x`

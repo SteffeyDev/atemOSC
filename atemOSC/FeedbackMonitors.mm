@@ -778,6 +778,9 @@ void AudioInputMonitor::updateMixOption() const
 			mixOptionString = @"off";
 
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix", inputId_], [OSCValue createWithString:mixOptionString]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix/afv", inputId_], [OSCValue createWithFloat:[mixOptionString isEqualToString:@"afv"] ? 1.0 : 0.0]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix/on", inputId_], [OSCValue createWithFloat:[mixOptionString isEqualToString:@"on"] ? 1.0 : 0.0]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix/off", inputId_], [OSCValue createWithFloat:[mixOptionString isEqualToString:@"off"] ? 1.0 : 0.0]);
 	}
 }
 
