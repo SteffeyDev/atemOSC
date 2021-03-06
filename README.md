@@ -132,7 +132,7 @@ Feedback: Enabled for `/atem/transition/bar`
      - Where `$x` is an integer value that is a valid program source, and can be 1-6 depending on the capability of your ATEM switcher. Check the Help Menu for the correct values.
      - e.g. `/atem/aux/1 1` to set Aux 1 output to source 1 (Camera 1)
 
- Feedback: None
+ Feedback: Enabled
 
 ### Upstream Keyers
 
@@ -314,6 +314,15 @@ Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/
  - **Turn on/off looped playback mode on HyperDeck $i** `/atem/hyperdeck/$i/loop <true|false>`
 
 Feedback: Enabled for `clip`, `clip-time`, `timeline-time`, `state`, `single-clip`, and `loop`.  The state of the HyperDeck is available as a string value at `/atem/hyperdeck/$i/state`, and is sent out automatically when the state changes. State will be one of `play`, `record`, `shuttle`, `idle`, or `unknown`.
+
+### Recording
+
+ - **Start recording to external media** `/atem/recording/start`
+ - **Stop recording to external media** `/atem/recording/stop`
+ - **Switch which external media disk is used for recording** `/atem/recording/switch-disk`
+ - **Change recording filename** `/atem/recording/filename <string>`
+
+Feedback: Recording state sent to address `/atem/recording/state`, will contain a string that is one of `idle` | `recording` | `stopping`
 
 ### Other
 
