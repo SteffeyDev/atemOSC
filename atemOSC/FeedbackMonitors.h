@@ -299,7 +299,7 @@ class HyperDeckMonitor : public GenericMonitor<IBMDSwitcherHyperDeckCallback>, p
 public:
 	HyperDeckMonitor(Switcher *switcher, BMDSwitcherHyperDeckId hyperdeckId) : GenericMonitor(switcher), hyperdeckId_(hyperdeckId) { }
 	HRESULT Notify(BMDSwitcherHyperDeckEventType eventType);
-	HRESULT NotifyError(BMDSwitcherHyperDeckErrorType eventType) { return 1; }
+	HRESULT NotifyError(BMDSwitcherHyperDeckErrorType eventType) { return S_OK; }
 	float sendStatus() const;
 	
 protected:

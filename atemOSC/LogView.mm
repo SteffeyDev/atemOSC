@@ -31,7 +31,7 @@
 	return nil;
 }
 
-- (void)logMessage:(NSString *)message toForeground:(BOOL)active
+- (void)logMessage:(NSString *)message
 {
 	if (message) {
 		NSLog(@"%@", message);
@@ -48,7 +48,7 @@
 		if (![message containsString:@"[Debug]"])
 			[basicLog appendString:messageWithNewLine];
 
-		if (active && (![message containsString:@"[Debug]"] || debugMode))
+		if (![message containsString:@"[Debug]"] || debugMode)
 		{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				NSColor *color = [[self logTextView] textColor];

@@ -35,12 +35,10 @@
 @synthesize inPort;
 @synthesize manager;
 @synthesize switchers;
-@synthesize isActive;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	[self setupMenu];
-	isActive = YES;
 	
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
@@ -97,8 +95,6 @@
 
 - (void)applicationWillBecomeActive:(NSNotification *)notification
 {
-	isActive = YES;
-
 	dispatch_async(dispatch_get_main_queue(), ^{
 		if (!self->window)
 		{
@@ -121,11 +117,6 @@
 		
 		[[self->window logView] flushMessages];
 	});
-}
-
-- (void)applicationWillResignActive:(NSNotification *)notification
-{
-	isActive = NO;
 }
 
 - (void)setupMenu
@@ -244,7 +235,7 @@
 
 - (void)logMessage:(NSString *)message;
 {
-	[[window logView] logMessage:message toForeground:isActive];
+	[[window logView] logMessage:message];
 }
 
 @end

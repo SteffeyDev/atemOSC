@@ -1001,7 +1001,7 @@
 
 - (void) receivedOSCMessage:(OSCMessage *)m
 {
-	[appDel logMessage:[NSString stringWithFormat:@"Received OSC message: %@\tValue: %@", [m address], [m value]]];
+	[appDel logMessage:[NSString stringWithFormat:@"Received OSC message: %@  %@", [m address], [m value]]];
 	
 	NSMutableArray *addressComponents = [[NSMutableArray alloc] initWithArray:[[m address] componentsSeparatedByString:@"/"]];
 	[addressComponents removeObjectAtIndex:0];

@@ -22,7 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 - (void)flushMessages;
-- (void)logMessage:(NSString *)message toForeground:(BOOL)active;
+- (void)logMessage:(NSString *)message;
 
 @end
 

@@ -200,7 +200,7 @@ void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val) {
 	[msg addValue:val];
 	[s.outPort sendThisMessage:msg];
 	
-	[s logMessage:[NSString stringWithFormat:@"Sending feedback message: %@\tValue: %@", address, val]];
+	[s logMessage:[NSString stringWithFormat:@"Sending feedback message: %@  %@", address, val]];
 }
 
 // address will start with a forward slash

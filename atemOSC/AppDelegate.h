@@ -45,7 +45,6 @@
 }
 
 @property (retain) 		id		activity;
-@property (assign)		BOOL 	isActive;
 
 @property (retain) NSMutableArray<OSCEndpoint *>* endpoints;
 @property (retain) OSCInPort*                   inPort;
