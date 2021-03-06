@@ -160,7 +160,7 @@ fi
 #
 echo "Generating v${NEXT_RELEASE}"
 
-RELEASE=$(curl --silent -H "Content-Type: application/json" -X POST --data "$(GENERATE_POST_BODY)" "https://api.github.com/repos/${REPOSITORY}/releases?access_token=${AUTOMATIC_RELEASE_GITHUB_TOKEN}")
+RELEASE=$(curl --silent -H "Content-Type: application/json" -H "Authorization: token $AUTOMATIC_RELEASE_GITHUB_TOKEN" -X POST --data "$(GENERATE_POST_BODY)" "https://api.github.com/repos/${REPOSITORY}/releases")
 
 
 EDIT_URL="$(node -p -e 'JSON.parse(process.argv[1]).html_url.replace('/\\/tag\\//', '/edit/')' "${RELEASE}")"
