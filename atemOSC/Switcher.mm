@@ -38,7 +38,7 @@
 @synthesize mMacroControl;
 @synthesize mSuperSourceBoxes;
 @synthesize mInputs;
-@synthesize mSwitcherInputAuxList;
+@synthesize mAuxInputs;
 
 @synthesize mAudioInputs;
 @synthesize mAudioMixer;
@@ -341,7 +341,12 @@
 				result = auxObj->GetInputSource(&auxId);
 				if (SUCCEEDED(result))
 				{
-					mSwitcherInputAuxList.push_back(auxObj);
+					unsigned long index = mAuxInputs.size()+1;
+					mAuxInputs.insert(std::make_pair(index, auxObj));
+					InputAuxMonitor *monitor = new InputAuxMonitor(self, index);
+					auxObj->AddCallback(monitor);
+					mMonitors.push_back(monitor);
+					mAuxInputMonitors.insert(std::make_pair(index, monitor));
 				}
 			}
 			
@@ -688,11 +693,13 @@
 	mInputs.clear();
 	mInputMonitors.clear();
 	
-	while (mSwitcherInputAuxList.size())
+	for (auto const& it : mAuxInputs)
 	{
-		mSwitcherInputAuxList.back()->Release();
-		mSwitcherInputAuxList.pop_back();
+		it.second->RemoveCallback(mAuxInputMonitors.at(it.first));
+		it.second->Release();
 	}
+	mAuxInputs.clear();
+	mAuxInputMonitors.clear();
 
 	
 	while (dsk.size())

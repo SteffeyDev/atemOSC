@@ -236,11 +236,13 @@
 	}
 
 	[self addHeader:@"Aux Outputs" toString:helpString];
-	for (int i = 0; i<[switcher mSwitcherInputAuxList].size();i++)
+	for (auto const& it : [switcher mAuxInputs])
+	{
 		[self
-		 addEntry:[NSString stringWithFormat:@"Set Aux %d to Source",i+1]
-		 forAddress:[NSString stringWithFormat:@"/aux/%d\t<valid_program_source>",i+1]
+		 addEntry:[NSString stringWithFormat:@"Set Aux %lld to Source",it.first]
+		 forAddress:[NSString stringWithFormat:@"/aux/%lld\t<valid_program_source>",it.first]
 		 toString:helpString];
+	}		
 
 	if ([switcher mMediaPlayers].size() > 0)
 	{

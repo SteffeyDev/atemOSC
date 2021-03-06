@@ -76,6 +76,21 @@ private:
 	BMDSwitcherInputId  inputId_;
 };
 
+class InputAuxMonitor : public GenericMonitor<IBMDSwitcherInputAuxCallback>, public SendStatusInterface
+{
+public:
+	InputAuxMonitor(Switcher *switcher, BMDSwitcherInputId inputId) : GenericMonitor(switcher), inputId_(inputId) { }
+	HRESULT Notify(BMDSwitcherInputAuxEventType eventType);
+	float sendStatus() const;
+	
+protected:
+	virtual ~InputAuxMonitor() { }
+	
+private:
+	void updateInputSource() const;
+	BMDSwitcherInputId  inputId_;
+};
+
 class DownstreamKeyerMonitor : public GenericMonitor<IBMDSwitcherDownstreamKeyCallback>, public SendStatusInterface
 {
 public:

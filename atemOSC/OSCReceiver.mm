@@ -127,8 +127,8 @@
 	} copy] forKey:@"/supersource"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
-		int auxToChange = [[d objectForKey:@"<key>"] intValue];
-		if (auxToChange > 0 && auxToChange-1 < [s mSwitcherInputAuxList].size())
+		int auxToChange = [[d objectForKey:@"<number>"] intValue];
+		if ([s mAuxInputs].count(auxToChange) > 0)
 			return true;
 		[weakAppDel logMessage:[NSString stringWithFormat:@"Aux number %d not available on your switcher", auxToChange]];
 		return false;
@@ -663,10 +663,10 @@
 		[[s outPort] sendThisMessage:newMsg];
 	}];
 	
-	[self addEndpoint:@"/aux/<key>" valueType:OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
-		int auxToChange = [[d objectForKey:@"<key>"] intValue];
+	[self addEndpoint:@"/aux/<number>" valueType:OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int auxToChange = [[d objectForKey:@"<number>"] intValue];
 		BMDSwitcherInputId inputId = [v intValue];
-		[s mSwitcherInputAuxList][auxToChange-1]->SetInputSource(inputId);
+		[s mAuxInputs][auxToChange]->SetInputSource(inputId);
 	}];
 	
 	[self addEndpoint:@"/audio/input/<number>/gain" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {

@@ -224,6 +224,37 @@ float InputMonitor::sendStatus() const
 	return 0.1;
 }
 
+HRESULT InputAuxMonitor::Notify(BMDSwitcherInputAuxEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherInputAuxEventTypeInputSourceChanged:
+			updateInputSource();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void InputAuxMonitor::updateInputSource() const
+{
+	if (switcher.mAuxInputs.count(inputId_) > 0)
+	{
+		BMDSwitcherInputId source;
+		switcher.mAuxInputs[inputId_]->GetInputSource(&source);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/aux/%lld", inputId_], [OSCValue createWithLongLong:source]);
+	}
+}
+
+float InputAuxMonitor::sendStatus() const
+{
+	updateInputSource();
+	
+	return 0.02;
+}
+
 // Send OSC messages out when DSK Tie is changed on switcher
 void DownstreamKeyerMonitor::updateDSKTie() const
 {

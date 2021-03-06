@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Switcher : NSObject<NSCoding>
 {
 	std::map<BMDSwitcherInputId, InputMonitor*>			mInputMonitors;
+	std::map<BMDSwitcherInputId, InputAuxMonitor*>			mAuxInputMonitors;
 	SwitcherMonitor*			        				mSwitcherMonitor;
 	std::map<BMDSwitcherHyperDeckId, HyperDeckMonitor*> mHyperdeckMonitors;
 	DownstreamKeyerMonitor*             				mDownstreamKeyerMonitor;
@@ -61,8 +62,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly)       std::map<int, std::vector<IBMDSwitcherKey*> > keyers;
 @property (readonly)       std::vector<IBMDSwitcherSuperSourceBox*> mSuperSourceBoxes;
 @property (readonly)       std::map<BMDSwitcherInputId, IBMDSwitcherInput*> mInputs;
+@property (readonly)       std::map<BMDSwitcherInputId, IBMDSwitcherInputAux*> mAuxInputs;
 @property (readonly)       std::map<BMDSwitcherHyperDeckId, IBMDSwitcherHyperDeck*> mHyperdecks;
-@property (readonly)       std::vector<IBMDSwitcherInputAux*>       mSwitcherInputAuxList;
 @property (readonly)       IBMDSwitcherInputSuperSource*            mSuperSource;
 @property (readonly)       IBMDSwitcherMacroPool*                   mMacroPool;
 @property (readonly)       IBMDSwitcherMacroControl*                mMacroControl;
