@@ -1139,3 +1139,32 @@ void HyperDeckMonitor::updateLoopedPlayback() const
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/loop", hyperdeckId_], [OSCValue createWithBool:loopPlayback]);
 	}
 }
+
+float RecordAVMonitor::sendStatus() const
+{
+	BMDSwitcherRecordAVState stateType;
+	BMDSwitcherRecordAVError error;
+	[switcher mRecordAV]->GetStatus(&stateType, &error);
+	updateState(stateType, error);
+
+	return 0.05;
+}
+
+HRESULT RecordAVMonitor::NotifyStatus(BMDSwitcherRecordAVState stateType, BMDSwitcherRecordAVError error)
+{
+	updateState(stateType, error);
+	return S_OK;
+}
+
+void RecordAVMonitor::updateState(BMDSwitcherRecordAVState stateType, BMDSwitcherRecordAVError error) const
+{
+	NSString *stateString = @"";
+	if (stateType == bmdSwitcherRecordAVStateIdle)
+		stateString = @"idle";
+	else if (stateType == bmdSwitcherRecordAVStateRecording)
+		stateString = @"recording";
+	else if (stateType == bmdSwitcherRecordAVStateStopping)
+		stateString = @"stopping";
+	
+	sendFeedbackMessage(switcher, @"/recording/state", [OSCValue createWithString:stateString]);
+}

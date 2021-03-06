@@ -39,6 +39,7 @@
 @synthesize mSuperSourceBoxes;
 @synthesize mInputs;
 @synthesize mAuxInputs;
+@synthesize mRecordAV;
 
 @synthesize mAudioInputs;
 @synthesize mAudioMixer;
@@ -497,6 +498,15 @@
 		[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
 	}
 	
+	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherRecordAV, (void**)&mRecordAV)))
+	{
+		[self logMessage:@"[Debug] Could not get IID_IBMDSwitcherRecordAV interface"];
+	}
+	else
+	{
+		mRecordAV->AddCallback(mRecordAVMonitor);
+	}
+	
 	[self setIsConnected: YES];
 	[self setConnectionStatus:@"Connected"];
 	
@@ -783,6 +793,14 @@
 	mHyperdecks.clear();
 	mHyperdeckMonitors.clear();
 	
+	if (mRecordAV)
+	{
+		mRecordAV->RemoveCallback(mRecordAVMonitor);
+		mRecordAV->Release();
+		mRecordAV = NULL;
+		mRecordAVMonitor = NULL;
+	}
+	
 	mMonitors.clear();
 }
 
@@ -798,6 +816,8 @@
 	mMonitors.push_back(mAudioMixerMonitor);
 	mFairlightAudioMixerMonitor = new FairlightAudioMixerMonitor(self);
 	mMonitors.push_back(mFairlightAudioMixerMonitor);
+	mRecordAVMonitor = new RecordAVMonitor(self);
+	mMonitors.push_back(mRecordAVMonitor);
 }
 
 // We run this recursively so that we can get the

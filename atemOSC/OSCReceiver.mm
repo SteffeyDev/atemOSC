@@ -134,6 +134,13 @@
 		return false;
 	} copy] forKey:@"/aux"];
 	
+	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
+		if ([s mRecordAV])
+			return true;
+		[weakAppDel logMessage:@"Recording not available"];
+		return false;
+	} copy] forKey:@"/recording"];
+	
 	
 	
 	NSLog(@"Setting up endpoints");
@@ -824,6 +831,22 @@
 	[self addEndpoint:@"/hyperdeck/<number>/loop" label:@"HyperDeck <number> Set Looped Playback" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		BMDSwitcherHyperDeckId hyperdeckNumber = [[d objectForKey:@"<number>"] intValue];
 		[s mHyperdecks][hyperdeckNumber-1]->SetLoopedPlayback([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/recording/start" label:@"Start recording to external media" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		[s mRecordAV]->StartRecording();
+	}];
+	
+	[self addEndpoint:@"/recording/stop" label:@"Stop recording to external media" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		[s mRecordAV]->StopRecording();
+	}];
+	
+	[self addEndpoint:@"/recording/switch-disk" label:@"Change which external media device is used for recording" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		[s mRecordAV]->SwitchDisk();
+	}];
+	
+	[self addEndpoint:@"/recording/filename" label:@"Set filename for recording" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		[s mRecordAV]->SetFilename((__bridge CFStringRef)[v stringValue]);
 	}];
 	
 	endpointPrefixList = [[NSMutableSet alloc] init];

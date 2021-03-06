@@ -315,4 +315,22 @@ private:
 	BMDSwitcherHyperDeckId  hyperdeckId_;
 };
 
+class RecordAVMonitor : public GenericMonitor<IBMDSwitcherRecordAVCallback>, public SendStatusInterface
+{
+public:
+	RecordAVMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	HRESULT NotifyStatus(BMDSwitcherRecordAVState stateType, BMDSwitcherRecordAVError error);
+	// Ignore these three, don't want to use them yet
+	HRESULT Notify(BMDSwitcherRecordAVEventType eventTye) { return S_OK; };
+	HRESULT NotifyWorkingSetChange(uint32_t workingSetIndex, BMDSwitcherRecordDiskId diskId) { return S_OK; };
+	HRESULT NotifyDiskAvailability(BMDSwitcherRecordDiskAvailabilityEventType eventType, BMDSwitcherRecordDiskId diskId) { return S_OK; };
+	float sendStatus() const;
+	
+protected:
+	virtual ~RecordAVMonitor() { }
+	
+private:
+	void updateState(BMDSwitcherRecordAVState stateType, BMDSwitcherRecordAVError error) const;
+};
+
 #endif /* SwitcherMonitor_h */
