@@ -1090,7 +1090,9 @@ void HyperDeckMonitor::updateCurrentClipTime() const
 		uint16_t hours;
 		uint8_t minutes, seconds, frames;
 		switcher.mHyperdecks[hyperdeckId_]->GetCurrentClipTime(&hours, &minutes, &seconds, &frames);
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/clip-time", hyperdeckId_], [OSCValue createWithString:[NSString stringWithFormat:@"%d:%d:%d:%d", hours, minutes, seconds, frames]]);
+		
+		// The clip-time message gets sent every 100ms, which is too frequent to show in log
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/clip-time", hyperdeckId_], [OSCValue createWithString:[NSString stringWithFormat:@"%d:%d:%d:%d", hours, minutes, seconds, frames]], false);
 	}
 }
 
@@ -1101,8 +1103,9 @@ void HyperDeckMonitor::updateCurrentTimelineTime() const
 		uint16_t hours;
 		uint8_t minutes, seconds, frames;
 		switcher.mHyperdecks[hyperdeckId_]->GetCurrentTimelineTime(&hours, &minutes, &seconds, &frames);
-
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/timeline-time", hyperdeckId_], [OSCValue createWithString:[NSString stringWithFormat:@"%d:%d:%d:%d", hours, minutes, seconds, frames]]);
+		
+		// The timeline-time message gets sent every 100ms, which is too frequent to show in log
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/hyperdeck/%lld/timeline-time", hyperdeckId_], [OSCValue createWithString:[NSString stringWithFormat:@"%d:%d:%d:%d", hours, minutes, seconds, frames]], false);
 	}
 }
 

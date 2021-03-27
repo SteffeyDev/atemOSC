@@ -140,12 +140,16 @@
 	NSTextField* textField = (NSTextField *)[notification object];
 	Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
 	
-	if ((textField == feedbackIpAddressTextField || textField == ipAddressTextField) && ![self isValidIPAddress:[textField stringValue]])
+	if ([textField stringValue].length > 0 && (textField == feedbackIpAddressTextField || textField == ipAddressTextField) && ![self isValidIPAddress:[textField stringValue]])
 	{
 		NSAlert *alert = [[NSAlert alloc] init];
 		[alert setMessageText:@"Invalid IP Adress"];
 		[alert setInformativeText:@"Please enter a valid IPv4 Address"];
 		[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
+		if (textField == feedbackIpAddressTextField)
+			[feedbackIpAddressTextField setStringValue:switcher.feedbackIpAddress];
+		else
+			[ipAddressTextField setStringValue:switcher.ipAddress];
 		return;
 	}
 	
@@ -186,16 +190,19 @@
 	else if (textField == nicknameTextField)
 	{
 		AppDelegate* appDel = (AppDelegate *) [[NSApplication sharedApplication] delegate];
-		for (Switcher *s : [appDel switchers])
+		if ([textField stringValue].length > 0)
 		{
-			if (s.nickname != nil && [textField stringValue].length > 0 && [s.nickname isEqualToString: [textField stringValue]])
+			for (Switcher *s : [appDel switchers])
 			{
-				NSAlert *alert = [[NSAlert alloc] init];
-				[alert setMessageText:@"Duplicate Nickname"];
-				[alert setInformativeText:@"Please assign a unique nickname to each switcher"];
-				[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
-				[textField setStringValue:switcher.nickname];
-				return;
+				if (s.nickname != nil && ![s.uid isEqualToString: switcher.uid] && [s.nickname isEqualToString: [textField stringValue]])
+				{
+					NSAlert *alert = [[NSAlert alloc] init];
+					[alert setMessageText:@"Duplicate Nickname"];
+					[alert setInformativeText:@"Please assign a unique nickname to each switcher"];
+					[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:nil];
+					[textField setStringValue:switcher.nickname];
+					return;
+				}
 			}
 		}
 		[switcher setNickname: [textField stringValue]];

@@ -498,13 +498,13 @@
 		[self logMessage:[NSString stringWithFormat:@"[Debug] Could not create IBMDSwitcherHyperDeckIterator iterator. code: %d", HRESULT_CODE(result)]];
 	}
 	
-	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherRecordAV, (void**)&mRecordAV)))
+	if (SUCCEEDED(mSwitcher->QueryInterface(IID_IBMDSwitcherRecordAV, (void**)&mRecordAV)))
 	{
-		[self logMessage:@"[Debug] Could not get IID_IBMDSwitcherRecordAV interface"];
+		mRecordAV->AddCallback(mRecordAVMonitor);
 	}
 	else
 	{
-		mRecordAV->AddCallback(mRecordAVMonitor);
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherRecordAV interface"];
 	}
 	
 	[self setIsConnected: YES];

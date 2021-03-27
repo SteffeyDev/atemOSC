@@ -21,7 +21,7 @@ extern NSString* getDescriptionOfMacro(Switcher *s, uint32_t index);
 extern void activateChannel(Switcher *s, int me, int channel, bool program);
 extern bool stringIsNumber(NSString * str);
 extern NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx));
-void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val);
-void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me);
+void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, bool printToLog = true);
+void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me, bool printToLog = true);
 
 #endif /* Utilities_hpp */

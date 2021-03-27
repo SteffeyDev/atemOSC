@@ -188,7 +188,7 @@ NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx
 }
 
 // address will start with a forward slash
-void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val) {
+void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, bool printToLog) {
 	// If a switcher nickname is set, they probably have multiple switchers connected
 	// and are thus using nicknames, so include nickname in the feedback address
 	if (s.nickname && s.nickname.length > 0)
@@ -200,20 +200,21 @@ void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val) {
 	[msg addValue:val];
 	[s.outPort sendThisMessage:msg];
 	
-	[s logMessage:[NSString stringWithFormat:@"Sending feedback message: %@  %@", address, val]];
+	if (printToLog)
+		[s logMessage:[NSString stringWithFormat:@"Sending feedback message: %@  %@", address, val]];
 }
 
 // address will start with a forward slash
-void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me) {
+void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me, bool printToLog) {
 	// If there are multiple mix effect blocks on this switcher, include the block number in the feedback string
 	if ([s mMixEffectBlocks].size() > 1)
 	{
-		sendFeedbackMessage(s, [NSString stringWithFormat:@"/me/%d%@", me, address], val);
+		sendFeedbackMessage(s, [NSString stringWithFormat:@"/me/%d%@", me, address], val, printToLog);
 		
 		// If the first me, send message with no /me for backward compatability
 		if (me == 1)
-			sendFeedbackMessage(s, address, val);
+			sendFeedbackMessage(s, address, val, printToLog);
 	}
 	else
-		sendFeedbackMessage(s, address, val);
+		sendFeedbackMessage(s, address, val, printToLog);
 }

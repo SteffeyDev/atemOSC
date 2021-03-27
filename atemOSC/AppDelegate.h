@@ -52,7 +52,10 @@
 @property (retain) NSMutableArray*				switchers;
 
 - (void)incomingPortChanged:(int)inPortValue;
+
+- (IBAction)bugFeatureButtonPressed:(id)sender;
 - (IBAction)githubPageButtonPressed:(id)sender;
+- (IBAction)websiteButtonPressed:(id)sender;
 
 - (void)logMessage:(NSString *)message;
 

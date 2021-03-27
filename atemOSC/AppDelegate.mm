@@ -38,8 +38,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	[self setupMenu];
-	
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	
@@ -91,43 +89,23 @@
 	}
 	
 	[self checkForUpdate];
+	
+	dispatch_async(dispatch_get_main_queue(), ^{
+		Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
+		self->window = window;
+		
+		[self->window loadSettingsFromPreferences];
+		
+		[[self->window outlineView] reloadData];
+		NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:1];
+		[[self->window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
+	});
 }
 
 - (void)applicationWillBecomeActive:(NSNotification *)notification
 {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		if (!self->window)
-		{
-			Window *window = (Window *) [[NSApplication sharedApplication] mainWindow];
-			self->window = window;
-		}
-		[self->window loadSettingsFromPreferences];
-
-		if ([[self->window connectionView] switcher] != nil)
-		{
-			[[self->window outlineView] refreshList];
-			[[self->window connectionView] loadFromSwitcher:[[self->window connectionView] switcher]];
-		}
-		else
-		{
-			[[self->window outlineView] reloadData];
-			NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:1];
-			[[self->window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
-		}
-		
-		[[self->window logView] flushMessages];
-	});
-}
-
-- (void)setupMenu
-{
-	NSMenu* edit = [[[[NSApplication sharedApplication] mainMenu] itemWithTitle: @"Edit"] submenu];
-	if ([[edit itemAtIndex: [edit numberOfItems] - 1] action] == NSSelectorFromString(@"orderFrontCharacterPalette:"))
-		[edit removeItemAtIndex: [edit numberOfItems] - 1];
-	if ([[edit itemAtIndex: [edit numberOfItems] - 1] action] == NSSelectorFromString(@"startDictation:"))
-		[edit removeItemAtIndex: [edit numberOfItems] - 1];
-	if ([[edit itemAtIndex: [edit numberOfItems] - 1] isSeparatorItem])
-		[edit removeItemAtIndex: [edit numberOfItems] - 1];
+	[[self->window outlineView] refreshList];
+	[[self->window connectionView] loadFromSwitcher:[[self->window connectionView] switcher]];
 }
 
 - (void)checkForUpdate
@@ -191,6 +169,15 @@
 	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/SteffeyDev/atemOSC/"]];
 }
 
+- (IBAction)bugFeatureButtonPressed:(id)sender;
+{
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/SteffeyDev/atemOSC/issues/new"]];
+}
+
+- (IBAction)websiteButtonPressed:(id)sender;
+{
+	[[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://www.atemosc.com"]];
+}
 
 - (void) addSwitcher
 {
