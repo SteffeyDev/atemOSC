@@ -105,7 +105,7 @@
 					else if (endpoint.valueType == OSCValBool)
 						address = [address stringByAppendingString:@" <true|false>"];
 					else if (endpoint.valueType == OSCValFloat)
-						address = [address stringByAppendingString:@" <decimal>"];
+						address = [address stringByAppendingString:@" <float>"];
 					else if (endpoint.valueType == OSCValString)
 						address = [address stringByAppendingString:@" <string>"];
 					[self addEntry:label forAddress:address toString:helpString];
@@ -128,7 +128,7 @@
 				else if (endpoint.valueType == OSCValBool)
 					address = [address stringByAppendingString:@" <true|false>"];
 				else if (endpoint.valueType == OSCValFloat)
-					address = [address stringByAppendingString:@" <decimal>"];
+					address = [address stringByAppendingString:@" <float>"];
 				else if (endpoint.valueType == OSCValString)
 					address = [address stringByAppendingString:@" <string>"];
 				[self addEntry:label forAddress:address toString:helpString];
@@ -307,7 +307,7 @@
 					else if (endpoint.valueType == OSCValBool)
 						address = [address stringByAppendingString:@" <true|false>"];
 					else if (endpoint.valueType == OSCValFloat)
-						address = [address stringByAppendingString:@" <decimal>"];
+						address = [address stringByAppendingString:@" <float>"];
 					else if (endpoint.valueType == OSCValString)
 						address = [address stringByAppendingString:@" <string>"];
 					[self addEntry:label forAddress:address toString:helpString];
@@ -327,7 +327,7 @@
 			else if (endpoint.valueType == OSCValBool)
 				address = [address stringByAppendingString:@" <true|false>"];
 			else if (endpoint.valueType == OSCValFloat)
-				address = [address stringByAppendingString:@" <decimal>"];
+				address = [address stringByAppendingString:@" <float>"];
 			else if (endpoint.valueType == OSCValString)
 				address = [address stringByAppendingString:@" <string>"];
 			[self addEntry:[endpoint label] forAddress:address toString:helpString];
@@ -354,7 +354,7 @@
 					else if (endpoint.valueType == OSCValBool)
 						address = [address stringByAppendingString:@" <true|false>"];
 					else if (endpoint.valueType == OSCValFloat)
-						address = [address stringByAppendingString:@" <decimal>"];
+						address = [address stringByAppendingString:@" <float>"];
 					else if (endpoint.valueType == OSCValString)
 						address = [address stringByAppendingString:@" <string>"];
 					[self addEntry:label forAddress:address toString:helpString];
@@ -376,7 +376,7 @@
 				else if (endpoint.valueType == OSCValBool)
 					address = [address stringByAppendingString:@" <true|false>"];
 				else if (endpoint.valueType == OSCValFloat)
-					address = [address stringByAppendingString:@" <decimal>"];
+					address = [address stringByAppendingString:@" <float>"];
 				else if (endpoint.valueType == OSCValString)
 					address = [address stringByAppendingString:@" <string>"];
 				[self addEntry:[endpoint label] forAddress:address toString:helpString];
