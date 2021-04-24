@@ -1205,7 +1205,9 @@ HRESULT RecordAVMonitor::NotifyStatus(BMDSwitcherRecordAVState stateType, BMDSwi
 void RecordAVMonitor::updateState(BMDSwitcherRecordAVState stateType, BMDSwitcherRecordAVError error) const
 {
 	NSString *stateString = @"";
-	if (stateType == bmdSwitcherRecordAVStateIdle)
+	if (error != bmdSwitcherRecordAVErrorNone)
+		stateString = @"error";
+	else if (stateType == bmdSwitcherRecordAVStateIdle)
 		stateString = @"idle";
 	else if (stateType == bmdSwitcherRecordAVStateRecording)
 		stateString = @"recording";
@@ -1213,4 +1215,37 @@ void RecordAVMonitor::updateState(BMDSwitcherRecordAVState stateType, BMDSwitche
 		stateString = @"stopping";
 	
 	sendFeedbackMessage(switcher, @"/recording/state", [OSCValue createWithString:stateString]);
+}
+
+float StreamMonitor::sendStatus() const
+{
+	BMDSwitcherStreamRTMPState stateType;
+	BMDSwitcherStreamRTMPError error;
+	[switcher mStreamRTMP]->GetStatus(&stateType, &error);
+	updateState(stateType, error);
+
+	return 0.05;
+}
+
+HRESULT StreamMonitor::NotifyStatus(BMDSwitcherStreamRTMPState stateType, BMDSwitcherStreamRTMPError error)
+{
+	updateState(stateType, error);
+	return S_OK;
+}
+
+void StreamMonitor::updateState(BMDSwitcherStreamRTMPState stateType, BMDSwitcherStreamRTMPError error) const
+{
+	NSString *stateString = @"";
+	if (error != bmdSwitcherStreamRTMPErrorNone)
+		stateString = @"error";
+	else if (stateType == bmdSwitcherStreamRTMPStateIdle)
+		stateString = @"idle";
+	else if (stateType == bmdSwitcherStreamRTMPStateConnecting)
+		stateString = @"connecting";
+	else if (stateType == bmdSwitcherStreamRTMPStateStreaming)
+		stateString = @"streaming";
+	else if (stateType == bmdSwitcherStreamRTMPStateStopping)
+		stateString = @"stopping";
+	
+	sendFeedbackMessage(switcher, @"/stream/state", [OSCValue createWithString:stateString]);
 }

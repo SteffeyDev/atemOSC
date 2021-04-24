@@ -384,6 +384,27 @@
 		}
 	}
 	
+	if ([switcher mStreamRTMP])
+	{
+		[self addHeader:@"Streaming" toString:helpString];
+		for (OSCEndpoint* endpoint : [appDel endpoints])
+		{
+			if ([[endpoint addressTemplate] containsString:@"/stream/"])
+			{
+				NSString *address = [endpoint addressTemplate];
+				if (endpoint.valueType == OSCValInt)
+					address = [address stringByAppendingString:@" <int>"];
+				else if (endpoint.valueType == OSCValBool)
+					address = [address stringByAppendingString:@" <true|false>"];
+				else if (endpoint.valueType == OSCValFloat)
+					address = [address stringByAppendingString:@" <float>"];
+				else if (endpoint.valueType == OSCValString)
+					address = [address stringByAppendingString:@" <string>"];
+				[self addEntry:[endpoint label] forAddress:address toString:helpString];
+			}
+		}
+	}
+	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nNote: Additional addresses are available that provide backward-compatibility with TouchOSC.  See the Readme on Github for details.\n"]];
 	
 	[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:@"\nWe add support for addresses on an as-needed basis.  If you are in need of an additional address, open an issue on Github letting us know what it is.\n"]];

@@ -879,6 +879,14 @@
 		[s mRecordAV]->SetFilename((__bridge CFStringRef)[v stringValue]);
 	}];
 	
+	[self addEndpoint:@"/stream/start" label:@"Start RTMP Streaming" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		[s mStreamRTMP]->StartStreaming();
+	}];
+	
+	[self addEndpoint:@"/stream/stop" label:@"Stop RTMP Streaming" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		[s mStreamRTMP]->StopStreaming();
+	}];
+	
 	endpointPrefixList = [[NSMutableSet alloc] init];
 	
 	// Recursively build the tree from the list

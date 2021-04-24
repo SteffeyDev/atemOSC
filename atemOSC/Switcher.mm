@@ -40,6 +40,7 @@
 @synthesize mInputs;
 @synthesize mAuxInputs;
 @synthesize mRecordAV;
+@synthesize mStreamRTMP;
 
 @synthesize mAudioInputs;
 @synthesize mAudioMixer;
@@ -511,6 +512,15 @@
 		[self logMessage:@"[Debug] Could not get IBMDSwitcherRecordAV interface"];
 	}
 	
+	if (SUCCEEDED(mSwitcher->QueryInterface(IID_IBMDSwitcherStreamRTMP, (void**)&mStreamRTMP)))
+	{
+		mStreamRTMP->AddCallback(mStreamMonitor);
+	}
+	else
+	{
+		[self logMessage:@"[Debug] Could not get IBMDSwitcherStreamRTMP interface"];
+	}
+	
 	[self setIsConnected: YES];
 	[self setConnectionStatus:@"Connected"];
 	
@@ -813,6 +823,14 @@
 		mRecordAVMonitor = NULL;
 	}
 	
+	if (mStreamRTMP)
+	{
+		mStreamRTMP->RemoveCallback(mStreamMonitor);
+		mStreamRTMP->Release();
+		mStreamRTMP = NULL;
+		mStreamMonitor = NULL;
+	}
+	
 	mMonitors.clear();
 }
 
@@ -832,6 +850,8 @@
 	mMonitors.push_back(mFairlightAudioMixerMonitor);
 	mRecordAVMonitor = new RecordAVMonitor(self);
 	mMonitors.push_back(mRecordAVMonitor);
+	mStreamMonitor = new StreamMonitor(self);
+	mMonitors.push_back(mStreamMonitor);
 }
 
 // We run this recursively so that we can get the

@@ -335,7 +335,7 @@ public:
 	RecordAVMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
 	HRESULT NotifyStatus(BMDSwitcherRecordAVState stateType, BMDSwitcherRecordAVError error);
 	// Ignore these three, don't want to use them yet
-	HRESULT Notify(BMDSwitcherRecordAVEventType eventTye) { return S_OK; };
+	HRESULT Notify(BMDSwitcherRecordAVEventType eventType) { return S_OK; };
 	HRESULT NotifyWorkingSetChange(uint32_t workingSetIndex, BMDSwitcherRecordDiskId diskId) { return S_OK; };
 	HRESULT NotifyDiskAvailability(BMDSwitcherRecordDiskAvailabilityEventType eventType, BMDSwitcherRecordDiskId diskId) { return S_OK; };
 	float sendStatus() const;
@@ -345,6 +345,22 @@ protected:
 	
 private:
 	void updateState(BMDSwitcherRecordAVState stateType, BMDSwitcherRecordAVError error) const;
+};
+
+class StreamMonitor : public GenericMonitor<IBMDSwitcherStreamRTMPCallback>, public SendStatusInterface
+{
+public:
+	StreamMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	HRESULT NotifyStatus(BMDSwitcherStreamRTMPState stateType, BMDSwitcherStreamRTMPError error);
+	// Ignore these three, don't want to use them yet
+	HRESULT Notify(BMDSwitcherStreamRTMPEventType eventType) { return S_OK; };
+	float sendStatus() const;
+	
+protected:
+	virtual ~StreamMonitor() { }
+	
+private:
+	void updateState(BMDSwitcherStreamRTMPState stateType, BMDSwitcherStreamRTMPError error) const;
 };
 
 #endif /* SwitcherMonitor_h */

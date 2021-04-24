@@ -330,7 +330,14 @@ Feedback: Enabled for `clip`, `clip-time`, `timeline-time`, `state`, `single-cli
  - **Switch which external media disk is used for recording** `/atem/recording/switch-disk`
  - **Change recording filename** `/atem/recording/filename <string>`
 
-Feedback: Recording state sent to address `/atem/recording/state`, will contain a string that is one of `idle` | `recording` | `stopping`
+Feedback: Recording state sent to address `/atem/recording/state`, will contain a string that is one of `idle` | `recording` | `stopping` | `error`
+
+### Streaming
+
+ - **Start Streaming** `/atem/stream/start`
+ - **Stop Streaming** `/atem/stream/stop`
+
+Feedback: Stream state sent to address `/atem/stream/state`, will contain a string that is one of `idle` | `connecting` | `streaming` | `stopping` | `error`
 
 ### Other
 

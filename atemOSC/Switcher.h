@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 	std::map<BMDSwitcherAudioInputId, FairlightAudioInputMonitor*> mFairlightAudioInputMonitors;
 	std::map<BMDSwitcherAudioInputId, std::map<BMDSwitcherFairlightAudioSourceId, FairlightAudioSourceMonitor*> > mFairlightAudioSourceMonitors;
 	RecordAVMonitor*       								mRecordAVMonitor;
+	StreamMonitor*       								mStreamMonitor;
 	FairlightAudioMixerMonitor*         				mFairlightAudioMixerMonitor;
 
 	std::vector<SendStatusInterface*>   mMonitors;
@@ -73,6 +74,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly)       std::vector<IBMDSwitcherDownstreamKey*>  dsk;
 @property (readonly)       IBMDSwitcherKeyFlyParameters*	    	mDVEControl;
 @property (readonly)       IBMDSwitcherRecordAV*	    			mRecordAV;
+@property (readonly)       IBMDSwitcherStreamRTMP*					mStreamRTMP;
 
 @property (readonly)       std::map<BMDSwitcherAudioInputId, IBMDSwitcherAudioInput*> mAudioInputs;
 @property (readonly)       IBMDSwitcherAudioMixer*                  mAudioMixer;
