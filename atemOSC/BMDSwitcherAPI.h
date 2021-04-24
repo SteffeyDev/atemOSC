@@ -41,6 +41,8 @@
 	#define BMD_PUBLIC
 #endif
 
+/* BMDSwitcher API */
+
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreFoundation/CFPlugInCOM.h>
 #include <stdint.h>
@@ -4140,6 +4142,8 @@ extern "C" {
     IBMDSwitcherDiscovery* BMD_PUBLIC CreateBMDSwitcherDiscoveryInstance(void);
 
 }
+
+
 
 #endif /* defined(__cplusplus) */
 #endif /* defined(BMD_BMDSWITCHERAPI_H) */
