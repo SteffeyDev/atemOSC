@@ -366,7 +366,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				MARKETING_VERSION = 4.1.4;
+				MARKETING_VERSION = 4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.atemosc.atemOSC;
 				PRODUCT_NAME = atemOSC;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -407,7 +407,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				MARKETING_VERSION = 4.1.4;
+				MARKETING_VERSION = 4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.atemosc.atemOSC;
 				PRODUCT_NAME = atemOSC;
 				PROVISIONING_PROFILE_SPECIFIER = "";
