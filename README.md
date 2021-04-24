@@ -180,7 +180,17 @@ By default, commands will be sent to the first mix effect block (M/E).  To send 
 
 #### USK DVE Parameters
  - **Set DVE Border Enabled for Upstream Keyer $i** `/atem/usk/$i/dve/enabled <true|false>`
- - Other values supported are: `border-width-outer`, `border-width-inner`, `border-softness-outer`, `border-softness-inner`, `border-opacity`, `border-hue`, `border-saturation`, and `border-luma`
+ - **Set DVE Border Outer Width for Upstream Keyer $i** `/atem/usk/$i/dve/border-width-outer <float>`
+ - Other values supported are: `border-width-inner`, `border-softness-outer`, `border-softness-inner`, `border-opacity`, `border-hue`, `border-saturation`, and `border-luma`
+
+#### USK Fly Parameters
+ - **Set Fly Rate for Upstream Keyer $i** `/atem/usk/$i/fly/rate <true|false>`
+ - **Set X Position for Upstream Keyer $i** `/atem/usk/$i/fly/position-x <float>`
+ - Other values supported are: `position-y`, `size-x`, `size-y`
+ - **Set Rotation for Upstream Keyer $i** `/atem/usk/$i/fly/position-x <float>`
+     - Float value is the rotation in degrees
+ - **Reset Position, Size, & Rotation to defaults for Upstream Keyer $i** `/atem/usk/$i/fly/reset`
+ - **Clear Position, Size, & Rotation for Upstream Keyer $i** `/atem/usk/$i/fly/clear`
 
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 

@@ -72,7 +72,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly)       std::vector<IBMDSwitcherMediaPlayer*>    mMediaPlayers;
 @property (readonly)       IBMDSwitcherMediaPool*                   mMediaPool;
 @property (readonly)       std::vector<IBMDSwitcherDownstreamKey*>  dsk;
-@property (readonly)       IBMDSwitcherKeyFlyParameters*	    	mDVEControl;
 @property (readonly)       IBMDSwitcherRecordAV*	    			mRecordAV;
 @property (readonly)       IBMDSwitcherStreamRTMP*					mStreamRTMP;
 

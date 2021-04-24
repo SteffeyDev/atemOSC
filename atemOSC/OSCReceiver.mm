@@ -476,6 +476,62 @@
 			dveParams->SetBorderLuma([v floatValue]);
 	}];
 	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/rate" label:@"Set Fly Rate for USK<key>" valueType:OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->SetRate([v intValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/position-x" label:@"Set X Position for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->SetPositionX([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/position-y" label:@"Set Y Position for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->SetPositionY([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/size-x" label:@"Set X Size for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->SetSizeX([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/size-y" label:@"Set Y Size for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->SetSizeY([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/rotation" label:@"Set Rotation for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->SetRotation([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/reset-dve" label:@"Reset Size, Position, and Rotation to default values for USK<key>" valueType:OSCValNil handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->ResetDVE();
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/clear-dve" label:@"Clear Size, Position, and Rotation settings for USK<key>" valueType:OSCValNil handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->ResetDVEFull();
+	}];
+	
 	
 	[self addEndpoint:@"/dsk/<key>/tie" label:@"Set DSK<key> Tie" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
@@ -1217,6 +1273,14 @@
 	IBMDSwitcherKeyDVEParameters* dveParams;
 	key->QueryInterface(IID_IBMDSwitcherKeyDVEParameters, (void**)&dveParams);
 	return dveParams;
+}
+
+- (IBMDSwitcherKeyFlyParameters *) getUSKFlyParams:(int)t forSwitcher:(Switcher *)s andME:(int)me
+{
+	IBMDSwitcherKey* key = [s keyers][me-1][t-1];
+	IBMDSwitcherKeyFlyParameters* flyParams;
+	key->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams);
+	return flyParams;
 }
 
 - (void) changeTransitionSelection:(int)t select:(bool) select forTransitionParameters:(IBMDSwitcherTransitionParameters *)switcherTransitionParameters
