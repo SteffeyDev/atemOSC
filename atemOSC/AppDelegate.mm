@@ -65,7 +65,7 @@
 	IBMDSwitcherDiscovery *switcherDiscovery = CreateBMDSwitcherDiscoveryInstance();
 	if (!switcherDiscovery)
 	{
-		NSBeginAlertSheet(@"Could not create Switcher Discovery Instance.\nATEM Switcher Software may not be installed.\n",
+		NSBeginAlertSheet(@"Could not find ATEM Software, which is required for atemOSC to work. ATEM Switcher Software may not be installed, or you may be running an older version that is not compatible with this version of atemOSC.\n",
 						  @"OK", nil, nil, window, self, @selector(sheetDidEndShouldTerminate:returnCode:contextInfo:), nil, nil, @"");
 	}
 	else
