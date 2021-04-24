@@ -31,6 +31,24 @@
 		[helpString appendAttributedString:[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"/atem%@\n", address] attributes:infoAttribute]];
 }
 
+- (void)addEntry:(NSString*)name forAddress:(NSString*)address andValueType:(OSCValueType)valueType toString:(NSMutableAttributedString*)helpString
+{
+	if (valueType == OSCValInt)
+		address = [address stringByAppendingString:@" <int>"];
+	else if (valueType == OSCValBool)
+		address = [address stringByAppendingString:@" <true|false>"];
+	else if (valueType == OSCValFloat)
+		address = [address stringByAppendingString:@" <float>"];
+	else if (valueType == OSCValString)
+		address = [address stringByAppendingString:@" <string>"];
+	[self addEntry:name forAddress:address toString:helpString];
+}
+
+- (void)addEntryForEndpoint:(OSCEndpoint*)endpoint toString:(NSMutableAttributedString*)helpString
+{
+	[self addEntry:[endpoint label] forAddress:[endpoint addressTemplate] andValueType:[endpoint valueType] toString:helpString];
+}
+
 - (void)loadFromSwitcher:(Switcher *)switcher
 {
 	self->switcher = switcher;
@@ -100,15 +118,7 @@
 				{
 					NSString *label = [[[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(j+1)] stringValue]] stringByReplacingOccurrencesOfString:@"<me>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
 					NSString *address = [[[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(j+1)] stringValue]] stringByReplacingOccurrencesOfString:@"<me>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];;
-					if (endpoint.valueType == OSCValInt)
-						address = [address stringByAppendingString:@" <int>"];
-					else if (endpoint.valueType == OSCValBool)
-						address = [address stringByAppendingString:@" <true|false>"];
-					else if (endpoint.valueType == OSCValFloat)
-						address = [address stringByAppendingString:@" <float>"];
-					else if (endpoint.valueType == OSCValString)
-						address = [address stringByAppendingString:@" <string>"];
-					[self addEntry:label forAddress:address toString:helpString];
+					[self addEntry:label forAddress:address andValueType:endpoint.valueType toString:helpString];
 				}
 			}
 		}
@@ -123,15 +133,7 @@
 			{
 				NSString *label = [[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
 				NSString *address = [[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
-				if (endpoint.valueType == OSCValInt)
-					address = [address stringByAppendingString:@" <int>"];
-				else if (endpoint.valueType == OSCValBool)
-					address = [address stringByAppendingString:@" <true|false>"];
-				else if (endpoint.valueType == OSCValFloat)
-					address = [address stringByAppendingString:@" <float>"];
-				else if (endpoint.valueType == OSCValString)
-					address = [address stringByAppendingString:@" <string>"];
-				[self addEntry:label forAddress:address toString:helpString];
+				[self addEntry:label forAddress:address andValueType:endpoint.valueType toString:helpString];
 			}
 		}
 	}
@@ -302,15 +304,7 @@
 				{
 					NSString *label = [[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:i] stringValue]];
 					NSString *address = [[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:i] stringValue]];
-					if (endpoint.valueType == OSCValInt)
-						address = [address stringByAppendingString:@" <int>"];
-					else if (endpoint.valueType == OSCValBool)
-						address = [address stringByAppendingString:@" <true|false>"];
-					else if (endpoint.valueType == OSCValFloat)
-						address = [address stringByAppendingString:@" <float>"];
-					else if (endpoint.valueType == OSCValString)
-						address = [address stringByAppendingString:@" <string>"];
-					[self addEntry:label forAddress:address toString:helpString];
+					[self addEntry:label forAddress:address andValueType:endpoint.valueType toString:helpString];
 				}
 			}
 		}
@@ -321,16 +315,7 @@
 	{
 		if ([[endpoint addressTemplate] containsString:@"/macros/"])
 		{
-			NSString *address = [endpoint addressTemplate];
-			if (endpoint.valueType == OSCValInt)
-				address = [address stringByAppendingString:@" <int>"];
-			else if (endpoint.valueType == OSCValBool)
-				address = [address stringByAppendingString:@" <true|false>"];
-			else if (endpoint.valueType == OSCValFloat)
-				address = [address stringByAppendingString:@" <float>"];
-			else if (endpoint.valueType == OSCValString)
-				address = [address stringByAppendingString:@" <string>"];
-			[self addEntry:[endpoint label] forAddress:address toString:helpString];
+			[self addEntryForEndpoint:endpoint toString:helpString];
 		}
 	}
 	
@@ -370,16 +355,7 @@
 		{
 			if ([[endpoint addressTemplate] containsString:@"/recording/"])
 			{
-				NSString *address = [endpoint addressTemplate];
-				if (endpoint.valueType == OSCValInt)
-					address = [address stringByAppendingString:@" <int>"];
-				else if (endpoint.valueType == OSCValBool)
-					address = [address stringByAppendingString:@" <true|false>"];
-				else if (endpoint.valueType == OSCValFloat)
-					address = [address stringByAppendingString:@" <float>"];
-				else if (endpoint.valueType == OSCValString)
-					address = [address stringByAppendingString:@" <string>"];
-				[self addEntry:[endpoint label] forAddress:address toString:helpString];
+				[self addEntryForEndpoint:endpoint toString:helpString];
 			}
 		}
 	}
@@ -391,16 +367,7 @@
 		{
 			if ([[endpoint addressTemplate] containsString:@"/stream/"])
 			{
-				NSString *address = [endpoint addressTemplate];
-				if (endpoint.valueType == OSCValInt)
-					address = [address stringByAppendingString:@" <int>"];
-				else if (endpoint.valueType == OSCValBool)
-					address = [address stringByAppendingString:@" <true|false>"];
-				else if (endpoint.valueType == OSCValFloat)
-					address = [address stringByAppendingString:@" <float>"];
-				else if (endpoint.valueType == OSCValString)
-					address = [address stringByAppendingString:@" <string>"];
-				[self addEntry:[endpoint label] forAddress:address toString:helpString];
+				[self addEntryForEndpoint:endpoint toString:helpString];
 			}
 		}
 	}
