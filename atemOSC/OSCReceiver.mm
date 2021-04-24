@@ -137,11 +137,16 @@
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		if ([s mRecordAV])
 			return true;
-		[weakAppDel logMessage:@"Recording not available"];
+		[weakAppDel logMessage:@"Recording not available for this switcher"];
 		return false;
 	} copy] forKey:@"/recording"];
 	
-	
+	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
+		if ([s mStreamRTMP])
+			return true;
+		[weakAppDel logMessage:@"Streaming not available for this switcher"];
+		return false;
+	} copy] forKey:@"/stream"];
 	
 	NSLog(@"Setting up endpoints");
 	
