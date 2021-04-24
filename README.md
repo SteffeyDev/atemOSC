@@ -298,6 +298,7 @@ Feedback: None
      - Returns an `int` of `0|1` to indicate whether the requested Macro was executed. A `0` will be returned if the Macro is invalid, or does not exist
 
 Feedback: Enabled for `/atem/macros/max-number`, `/atem/macros/$i/name`, `/atem/macros/$i/description`, and `/atem/macros/$i/is-valid`. Also available On-Request (you can send the command to get the value in a return message)
+The current status of the currently running macro is also sent out to `/atem/macros/$i/status`, with a string value of `idle`, `running`, or `waiting`.
 
 ### HyperDeck
 
