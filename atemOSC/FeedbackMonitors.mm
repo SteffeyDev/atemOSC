@@ -724,6 +724,43 @@ float MacroPoolMonitor::sendStatus() const
 	return 0.1;
 }
 
+HRESULT MacroControlMonitor::Notify (BMDSwitcherMacroControlEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherMacroControlEventTypeRunStatusChanged:
+			updateRunStatus();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void MacroControlMonitor::updateRunStatus() const
+{
+	BMDSwitcherMacroRunStatus status;
+	uint32_t index;
+	switcher.mMacroControl->GetRunStatus(&status, nil, &index);
+	
+	NSString *runStatusStr;
+	if (status == bmdSwitcherMacroRunStatusIdle)
+		runStatusStr = @"idle";
+	if (status == bmdSwitcherMacroRunStatusRunning)
+		runStatusStr = @"running";
+	if (status == bmdSwitcherMacroRunStatusWaitingForUser)
+		runStatusStr = @"waiting";
+	
+	sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/macros/%d/run-status", index], [OSCValue createWithString:runStatusStr]);
+}
+
+float MacroControlMonitor::sendStatus() const
+{
+	updateRunStatus();
+	return 0.01;
+}
+
 HRESULT STDMETHODCALLTYPE SwitcherMonitor::Notify(BMDSwitcherEventType eventType, BMDSwitcherVideoMode coreVideoMode)
 {
 	if (eventType == bmdSwitcherEventTypeDisconnected)

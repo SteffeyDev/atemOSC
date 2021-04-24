@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 	std::map<int, UpstreamKeyerChromaParametersMonitor*> mUpstreamKeyerChromaParametersMonitors;
 	std::map<int, TransitionParametersMonitor*>			mTransitionParametersMonitors;
 	MacroPoolMonitor*       							mMacroPoolMonitor;
+	MacroControlMonitor*       							mMacroControlMonitor;
 	AudioMixerMonitor*                  				mAudioMixerMonitor;
 	std::map<BMDSwitcherAudioInputId, AudioInputMonitor*> mAudioInputMonitors;
 	std::map<BMDSwitcherAudioInputId, FairlightAudioInputMonitor*> mFairlightAudioInputMonitors;

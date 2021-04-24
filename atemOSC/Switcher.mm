@@ -435,7 +435,11 @@
 	}
 	
 	// get macro controller
-	if (FAILED(mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl)))
+	if (SUCCEEDED(mSwitcher->QueryInterface(IID_IBMDSwitcherMacroControl, (void**)&mMacroControl)))
+	{
+		mMacroControl->AddCallback(mMacroControlMonitor);
+	}
+	else
 	{
 		[self logMessage:@"[Debug] Could not get IID_IBMDSwitcherMacroControl interface"];
 	}
@@ -740,6 +744,14 @@
 		mMacroPoolMonitor = NULL;
 	}
 	
+	if (mMacroControl)
+	{
+		mMacroControl->RemoveCallback(mMacroControlMonitor);
+		mMacroControl->Release();
+		mMacroControl = NULL;
+		mMacroControlMonitor = NULL;
+	}
+	
 	while (mSuperSourceBoxes.size())
 	{
 		mSuperSourceBoxes.back()->Release();
@@ -812,6 +824,8 @@
 	mMonitors.push_back(mDownstreamKeyerMonitor);
 	mMacroPoolMonitor = new MacroPoolMonitor(self);
 	mMonitors.push_back(mMacroPoolMonitor);
+	mMacroControlMonitor = new MacroControlMonitor(self);
+	mMonitors.push_back(mMacroControlMonitor);
 	mAudioMixerMonitor = new AudioMixerMonitor(self);
 	mMonitors.push_back(mAudioMixerMonitor);
 	mFairlightAudioMixerMonitor = new FairlightAudioMixerMonitor(self);

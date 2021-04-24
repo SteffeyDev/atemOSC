@@ -193,6 +193,20 @@ private:
 	void updateMacroValidity(int index) const;
 };
 
+class MacroControlMonitor : public GenericMonitor<IBMDSwitcherMacroControlCallback>, public SendStatusInterface
+{
+public:
+	MacroControlMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	HRESULT Notify (BMDSwitcherMacroControlEventType eventType);
+	float sendStatus() const;
+	
+protected:
+	virtual ~MacroControlMonitor() { }
+	
+private:
+	void updateRunStatus() const;
+};
+
 // Callback class to monitor switcher disconnection
 class SwitcherMonitor : public GenericMonitor<IBMDSwitcherCallback>, public SendStatusInterface
 {
