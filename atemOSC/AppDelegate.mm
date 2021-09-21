@@ -110,32 +110,45 @@
 
 - (void)checkForUpdate
 {
-	// Check if new version available
-	NSError *error = nil;
 	NSString *url_string = [NSString stringWithFormat: @"https://api.github.com/repos/SteffeyDev/atemOSC/releases/latest"];
-	NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString:url_string]];
-	if (!error) {
-		NSMutableDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-		NSString *availableVersion = [[json objectForKey:@"name"] stringByReplacingOccurrencesOfString:@"v" withString:@""];
-		NSString *installedVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-		NSLog(@"version available: %@", availableVersion);
-		NSLog(@"version installed: %@", installedVersion);
-		if (![availableVersion isEqualToString:installedVersion])
+	NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+	[request setHTTPMethod:@"GET"];
+	[request setURL:[NSURL URLWithString:url_string]];
+	
+	// Don't want to use cached response
+	[[NSURLCache sharedURLCache] removeAllCachedResponses];
+	
+	[NSURLConnection sendAsynchronousRequest:request queue:[[NSOperationQueue alloc] init] completionHandler:^(NSURLResponse *response,
+							NSData *data,
+							NSError *error)
 		{
-			NSAlert *alert = [[NSAlert alloc] init];
-			[alert setMessageText:@"New Version Available"];
-			[alert setInformativeText:@"There is a new version of AtemOSC available!"];
-			[alert addButtonWithTitle:@"Go to Download"];
-			[alert addButtonWithTitle:@"Skip"];
-			[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:^(NSInteger returnCode)
-			 {
-				 if ( returnCode == NSAlertFirstButtonReturn )
-				 {
-					 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/SteffeyDev/atemOSC/releases/latest"]];
-				 }
-			 }];
-		}
-	}
+			if (error == nil)
+			{
+				NSMutableDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+				NSString *availableVersion = [[json objectForKey:@"name"] stringByReplacingOccurrencesOfString:@"v" withString:@""];
+				NSString *installedVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+				NSLog(@"version available: %@", availableVersion);
+				NSLog(@"version installed: %@", installedVersion);
+				if (![availableVersion isEqualToString:installedVersion])
+				{
+					dispatch_async(dispatch_get_main_queue(), ^{
+
+						NSAlert *alert = [[NSAlert alloc] init];
+						[alert setMessageText:@"New Version Available"];
+						[alert setInformativeText:@"There is a new version of AtemOSC available!"];
+						[alert addButtonWithTitle:@"Go to Download"];
+						[alert addButtonWithTitle:@"Skip"];
+						[alert beginSheetModalForWindow:[[NSApplication sharedApplication] mainWindow] completionHandler:^(NSInteger returnCode)
+						 {
+							 if ( returnCode == NSAlertFirstButtonReturn )
+							 {
+								 [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://github.com/SteffeyDev/atemOSC/releases/latest"]];
+							 }
+						 }];
+					});
+				}
+			}
+		 }];
 }
 
 - (void)incomingPortChanged:(int)inPortValue
