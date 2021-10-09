@@ -28,6 +28,7 @@
 #import "AppDelegate.h"
 #include <libkern/OSAtomic.h>
 #import "OSCReceiver.h"
+#import <Bugsnag/Bugsnag.h>
 
 @implementation AppDelegate
 
@@ -38,6 +39,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+	[Bugsnag start];
+	
 	endpoints = [[NSMutableArray alloc] init];
 	mOscReceiver = [[OSCReceiver alloc] initWithDelegate:self];
 	

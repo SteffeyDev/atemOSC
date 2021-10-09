@@ -425,14 +425,10 @@ I welcome pull requests, but recommend that you open an issue first so that we c
 4. Click on the project, go to the "Signing & Capabilities" tab, change the Team to your personal team, and change Signing Certificate to “Sign to Run Locally”
 5. Click the play button in the top left to run
 
-### Find what line a crash occured on given a crash report (on MacOS)
+### Deployment
 
-People like to send crash reports in issues.  You can use this method to find out which line of the program crashed from just the crash report and version number.
-
-1. Download the `atemOSC.debug.zip` file associated with the release that crashed and unzip it
-2. At a command line, `cd` into the unzipped folder (Usually `~/Downloads/atemOSC.debug`)
-3. Copy the crash report into a file (e.g. `crash.log`) and save it to the unzipped folder
-4. Copy the `find_crash` bash script from the root of this repository into that folder as well
-5. Run `./find_crash crash.log`, replacing `crash.log` with whatever your crash report file is named
-6. The script should tell you which line in which file caused the crash
-
+1. Bump the version in XCode
+2. Build app from XCode
+3. Run generate-release.sh to generate the installer
+4. Run notarize-dmg.sh to notarize the installer
+5. Run upload-symbols.sh to upload the symbols to Bugsnag

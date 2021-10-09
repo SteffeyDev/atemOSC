@@ -27,6 +27,11 @@
 	<key>NSMainNibFile</key>
 	<string>MainWindow</string>
 	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
+	<string>BugsnagExceptionHandler</string>
+	<key>bugsnag</key>
+	<dict>
+		<key>apiKey</key>
+		<string>7cacc9f30e9d865554af8b579b7e1b91</string>
+	</dict>
 </dict>
 </plist>
