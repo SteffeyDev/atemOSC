@@ -27,13 +27,14 @@
 		self->basicLog = [[NSMutableArray alloc] init];
 		self->debugMode = false;
 		self->live = true;
+		self->logChanged = false;
 		self->formatter = [[NSDateFormatter alloc] init];
 		[self->formatter setDateFormat:@"HH:mm:ss"];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(userScolled) name:NSScrollViewDidLiveScrollNotification object:nil];
 		
 		NSTimer* timer = [NSTimer timerWithTimeInterval:0.5
 												 target:self
-											   selector:@selector(reloadData)
+											   selector:@selector(reloadDataIfNeeded)
 											   userInfo:nil
 												repeats:YES];
 		[[NSRunLoop mainRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
@@ -41,6 +42,14 @@
 		return self;
 	}
 	return nil;
+}
+
+- (void)reloadDataIfNeeded
+{
+	if (self->logChanged)
+	{
+		[self reloadData];
+	}
 }
 
 // This will be run twice a second
@@ -58,6 +67,7 @@
 		}
 		[[self tableView] reloadData];
 		[[self tableView] scrollToEndOfDocument:nil];
+		self->logChanged = false;
 	}
 }
 
@@ -115,6 +125,7 @@
 		
 		// Keep this update small and fast, do more heavy lifting on the task run once a second
 		dispatch_async(dispatch_get_main_queue(), ^{
+			self->logChanged = true;
 			[self->fullLog addObject:messageWithTime];
 			if (!isDebugMessage)
 				[self->basicLog addObject:messageWithTime];

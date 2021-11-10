@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 	NSMutableArray*		fullLog; // normal and debug log
 	BOOL				debugMode;
 	BOOL				live;
+	BOOL				logChanged;
 	NSDateFormatter* 	formatter;
 }
 
