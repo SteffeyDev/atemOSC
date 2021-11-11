@@ -225,13 +225,13 @@ Feedback: Enabled for '/atem/usk/$i/on-air', '/atem/usk/$i/tie', '/atem/usk/$i/s
  - **Set Invert Parameter for Downstreamkeyer $i** `/atem/dsk/$i/inverse <true|false>`
  - **Set Rate Parameter for Downstreamkeyer $i** `/atem/dsk/$i/rate <int>`
     - Int value is number of frames, so 30 is 1 second and 60 is 2 seconds (given 30 fps base value)
- - **Enable Mask for Downstreamkeyer $i** `/atem/dsk/$i/mask-enabled <true|false>`
- - **Reset Mask for Downstreamkeyer $i** `/atem/dsk/$i/mask-reset`
- - **Set Mask for Downstreamkeyer $i** `/atem/dsk/$i/mask-[left|right|top|bottom] <float>`
-    - For left: `/atem/dsk/$i/mask-left <float>`
-    - For right: `/atem/dsk/$i/mask-right <float>`
-    - For top: `/atem/dsk/$i/mask-top <float>`
-    - For bottom: `/atem/dsk/$i/mask-bottom <float>`
+earch)- **Enable Mask for Downstreamkeyer $i** `/atem/dsk/$i/mask/enabled <true|false>`
+ - **Reset Mask for Downstreamkeyer $i** `/atem/dsk/$i/mask/reset`
+ - **Set Mask for Downstreamkeyer $i** `/atem/dsk/$i/mask/[left|right|top|bottom] <float>`
+    - For left: `/atem/dsk/$i/mask/left <float>`
+    - For right: `/atem/dsk/$i/mask/right <float>`
+    - For top: `/atem/dsk/$i/mask/top <float>`
+    - For bottom: `/atem/dsk/$i/mask/bottom <float>`
 
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 

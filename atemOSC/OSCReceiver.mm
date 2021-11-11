@@ -630,32 +630,32 @@
 		[s dsk][key-1]->SetPreMultiplied([v boolValue]);
 	}];
 	
-	[self addEndpoint:@"/dsk/<key>/mask-enabled" label:@"Enable Mask for DSK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/dsk/<key>/mask/enabled" label:@"Enable Mask for DSK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		[s dsk][key-1]->SetMasked([v boolValue]);
 	}];
 	
-	[self addEndpoint:@"/dsk/<key>/mask-left" label:@"Set Left Mask for DSK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/dsk/<key>/mask/left" label:@"Set Left Mask for DSK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		[s dsk][key-1]->SetMaskLeft([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/dsk/<key>/mask-right" label:@"Set Right Mask for DSK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/dsk/<key>/mask/right" label:@"Set Right Mask for DSK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		[s dsk][key-1]->SetMaskRight([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/dsk/<key>/mask-top" label:@"Set Top Mask for DSK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/dsk/<key>/mask/top" label:@"Set Top Mask for DSK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		[s dsk][key-1]->SetMaskTop([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/dsk/<key>/mask-bottom" label:@"Set Bottom Mask for DSK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/dsk/<key>/mask/bottom" label:@"Set Bottom Mask for DSK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		[s dsk][key-1]->SetMaskBottom([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/dsk/<key>/mask-reset" label:@"Reset Mask for DSK<key>" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/dsk/<key>/mask/reset" label:@"Reset Mask for DSK<key>" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		[s dsk][key-1]->ResetMask();
 	}];
