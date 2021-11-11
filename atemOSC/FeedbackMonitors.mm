@@ -1219,6 +1219,7 @@ void RecordAVMonitor::updateState(BMDSwitcherRecordAVState stateType, BMDSwitche
 		stateString = @"stopping";
 	
 	sendFeedbackMessage(switcher, @"/recording/state", [OSCValue createWithString:stateString]);
+	sendFeedbackMessage(switcher, @"/recording/active", [OSCValue createWithBool:[stateString  isEqual: @"recording"]]);
 }
 
 float StreamMonitor::sendStatus() const
@@ -1256,4 +1257,5 @@ void StreamMonitor::updateState(BMDSwitcherStreamRTMPState stateType, BMDSwitche
 		stateString = @"stopping";
 	
 	sendFeedbackMessage(switcher, @"/stream/state", [OSCValue createWithString:stateString]);
+	sendFeedbackMessage(switcher, @"/stream/active", [OSCValue createWithBool:[stateString  isEqual: @"streaming"]]);
 }
