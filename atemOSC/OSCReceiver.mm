@@ -177,6 +177,11 @@
 			[s mMixEffectBlocks][me-1]->SetTransitionPosition([v floatValue]);
 	}];
 	
+	[self addEndpoint:@"/me/<me>/transition/position" valueType: OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		[s mMixEffectBlocks][me-1]->SetTransitionPosition([v floatValue]);
+	}];
+	
 	[self addEndpoint:@"/me/<me>/transition/bar/reset" valueType: OSCValNil handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		[s mMixEffectBlocks][me-1]->SetTransitionPosition(0);

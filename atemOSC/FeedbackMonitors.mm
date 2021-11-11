@@ -128,6 +128,8 @@ void MixEffectBlockMonitor::updateSliderPosition()
 		sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:1.0-position], me_);
 	else
 		sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:position], me_);
+	
+	sendFeedbackMessage(switcher, @"/transition/position", [OSCValue createWithFloat:position], me_);
 }
 
 void MixEffectBlockMonitor::updatePreviewTransitionEnabled() const
@@ -156,6 +158,8 @@ float MixEffectBlockMonitor::sendStatus() const
 		sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:1.0-position], me_);
 	else
 		sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:position], me_);
+	
+	sendFeedbackMessage(switcher, @"/transition/position", [OSCValue createWithFloat:position], me_);
 
 	return 0.2;
 }
