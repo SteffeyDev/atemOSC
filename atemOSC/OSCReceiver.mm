@@ -481,6 +481,13 @@
 			dveParams->SetBorderLuma([v floatValue]);
 	}];
 	
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/enabled" label:@"Set Flying Key Enabled for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
+			flyParams->SetFly([v boolValue]);
+	}];
+	
 	[self addEndpoint:@"/me/<me>/usk/<key>/fly/rate" label:@"Set Fly Rate for USK<key>" valueType:OSCValInt handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
@@ -523,14 +530,14 @@
 			flyParams->SetRotation([v floatValue]);
 	}];
 	
-	[self addEndpoint:@"/me/<me>/usk/<key>/fly/reset-dve" label:@"Reset Size, Position, and Rotation to default values for USK<key>" valueType:OSCValNil handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/reset" label:@"Reset Size, Position, and Rotation to default values for USK<key>" valueType:OSCValNil handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
 		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
 			flyParams->ResetDVE();
 	}];
 	
-	[self addEndpoint:@"/me/<me>/usk/<key>/fly/clear-dve" label:@"Clear Size, Position, and Rotation settings for USK<key>" valueType:OSCValNil handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+	[self addEndpoint:@"/me/<me>/usk/<key>/fly/clear" label:@"Clear Size, Position, and Rotation settings for USK<key>" valueType:OSCValNil handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
 		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
