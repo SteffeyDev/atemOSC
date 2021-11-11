@@ -171,10 +171,15 @@
 	
 	[self addEndpoint:@"/me/<me>/transition/bar" valueType: OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
-		if ([s mMixEffectBlockMonitors][me-1]->mMoveSliderDownwards)
-			[s mMixEffectBlocks][me-1]->SetTransitionPosition([v floatValue]);
-		else
+		if ([s inverseHandle])
 			[s mMixEffectBlocks][me-1]->SetTransitionPosition(1.0-[v floatValue]);
+		else
+			[s mMixEffectBlocks][me-1]->SetTransitionPosition([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/transition/bar/reset" valueType: OSCValNil handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		[s mMixEffectBlocks][me-1]->SetTransitionPosition(0);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/transition/cut" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {

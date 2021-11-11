@@ -56,6 +56,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic)         bool     isConnected;
 @property (nonatomic, assign) NSString *connectionStatus;
 
+@property (nonatomic)         bool     inverseHandle;
+
 @property (assign, readonly) OSCOutPort*                    outPort;
 
 @property (readonly)       IBMDSwitcher*				        	mSwitcher;

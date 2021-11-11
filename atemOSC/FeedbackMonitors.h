@@ -43,7 +43,6 @@ class MixEffectBlockMonitor : public GenericMonitor<IBMDSwitcherMixEffectBlockCa
 public:
 	MixEffectBlockMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
 	HRESULT Notify(BMDSwitcherMixEffectBlockEventType eventType);
-	bool moveSliderDownwards() const;
 	bool mMoveSliderDownwards = false;
 	void updateSliderPosition();
 	void updatePreviewTransitionEnabled() const;
@@ -56,7 +55,7 @@ private:
 	void updateProgramButtonSelection() const;
 	void updatePreviewButtonSelection() const;
 	void updateInTransitionState();
-	bool mCurrentTransitionReachedHalfway_ = false;
+	bool mCurrentTransitionCompleted_ = false;
 	int me_;
 };
 

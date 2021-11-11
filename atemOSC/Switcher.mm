@@ -22,6 +22,8 @@
 @synthesize isConnected;
 @synthesize connectionStatus;
 
+@synthesize inverseHandle;
+
 @synthesize outPort;
 
 @synthesize productName;
@@ -91,6 +93,8 @@
 	connectionStatus = @"Not Connected";
 	
 	connectAutomatically = YES;
+	
+	inverseHandle = NO;
 	
 	return self;
 }

@@ -106,13 +106,13 @@ void MixEffectBlockMonitor::updateInTransitionState()
 	if (inTransition == false)
 	{
 		// Toggle the starting orientation of slider handle if a transition has passed through halfway
-		if (mCurrentTransitionReachedHalfway_)
+		if (mCurrentTransitionCompleted_)
 		{
-			mMoveSliderDownwards = ! mMoveSliderDownwards;
+			switcher.inverseHandle = !switcher.inverseHandle;
 			updateSliderPosition();
 		}
 		
-		mCurrentTransitionReachedHalfway_ = false;
+		mCurrentTransitionCompleted_ = false;
 	}
 }
 
@@ -121,14 +121,13 @@ void MixEffectBlockMonitor::updateSliderPosition()
 	double position;
 	switcher.mMixEffectBlocks[me_]->GetTransitionPosition(&position);
 	
-	// Record when transition passes halfway so we can flip orientation of slider handle at the end of transition
-	mCurrentTransitionReachedHalfway_ = (position >= 0.50);
+	// Record when transition completes so we can flip orientation of slider handle at the end of transition
+	mCurrentTransitionCompleted_ = (position == 1);
 	
-	double sliderPosition = position * 100;
-	if (mMoveSliderDownwards)
-		sliderPosition = 100 - position * 100;        // slider handle moving in opposite direction
-	
-	sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:1.0-sliderPosition/100], me_);
+	if (switcher.inverseHandle)
+		sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:1.0-position], me_);
+	else
+		sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:position], me_);
 }
 
 void MixEffectBlockMonitor::updatePreviewTransitionEnabled() const
@@ -153,10 +152,10 @@ float MixEffectBlockMonitor::sendStatus() const
 	
 	double position;
 	switcher.mMixEffectBlocks[me_]->GetTransitionPosition(&position);
-	double sliderPosition = position * 100;
-	if (mMoveSliderDownwards)
-		sliderPosition = 100 - position * 100;
-	sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:1.0-sliderPosition/100], me_);
+	if (switcher.inverseHandle)
+		sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:1.0-position], me_);
+	else
+		sendFeedbackMessage(switcher, @"/transition/bar", [OSCValue createWithFloat:position], me_);
 
 	return 0.2;
 }

@@ -106,6 +106,7 @@ By default, commands will be sent to the first mix effect block (M/E).  To send 
  - **Auto** `/atem/transition/auto`
  - **Fade to Black Toggle** `/atem/transition/ftb`
  - **Preview Transition** `/atem/transition/preview <true|false>`
+ - **T-bar Reset to Transition Start Position** `/atem/transition/bar/reset`
 
 To set the transition type of the Auto transition:
 
