@@ -991,10 +991,10 @@ void FairlightAudioSourceMonitor::updateMixOption() const
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix/on", inputId_], [OSCValue createWithFloat:[mixOptionString isEqualToString:@"on"] ? 1.0 : 0.0]);
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/audio/input/%lld/mix/off", inputId_], [OSCValue createWithFloat:[mixOptionString isEqualToString:@"off"] ? 1.0 : 0.0]);
 		
-		NSString *address = @"/audio/input/%lld/left/mix";
+		NSString *address = [NSString stringWithFormat:@"/audio/input/%lld/left/mix", inputId_];
 		if (sourceId_ == std::prev(switcher.mFairlightAudioSources[inputId_].end())->first)
-			address = @"/audio/input/%lld/right/mix";
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:address, inputId_], [OSCValue createWithString:mixOptionString]);
+			address = [NSString stringWithFormat:@"/audio/input/%lld/right/mix", inputId_];
+		sendFeedbackMessage(switcher, address, [OSCValue createWithString:mixOptionString]);
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"%@/afv", address], [OSCValue createWithFloat:[mixOptionString isEqualToString:@"afv"] ? 1.0 : 0.0]);
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"%@/on", address], [OSCValue createWithFloat:[mixOptionString isEqualToString:@"on"] ? 1.0 : 0.0]);
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"%@/off", address], [OSCValue createWithFloat:[mixOptionString isEqualToString:@"off"] ? 1.0 : 0.0]);
