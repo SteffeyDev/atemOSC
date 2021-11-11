@@ -738,26 +738,50 @@ HRESULT MacroControlMonitor::Notify (BMDSwitcherMacroControlEventType eventType)
 	return S_OK;
 }
 
-void MacroControlMonitor::updateRunStatus() const
+void MacroControlMonitor::updateRunStatus()
 {
-	BMDSwitcherMacroRunStatus status;
-	uint32_t index;
-	switcher.mMacroControl->GetRunStatus(&status, nil, &index);
-	
+	BMDSwitcherMacroRunStatus status = bmdSwitcherMacroRunStatusIdle;
+	uint32_t index = __UINT32_MAX__;
+	bool loop = FALSE;
+	switcher.mMacroControl->GetRunStatus(&status, &loop, &index);
+
 	NSString *runStatusStr;
 	if (status == bmdSwitcherMacroRunStatusIdle)
+	{
 		runStatusStr = @"idle";
+		index = MacroControlMonitor::currentIndex_;
+	}
 	if (status == bmdSwitcherMacroRunStatusRunning)
 		runStatusStr = @"running";
 	if (status == bmdSwitcherMacroRunStatusWaitingForUser)
 		runStatusStr = @"waiting";
-	
-	sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/macros/%d/run-status", index], [OSCValue createWithString:runStatusStr]);
+
+	sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/macros/%u/status", index], [OSCValue createWithString:runStatusStr]);
+
+	MacroControlMonitor::currentIndex_ = index;
 }
 
 float MacroControlMonitor::sendStatus() const
 {
-	updateRunStatus();
+	BMDSwitcherMacroRunStatus status = bmdSwitcherMacroRunStatusIdle;
+	uint32_t index = __UINT32_MAX__;
+	bool loop = FALSE;
+	switcher.mMacroControl->GetRunStatus(&status, &loop, &index);
+
+	uint32_t numberOfMacros;
+	switcher.mMacroPool->GetMaxCount(&numberOfMacros);
+
+	for (uint32_t i = 0; i < numberOfMacros; i++)
+	{
+		if (index == i)
+		{
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/macros/%u/status", i], [OSCValue createWithString:status == bmdSwitcherMacroRunStatusRunning ? @"running" : @"waiting"]);
+
+		} else {
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/macros/%u/status", i], [OSCValue createWithString:@"idle"]);
+		}
+	}
+
 	return 0.01;
 }
 

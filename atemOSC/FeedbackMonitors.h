@@ -196,7 +196,7 @@ private:
 class MacroControlMonitor : public GenericMonitor<IBMDSwitcherMacroControlCallback>, public SendStatusInterface
 {
 public:
-	MacroControlMonitor(Switcher *switcher) : GenericMonitor(switcher) { }
+	MacroControlMonitor(Switcher *switcher) : GenericMonitor(switcher), currentIndex_(__UINT32_MAX__) { }
 	HRESULT Notify (BMDSwitcherMacroControlEventType eventType);
 	float sendStatus() const;
 	
@@ -204,7 +204,8 @@ protected:
 	virtual ~MacroControlMonitor() { }
 	
 private:
-	void updateRunStatus() const;
+	void updateRunStatus();
+	uint32_t currentIndex_;
 };
 
 // Callback class to monitor switcher disconnection
