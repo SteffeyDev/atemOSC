@@ -1188,12 +1188,16 @@ void HyperDeckMonitor::updateLoopedPlayback() const
 
 float RecordAVMonitor::sendStatus() const
 {
-	BMDSwitcherRecordAVState stateType;
-	BMDSwitcherRecordAVError error;
-	[switcher mRecordAV]->GetStatus(&stateType, &error);
-	updateState(stateType, error);
+	if ([switcher mRecordAV])
+	{
+		BMDSwitcherRecordAVState stateType;
+		BMDSwitcherRecordAVError error;
+		[switcher mRecordAV]->GetStatus(&stateType, &error);
+		updateState(stateType, error);
+		return 0.05;
+	}
 
-	return 0.05;
+	return 0;
 }
 
 HRESULT RecordAVMonitor::NotifyStatus(BMDSwitcherRecordAVState stateType, BMDSwitcherRecordAVError error)
@@ -1219,12 +1223,16 @@ void RecordAVMonitor::updateState(BMDSwitcherRecordAVState stateType, BMDSwitche
 
 float StreamMonitor::sendStatus() const
 {
-	BMDSwitcherStreamRTMPState stateType;
-	BMDSwitcherStreamRTMPError error;
-	[switcher mStreamRTMP]->GetStatus(&stateType, &error);
-	updateState(stateType, error);
+	if ([switcher mStreamRTMP])
+	{
+		BMDSwitcherStreamRTMPState stateType;
+		BMDSwitcherStreamRTMPError error;
+		[switcher mStreamRTMP]->GetStatus(&stateType, &error);
+		updateState(stateType, error);
+		return 0.05;
+	}
 
-	return 0.05;
+	return 0;
 }
 
 HRESULT StreamMonitor::NotifyStatus(BMDSwitcherStreamRTMPState stateType, BMDSwitcherStreamRTMPError error)
