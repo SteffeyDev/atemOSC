@@ -270,7 +270,17 @@
 			mMonitors.push_back(monitor);
 			mMixEffectBlockMonitors.insert(std::make_pair(meIndex, monitor));
 			
-			//Upstream Keyer
+			// Transition Parameters
+			IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+			if (SUCCEEDED(me->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters)))
+			{
+				TransitionParametersMonitor *tpMonitor = new TransitionParametersMonitor(self, meIndex);
+				mTransitionParametersMonitors.insert(std::make_pair(meIndex, tpMonitor));
+				mTransitionParameters->AddCallback(tpMonitor);
+				mMonitors.push_back(tpMonitor);
+			}
+			
+			// Upstream Keyer
 			IBMDSwitcherKeyIterator* keyIterator = NULL;
 			IBMDSwitcherKey* key = NULL;
 			if (SUCCEEDED(me->CreateIterator(IID_IBMDSwitcherKeyIterator, (void**)&keyIterator)))
@@ -689,18 +699,25 @@
 		it->RemoveCallback(mMixEffectBlockMonitors.at(me));
 		it->Release();
 		
+		IBMDSwitcherTransitionParameters* mTransitionParameters=NULL;
+		if (SUCCEEDED(it->QueryInterface(IID_IBMDSwitcherTransitionParameters, (void**)&mTransitionParameters)))
+			mTransitionParameters->RemoveCallback(mTransitionParametersMonitors[me]);
+		
 		while (keyers[me].size())
 		{
 			keyers[me].back()->Release();
 			keyers[me].back()->RemoveCallback(mUpstreamKeyerMonitors[me]);
+			
 			IBMDSwitcherKeyLumaParameters* lumaParams = nil;
 			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyLumaParameters, (void**)&lumaParams);
 			if (lumaParams != nil)
 				lumaParams->RemoveCallback(mUpstreamKeyerLumaParametersMonitors[me]);
+			
 			IBMDSwitcherKeyChromaParameters* chromaParams = nil;
 			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
 			if (chromaParams != nil)
 				chromaParams->RemoveCallback(mUpstreamKeyerChromaParametersMonitors[me]);
+				
 			keyers[me].pop_back();
 		}
 		

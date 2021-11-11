@@ -70,7 +70,7 @@ HRESULT MixEffectBlockMonitor::Notify(BMDSwitcherMixEffectBlockEventType eventTy
 			break;
 		case bmdSwitcherMixEffectBlockEventTypeFadeToBlackFramesRemainingChanged:
 			break;
-		default:    // ignore other property changes not used for this sample app
+		default: // ignore other property changes not used for this app
 			break;
 	}
 	return S_OK;
