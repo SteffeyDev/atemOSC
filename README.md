@@ -6,6 +6,8 @@ atemOSC is a network proxy, listening for commands following the [OSC protocol](
 
 [Download Latest Version](http://www.atemosc.com/download.html)
 
+For best results, run the latest version of atemOSC, make sure your switcher(s) is running the latest version of the ATEM firmware, and make sure that the Mac that atemOSC is running on has the latest version of ATEM Software Control installed (or at least the same version as the switcher firmware, if the switcher does not support the latest version).
+
 Download older or pre-release versions:
 1. Go to the [releases page](https://github.com/SteffeyDev/atemOSC/releases)
 2. For a version that supports older versions of the Atem SDK, scroll down until you find the release for the version you want.
@@ -403,6 +405,14 @@ Occasionally, you may want to send output messages to many devices on the same n
 
 #### Solution
 Set the IP address to be the broadcast address for your network.  This will cause feedback messages to be sent to every device on the network.  For a typical network, the broadcast address is calculated by replacing the last octet with `255` (e.g. for a `192.168.1.x` network, the broadcast address is `192.168.1.255`).  However, the broadcast address may be different if the subnet mask is not `255.255.255.0`.  You may be able to use [this subnet calculator](https://remotemonitoringsystems.ca/broadcast.php) to calculate the broadcast address for your network.
+
+### I'm having issues connecting to my switcher, or my switcher is connected but certain features don't work
+
+#### Problem
+There are a myriad of issues that can come up with connecting atemOSC to your ATEM switcher.  Even once you get it connected, sometimes certain features that are supported by your switcher (e.g. recording) do not work with atemOSC.
+
+#### Solution
+If possible, upgrade your switcher's firmware to the latest version supported, and upgrade the version of ATEM Software Control on the Mac that is running atemOSC to match the switcher. AtemOSC does not have any strong ties to the version of your ATEM switcher, so often the issue is that the ATEM Software Control version is out of sync with the ATEM switcher's firmware version, and making those version's match may solve the issue atemOSC is having. If that doesn't fix it, try to find and use the latest version of atemOSC that supports the switcher firmware version you are running.  If you are stuck on an older firmware version, you may have to use a previous version of atemOSC.
 
 -----------
 
