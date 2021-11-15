@@ -73,12 +73,6 @@
 	}
 	else
 	{
-		for (Switcher *switcher in switchers)
-		{
-			if ([switcher connectAutomatically] && [switcher ipAddress])
-				[switcher connectBMD];
-		}
-		
 		manager = [[OSCManager alloc] init];
 		[manager setDelegate:mOscReceiver];
 		
@@ -102,6 +96,13 @@
 		[[self->window outlineView] reloadData];
 		NSIndexSet* indexes = [[NSIndexSet alloc] initWithIndex:1];
 		[[self->window outlineView] selectRowIndexes:indexes byExtendingSelection:NO];
+		
+		// Hoping that by the time the main queue is available on computer startup, the networking is up and the auto-reconnect works
+		for (Switcher *switcher in self->switchers)
+		{
+			if ([switcher connectAutomatically] && [switcher ipAddress])
+				[switcher connectBMD];
+		}
 	});
 }
 
