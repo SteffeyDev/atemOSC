@@ -441,7 +441,7 @@ I welcome pull requests, but recommend that you open an issue first so that we c
 ### Deployment
 
 1. Bump the version in XCode
-2. Build app from XCode
-3. Run generate-release.sh to generate the installer
-4. Run notarize-dmg.sh to notarize the installer
+2. Archive app from XCode
+3. Generate notarized app by using the "Distribute App" wizard: Developer ID > Upload > Automatically Manage Signing > Upload > Wait for notarization to complete > Export
+3. Run generate-release.sh to generate the notarized installer (argument is path to exported atemOSC.app file from the last step)
 5. Run upload-symbols.sh to upload the symbols to Bugsnag

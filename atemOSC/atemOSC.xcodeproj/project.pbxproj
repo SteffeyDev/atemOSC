@@ -28,11 +28,12 @@
 		A9A9AA932594255A00890134 /* VVBasics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9A9A9452594209100890134 /* VVBasics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9A9AA942594255A00890134 /* VVOSC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9A9A9472594209100890134 /* VVOSC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9D0B4DF259FCE5D00FF0733 /* LogView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9D0B4DE259FCE5D00FF0733 /* LogView.mm */; };
+		A9EFFF1B2742A70700EA8FCE /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9F4DDB62711276E007E64DE /* Bugsnag.framework */; };
+		A9EFFF1C2742A70700EA8FCE /* Bugsnag.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = A9F4DDB62711276E007E64DE /* Bugsnag.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A9F4DDB927112779007E64DE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9F4DDB827112779007E64DE /* SystemConfiguration.framework */; };
 		A9F4DDBB27112788007E64DE /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A9F4DDBA27112788007E64DE /* libc++.tbd */; };
 		A9F4DDBD2711278F007E64DE /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A9F4DDBC2711278F007E64DE /* libz.tbd */; };
 		A9F4DDC027112835007E64DE /* BugsnagExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = A9F4DDBF27112835007E64DE /* BugsnagExceptionHandler.m */; };
-		A9F4DDC827112C69007E64DE /* Bugsnag.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9F4DDB62711276E007E64DE /* Bugsnag.framework */; };
 		A9F7906A1F89B83D003ACBCF /* OSCReceiver.mm in Sources */ = {isa = PBXBuildFile; fileRef = A9F790691F89B83C003ACBCF /* OSCReceiver.mm */; };
 		A9FB8B5A25943693003B4581 /* VVBasics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A9A9452594209100890134 /* VVBasics.framework */; };
 		A9FB8B5B25943693003B4581 /* VVOSC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9A9A9472594209100890134 /* VVOSC.framework */; };
@@ -47,6 +48,7 @@
 			files = (
 				A9A9AA932594255A00890134 /* VVBasics.framework in CopyFiles */,
 				A9A9AA942594255A00890134 /* VVOSC.framework in CopyFiles */,
+				A9EFFF1C2742A70700EA8FCE /* Bugsnag.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -107,12 +109,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9F4DDC827112C69007E64DE /* Bugsnag.framework in Frameworks */,
 				A9F4DDBD2711278F007E64DE /* libz.tbd in Frameworks */,
 				A9F4DDBB27112788007E64DE /* libc++.tbd in Frameworks */,
 				A9F4DDB927112779007E64DE /* SystemConfiguration.framework in Frameworks */,
 				A9FB8B5A25943693003B4581 /* VVBasics.framework in Frameworks */,
 				A9FB8B5B25943693003B4581 /* VVOSC.framework in Frameworks */,
+				A9EFFF1B2742A70700EA8FCE /* Bugsnag.framework in Frameworks */,
 				333E3045161395CF0002287B /* IOKit.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 			);
@@ -388,7 +390,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				MARKETING_VERSION = 4.2;
+				MARKETING_VERSION = 4.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.atemosc.atemOSC;
 				PRODUCT_NAME = atemOSC;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -429,7 +431,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks @executable_path/../Frameworks";
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 10.9;
-				MARKETING_VERSION = 4.2;
+				MARKETING_VERSION = 4.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.atemosc.atemOSC;
 				PRODUCT_NAME = atemOSC;
 				PROVISIONING_PROFILE_SPECIFIER = "";
