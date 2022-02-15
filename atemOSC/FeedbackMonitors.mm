@@ -247,7 +247,7 @@ void InputAuxMonitor::updateInputSource() const
 	{
 		BMDSwitcherInputId source;
 		switcher.mAuxInputs[inputId_]->GetInputSource(&source);
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/aux/%lld", inputId_], [OSCValue createWithLongLong:source]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/aux/%lld", inputId_], [OSCValue createWithInt:source]);
 	}
 }
 
