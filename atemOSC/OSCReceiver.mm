@@ -553,6 +553,42 @@
 		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
 			flyParams->ResetDVEFull();
 	}];
+
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/enabled" label:@"Enable Mask for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMasked([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/left" label:@"Set Left Mask for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMaskLeft([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/right" label:@"Set Right Mask for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMaskRight([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/top" label:@"Set Top Mask for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMaskTop([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/bottom" label:@"Set Bottom Mask for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMaskBottom([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/reset" label:@"Reset Mask for USK<key>" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->ResetMask();
+	}];
 	
 	
 	[self addEndpoint:@"/dsk/<key>/tie" label:@"Set DSK<key> Tie" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
