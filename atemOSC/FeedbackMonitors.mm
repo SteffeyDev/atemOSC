@@ -322,7 +322,7 @@ void UpstreamKeyerMonitor::updateUSKOnAir() const
 		bool isOnAir;
 		keyers[i]->GetOnAir(&isOnAir);
 
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/on-air",i+1], [OSCValue createWithInt:isOnAir]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/on-air",i+1], [OSCValue createWithInt:isOnAir], me_);
 	}
 }
 
