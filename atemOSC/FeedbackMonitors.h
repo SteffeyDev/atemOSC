@@ -120,6 +120,11 @@ private:
 	void updateUSKInputFill() const;
 	void updateUSKInputCut() const;
 	void updateUSKType() const;
+	void updateUSKMasked() const;
+	void updateUSKMaskTop() const;
+	void updateUSKMaskBottom() const;
+	void updateUSKMaskRight() const;
+	void updateUSKMaskLeft() const;
 	int me_;
 };
 
