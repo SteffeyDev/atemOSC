@@ -683,9 +683,50 @@
 			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
 				patternParams->SetPattern(bmdSwitcherPatternStyleTopRightDiagonal);
 		}
-}];
+	}];
 
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/inverse" label:@"Set Pattern Key Inverted for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetInverse([v boolValue]);
+	}];
 	
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/size" label:@"Set Size for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetSize([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/symmetry" label:@"Set Symmetry for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetSymmetry([v floatValue]);
+	}];
+
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/softness" label:@"Set Softness for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetSoftness([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/position-x" label:@"Set position X for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetHorizontalOffset([v floatValue]);
+	}];
+
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/position-y" label:@"Set position Y for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetVerticalOffset([v floatValue]);
+	}];
+
 	[self addEndpoint:@"/dsk/<key>/tie" label:@"Set DSK<key> Tie" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		bool isTransitioning;
