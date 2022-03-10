@@ -197,7 +197,19 @@ By default, commands will be sent to the first mix effect block (M/E).  To send 
  - **Reset Position, Size, & Rotation to defaults for Upstream Keyer $i** `/atem/usk/$i/fly/reset`
  - **Reset Position, Size, & Rotation to full screen with no rotation for Upstream Keyer $i** `/atem/usk/$i/fly/clear`
 
-#### USK Pattern Parameters
+#### USK Mask Parameters
+ - **Set Mask ON/OFF for Upstream Keyer $i** `/atem/usk/$i/mask/enabled <true|false>`
+ - **Reset Mask Values for Upstream Keyer $i** `/atem/usk/$i/mask/reset
+ - **Set Top Mask Parameter for Upstream Keyer $i** `/atem/usk/$i/mask/top <float>`
+     - Float value should be between -9.0 and 9.0
+ - **Set Bottom Mask Parameter for Upstream Keyer $i** `/atem/usk/$i/mask/bottom <float>`
+     - Float value should be between -9.0 and 9.0
+ - **Set Left Mask Parameter for Upstream Keyer $i** `/atem/usk/$i/mask/left <float>`
+     - Float value should be between -16.0 and 16.0
+ - **Set Right Mask Parameter for Upstream Keyer $i** `/atem/usk/$i/mask/right <float>`
+     - Float value should be between -16.0 and 16.0
+     
+ #### USK Pattern Parameters
  - **Set Pattern type for Upstream Keyer $i** `/atem/usk/$i/pattern/type <bar_left2right|bar_top2bottom|barndoor_horizontal|barndoor_vertical|corners|iris_rectangle|iris_diamond|iris_circle|box_topleft|box_topright|box_bottomright|box_bottomleft|box_topcenter|box_centerright|box_centerbottom|box_centerleft|diagonal_topleft|diagonal_topright>`
  - **Set Inverse Pattern Parameter for Upstream Keyer $i** `/atem/usk/$i/pattern/inverse <bool>`
  - **Set Pattern Size Parameter for Upstream Keyer $i** `/atem/usk/$i/pattern/size <float>`
