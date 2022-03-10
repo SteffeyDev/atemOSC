@@ -425,16 +425,16 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 			updateUSKMasked();
 			break;
 		case bmdSwitcherKeyEventTypeMaskTopChanged:
-            updateUSKMaskTop();
+			updateUSKMaskTop();
 			break;
 		case bmdSwitcherKeyEventTypeMaskBottomChanged:
-            updateUSKMaskBottom();
+			updateUSKMaskBottom();
 			break;
 		case bmdSwitcherKeyEventTypeMaskLeftChanged:
-            updateUSKMaskLeft();
+			updateUSKMaskLeft();
 			break;
 		case bmdSwitcherKeyEventTypeMaskRightChanged:
-            updateUSKMaskRight();
+			updateUSKMaskRight();
 			break;
 		default:
 			// ignore other property changes not used for this app
