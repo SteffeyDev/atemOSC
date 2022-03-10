@@ -197,6 +197,20 @@ By default, commands will be sent to the first mix effect block (M/E).  To send 
  - **Reset Position, Size, & Rotation to defaults for Upstream Keyer $i** `/atem/usk/$i/fly/reset`
  - **Reset Position, Size, & Rotation to full screen with no rotation for Upstream Keyer $i** `/atem/usk/$i/fly/clear`
 
+#### USK Pattern Parameters
+ - **Set Pattern type for Upstream Keyer $i** `/atem/usk/$i/pattern/type <bar_left2right|bar_top2bottom|barndoor_horizontal|barndoor_vertical|corners|iris_rectangle|iris_diamond|iris_circle|box_topleft|box_topright|box_bottomright|box_bottomleft|box_topcenter|box_centerright|box_centerbottom|box_centerleft|diagonal_topleft|diagonal_topright>`
+ - **Set Inverse Pattern Parameter for Upstream Keyer $i** `/atem/usk/$i/pattern/inverse <bool>`
+- **Set Pattern Size Parameter for Upstream Keyer $i** `/atem/usk/$i/pattern/size <float>`
+     - Float value should be between 0.0 and 1.0
+- **Set Pattern Softness Parameter for Upstream Keyer $i** `/atem/usk/$i/pattern/softness <float>`
+     - Float value should be between 0.0 and 1.0
+- **Set Pattern Symmetry Parameter for Upstream Keyer $i** `/atem/usk/$i/pattern/symmetry <float>`
+     - Float value should be between 0.0 and 1.0
+- **Set Pattern Position X Parameter for Upstream Keyer $i** `/atem/usk/$i/pattern/position-x <float>`
+     - Float value should be between 0.0 and 1.0
+- **Set Pattern Position Y Parameter for Upstream Keyer $i** `/atem/usk/$i/pattern/position-y <float>`
+     - Float value should be between 0.0 and 1.0
+
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
 Feedback: Enabled for '/atem/usk/$i/on-air', '/atem/usk/$i/tie', '/atem/usk/$i/source/\*', '/atem/usk/$i/luma/\*', and '/atem/usk/$i/chroma/\*'
