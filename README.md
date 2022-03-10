@@ -197,6 +197,18 @@ By default, commands will be sent to the first mix effect block (M/E).  To send 
  - **Reset Position, Size, & Rotation to defaults for Upstream Keyer $i** `/atem/usk/$i/fly/reset`
  - **Reset Position, Size, & Rotation to full screen with no rotation for Upstream Keyer $i** `/atem/usk/$i/fly/clear`
 
+ #### USK Mask Parameters
+ - **Set Mask ON/OFF for Upstream Keyer $i** `/atem/usk/$i/mask/enabled <true|false>`
+ - **Reset Mask Values for Upstream Keyer $i** `/atem/usk/$i/mask/reset
+ - **Set Top Mask Parameter for Upstream Keyer $i** `/atem/usk/$i/mask/top <float>`
+     - Float value should be between -9.0 and 9.0
+ - **Set Bottom Mask Parameter for Upstream Keyer $i** `/atem/usk/$i/mask/bottom <float>`
+     - Float value should be between -9.0 and 9.0
+- **Set Left Mask Parameter for Upstream Keyer $i** `/atem/usk/$i/mask/left <float>`
+     - Float value should be between -16.0 and 16.0
+- **Set Right Mask Parameter for Upstream Keyer $i** `/atem/usk/$i/mask/right <float>`
+     - Float value should be between -16.0 and 16.0
+
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
 Feedback: Enabled for '/atem/usk/$i/on-air', '/atem/usk/$i/tie', '/atem/usk/$i/source/\*', '/atem/usk/$i/luma/\*', and '/atem/usk/$i/chroma/\*'
