@@ -475,6 +475,11 @@ float UpstreamKeyerMonitor::sendStatus() const
 	updateUSKInputCut();
 	updateUSKInputFill();
 	updateUSKType();
+	updateUSKMasked();
+	updateUSKMaskTop();
+	updateUSKMaskLeft();
+	updateUSKMaskRight();
+	updateUSKMaskBottom();
 
 	return 0.4;
 }
