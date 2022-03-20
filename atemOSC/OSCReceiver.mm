@@ -590,98 +590,40 @@
 		[s keyers][me-1][key-1]->ResetMask();
 	}];
 	
+	NSMutableDictionary *patternDict = [[NSMutableDictionary alloc] init];
+	[patternDict setObject:@(bmdSwitcherPatternStyleLeftToRightBar) forKey:@"bar_left2right"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleTopToBottomBar) forKey:@"bar_top2bottom"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleHorizontalBarnDoor) forKey:@"barndoor_horizontal"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleVerticalBarnDoor) forKey:@"barndoor_vertical"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleCornersInFourBox) forKey:@"corners"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleRectangleIris) forKey:@"iris_rectangle"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleDiamondIris) forKey:@"iris_diamond"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleCircleIris) forKey:@"iris_circle"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleTopLeftBox) forKey:@"box_topleft"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleTopRightBox) forKey:@"box_topright"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleBottomRightBox) forKey:@"box_bottomright"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleBottomLeftBox) forKey:@"box_bottomleft"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleTopCentreBox) forKey:@"box_topcenter"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleRightCentreBox) forKey:@"box_centerright"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleBottomCentreBox) forKey:@"box_centerbottom"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleLeftCentreBox) forKey:@"box_centerleft"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleTopLeftDiagonal) forKey:@"diagonal_topleft"];
+	[patternDict setObject:@(bmdSwitcherPatternStyleTopRightDiagonal) forKey:@"diagonal_topright"];
+	
 	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/style" label:@"Set USK<key> Pattern Style" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int me = [[d objectForKey:@"<me>"] intValue];
 		int key = [[d objectForKey:@"<key>"] intValue];
-		if ([[v stringValue] isEqualToString:@"bar_left2right"])
+		
+		id patternStyleWrapper = [patternDict objectForKey:[v stringValue]];
+		if (patternStyleWrapper)
 		{
+			BMDSwitcherPatternStyle patternStyle = [patternStyleWrapper intValue];
 			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-                patternParams->SetPattern(bmdSwitcherPatternStyleLeftToRightBar);
+				patternParams->SetPattern(patternStyle);
 		}
-		else if ([[v stringValue] isEqualToString:@"bar_top2bottom"])
+		else
 		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-                patternParams->SetPattern(bmdSwitcherPatternStyleTopToBottomBar);
-		}
-		else if ([[v stringValue] isEqualToString:@"barndoor_horizontal"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-                patternParams->SetPattern(bmdSwitcherPatternStyleHorizontalBarnDoor);
-		}
-		else if ([[v stringValue] isEqualToString:@"barndoor_vertical"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-                patternParams->SetPattern(bmdSwitcherPatternStyleVerticalBarnDoor);
-		}
-		else if ([[v stringValue] isEqualToString:@"corners"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-                patternParams->SetPattern(bmdSwitcherPatternStyleCornersInFourBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"iris_rectangle"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleRectangleIris);
-		}
-		else if ([[v stringValue] isEqualToString:@"iris_diamond"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleDiamondIris);
-		}
-		else if ([[v stringValue] isEqualToString:@"iris_circle"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleCircleIris);
-		}
-		else if ([[v stringValue] isEqualToString:@"box_topleft"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleTopLeftBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"box_topright"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleTopRightBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"box_bottomright"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleBottomRightBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"box_bottomleft"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleBottomLeftBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"box_topcenter"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleTopCentreBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"box_centerright"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleRightCentreBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"box_centerbottom"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleBottomCentreBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"box_centerleft"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleLeftCentreBox);
-		}
-		else if ([[v stringValue] isEqualToString:@"diagonal_topleft"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleTopLeftDiagonal);
-		}
-		else if ([[v stringValue] isEqualToString:@"diagonal_topright"])
-		{
-			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
-				patternParams->SetPattern(bmdSwitcherPatternStyleTopRightDiagonal);
+			[weakAppDel logMessage:[NSString stringWithFormat:@"Pattern style '%@' not recognized", [v stringValue]]];
 		}
 	}];
 
