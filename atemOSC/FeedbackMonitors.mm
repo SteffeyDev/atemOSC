@@ -247,7 +247,7 @@ void InputAuxMonitor::updateInputSource() const
 	{
 		BMDSwitcherInputId source;
 		switcher.mAuxInputs[inputId_]->GetInputSource(&source);
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/aux/%lld", inputId_], [OSCValue createWithLongLong:source]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/aux/%lld", inputId_], [OSCValue createWithInt:source]);
 	}
 }
 
@@ -322,7 +322,7 @@ void UpstreamKeyerMonitor::updateUSKOnAir() const
 		bool isOnAir;
 		keyers[i]->GetOnAir(&isOnAir);
 
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/on-air",i+1], [OSCValue createWithInt:isOnAir]);
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/on-air",i+1], [OSCValue createWithInt:isOnAir], me_);
 	}
 }
 
@@ -350,6 +350,61 @@ void UpstreamKeyerMonitor::updateUSKInputCut() const
 	}
 }
 
+void UpstreamKeyerMonitor::updateUSKMasked() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		bool isMasked;
+		keyers[i]->GetMasked(&isMasked);
+		
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/mask/enabled",i+1], [OSCValue createWithInt:isMasked], me_);
+	}
+}
+void UpstreamKeyerMonitor::updateUSKMaskBottom() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		double MaskBottom;
+		keyers[i]->GetMaskBottom(&MaskBottom);
+		
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/mask/bottom",i+1], [OSCValue createWithFloat:MaskBottom], me_);
+	}
+}
+void UpstreamKeyerMonitor::updateUSKMaskTop() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		double MaskTop;
+		keyers[i]->GetMaskTop(&MaskTop);
+		
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/mask/top",i+1], [OSCValue createWithFloat:MaskTop], me_);
+	}
+}
+void UpstreamKeyerMonitor::updateUSKMaskLeft() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		double MaskLeft;
+		keyers[i]->GetMaskLeft(&MaskLeft);
+		
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/mask/left",i+1], [OSCValue createWithFloat:MaskLeft], me_);
+	}
+}
+void UpstreamKeyerMonitor::updateUSKMaskRight() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		double MaskRight;
+		keyers[i]->GetMaskRight(&MaskRight);
+		
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/mask/right",i+1], [OSCValue createWithFloat:MaskRight], me_);
+	}
+}
 HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 {
 	switch (eventType)
@@ -365,6 +420,21 @@ HRESULT UpstreamKeyerMonitor::Notify(BMDSwitcherKeyEventType eventType)
 			break;
 		case bmdSwitcherKeyEventTypeTypeChanged:
 			updateUSKType();
+			break;
+		case bmdSwitcherKeyEventTypeMaskedChanged:
+			updateUSKMasked();
+			break;
+		case bmdSwitcherKeyEventTypeMaskTopChanged:
+			updateUSKMaskTop();
+			break;
+		case bmdSwitcherKeyEventTypeMaskBottomChanged:
+			updateUSKMaskBottom();
+			break;
+		case bmdSwitcherKeyEventTypeMaskLeftChanged:
+			updateUSKMaskLeft();
+			break;
+		case bmdSwitcherKeyEventTypeMaskRightChanged:
+			updateUSKMaskRight();
 			break;
 		default:
 			// ignore other property changes not used for this app
@@ -405,6 +475,11 @@ float UpstreamKeyerMonitor::sendStatus() const
 	updateUSKInputCut();
 	updateUSKInputFill();
 	updateUSKType();
+	updateUSKMasked();
+	updateUSKMaskTop();
+	updateUSKMaskLeft();
+	updateUSKMaskRight();
+	updateUSKMaskBottom();
 
 	return 0.4;
 }

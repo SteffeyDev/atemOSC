@@ -553,8 +553,180 @@
 		if (IBMDSwitcherKeyFlyParameters* flyParams = [weakSelf getUSKFlyParams:key forSwitcher:s andME:me])
 			flyParams->ResetDVEFull();
 	}];
+
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/enabled" label:@"Enable Mask for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMasked([v boolValue]);
+	}];
 	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/left" label:@"Set Left Mask for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMaskLeft([v floatValue]);
+	}];
 	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/right" label:@"Set Right Mask for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMaskRight([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/top" label:@"Set Top Mask for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMaskTop([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/bottom" label:@"Set Bottom Mask for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->SetMaskBottom([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/mask/reset" label:@"Reset Mask for USK<key>" handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		[s keyers][me-1][key-1]->ResetMask();
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/style" label:@"Set USK<key> Pattern Style" valueType:OSCValString handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if ([[v stringValue] isEqualToString:@"bar_left2right"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+                patternParams->SetPattern(bmdSwitcherPatternStyleLeftToRightBar);
+		}
+		else if ([[v stringValue] isEqualToString:@"bar_top2bottom"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+                patternParams->SetPattern(bmdSwitcherPatternStyleTopToBottomBar);
+		}
+		else if ([[v stringValue] isEqualToString:@"barndoor_horizontal"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+                patternParams->SetPattern(bmdSwitcherPatternStyleHorizontalBarnDoor);
+		}
+		else if ([[v stringValue] isEqualToString:@"barndoor_vertical"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+                patternParams->SetPattern(bmdSwitcherPatternStyleVerticalBarnDoor);
+		}
+		else if ([[v stringValue] isEqualToString:@"corners"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+                patternParams->SetPattern(bmdSwitcherPatternStyleCornersInFourBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"iris_rectangle"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleRectangleIris);
+		}
+		else if ([[v stringValue] isEqualToString:@"iris_diamond"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleDiamondIris);
+		}
+		else if ([[v stringValue] isEqualToString:@"iris_circle"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleCircleIris);
+		}
+		else if ([[v stringValue] isEqualToString:@"box_topleft"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleTopLeftBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"box_topright"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleTopRightBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"box_bottomright"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleBottomRightBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"box_bottomleft"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleBottomLeftBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"box_topcenter"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleTopCentreBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"box_centerright"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleRightCentreBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"box_centerbottom"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleBottomCentreBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"box_centerleft"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleLeftCentreBox);
+		}
+		else if ([[v stringValue] isEqualToString:@"diagonal_topleft"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleTopLeftDiagonal);
+		}
+		else if ([[v stringValue] isEqualToString:@"diagonal_topright"])
+		{
+			if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+				patternParams->SetPattern(bmdSwitcherPatternStyleTopRightDiagonal);
+		}
+	}];
+
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/inverse" label:@"Set Pattern Key Inverted for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetInverse([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/size" label:@"Set Size for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetSize([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/symmetry" label:@"Set Symmetry for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetSymmetry([v floatValue]);
+	}];
+
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/softness" label:@"Set Softness for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetSoftness([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/position-x" label:@"Set position X for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetHorizontalOffset([v floatValue]);
+	}];
+
+	[self addEndpoint:@"/me/<me>/usk/<key>/pattern/position-y" label:@"Set position Y for USK<key> Pattern" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyPatternParameters* patternParams = [weakSelf getUSKPatternParams:key forSwitcher:s andME:me])
+			patternParams->SetVerticalOffset([v floatValue]);
+	}];
+
 	[self addEndpoint:@"/dsk/<key>/tie" label:@"Set DSK<key> Tie" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int key = [[d objectForKey:@"<key>"] intValue];
 		bool isTransitioning;
@@ -1305,6 +1477,13 @@
 	return flyParams;
 }
 
+- (IBMDSwitcherKeyPatternParameters *) getUSKPatternParams:(int)t forSwitcher:(Switcher *)s andME:(int)me
+{
+	IBMDSwitcherKey* key = [s keyers][me-1][t-1];
+	IBMDSwitcherKeyPatternParameters* patternParams;
+	key->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams);
+	return patternParams;
+}
 - (void) changeTransitionSelection:(int)t select:(bool) select forTransitionParameters:(IBMDSwitcherTransitionParameters *)switcherTransitionParameters
 {
 	uint32_t currentTransitionSelection;
