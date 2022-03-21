@@ -840,31 +840,11 @@ float UpstreamKeyerChromaParametersMonitor::sendStatus() const
 	return 0.4;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 HRESULT UpstreamKeyerPatternParametersMonitor::Notify(BMDSwitcherKeyPatternParametersEventType eventType)
 {
 	switch (eventType)
 	{
-		case bmdSwitcherKeyPatternParametersEventTypeStyleChanged:
+		case bmdSwitcherKeyPatternParametersEventTypePatternChanged:
 			updateUSKPatternStyleParameter();
 			break;
 		case bmdSwitcherKeyPatternParametersEventTypeSizeChanged:
@@ -893,35 +873,58 @@ HRESULT UpstreamKeyerPatternParametersMonitor::Notify(BMDSwitcherKeyPatternParam
 }
 
 
-
-
 void UpstreamKeyerPatternParametersMonitor::updateUSKPatternStyleParameter() const
 {
 	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
 	for (int i = 0; i < keyers.size(); i++)
 	{
-		BMDSwitcherKeyPatternStyle style;
-		keyers[i]->GetStyle(&style);
-		
-		NSString *typeStr;
-		if (type == bmdSwitcherKeyTypeLuma)
+        BMDSwitcherPatternStyle style;
+		keyers[i]->GetPattern(&style);
+
+		NSString *styleStr;
+		if (style == bmdSwitcherPatternStyleLeftToRightBar)
 			styleStr = @"bar_left2right";
-		if (type == bmdSwitcherKeyTypeChroma)
+		if (style == bmdSwitcherPatternStyleTopToBottomBar)
 			styleStr = @"bar_top2bottom";
-		if (type == bmdSwitcherKeyTypePattern)
+		if (style == bmdSwitcherPatternStyleHorizontalBarnDoor)
 			styleStr = @"barndoor_horizontal";
-		if (type == bmdSwitcherKeyTypeDVE)
+		if (style == bmdSwitcherPatternStyleVerticalBarnDoor)
 			styleStr = @"barndoor_vertical";
-		
+		if (style == bmdSwitcherPatternStyleCornersInFourBox)
+			styleStr = @"corners";
+		if (style == bmdSwitcherPatternStyleRectangleIris)
+			styleStr = @"iris_rectangle";
+		if (style == bmdSwitcherPatternStyleDiamondIris)
+			styleStr = @"iris_diamond";
+		if (style == bmdSwitcherPatternStyleCircleIris)
+			styleStr = @"iris_circle";
+		if (style == bmdSwitcherPatternStyleTopLeftBox)
+			styleStr = @"box_topleft";
+		if (style == bmdSwitcherPatternStyleTopRightBox)
+			styleStr = @"box_topright";
+		if (style == bmdSwitcherPatternStyleBottomRightBox)
+			styleStr = @"box_bottomright";
+		if (style == bmdSwitcherPatternStyleBottomLeftBox)
+			styleStr = @"box_bottomleft";
+		if (style == bmdSwitcherPatternStyleTopCentreBox)
+			styleStr = @"box_topcenter";
+		if (style == bmdSwitcherPatternStyleRightCentreBox)
+			styleStr = @"box_centerright";
+		if (style == bmdSwitcherPatternStyleBottomCentreBox)
+			styleStr = @"box_centerbottom";
+		if (style == bmdSwitcherPatternStyleLeftCentreBox)
+			styleStr = @"box_centerleft";
+		if (style == bmdSwitcherPatternStyleTopLeftDiagonal)
+			styleStr = @"diagonal_topleft";
+		if (style == bmdSwitcherPatternStyleTopRightDiagonal)
+			styleStr = @"diagonal_topright";
+
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/style",i+1], [OSCValue createWithString:styleStr], me_);
 		
 		// Support for legacy clients like TouchOSC
 		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/type/%@",i+1, styleStr], [OSCValue createWithFloat:1.0], me_);
 	}
 }
-
-
-
 
 void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSizeParameter() const
 {
