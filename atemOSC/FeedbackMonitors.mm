@@ -840,6 +840,214 @@ float UpstreamKeyerChromaParametersMonitor::sendStatus() const
 	return 0.4;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HRESULT UpstreamKeyerPatternParametersMonitor::Notify(BMDSwitcherKeyPatternParametersEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherKeyPatternParametersEventTypeStyleChanged:
+			updateUSKPatternStyleParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeSizeChanged:
+			updateUSKPatternSizeParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeSymmetryChanged:
+			updateUSKPatternSymmetryParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeSoftnessChanged:
+			updateUSKPatternSoftnessParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeInverseChanged:
+			updateUSKPatternInverseParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeHorizontalOffsetChanged:
+			updateUSKPatternHorizontalOffsetParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeVerticalOffsetChanged:
+			updateUSKPatternVerticalOffsetParameter();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+
+
+
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternStyleParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		BMDSwitcherKeyPatternStyle style;
+		keyers[i]->GetStyle(&style);
+		
+		NSString *typeStr;
+		if (type == bmdSwitcherKeyTypeLuma)
+			styleStr = @"bar_left2right";
+		if (type == bmdSwitcherKeyTypeChroma)
+			styleStr = @"bar_top2bottom";
+		if (type == bmdSwitcherKeyTypePattern)
+			styleStr = @"barndoor_horizontal";
+		if (type == bmdSwitcherKeyTypeDVE)
+			styleStr = @"barndoor_vertical";
+		
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/style",i+1], [OSCValue createWithString:styleStr], me_);
+		
+		// Support for legacy clients like TouchOSC
+		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/type/%@",i+1, styleStr], [OSCValue createWithFloat:1.0], me_);
+	}
+}
+
+
+
+
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSizeParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double size;
+			patternParams->GetSize(&size);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/size",i+1], [OSCValue createWithFloat:size], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternGainParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double gain;
+			patternParams->GetGain(&gain);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/gain",i+1], [OSCValue createWithFloat:gain], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternYSuppressParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double ySuppress;
+			patternParams->GetYSuppress(&ySuppress);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/y-suppress",i+1], [OSCValue createWithFloat:ySuppress], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternLiftParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double lift;
+			patternParams->GetLift(&lift);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/lift",i+1], [OSCValue createWithFloat:lift], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternNarrowParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			bool narrow;
+			patternParams->GetNarrow(&narrow);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/narrow",i+1], [OSCValue createWithBool:narrow], me_);
+		}
+	}
+}
+
+float UpstreamKeyerPatternParametersMonitor::sendStatus() const
+{
+	updateUSKPatternNarrowParameter();
+	updateUSKPatternYSuppressParameter();
+	updateUSKPatternGainParameter();
+	updateUSKPatternHueParameter();
+	updateUSKPatternLiftParameter();
+	
+	return 0.4;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEventType eventType)
 {
 	
