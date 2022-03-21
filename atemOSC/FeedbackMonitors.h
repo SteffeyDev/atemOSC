@@ -201,6 +201,7 @@ private:
 	void updateUSKPatternStyleParameter() const;
 	void updateUSKPatternSizeParameter() const;
 	void updateUSKPatternSymmetryParameter() const;
+	void updateUSKPatternInverseParameter() const;
 	void updateUSKPatternSoftnessParameter() const;
 	void updateUSKPatternHorizontalOffsetParameter() const;
 	void updateUSKPatternVerticalOffsetParameter() const;
