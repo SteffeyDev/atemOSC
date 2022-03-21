@@ -146,6 +146,28 @@ private:
 	int me_;
 };
 
+class UpstreamKeyerFlyParametersMonitor : public GenericMonitor<IBMDSwitcherKeyFlyParametersCallback>, public SendStatusInterface
+{
+public:
+    UpstreamKeyerFlyParametersMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
+	HRESULT Notify (BMDSwitcherKeyFlyParametersEventType eventType);
+	float sendStatus() const;
+	
+protected:
+    virtual ~UpstreamKeyerFlyParametersMonitor() { }
+	
+private:
+	void updateUSKFlyedParameter() const;
+	void updateUSKCanFlyParameter() const;
+	void updateUSKFlyRateParameter() const;
+	void updateUSKFlySizeXParameter() const;
+	void updateUSKFlySizeYParameter() const;
+	void updateUSKFlyPositionXParameter() const;
+	void updateUSKFlyPositionYParameter() const;
+	void updateUSKFlyRotationParameter() const;
+	int me_;
+};
+
 class UpstreamKeyerChromaParametersMonitor : public GenericMonitor<IBMDSwitcherKeyChromaParametersCallback>, public SendStatusInterface
 {
 public:

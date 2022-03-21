@@ -311,6 +311,14 @@
 						mMonitors.push_back(chromaMonitor);
 						mUpstreamKeyerChromaParametersMonitors.insert(std::make_pair(meIndex, chromaMonitor));
 					}
+					IBMDSwitcherKeyFlyParameters* flyParams;
+					if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+					{
+						UpstreamKeyerFlyParametersMonitor *flyMonitor = new UpstreamKeyerFlyParametersMonitor(self, meIndex);
+						flyParams->AddCallback(flyMonitor);
+						mMonitors.push_back(flyMonitor);
+						mUpstreamKeyerFlyParametersMonitors.insert(std::make_pair(meIndex, flyMonitor));
+					}
 				}
 				keyIterator->Release();
 				keyIterator = NULL;
@@ -717,6 +725,11 @@
 			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
 			if (chromaParams != nil)
 				chromaParams->RemoveCallback(mUpstreamKeyerChromaParametersMonitors[me]);
+			
+			IBMDSwitcherKeyFlyParameters* flyParams = nil;
+			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams);
+			if (flyParams != nil)
+				flyParams->RemoveCallback(mUpstreamKeyerFlyParametersMonitors[me]);
 				
 			keyers[me].pop_back();
 		}
@@ -729,6 +742,7 @@
 	mUpstreamKeyerMonitors.clear();
 	mUpstreamKeyerLumaParametersMonitors.clear();
 	mUpstreamKeyerChromaParametersMonitors.clear();
+	mUpstreamKeyerFlyParametersMonitors.clear();
 	
 	for (auto const& it : mInputs)
 	{

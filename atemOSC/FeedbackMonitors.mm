@@ -578,6 +578,155 @@ float UpstreamKeyerLumaParametersMonitor::sendStatus() const
 	return 0.4;
 }
 
+HRESULT UpstreamKeyerFlyParametersMonitor::Notify(BMDSwitcherKeyFlyParametersEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherKeyFlyParametersEventTypeFlyChanged:
+			updateUSKFlyedParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeCanFlyChanged:
+			updateUSKCanFlyParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeRateChanged:
+			updateUSKFlyRateParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeSizeXChanged:
+			updateUSKFlySizeXParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeSizeYChanged:
+			updateUSKFlySizeYParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypePositionXChanged:
+			updateUSKFlyPositionXParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypePositionYChanged:
+			updateUSKFlyPositionYParameter();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyedParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			bool isFlyKey;
+			flyParams->GetFly(&isFlyKey);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/enabled",i+1], [OSCValue createWithBool:isFlyKey], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKCanFlyParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			bool canFly;
+			flyParams->GetCanFly(&canFly);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/can",i+1], [OSCValue createWithBool:canFly], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyRateParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			uint32_t frames;
+			flyParams->GetRate(&frames);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/rate",i+1], [OSCValue createWithInt:frames], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlySizeXParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double multiplierX;
+			flyParams->GetSizeX(&multiplierX);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/size-x",i+1], [OSCValue createWithFloat:multiplierX], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlySizeYParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double multiplierY;
+			flyParams->GetSizeY(&multiplierY);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/size-y",i+1], [OSCValue createWithFloat:multiplierY], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyPositionXParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double offsetX;
+			flyParams->GetPositionX(&offsetX);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/size-x",i+1], [OSCValue createWithFloat:offsetX], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyPositionYParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double offsetY;
+			flyParams->GetPositionY(&offsetY);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/size-y",i+1], [OSCValue createWithFloat:offsetY], me_);
+		}
+	}
+}
+
+float UpstreamKeyerFlyParametersMonitor::sendStatus() const
+{
+    updateUSKFlyRateParameter();
+    updateUSKFlySizeXParameter();
+    updateUSKFlySizeYParameter();
+    updateUSKFlyPositionXParameter();
+    updateUSKFlyPositionYParameter();
+	
+	return 0.4;
+}
+
 HRESULT UpstreamKeyerChromaParametersMonitor::Notify(BMDSwitcherKeyChromaParametersEventType eventType)
 {
 	switch (eventType)
