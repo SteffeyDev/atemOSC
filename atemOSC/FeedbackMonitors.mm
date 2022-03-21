@@ -872,7 +872,6 @@ HRESULT UpstreamKeyerPatternParametersMonitor::Notify(BMDSwitcherKeyPatternParam
 	return S_OK;
 }
 
-
 void UpstreamKeyerPatternParametersMonitor::updateUSKPatternStyleParameter() const
 {
 	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
@@ -941,7 +940,7 @@ void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSizeParameter() cons
 		}
 	}
 }
-void UpstreamKeyerPatternParametersMonitor::updateUSKPatternGainParameter() const
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSymmetryParameter() const
 {
 	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
 	for (int i = 0; i < keyers.size(); i++)
@@ -949,14 +948,14 @@ void UpstreamKeyerPatternParametersMonitor::updateUSKPatternGainParameter() cons
 		IBMDSwitcherKeyPatternParameters* patternParams;
 		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
 		{
-			double gain;
-			patternParams->GetGain(&gain);
+			double symmetry;
+			patternParams->GetSymmetry(&symmetry);
 			
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/gain",i+1], [OSCValue createWithFloat:gain], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/symmetry",i+1], [OSCValue createWithFloat:symmetry], me_);
 		}
 	}
 }
-void UpstreamKeyerPatternParametersMonitor::updateUSKPatternYSuppressParameter() const
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSoftnessParameter() const
 {
 	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
 	for (int i = 0; i < keyers.size(); i++)
@@ -964,14 +963,14 @@ void UpstreamKeyerPatternParametersMonitor::updateUSKPatternYSuppressParameter()
 		IBMDSwitcherKeyPatternParameters* patternParams;
 		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
 		{
-			double ySuppress;
-			patternParams->GetYSuppress(&ySuppress);
+			double softness;
+			patternParams->GetSoftness(&softness);
 			
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/y-suppress",i+1], [OSCValue createWithFloat:ySuppress], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/y-suppress",i+1], [OSCValue createWithFloat:softness], me_);
 		}
 	}
 }
-void UpstreamKeyerPatternParametersMonitor::updateUSKPatternLiftParameter() const
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternHorizontalOffsetParameter() const
 {
 	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
 	for (int i = 0; i < keyers.size(); i++)
@@ -979,14 +978,14 @@ void UpstreamKeyerPatternParametersMonitor::updateUSKPatternLiftParameter() cons
 		IBMDSwitcherKeyPatternParameters* patternParams;
 		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
 		{
-			double lift;
-			patternParams->GetLift(&lift);
+			double positionX;
+			patternParams->GetHorizontalOffset(&positionX);
 			
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/lift",i+1], [OSCValue createWithFloat:lift], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/position-x",i+1], [OSCValue createWithFloat:positionX], me_);
 		}
 	}
 }
-void UpstreamKeyerPatternParametersMonitor::updateUSKPatternNarrowParameter() const
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternVerticalOffsetParameter() const
 {
 	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
 	for (int i = 0; i < keyers.size(); i++)
@@ -994,62 +993,41 @@ void UpstreamKeyerPatternParametersMonitor::updateUSKPatternNarrowParameter() co
 		IBMDSwitcherKeyPatternParameters* patternParams;
 		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
 		{
-			bool narrow;
-			patternParams->GetNarrow(&narrow);
+			double positionY;
+			patternParams->GetVerticalOffset(&positionY);
 			
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/narrow",i+1], [OSCValue createWithBool:narrow], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/position-y",i+1], [OSCValue createWithFloat:positionY], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternInverseParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			bool inverse;
+			patternParams->GetInverse(&inverse);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/inverse",i+1], [OSCValue createWithBool:inverse], me_);
 		}
 	}
 }
 
 float UpstreamKeyerPatternParametersMonitor::sendStatus() const
 {
-	updateUSKPatternNarrowParameter();
-	updateUSKPatternYSuppressParameter();
-	updateUSKPatternGainParameter();
-	updateUSKPatternHueParameter();
-	updateUSKPatternLiftParameter();
+	updateUSKPatternInverseParameter();
+	updateUSKPatternSizeParameter();
+	updateUSKPatternStyleParameter();
+	updateUSKPatternSoftnessParameter();
+	updateUSKPatternSymmetryParameter();
+    updateUSKPatternHorizontalOffsetParameter();
+    updateUSKPatternVerticalOffsetParameter();
 	
 	return 0.4;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 HRESULT TransitionParametersMonitor::Notify(BMDSwitcherTransitionParametersEventType eventType)
 {
