@@ -877,51 +877,55 @@ void UpstreamKeyerPatternParametersMonitor::updateUSKPatternStyleParameter() con
 	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
 	for (int i = 0; i < keyers.size(); i++)
 	{
-        BMDSwitcherPatternStyle style;
-		keyers[i]->GetPattern(&style);
+        IBMDSwitcherKeyPatternParameters* patternParams;
+        if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+        {
+            BMDSwitcherPatternStyle pattern;
+            patternParams->GetPattern(&pattern);
 
-		NSString *styleStr;
-		if (style == bmdSwitcherPatternStyleLeftToRightBar)
-			styleStr = @"bar_left2right";
-		if (style == bmdSwitcherPatternStyleTopToBottomBar)
-			styleStr = @"bar_top2bottom";
-		if (style == bmdSwitcherPatternStyleHorizontalBarnDoor)
-			styleStr = @"barndoor_horizontal";
-		if (style == bmdSwitcherPatternStyleVerticalBarnDoor)
-			styleStr = @"barndoor_vertical";
-		if (style == bmdSwitcherPatternStyleCornersInFourBox)
-			styleStr = @"corners";
-		if (style == bmdSwitcherPatternStyleRectangleIris)
-			styleStr = @"iris_rectangle";
-		if (style == bmdSwitcherPatternStyleDiamondIris)
-			styleStr = @"iris_diamond";
-		if (style == bmdSwitcherPatternStyleCircleIris)
-			styleStr = @"iris_circle";
-		if (style == bmdSwitcherPatternStyleTopLeftBox)
-			styleStr = @"box_topleft";
-		if (style == bmdSwitcherPatternStyleTopRightBox)
-			styleStr = @"box_topright";
-		if (style == bmdSwitcherPatternStyleBottomRightBox)
-			styleStr = @"box_bottomright";
-		if (style == bmdSwitcherPatternStyleBottomLeftBox)
-			styleStr = @"box_bottomleft";
-		if (style == bmdSwitcherPatternStyleTopCentreBox)
-			styleStr = @"box_topcenter";
-		if (style == bmdSwitcherPatternStyleRightCentreBox)
-			styleStr = @"box_centerright";
-		if (style == bmdSwitcherPatternStyleBottomCentreBox)
-			styleStr = @"box_centerbottom";
-		if (style == bmdSwitcherPatternStyleLeftCentreBox)
-			styleStr = @"box_centerleft";
-		if (style == bmdSwitcherPatternStyleTopLeftDiagonal)
-			styleStr = @"diagonal_topleft";
-		if (style == bmdSwitcherPatternStyleTopRightDiagonal)
-			styleStr = @"diagonal_topright";
+			NSString *styleStr;
+			if (pattern == bmdSwitcherPatternStyleLeftToRightBar)
+				styleStr = @"bar_left2right";
+			if (pattern == bmdSwitcherPatternStyleTopToBottomBar)
+				styleStr = @"bar_top2bottom";
+			if (pattern == bmdSwitcherPatternStyleHorizontalBarnDoor)
+				styleStr = @"barndoor_horizontal";
+			if (pattern == bmdSwitcherPatternStyleVerticalBarnDoor)
+				styleStr = @"barndoor_vertical";
+			if (pattern == bmdSwitcherPatternStyleCornersInFourBox)
+				styleStr = @"corners";
+			if (pattern == bmdSwitcherPatternStyleRectangleIris)
+				styleStr = @"iris_rectangle";
+			if (pattern == bmdSwitcherPatternStyleDiamondIris)
+				styleStr = @"iris_diamond";
+			if (pattern == bmdSwitcherPatternStyleCircleIris)
+				styleStr = @"iris_circle";
+			if (pattern == bmdSwitcherPatternStyleTopLeftBox)
+				styleStr = @"box_topleft";
+			if (pattern == bmdSwitcherPatternStyleTopRightBox)
+				styleStr = @"box_topright";
+			if (pattern == bmdSwitcherPatternStyleBottomRightBox)
+				styleStr = @"box_bottomright";
+			if (pattern == bmdSwitcherPatternStyleBottomLeftBox)
+				styleStr = @"box_bottomleft";
+			if (pattern == bmdSwitcherPatternStyleTopCentreBox)
+				styleStr = @"box_topcenter";
+			if (pattern == bmdSwitcherPatternStyleRightCentreBox)
+				styleStr = @"box_centerright";
+			if (pattern == bmdSwitcherPatternStyleBottomCentreBox)
+				styleStr = @"box_centerbottom";
+			if (pattern == bmdSwitcherPatternStyleLeftCentreBox)
+				styleStr = @"box_centerleft";
+			if (pattern == bmdSwitcherPatternStyleTopLeftDiagonal)
+				styleStr = @"diagonal_topleft";
+			if (pattern == bmdSwitcherPatternStyleTopRightDiagonal)
+				styleStr = @"diagonal_topright";
 
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/style",i+1], [OSCValue createWithString:styleStr], me_);
-		
-		// Support for legacy clients like TouchOSC
-		sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/type/%@",i+1, styleStr], [OSCValue createWithFloat:1.0], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/style",i+1], [OSCValue createWithString:styleStr], me_);
+			
+			// Support for legacy clients like TouchOSC
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/type/%@",i+1, styleStr], [OSCValue createWithFloat:1.0], me_);
+		}
 	}
 }
 
