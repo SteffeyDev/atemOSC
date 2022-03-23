@@ -578,7 +578,7 @@ float UpstreamKeyerLumaParametersMonitor::sendStatus() const
 	return 0.4;
 }
 
-HRESULT UpstreamKeyerFlyParametersMonitor::Notify(BMDSwitcherKeyFlyParametersEventType eventType)
+HRESULT UpstreamKeyerFlyParametersMonitor::Notify(BMDSwitcherKeyFlyParametersEventType eventType, BMDSwitcherFlyKeyFrame keyFrame)
 {
 	switch (eventType)
 	{

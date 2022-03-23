@@ -150,7 +150,7 @@ class UpstreamKeyerFlyParametersMonitor : public GenericMonitor<IBMDSwitcherKeyF
 {
 public:
     UpstreamKeyerFlyParametersMonitor(Switcher *switcher, int me) : GenericMonitor(switcher), me_(me) { }
-	HRESULT Notify (BMDSwitcherKeyFlyParametersEventType eventType);
+    HRESULT Notify(BMDSwitcherKeyFlyParametersEventType eventType, BMDSwitcherFlyKeyFrame keyFrame);
 	float sendStatus() const;
 	
 protected:
