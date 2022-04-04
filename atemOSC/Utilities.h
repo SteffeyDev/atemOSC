@@ -23,5 +23,6 @@ extern bool stringIsNumber(NSString * str);
 extern NSArray *mapObjectsUsingBlock(NSArray *array, id (^block)(id obj, NSUInteger idx));
 void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, bool printToLog = true);
 void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me, bool printToLog = true);
+NSArray* getSupportedChromaCommands(IBMDSwitcherKey* keyer);
 
 #endif /* Utilities_hpp */

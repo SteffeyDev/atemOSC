@@ -171,7 +171,7 @@ By default, commands will be sent to the first mix effect block (M/E).  To send 
  - **Set Pre-Multiplied Luma Parameter for Upstream Keyer $i** `/atem/usk/$i/luma/pre-multiplied <bool>`
  - **Set Inverse Luma Parameter for Upstream Keyer $i** `/atem/usk/$i/luma/inverse <bool>`
 
-#### USK Chroma Parameters
+#### USK Chroma Parameters (Basic)
  - **Set Hue Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/hue <float>`
      - Float value should be between 0.0 and 359.9
  - **Set Gain Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/gain <float>`
@@ -181,6 +181,13 @@ By default, commands will be sent to the first mix effect block (M/E).  To send 
  - **Set Lift Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/lift <float>`
      - Float value should be between 0.0 (for 0%) and 1.0 (for 100%)
  - **Set "Narrow Chroma Key Range" Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/narrow <bool>`
+
+#### USK Chroma Parameters (Advanced)
+ - **Set Foreground Level Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/foreground-level <float>`
+ - **Set Background Level Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/background-level <float>`
+ - **Set Spill Suppress Level Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/spill-suppress <float>`
+ - **Set Flare Suppress Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/flare-suppress <float>`
+ - **Set Key Edge Chroma Parameter for Upstream Keyer $i** `/atem/usk/$i/chroma/key-edge <float>`
 
 #### USK DVE Parameters
  - **Set DVE Border Enabled for Upstream Keyer $i** `/atem/usk/$i/dve/enabled <true|false>`

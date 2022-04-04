@@ -218,3 +218,12 @@ void sendFeedbackMessage(Switcher *s, NSString *address, OSCValue* val, int me, 
 	else
 		sendFeedbackMessage(s, address, val, printToLog);
 }
+
+NSArray* getSupportedChromaCommands(IBMDSwitcherKey* keyer)
+{
+	bool supportsAdvanced;
+	keyer->DoesSupportAdvancedChroma(&supportsAdvanced);
+	if (supportsAdvanced)
+		return [NSArray arrayWithObjects: @"foreground-level", @"background-level", @"key-edge", @"spill-suppress", @"flare-suppress", nil];
+	return [NSArray arrayWithObjects: @"hue", @"lift", @"gain", @"y-suppress", @"narrow", nil];
+}

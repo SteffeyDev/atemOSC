@@ -54,6 +54,23 @@
 	} copy] forKey:@"/me/<me>/usk"];
 	
 	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		NSString *address = [d objectForKey:@"address"];
+		
+		IBMDSwitcherKey* switcherKey = [s keyers][me-1][key-1];
+		
+		NSMutableArray *addressComponents = [[NSMutableArray alloc] initWithArray:[address componentsSeparatedByString:@"/"]];
+		NSString *command = [addressComponents objectAtIndex:6];
+		
+		if ([getSupportedChromaCommands(switcherKey) containsObject:command])
+			return true;
+		
+		[weakAppDel logMessage:[NSString stringWithFormat:@"Switcher does not support chroma command: %@", command]];
+		return false;
+	} copy] forKey:@"/me/<me>/usk/<key>/chroma"];
+	
+	[validators setObject:[^bool(Switcher *s, NSDictionary *d, OSCValue *v) {
 		int number = [[d objectForKey:@"<number>"] intValue];
 		if ([s mHyperdecks].count(number-1) > 0)
 			return true;
@@ -426,6 +443,41 @@
 		int key = [[d objectForKey:@"<key>"] intValue];
 		if (IBMDSwitcherKeyChromaParameters* chromaParams = [weakSelf getUSKChromaParams:key forSwitcher:s andME:me])
 			chromaParams->SetNarrow([v boolValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/foreground-level" label:@"Set Foreground Level Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyAdvancedChromaParameters* chromaParams = [weakSelf getUSKAdvancedChromaParams:key forSwitcher:s andME:me])
+			chromaParams->SetForegroundLevel([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/background-level" label:@"Set Background Level Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyAdvancedChromaParameters* chromaParams = [weakSelf getUSKAdvancedChromaParams:key forSwitcher:s andME:me])
+			chromaParams->SetBackgroundLevel([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/spill-suppress" label:@"Set Spill Suppress Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyAdvancedChromaParameters* chromaParams = [weakSelf getUSKAdvancedChromaParams:key forSwitcher:s andME:me])
+			chromaParams->SetSpillSuppress([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/flare-suppress" label:@"Set Flare Suppress Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyAdvancedChromaParameters* chromaParams = [weakSelf getUSKAdvancedChromaParams:key forSwitcher:s andME:me])
+			chromaParams->SetFlareSuppress([v floatValue]);
+	}];
+	
+	[self addEndpoint:@"/me/<me>/usk/<key>/chroma/key-edge" label:@"Set Key Edge Chroma Parameter for USK<key>" valueType:OSCValFloat handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
+		int me = [[d objectForKey:@"<me>"] intValue];
+		int key = [[d objectForKey:@"<key>"] intValue];
+		if (IBMDSwitcherKeyAdvancedChromaParameters* chromaParams = [weakSelf getUSKAdvancedChromaParams:key forSwitcher:s andME:me])
+			chromaParams->SetKeyEdge([v floatValue]);
 	}];
 	
 	[self addEndpoint:@"/me/<me>/usk/<key>/dve/enabled" label:@"Set Border Enabled DVE Parameter for USK<key>" valueType:OSCValBool handler:^void(Switcher *s, NSDictionary *d, OSCValue *v) {
@@ -1400,6 +1452,14 @@
 	IBMDSwitcherKey* key = [s keyers][me-1][t-1];
 	IBMDSwitcherKeyChromaParameters* chromaParams;
 	key->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
+	return chromaParams;
+}
+
+- (IBMDSwitcherKeyAdvancedChromaParameters *) getUSKAdvancedChromaParams:(int)t forSwitcher:(Switcher *)s andME:(int)me
+{
+	IBMDSwitcherKey* key = [s keyers][me-1][t-1];
+	IBMDSwitcherKeyAdvancedChromaParameters* chromaParams;
+	key->QueryInterface(IID_IBMDSwitcherKeyAdvancedChromaParameters, (void**)&chromaParams);
 	return chromaParams;
 }
 

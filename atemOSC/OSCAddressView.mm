@@ -9,6 +9,7 @@
 #import "BMDSwitcherAPI.h"
 #import "AppDelegate.h"
 #import "OSCEndpoint.h"
+#import "Utilities.h"
 
 @implementation OSCAddressView
 
@@ -112,10 +113,17 @@
 		[self addEntry:@"Toggle Tie BKGD" forAddress:[NSString stringWithFormat:@"%@/usk/0/tie/toggle", meString] toString:helpString];
 		for (int j = 0; j<[switcher keyers][i].size();j++)
 		{
+			NSArray *supportedChromaCommands = [[NSArray alloc] initWithArray: getSupportedChromaCommands([switcher keyers][i][0])];
 			for (OSCEndpoint* endpoint : [appDel endpoints])
 			{
 				if ([[endpoint addressTemplate] containsString:@"/usk/"])
 				{
+					if ([[endpoint addressTemplate] containsString:@"/chroma/"])
+					{
+						NSString *command = [[[endpoint addressTemplate] componentsSeparatedByString:@"/"] objectAtIndex:6];
+						if (![supportedChromaCommands containsObject:command])
+							continue;
+					}
 					NSString *label = [[[endpoint label] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(j+1)] stringValue]] stringByReplacingOccurrencesOfString:@"<me>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];
 					NSString *address = [[[endpoint addressTemplate] stringByReplacingOccurrencesOfString:@"<key>" withString:[[NSNumber numberWithInt:(j+1)] stringValue]] stringByReplacingOccurrencesOfString:@"<me>" withString:[[NSNumber numberWithInt:(i+1)] stringValue]];;
 					[self addEntry:label forAddress:address andValueType:endpoint.valueType toString:helpString];
