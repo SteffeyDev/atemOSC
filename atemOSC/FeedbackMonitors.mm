@@ -970,7 +970,7 @@ void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSoftnessParameter() 
 			double softness;
 			patternParams->GetSoftness(&softness);
 			
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/y-suppress",i+1], [OSCValue createWithFloat:softness], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/softness",i+1], [OSCValue createWithFloat:softness], me_);
 		}
 	}
 }
