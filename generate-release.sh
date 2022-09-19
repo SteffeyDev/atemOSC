@@ -18,6 +18,14 @@ GREY_COLOR="\033[0;37m"
 NO_COLOR="\033[0m"
 
 #
+# Check arguments
+#
+if [[ -z $1 ]] ; then
+  echo -e "Pass in the path to the notarized atemOSC.app file as the first argument"
+  exit 1
+fi
+
+#
 # Check if Github auth token exists
 #
 if [[ -z "${AUTOMATIC_RELEASE_GITHUB_TOKEN}" ]] ; then
@@ -112,12 +120,6 @@ if [[ $? != 0 ]] ; then
 	exit 1
 fi
 
-# Create tag if needed
-if [ $(git tag -l "v$VERSION" | wc -l | xargs) -eq 0 ]; then
-  git tag -a "v$VERSION" -m "v$VERSION"
-  git push --tags
-fi
-
 #
 # Creating directory to work in
 #
@@ -125,10 +127,6 @@ rm -rf temp_output
 mkdir -p temp_output
 cd temp_output
 
-if [[ -z $1 ]] ; then
-  echo -e "Pass in the path to the notarized atemOSC.app file as the first argument"
-  exit 1
-fi
 cp -R "$1" .
 
 #
@@ -145,6 +143,14 @@ mv "$FILENAME" "${FILENAME// /_}"
 FILENAME=$(find atemOSC_*.dmg)
 NEXT_RELEASE=$(echo $FILENAME | sed -E 's/atemOSC_(.*).dmg/\1/')
 echo -e "Generated: ${GREY_COLOR}${FILENAME}${NO_COLOR}"
+
+#
+# Create tag if needed
+#
+if [ $(git tag -l "v$NEXT_RELEASE" | wc -l | xargs) -eq 0 ]; then
+  git tag -a "v$NEXT_RELEASE" -m "v$NEXT_RELEASE"
+  git push --tags
+fi
 
 #
 # Notarize installer

@@ -232,7 +232,7 @@ By default, commands will be sent to the first mix effect block (M/E).  To send 
 
 Where `$i` can be 1, 2, 3, or 4 depending on the capability of your ATEM switcher
 
-Feedback: Enabled for '/atem/usk/$i/on-air', '/atem/usk/$i/tie', '/atem/usk/$i/source/\*', '/atem/usk/$i/luma/\*', and '/atem/usk/$i/chroma/\*'
+Feedback: Enabled
 
 ### Downstream Keyers
 

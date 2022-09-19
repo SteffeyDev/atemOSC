@@ -578,6 +578,174 @@ float UpstreamKeyerLumaParametersMonitor::sendStatus() const
 	return 0.4;
 }
 
+HRESULT UpstreamKeyerFlyParametersMonitor::Notify(BMDSwitcherKeyFlyParametersEventType eventType, BMDSwitcherFlyKeyFrame keyFrame)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherKeyFlyParametersEventTypeFlyChanged:
+			updateUSKFlyedParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeCanFlyChanged:
+			updateUSKCanFlyParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeRateChanged:
+			updateUSKFlyRateParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeSizeXChanged:
+			updateUSKFlySizeXParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeSizeYChanged:
+			updateUSKFlySizeYParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypePositionXChanged:
+			updateUSKFlyPositionXParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypePositionYChanged:
+			updateUSKFlyPositionYParameter();
+			break;
+		case bmdSwitcherKeyFlyParametersEventTypeRotationChanged:
+			updateUSKFlyRotationParameter();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyedParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			bool isFlyKey;
+			flyParams->GetFly(&isFlyKey);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/enabled",i+1], [OSCValue createWithBool:isFlyKey], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKCanFlyParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			bool canFly;
+			flyParams->GetCanFly(&canFly);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/can",i+1], [OSCValue createWithBool:canFly], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyRateParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			uint32_t frames;
+			flyParams->GetRate(&frames);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/rate",i+1], [OSCValue createWithInt:frames], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlySizeXParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double multiplierX;
+			flyParams->GetSizeX(&multiplierX);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/size-x",i+1], [OSCValue createWithFloat:multiplierX], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlySizeYParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double multiplierY;
+			flyParams->GetSizeY(&multiplierY);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/size-y",i+1], [OSCValue createWithFloat:multiplierY], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyPositionXParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double offsetX;
+			flyParams->GetPositionX(&offsetX);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/position-x",i+1], [OSCValue createWithFloat:offsetX], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyPositionYParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double offsetY;
+			flyParams->GetPositionY(&offsetY);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/position-y",i+1], [OSCValue createWithFloat:offsetY], me_);
+		}
+	}
+}
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyRotationParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double frames;
+			flyParams->GetRotation(&frames);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/rotation",i+1], [OSCValue createWithFloat:frames], me_);
+		}
+	}
+}
+
+float UpstreamKeyerFlyParametersMonitor::sendStatus() const
+{
+    updateUSKFlyRateParameter();
+    updateUSKFlySizeXParameter();
+    updateUSKFlySizeYParameter();
+    updateUSKFlyPositionXParameter();
+    updateUSKFlyPositionYParameter();
+    updateUSKFlyRotationParameter();
+	
+	return 0.4;
+}
+
 HRESULT UpstreamKeyerChromaParametersMonitor::Notify(BMDSwitcherKeyChromaParametersEventType eventType)
 {
 	switch (eventType)
@@ -687,6 +855,199 @@ float UpstreamKeyerChromaParametersMonitor::sendStatus() const
 	updateUSKChromaGainParameter();
 	updateUSKChromaHueParameter();
 	updateUSKChromaLiftParameter();
+	
+	return 0.4;
+}
+
+HRESULT UpstreamKeyerPatternParametersMonitor::Notify(BMDSwitcherKeyPatternParametersEventType eventType)
+{
+	switch (eventType)
+	{
+		case bmdSwitcherKeyPatternParametersEventTypePatternChanged:
+			updateUSKPatternStyleParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeSizeChanged:
+			updateUSKPatternSizeParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeSymmetryChanged:
+			updateUSKPatternSymmetryParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeSoftnessChanged:
+			updateUSKPatternSoftnessParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeInverseChanged:
+			updateUSKPatternInverseParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeHorizontalOffsetChanged:
+			updateUSKPatternHorizontalOffsetParameter();
+			break;
+		case bmdSwitcherKeyPatternParametersEventTypeVerticalOffsetChanged:
+			updateUSKPatternVerticalOffsetParameter();
+			break;
+		default:
+			// ignore other property changes not used for this app
+			break;
+	}
+	return S_OK;
+}
+
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternStyleParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+        IBMDSwitcherKeyPatternParameters* patternParams;
+        if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+        {
+            BMDSwitcherPatternStyle pattern;
+            patternParams->GetPattern(&pattern);
+
+			NSString *styleStr;
+			if (pattern == bmdSwitcherPatternStyleLeftToRightBar)
+				styleStr = @"bar_left2right";
+			if (pattern == bmdSwitcherPatternStyleTopToBottomBar)
+				styleStr = @"bar_top2bottom";
+			if (pattern == bmdSwitcherPatternStyleHorizontalBarnDoor)
+				styleStr = @"barndoor_horizontal";
+			if (pattern == bmdSwitcherPatternStyleVerticalBarnDoor)
+				styleStr = @"barndoor_vertical";
+			if (pattern == bmdSwitcherPatternStyleCornersInFourBox)
+				styleStr = @"corners";
+			if (pattern == bmdSwitcherPatternStyleRectangleIris)
+				styleStr = @"iris_rectangle";
+			if (pattern == bmdSwitcherPatternStyleDiamondIris)
+				styleStr = @"iris_diamond";
+			if (pattern == bmdSwitcherPatternStyleCircleIris)
+				styleStr = @"iris_circle";
+			if (pattern == bmdSwitcherPatternStyleTopLeftBox)
+				styleStr = @"box_topleft";
+			if (pattern == bmdSwitcherPatternStyleTopRightBox)
+				styleStr = @"box_topright";
+			if (pattern == bmdSwitcherPatternStyleBottomRightBox)
+				styleStr = @"box_bottomright";
+			if (pattern == bmdSwitcherPatternStyleBottomLeftBox)
+				styleStr = @"box_bottomleft";
+			if (pattern == bmdSwitcherPatternStyleTopCentreBox)
+				styleStr = @"box_topcenter";
+			if (pattern == bmdSwitcherPatternStyleRightCentreBox)
+				styleStr = @"box_centerright";
+			if (pattern == bmdSwitcherPatternStyleBottomCentreBox)
+				styleStr = @"box_centerbottom";
+			if (pattern == bmdSwitcherPatternStyleLeftCentreBox)
+				styleStr = @"box_centerleft";
+			if (pattern == bmdSwitcherPatternStyleTopLeftDiagonal)
+				styleStr = @"diagonal_topleft";
+			if (pattern == bmdSwitcherPatternStyleTopRightDiagonal)
+				styleStr = @"diagonal_topright";
+
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/style",i+1], [OSCValue createWithString:styleStr], me_);
+			
+			// Support for legacy clients like TouchOSC
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/style/%@",i+1, styleStr], [OSCValue createWithFloat:1.0], me_);
+		}
+	}
+}
+
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSizeParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double size;
+			patternParams->GetSize(&size);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/size",i+1], [OSCValue createWithFloat:size], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSymmetryParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double symmetry;
+			patternParams->GetSymmetry(&symmetry);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/symmetry",i+1], [OSCValue createWithFloat:symmetry], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternSoftnessParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double softness;
+			patternParams->GetSoftness(&softness);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/softness",i+1], [OSCValue createWithFloat:softness], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternHorizontalOffsetParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double positionX;
+			patternParams->GetHorizontalOffset(&positionX);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/position-x",i+1], [OSCValue createWithFloat:positionX], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternVerticalOffsetParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			double positionY;
+			patternParams->GetVerticalOffset(&positionY);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/position-y",i+1], [OSCValue createWithFloat:positionY], me_);
+		}
+	}
+}
+void UpstreamKeyerPatternParametersMonitor::updateUSKPatternInverseParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyPatternParameters* patternParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+		{
+			bool inverse;
+			patternParams->GetInverse(&inverse);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/inverse",i+1], [OSCValue createWithBool:inverse], me_);
+		}
+	}
+}
+
+float UpstreamKeyerPatternParametersMonitor::sendStatus() const
+{
+	updateUSKPatternInverseParameter();
+	updateUSKPatternSizeParameter();
+	updateUSKPatternStyleParameter();
+	updateUSKPatternSoftnessParameter();
+	updateUSKPatternSymmetryParameter();
+    updateUSKPatternHorizontalOffsetParameter();
+    updateUSKPatternVerticalOffsetParameter();
 	
 	return 0.4;
 }

@@ -26,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
 	std::map<int, UpstreamKeyerMonitor*>				mUpstreamKeyerMonitors;
 	std::map<int, UpstreamKeyerLumaParametersMonitor*>	mUpstreamKeyerLumaParametersMonitors;
 	std::map<int, UpstreamKeyerChromaParametersMonitor*> mUpstreamKeyerChromaParametersMonitors;
+	std::map<int, UpstreamKeyerFlyParametersMonitor*> mUpstreamKeyerFlyParametersMonitors;
+	std::map<int, UpstreamKeyerPatternParametersMonitor*> mUpstreamKeyerPatternParametersMonitors;
 	std::map<int, TransitionParametersMonitor*>			mTransitionParametersMonitors;
 	MacroPoolMonitor*       							mMacroPoolMonitor;
 	MacroControlMonitor*       							mMacroControlMonitor;

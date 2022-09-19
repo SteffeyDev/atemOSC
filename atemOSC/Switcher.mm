@@ -311,6 +311,22 @@
 						mMonitors.push_back(chromaMonitor);
 						mUpstreamKeyerChromaParametersMonitors.insert(std::make_pair(meIndex, chromaMonitor));
 					}
+					IBMDSwitcherKeyFlyParameters* flyParams;
+					if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+					{
+						UpstreamKeyerFlyParametersMonitor *flyMonitor = new UpstreamKeyerFlyParametersMonitor(self, meIndex);
+						flyParams->AddCallback(flyMonitor);
+						mMonitors.push_back(flyMonitor);
+						mUpstreamKeyerFlyParametersMonitors.insert(std::make_pair(meIndex, flyMonitor));
+					}
+					IBMDSwitcherKeyPatternParameters* patternParams;
+					if (SUCCEEDED(key->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams)))
+					{
+						UpstreamKeyerPatternParametersMonitor *patternMonitor = new UpstreamKeyerPatternParametersMonitor(self, meIndex);
+						patternParams->AddCallback(patternMonitor);
+						mMonitors.push_back(patternMonitor);
+						mUpstreamKeyerPatternParametersMonitors.insert(std::make_pair(meIndex, patternMonitor));
+					}
 				}
 				keyIterator->Release();
 				keyIterator = NULL;
@@ -717,6 +733,16 @@
 			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyChromaParameters, (void**)&chromaParams);
 			if (chromaParams != nil)
 				chromaParams->RemoveCallback(mUpstreamKeyerChromaParametersMonitors[me]);
+			
+			IBMDSwitcherKeyFlyParameters* flyParams = nil;
+			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams);
+			if (flyParams != nil)
+				flyParams->RemoveCallback(mUpstreamKeyerFlyParametersMonitors[me]);
+
+			IBMDSwitcherKeyPatternParameters* patternParams = nil;
+			keyers[me].back()->QueryInterface(IID_IBMDSwitcherKeyPatternParameters, (void**)&patternParams);
+			if (patternParams != nil)
+				patternParams->RemoveCallback(mUpstreamKeyerPatternParametersMonitors[me]);
 				
 			keyers[me].pop_back();
 		}
@@ -729,6 +755,8 @@
 	mUpstreamKeyerMonitors.clear();
 	mUpstreamKeyerLumaParametersMonitors.clear();
 	mUpstreamKeyerChromaParametersMonitors.clear();
+	mUpstreamKeyerFlyParametersMonitors.clear();
+	mUpstreamKeyerPatternParametersMonitors.clear();
 	
 	for (auto const& it : mInputs)
 	{
