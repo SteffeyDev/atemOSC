@@ -696,7 +696,7 @@ void UpstreamKeyerFlyParametersMonitor::updateUSKFlyPositionXParameter() const
 			double offsetX;
 			flyParams->GetPositionX(&offsetX);
 			
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/size-x",i+1], [OSCValue createWithFloat:offsetX], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/pos-x",i+1], [OSCValue createWithFloat:offsetX], me_);
 		}
 	}
 }
@@ -711,7 +711,7 @@ void UpstreamKeyerFlyParametersMonitor::updateUSKFlyPositionYParameter() const
 			double offsetY;
 			flyParams->GetPositionY(&offsetY);
 			
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/size-y",i+1], [OSCValue createWithFloat:offsetY], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/pos-y",i+1], [OSCValue createWithFloat:offsetY], me_);
 		}
 	}
 }
