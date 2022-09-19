@@ -921,10 +921,10 @@ void UpstreamKeyerPatternParametersMonitor::updateUSKPatternStyleParameter() con
 			if (pattern == bmdSwitcherPatternStyleTopRightDiagonal)
 				styleStr = @"diagonal_topright";
 
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/style",i+1], [OSCValue createWithString:styleStr], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/style",i+1], [OSCValue createWithString:styleStr], me_);
 			
 			// Support for legacy clients like TouchOSC
-			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/type/%@",i+1, styleStr], [OSCValue createWithFloat:1.0], me_);
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/pattern/style/%@",i+1, styleStr], [OSCValue createWithFloat:1.0], me_);
 		}
 	}
 }
