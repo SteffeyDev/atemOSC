@@ -603,6 +603,9 @@ HRESULT UpstreamKeyerFlyParametersMonitor::Notify(BMDSwitcherKeyFlyParametersEve
 		case bmdSwitcherKeyFlyParametersEventTypePositionYChanged:
 			updateUSKFlyPositionYParameter();
 			break;
+		case bmdSwitcherKeyFlyParametersEventTypeRotationChanged:
+			updateUSKFlyRotationParameter();
+			break;
 		default:
 			// ignore other property changes not used for this app
 			break;
@@ -715,6 +718,21 @@ void UpstreamKeyerFlyParametersMonitor::updateUSKFlyPositionYParameter() const
 		}
 	}
 }
+void UpstreamKeyerFlyParametersMonitor::updateUSKFlyRotationParameter() const
+{
+	std::vector<IBMDSwitcherKey*> keyers = [switcher keyers][me_];
+	for (int i = 0; i < keyers.size(); i++)
+	{
+		IBMDSwitcherKeyFlyParameters* flyParams;
+		if (SUCCEEDED(keyers[i]->QueryInterface(IID_IBMDSwitcherKeyFlyParameters, (void**)&flyParams)))
+		{
+			double frames;
+			flyParams->GetRotation(&frames);
+			
+			sendFeedbackMessage(switcher, [NSString stringWithFormat:@"/usk/%d/fly/rotation",i+1], [OSCValue createWithFloat:frames], me_);
+		}
+	}
+}
 
 float UpstreamKeyerFlyParametersMonitor::sendStatus() const
 {
@@ -723,6 +741,7 @@ float UpstreamKeyerFlyParametersMonitor::sendStatus() const
     updateUSKFlySizeYParameter();
     updateUSKFlyPositionXParameter();
     updateUSKFlyPositionYParameter();
+    updateUSKFlyRotationParameter();
 	
 	return 0.4;
 }
