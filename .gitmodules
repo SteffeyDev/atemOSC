@@ -1,3 +1,0 @@
-[submodule "bugsnag-cocoa"]
-	path = bugsnag-cocoa
-	url = https://github.com/bugsnag/bugsnag-cocoa
